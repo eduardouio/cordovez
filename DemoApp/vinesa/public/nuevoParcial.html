@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es" ng-app="vinesa">
+   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="">
+      <meta name="author" content="">
+      <title>Modulo Productos</title>
+      <!-- Bootstrap Core CSS -->
+      <link href="css/bootstrap.min.css" rel="stylesheet">
+      <!-- MetisMenu CSS -->
+      <link href="css/metisMenu.min.css" rel="stylesheet">
+      <!-- Timeline CSS -->
+      <link href="css/timeline.css" rel="stylesheet">
+      <!-- Custom CSS -->
+      <link href="css/startmin.css" rel="stylesheet">
+      <!-- Morris Charts CSS -->
+      <link href="css/morris.css" rel="stylesheet">
+      <!-- Custom Fonts -->
+      <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
+      <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+      <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+      <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+      <![endif]-->
+      <link rel="stylesheet" href="/css/style.css" media="screen" title="no title">
+   </head>
+   <body ng-controller="dataController">
+      <div id="wrapper">
+         <!-- Navigation -->
+         <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="navbar-header">
+               <a class="navbar-brand" href="#" style="color:#fff"> VINESA S.A <small>Modulo Importaciones</small></a>
+            </div>
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <!-- Top Navigation: Right Menu -->
+            <ul class="nav navbar-right navbar-top-links">
+               <li class="dropdown navbar-inverse">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                  <i class="fa fa-bell fa-fw"></i> <b class="caret"></b>
+                  </a>
+                  <ul class="dropdown-menu dropdown-alerts">
+                     <li>
+                        <a href="#">
+                           <div>
+                              <i class="fa fa-comment fa-fw"></i> Parcial 3 Importacion 12 sin Factura
+                              <span class="pull-right text-muted small">Utima hace 2 horas</span>
+                           </div>
+                        </a>
+                     </li>
+                     <li class="divider"></li>
+                     <li>
+                        <a class="text-center" href="#">
+                        <strong>Mostrar todas las alertas</strong>
+                        <i class="fa fa-angle-right"></i>
+                        </a>
+                     </li>
+                  </ul>
+               </li>
+               <li class="dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                  <i class="fa fa-user fa-fw"></i> Usuario <b class="caret"></b>
+                  </a>
+                  <ul class="dropdown-menu dropdown-user">
+                     <li><a href="#"><i class="fa fa-user fa-fw"></i> Perfil de Usuario</a>
+                     </li>
+                     <li><a href="#"><i class="fa fa-gear fa-fw"></i> Configuraciones</a>
+                     </li>
+                     <li class="divider"></li>
+                     <li><a href="#"><i class="fa fa-sign-out fa-fw"></i> Salir del Sistema</a>
+                     </li>
+                  </ul>
+               </li>
+            </ul>
+            <!-- Sidebar -->
+            <div class="navbar-default sidebar" role="navigation">
+               <div class="sidebar-nav navbar-collapse">
+                  <ul class="nav" id="side-menu">
+                     <li class="sidebar-search">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/ab/Logo_TV_2015.png" style="width: 40%">
+                     </li>
+                     <li>
+                        <a href="#" class="active"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                     </li>
+                     <li>
+                        <a href="#"><i class="fa fa-cubes fa-fw"></i> Importaciones<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                           <li>
+                              <a href="#"><i class="fa fa-list fa-fw"></i>Listar Improtaciones</a>
+                           </li>
+                           <li>
+                              <a href="nuevaimportacion.html"><i class="fa fa-wpforms fa-fw"></i>Nueva Importación</a>
+                           </li>
+                           <li>
+                              <a href="#"><i class="fa fa-cube fa-fw"></i>Importaciones Terminadas</a>
+                           </li>
+                           <li>
+                              <a href="#"><i class="fa fa-search fa-fw"></i>Buscar Importación</a>
+                           </li>
+                        </ul>
+                     </li>
+                     <li>
+                        <a href="#"><i class="fa fa-th-large fa-fw"></i> Productos<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                           <li>
+                              <a href="#"><i class="fa fa-wpforms fa-fw"></i>Nuevo Producto</a>
+                           </li>
+                           <li>
+                              <a href="#"><i class="fa fa-search fa-fw"></i>Buscar Productos</a>
+                           </li>
+                        </ul>
+                     </li>
+                  </ul>
+               </div>
+            </div>
+         </nav>
+         <!-- Page Content -->
+         <div id="page-wrapper">
+            <div class="container-fluid">
+               <div class="row">
+                  <div class="col-lg-12">
+                     <h3 class="page-header"><small>PARCIAL 01 DEL  PEDIDO 0012016</small>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a class="btn btn-inverse text-danger left"> Saldo FOB: {{1041.21 | currency}} </a>
+                        <a class="btn btn-danger   left" href="presentacionPedido.html"> Nuevo Parcial</a>
+                     </h3>
+                  </div>
+               </div>
+            </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                           <table class="table table-bordered text-right" style="background-color:#fff;">
+                             <tr>
+                               <td colspan="8" class="text-center">
+                                 COSTOS INICIALES DEL PARCIAL
+                               </td>
+                             </tr>
+                              <tr>
+                                 <td class="info">SEGURO:</td>
+                                 <td>{{38.12 | number:2}}</td>
+                                 <td class="info">FLETE:</td>
+                                 <td>{{112.99 | number:2}}</td>
+                                 <td class="info">ISD:</td>
+                                 <td>{{99.21 | number:2}}</td>
+                                 <td class="info">ALMACENAJE:</td>
+                                 <td>72.72</td>
+                              </tr>
+                              <tr>
+                                 <td class="info">DEMORAJE INICIAL:</td>
+                                 <td>94.32</td>
+                                 <td class="info">CUSTODIO:</td>
+                                 <td>30.00</td>
+                                 <td class="info"><a href="#"></a>AGENTE:</td>
+                                 <td>59.72</td>
+                                 <td class="info">DESCARGA:</td>
+                                 <td>20.12</td>
+                              </tr>
+                              <tr>
+                                 <td class="info">TRANSPORTE INTERNO:</td>
+                                 <td>21.72</td>
+                                 <td class="info">CANDADO SATELITAL:</td>
+                                 <td>22.72</td>
+                                 <td class="info">TASA COS AEROPORTUARIA:</td>
+                                 <td>102.72</td>
+                                 <td class="info">OTROS GASTOS NAVIEROS:</td>
+                                 <td>89.00</td>
+                              </tr>
+
+                              <tr class="text-primary">
+                                 <td class="text-right" colspan="4">
+                                    <strong>Total Gastos Iniciales:</strong>
+                                 </td>
+                                 <td colspan="4">
+                                    <strong>$ {{38.12+112.99+99.21+72.72+94.32+10+22.72+99.12+102.72+212.72+102.72+89 | number:2}}</strong>
+                                 </td>
+                              </tr>
+                           </table>
+                     </div>
+                  </div>
+<div class="row">
+  <div class="col-md-12 text-center">
+    <span class="text-primary">INGRESE CANTIDADES Y COSTOS PARA ESTE PARCIAL</span>
+  </div>
+</div>
+                  <div class="row well white">
+  <div class="col-xs-4"> <!-- required for floating -->
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs tabs-left">
+      <li class="active"><a href="#costs" data-toggle="tab" class="text-danger">GASTOS PARCIAL</a></li>
+      <li><a href="#home" data-toggle="tab">CAPTAIN MORGAN</a></li>
+      <li><a href="#profile" data-toggle="tab">MOET ET CHANDON</a></li>
+      <li><a href="#messages" data-toggle="tab">CROWN ROYAL</a></li>
+      <li><a href="#settings" data-toggle="tab">CASILLERO DEL DIABLO</a></li>
+    </ul>
+</div>
+<div class="col-xs-2">
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div class="tab-pane active" id="costs">
+        <form method="post">
+          <div class="form-group">
+                  <label>Transporte:</label>
+                  <input class="form-control" type="number" value="120">
+          </div>
+          <div class="form-group">
+                  <label>Etiquetado:</label>
+                  <input class="form-control" type="number" value="87">
+          </div>
+          <div class="form-group">
+                  <label>Flete Aduana:</label>
+                  <input class="form-control" type="number" value="102">
+          </div>
+          <div class="form-group">
+                  <label>Seguro Aduana:</label>
+                  <input class="form-control" type="number" value="102">
+          </div>
+          <div class="form-group">
+                  <label>Otros Costos:</label>
+                  <input class="form-control" type="number" value="102">
+          </div>
+          <input class="btn btn-primary" value="Agregar" type="submit" data-toggle="modal" data-target="#myModal">
+        </form>
+      </div>
+      <div class="tab-pane" id="home">
+        <div class="form-group">
+                  <label>Cantidad:</label>
+                  <input class="form-control" type="number" value="201">
+          </div>
+          <div class="form-group">
+                  <label>FOB:</label>
+                  <input class="form-control" type="text" value="$ 1.298,10" disabled="">
+          </div>
+          <div class="form-group">
+                  <label>Seguro Ad:</label>
+                  <input class="form-control" type="text" value="$ 1.298,10" disabled="">
+          </div>
+          <div class="form-group">
+                  <label>Flete Ad:</label>
+                  <input class="form-control" type="text" value="$ 1.298,10" disabled="">
+          </div>
+          <div class="form-group">
+                  <label>CIF:</label>
+                  <input class="form-control" type="text" value="$ 1.298,10" disabled="">
+          </div>
+      </div>
+
+      <div class="tab-pane" id="profile">
+        <div class="form-group">
+                  <label>Cantidad:</label>
+                  <input class="form-control" type="number" value="201">
+          </div>
+          <div class="form-group">
+                  <label>FOB:</label>
+                  <input class="form-control" type="text" value="$ 1.298,10" disabled="">
+          </div>
+          <div class="form-group">
+                  <label>Seguro Ad:</label>
+                  <input class="form-control" type="text" value="$ 86,99" disabled="">
+          </div>
+          <div class="form-group">
+                  <label>Flete Ad:</label>
+                  <input class="form-control" type="text" value="$ 768,10" disabled="">
+          </div>
+          <div class="form-group">
+                  <label>CIF:</label>
+                  <input class="form-control" type="text" value="$ 982,10" disabled="">
+          </div>
+        </div>
+      <div class="tab-pane" id="messages">
+        <div class="form-group">
+                  <label>Cantidad:</label>
+                  <input class="form-control" type="number" value="201">
+          </div>
+          <div class="form-group">
+                  <label>FOB:</label>
+                  <input class="form-control" type="text" value="$ 1.988,10" disabled="">
+          </div>
+          <div class="form-group">
+                  <label>Seguro Ad:</label>
+                  <input class="form-control" type="text" value="$ 298,10" disabled="">
+          </div>
+          <div class="form-group">
+                  <label>Flete Ad:</label>
+                  <input class="form-control" type="text" value="$ 898,10" disabled="">
+          </div>
+          <div class="form-group">
+                  <label>CIF:</label>
+                  <input class="form-control" type="text" value="$ 1.298,10" disabled="">
+          </div>
+      </div>
+      <div class="tab-pane" id="settings">
+        <div class="form-group">
+                  <label>Cantidad:</label>
+                  <input class="form-control" type="number" value="201">
+          </div>
+          <div class="form-group">
+                  <label>FOB:</label>
+                  <input class="form-control" type="text" value="$ 1.298,10" disabled="">
+          </div>
+          <div class="form-group">
+                  <label>Seguro Ad:</label>
+                  <input class="form-control" type="text" value="$ 1.298,10" disabled="">
+          </div>
+          <div class="form-group">
+                  <label>Flete Ad:</label>
+                  <input class="form-control" type="text" value="$ 1.298,10" disabled="">
+          </div>
+          <div class="form-group">
+                  <label>CIF:</label>
+                  <input class="form-control" type="text" value="$ 1.298,10" disabled="">
+          </div>
+      </div>
+    </div>
+</div>
+<div class="col-xs-6">
+  <table class="table text-right">
+<tr>
+  <th>#</th>
+  <th>Producto</th>
+  <th>Cant</th>
+  <th>FOB</th>
+  <th>Seguro</th>
+  <th>Flete</th>
+  <th>CIF</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td>Captain Morgan</td>
+  <td>120</td>
+  <td>{{1276.12 | currency}}</td>
+  <td>{{54.87 | currency}}</td>
+  <td>{{97.00 | currency}}</td>
+  <td>{{(1276.12 + 54.87+97) | currency}}</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td>Moet Et Chandon</td>
+  <td>230</td>
+  <td>{{659.98 | currency}}</td>
+  <td>{{54.87 | currency}}</td>
+  <td>{{97.00 | currency}}</td>
+  <td>{{(659.98 + 54.87+97) | currency}}</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td>Crown Royal</td>
+  <td>230</td>
+  <td>{{981.24 | currency}}</td>
+  <td>{{98.87 | currency}}</td>
+  <td>{{54.06 | currency}}</td>
+  <td>{{(981.24 + 98.87+54.06) | currency}}</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td>Casillero del Diablo</td>
+  <td>230</td>
+  <td>{{1900.98 | currency}}</td>
+  <td>{{54.87 | currency}}</td>
+  <td>{{97.00 | currency}}</td>
+  <td>{{(1900.98 + 54.87+97) | currency}}</td>
+</tr>
+  </table>
+</div>
+<span class="btn btn-primary">Calcular Impuestos</span>
+</div>
+         </div>
+      </div>
+
+      <!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Detalle de Facuras de Gastos</h4>
+      </div>
+      <div class="modal-body":
+          <form class="form-horizontal well">
+            <div class="form-group">
+              <label class="control-label text-right" for="email">Factura:</label>
+              <input type="number" class="form-control text-right" value="">
+            </div>
+            <div class="form-group">
+              <label class="control-label text-right" for="email">Costo:</label>
+              <input type="number" class="form-control text-right" value="">
+            </div>
+            <div class="form-group">
+              <label class="control-label text-right" for="fecha">Fecha:</label>
+              <input type="number" class="form-control text-right" value="" id="fecha">
+            </div>
+            <div class="form-group">
+              <label class="control-label text-right" for="email">Provicionado:</label>
+              <input type="checkbox" class="form-control text-right" value="" id="email">
+            </div>
+          </form>
+      </div>
+        <table class="table">
+          <tr>
+
+          </tr>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+      <!-- jQuery -->
+      <script src="js/jquery.min.js"></script>
+      <!-- Bootstrap Core JavaScript -->
+      <script src="js/bootstrap.min.js"></script>
+      <!-- Metis Menu Plugin JavaScript -->
+      <script src="js/metisMenu.min.js"></script>
+      <!-- Custom Theme JavaScript -->
+      <script src="js/startmin.js"></script>
+      <script src="js/lib/angular.min.js"></script>
+      <script src="js/app.js"></script>
+      <script type="text/javascript">
+      $(document).ready(function() {
+  $("div.bhoechie-tab-menu>div.list-group>a").click(function(e) {
+      e.preventDefault();
+      $(this).siblings('a.active').removeClass("active");
+      $(this).addClass("active");
+      var index = $(this).index();
+      $("div.bhoechie-tab>div.bhoechie-tab-content").removeClass("active");
+      $("div.bhoechie-tab>div.bhoechie-tab-content").eq(index).addClass("active");
+  });
+});
+      </script>
+
+   </body>
+</html>

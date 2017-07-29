@@ -1,0 +1,378 @@
+{
+	"status": "Success",
+	"msg": "202",
+	"licores": [
+		{
+			"nombre": "CAPTAIN MORGAN",
+			"codigo": "RN0983",
+			"marca": "Diageo",
+			"tipo": "RON",
+			"presentacion": 750,
+			"grado_alcoholico": 76,
+			"cant_caja": 10,
+			"observaciones": "Licor con obserbaciones varias",
+			"creado": "01/04/2017"
+		},
+		{
+			"nombre": "MOET ET CHANDON",
+			"codigo": "CP0293",
+			"marca": "FRANCE",
+			"tipo": "CHAMPAGNE",
+			"presentacion": 800,
+			"grado_alcoholico": 25,
+			"cant_caja": 6,
+			"observaciones": "",
+			"creado": "08/12/2016"
+		},
+		{
+			"nombre": "CROWN ROYAL",
+			"codigo": "WS0971",
+			"marca": "CANADA",
+			"tipo": "WHISKI",
+			"presentacion": 600,
+			"grado_alcoholico": 69,
+			"cant_caja": 12,
+			"observaciones": "WHISKI CANADIENSE",
+			"creado": "12/03/2018"
+		},
+		{
+			"nombre": "CONCHA Y TORO",
+			"codigo": "VN0910",
+			"marca": "CONCHA Y TORO",
+			"tipo": "VINO",
+			"presentacion": 900,
+			"grado_alcoholico": 13,
+			"cant_caja": 12,
+			"observaciones": "Vino ligero chileno",
+			"creado": "14/02/2016"
+		},
+		{
+			"nombre": "GREY GOOSE",
+			"codigo": "VK9183",
+			"marca": "GREY GOOSE",
+			"tipo": "VODKA",
+			"presentacion": 759,
+			"grado_alcoholico": 44,
+			"cant_caja": 12,
+			"observaciones": "LICOR FRACES",
+			"creado": "12/12/2017"
+		},
+		{
+			"nombre": "CASILLERO DEL DIABLO",
+			"codigo": "VN0831",
+			"marca": "CONCHA Y TORO",
+			"tipo": "VINO",
+			"presentacion": 750,
+			"grado_alcoholico": 21,
+			"cant_caja": 12,
+			"observaciones": "VINO CHILEO",
+			"creado": "01/04/2017"
+		},
+		{
+			"nombre": "CLOUDY BAY",
+			"codigo": "VN0374",
+			"marca": "LVMH",
+			"tipo": "VINO",
+			"presentacion": 750,
+			"grado_alcoholico": 12,
+			"cant_caja": 12,
+			"observaciones": "",
+			"creado": "01/04/2017"
+		},
+		{
+			"nombre": "BACARDI ELIXIR(DULCE)",
+			"codigo": "RN8272",
+			"marca": "BACARDI",
+			"tipo": "RON",
+			"presentacion": 750,
+			"grado_alcoholico": 88,
+			"cant_caja": 6,
+			"observaciones": "",
+			"creado": "01/02/2015"
+		},
+		{
+			"nombre": "RON HAVANA AÑEJO LITRO",
+			"codigo": "RN7363",
+			"marca": "HAVANA",
+			"tipo": "RON",
+			"presentacion": 750,
+			"grado_alcoholico": 76,
+			"cant_caja": 12,
+			"observaciones": "",
+			"creado": "18/12/2015"
+		},
+		{
+			"nombre": "HAVANA SELLECION MAESTROS",
+			"codigo": "RN8163",
+			"marca": "HAVANA",
+			"tipo": "RON",
+			"presentacion": 750,
+			"grado_alcoholico": 76,
+			"cant_caja": 10,
+			"observaciones": "",
+			"creado": "28/04/2015"
+		},
+		{
+			"nombre": "RON CUBANACAN 12 AÑOS",
+			"codigo": "RN8271",
+			"marca": "CUBANACAN",
+			"tipo": "RON",
+			"presentacion": 750,
+			"grado_alcoholico": 89,
+			"cant_caja": 12,
+			"observaciones": "",
+			"creado": "14/07/2017"
+		},
+		{
+			"nombre": "ESTUCHE  ZACAPA XO+30 AÑOS",
+			"codigo": "RN6200",
+			"marca": "Diageo",
+			"tipo": "RON",
+			"presentacion": 750,
+			"grado_alcoholico": 68,
+			"cant_caja": 12,
+			"observaciones": "",
+			"creado": "01/09/2017"
+		},
+		{
+			"nombre": "CONDE DE OSBORNE (CRISTAL)",
+			"codigo": "BN9873",
+			"marca": "CRISTAL",
+			"tipo": "BRANDY",
+			"presentacion": 750,
+			"grado_alcoholico": 40,
+			"cant_caja": 10,
+			"observaciones": "",
+			"creado": "30/04/2015"
+		},
+		{
+			"nombre": "CONDE DE LOS ANDES",
+			"codigo": "BN7351",
+			"marca": "CONDE",
+			"tipo": "BRANDY",
+			"presentacion": 750,
+			"grado_alcoholico": 77,
+			"cant_caja": 12,
+			"observaciones": "",
+			"creado": "21/03/2017"
+		},
+		{
+			"nombre": "BALLANTINES CHRISTMAS RESERVE",
+			"codigo": "WK9384",
+			"marca": "BALLANTINES CHRISTMAS RESERVE",
+			"tipo": "WHISKI",
+			"presentacion": 750,
+			"grado_alcoholico": 83,
+			"cant_caja": 12,
+			"observaciones": "",
+			"creado": "01/12/2017"
+		},
+		{
+			"nombre": "JOHNY WALKER DOUBLE BLACK",
+			"codigo": "WK87235",
+			"marca": "JOHNY WALKER",
+			"tipo": "WHISKI",
+			"presentacion": 750,
+			"grado_alcoholico": 76,
+			"cant_caja": 12,
+			"observaciones": "",
+			"creado": "23/05/2017"
+		},
+		{
+			"nombre": "FAMOUS GROUSE GOLD RVA.",
+			"codigo": "WK7499",
+			"marca": "FAMOUS",
+			"tipo": "WHISKI",
+			"presentacion": 750,
+			"grado_alcoholico": 76,
+			"cant_caja": 12,
+			"observaciones": "",
+			"creado": "01/07/2017"
+		}
+	],
+	"pedidos": [
+		{
+			"pedidoNro": "022016",
+			"fecha": "13/07/2017",
+			"guia_bl": "HGL920122112",
+			"peso": 1202,
+			"fob": 29182.32,
+			"seguro": 412.12,
+			"flete": 1093.21,
+			"isd": 458.31,
+			"almacenaje": 432.32,
+			"demoraje_inicial": 120.21,
+			"custodio": 99.21,
+			"agente_inicial": 250,
+			"descarga": 43.29,
+			"transporte_interno": 32.31,
+			"candado_satelital": 60,
+			"tasa_cos_aeroportuaria": 56.42,
+			"otros_gastos": 102
+		},
+		{
+			"pedidoNro": "032016",
+			"fecha": "28/09/2018",
+			"guia_bl": "HGL920100440",
+			"peso": 2202,
+			"fob": 11242.32,
+			"seguro": 692.87,
+			"flete": 3293.98,
+			"isd": 671.44,
+			"almacenaje": 550.81,
+			"demoraje_inicial": 320.28,
+			"custodio": 99.21,
+			"agente_inicial": 250,
+			"descarga": 43.29,
+			"transporte_interno": 32.31,
+			"candado_satelital": 60,
+			"tasa_cos_aeroportuaria": 88.12,
+			"otros_gastos": 0
+		}
+	],
+	"listaPedidos": [
+		{
+			"pedidoNro": "022016",
+			"productos": [
+				{
+					"codigo": "RN0983",
+					"cantidad": 2039,
+					"fob": 9917.21
+				},
+				{
+					"codigo": "WS0971",
+					"cantidad": 1873,
+					"fob": 2120.31
+				},
+				{
+					"codigo": "CP0293",
+					"cantidad": 3210,
+					"fob": 11928.21
+				},
+				{
+					"codigo": "VN0831",
+					"cantidad": 500,
+					"fob": 5216.5
+				}
+			]
+		},
+		{
+			"pedidoNro": "032016",
+			"productos": [
+				{
+					"codigo": "RN8272",
+					"cantidad": 912,
+					"fob": 5213.21
+				},
+				{
+					"codigo": "RN8271",
+					"cantidad": 120,
+					"fob": 3200.54
+				},
+				{
+					"codigo": "VN0374",
+					"cantidad": 210,
+					"fob": 2828.57
+				}
+			]
+		}
+	],
+	"parciales": [
+		{
+			"pedidoNro": "022016",
+			"parcialNro": "1",
+			"detalleParcial": [
+				{
+					"producto": [
+						{
+							"codigo": "RN8272",
+							"cantidad": "200"
+						},
+						{
+							"codigo": "RN8272",
+							"cantidad": "514"
+						},
+						{
+							"codigo": "RN8272",
+							"cantidad": "400"
+						},
+						{
+							"codigo": "RN8272",
+							"cantidad": "650"
+						}
+					],
+					"costos": [
+						{
+							"almacenaje": 219.11
+						},
+						{
+							"agente": 234.12
+						},
+						{
+							"bodega": 321.73
+						},
+						{
+							"demoraje": 60.27
+						},
+						{
+							"transporte": 465
+						},
+						{
+							"descarga": 43.43
+						},
+						{
+							"etiquetado": 90.32
+						},
+						{
+							"otros": 200
+						}
+					]
+				}
+			]
+		},
+		{
+			"pedidoNro": "022016",
+			"parcialNro": "2",
+			"detalleParcial": [
+				{
+					"producto": [
+						{
+							"codigo": "RN8272",
+							"cantidad": "60"
+						},
+						{
+							"codigo": "RN8272",
+							"cantidad": "224"
+						}
+					],
+					"costos": [
+						{
+							"almacenaje": 121.11
+						},
+						{
+							"agente": 254.12
+						},
+						{
+							"bodega": 321.87
+						},
+						{
+							"demoraje": 10.21
+						},
+						{
+							"transporte": 465
+						},
+						{
+							"descarga": 43.43
+						},
+						{
+							"etiquetado": 30.49
+						},
+						{
+							"otros": 200
+						}
+					]
+				}
+			]
+		}
+	]
+}

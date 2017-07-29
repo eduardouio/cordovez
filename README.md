@@ -1,6 +1,6 @@
 <h2>Sistema de Control de Importaciones</h2>
 <br>
-<h3>Características del sistema:<h3/>
+<h3>Características del sistema:</h3>
 Listado de características a implementar en el sistema:
 <ul>
 <li>Registrar varios pedidos a diferentes proveedores, los pedidos están conformados por

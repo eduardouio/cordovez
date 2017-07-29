@@ -2,7 +2,7 @@
 <br>
 <h3>Características del sistema:<h3/>
 Listado de características a implementar en el sistema:
-<0l>
+<ul>
 <li>Registrar varios pedidos a diferentes proveedores, los pedidos están conformados por
 distintos productos </li>
 <li>Registrar pedidos en moneda extranjera y a un tipo de cambio que puede variar cuando se</li>
@@ -26,9 +26,9 @@ fletes y otros gastos</li>
 <li>Registro de información de seguros</li>
 <li>Manejo de autorizaciones para cambios de información por parte de los usuarios</li>
 <li>Definir lista de informes</li>
-<ol>
+</ul>
 <h3>Características técnicas del sistema:</h3>
-<ol>
+<ul>
 <li>  Tres perfiles de usuario para ingreso de información, manejo contable y control de los
 procesos con dos roles cada uno</li>
 <li>Aplicación web multiusuario y centralizada</li>
@@ -39,12 +39,12 @@ procesos con dos roles cada uno</li>
 <li>FrontEnd AngularJs, Bootstrap y HTML5</li>
 <li>Registro de actividad de usuario</li>
 <li>Registro de fechas en la creación y modificación de datos de una tabla</li>
-</ol>
+</ul>
 <h3>Listado de Entregables:</h3>
-<ol>
+<ul>
 <li>Instalación y configuración</li>
 <li>Manual de instalación</li>
 <li>Manual de usuario</li>
 <li>Capacitación es uso y administración del sistema</li>
 <li>Seguimiento de 3 mess</li>
-</ol>
+</ul>

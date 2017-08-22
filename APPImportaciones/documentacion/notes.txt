@@ -1,0 +1,3 @@
+cuando el flete es prepagado se debe restar del total de la factura para calcular el FOB, ¿Qué pasa con los impuestos si tiene?
+
+

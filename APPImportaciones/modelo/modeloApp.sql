@@ -1,4 +1,3 @@
-
 /*******************************************************************************
   Copyright 2017 cordovez S.A.
   @autor: Eduardo Villota
@@ -101,27 +100,23 @@ CREATE TABLE IF NOT EXISTS `appImport`.`pedido` (
   `tipo_cambio` DECIMAL(4,3) NOT NULL DEFAULT 1,
   `nro_referendo` CHAR(20) NOT NULL UNIQUE DEFAULT '000-0000-00-00000000',
   `id_incoterm` MEDIUMINT NOT NULL,
-  `pais_origen` VARCHAR(45) NOT NULL,
-  `ciudad_origen` VARCHAR(45) NOT NULL,
-  `incoterms` ENUM('EW','FCA','FOB','CFR') NOT NULL,
   `guia_bl` VARCHAR(45) NOT NULL DEFAULT 'PENDIENTE',
   `costo_pedido` DECIMAL(6,3) DEFAULT 0.0 COMMENT 'NO SE INGRESA SE LO VERIFICA SUMANDO FACTURAS',
   `fele_aduana` DECIMAL(6,3) NOT NULL DEFAULT 0.0,
   `seguro_aduana` DECIMAL(6,3) NOT NULL DEFAULT 0.0,
   `fele_prepagado` TINYINT(1) DEFAULT 0,
   `estado_pedido` ENUM('ABIERTO', 'CERRADO') DEFAULT 'ABIERTO',
-  `tarifa` DECIMAL(6,3) DEFAULT NULL COMMENT 'SI EXISTE ESTE GASTO EL FOB \n 
+  `tarifa_antes_fob` DECIMAL(6,3) DEFAULT NULL COMMENT 'SI EXISTE ESTE GASTO EL FOB \n 
                                                          = (seguro_aduana + flete_aduana + gastos_antes_FOB)',
+  `enviado_comtabilidad` TINYINT(1) NOT NULL DEFAULT 0,
+  `fecha_envio` DATETIME DEFAULT NULL,
   `notas` VARCHAR(45) NULL,
   `date_create` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `last_update` DATETIME NOT NULL,
   `id_user` SMALLINT NOT NULL COMMENT 'NOMBRE APP USER QUE GUARDA EL REGISTRO',
 
-  PRIMARY KEY(`nro_pedido`),
+  PRIMARY KEY(`nro_pedido`)
 
-  CONSTRAINT `FK_PEDIDO_INCOTERMS`
-  FOREIGN KEY (`id_incoterm`) REFERENCES `appImport`.`incoterm`(`id_incoterm`)
-  ON UPDATE CASCADE ON DELETE RESTRICT
   )
 ENGINE = InnoDB
 COMMENT = 'Tabla que registra un pedido usando las tablas de \nfactura\nproveedor\ntarifa\nincoterms\nproducto\n';
@@ -136,6 +131,8 @@ CREATE TABLE IF NOT EXISTS `appImport`.`pedido_factura` (
   `id_factura_proveedor` VARCHAR(10) NOT NULL,
   `fecha_emision` DATE NOT NULL,
   `valor` DECIMAL(6,3) DEFAULT 0.0 COMMENT 'NO SE INGRESA SE LO VERIFICA SUMANDO DETALLE FACTURA',
+  `enviado_comtabilidad` TINYINT(1) NOT NULL DEFAULT 0,
+  `fecha_envio` DATETIME DEFAULT NULL,
   `date_create` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `last_update` DATETIME NOT NULL,
   `id_user` SMALLINT NOT NULL COMMENT 'NOMBRE APP USER QUE GUARDA EL REGISTRO',
@@ -175,39 +172,6 @@ COMMENT = 'Deatalle de los productos que trae un pedido, se registran los detall
 
 
 -- -----------------------------------------------------------------------------
--- TABLA DE GASTOS INICIALES Y DEL PARCIAL
--- -----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `appImport`.`gastos_nacionalizacion` (
-    `id_gastos_nacionalizacion` MEDIUMINT NOT NULL AUTO_INCREMENT UNIQUE,
-    `nro_pedido` CHAR(8) NOT NULL,
-    `tipo_gasto` ENUM('PARCIAL', 'INCIAL') NOT NULL,
-    `codigo_proveedor` CHAR(14) NOT NULL COMMENT 'IDENTIFICADOR DE PROVEEDOR ENTREGADO POR VINESA PARA MENORES PONER CEROS ANTES',
-    `concepto` VARCHAR(45) NOT NULL,
-    `nro_factura` VARCHAR(20) NOT NULL,
-    `fecha_emision` DATE NOT NULL,
-    `fecha_inicio` DATE DEFAULT NULL COMMENT 'RANGOS SOLO PARA ALAMACENAJES',
-    `fecha_fin` DATE DEFAULT NULL COMMENT 'RANGOS SOLO PARA ALAMACENAJES',
-    `valor` DECIMAL(6,3) NOT NULL,
-    `date_create` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `last_update` DATETIME NOT NULL,
-    `id_user` SMALLINT NOT NULL COMMENT 'NOMBRE APP USER QUE GUARDA EL REGISTRO',
-    PRIMARY KEY(`nro_factura`, `codigo_proveedor`),
-
-    CONSTRAINT `FK_GASTOS_NACIONALIZACION_PEDIDO`
-    FOREIGN KEY (`nro_pedido`) REFERENCES `appImport`.`pedido`(`nro_pedido`)
-    ON UPDATE CASCADE ON DELETE RESTRICT,
-
-    CONSTRAINT `FK_GASTOS_NACIONALIZACIO_PROVEEDOR`
-    FOREIGN KEY (`codigo_proveedor`) REFERENCES `appImport`.`proveedor`(`codigo_proveedor`)
-    ON UPDATE CASCADE ON DELETE RESTRICT
-
-  )
-  ENGINE = InnoDB
-COMMENT = 'LISTADO DE FACTURAS RECIBIDAS POR SERVICIOS DE IMPORTACION TANTO LOS GASTOS INICIALES COMO LOS 
-PARCIALES';
-
-
--- -----------------------------------------------------------------------------
 -- TARIFAS DE COSTOS
 -- -----------------------------------------------------------------------------
 
@@ -237,13 +201,15 @@ COMMENT = 'Se registran todas las tarifas y costos acordados con los proveedores
 -- -----------------------------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `appImport`.`factura_informativa` (
-  `id_nacionalizacion70` MEDIUMINT NOT NULL AUTO_INCREMENT UNIQUE,
+  `id_factura_informativa` MEDIUMINT NOT NULL AUTO_INCREMENT UNIQUE,
   `nro_factura_informativa` CHAR(8) NOT NULL COMMENT '00000000  02014403 el numero es en un solo formato',
   `nro_pedido` CHAR(8) NOT NULL COMMENT '000-0000  0001-2017 se reinicia el contador inicial cada anio',
   `fecha_emision` DATE NOT NULL,
   `codigo_proveedor` CHAR(14) NOT NULL COMMENT 'IDENTIFICADOR DE PROVEEDOR ENTREGADO POR VINESA PARA MENORES PONER CEROS ANTES',  
   `fele_aduana` DECIMAL(6,3) NOT NULL,
   `seguro_aduana` DECIMAL(6,3) NOT NULL,
+  `enviado_comtabilidad` TINYINT(1) NOT NULL DEFAULT 0,
+  `fecha_envio` DATETIME DEFAULT NULL,
   `date_create` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `last_update` DATETIME NOT NULL,
   `id_user` SMALLINT NOT NULL COMMENT 'NOMBRE APP USER QUE GUARDA EL REGISTRO',
@@ -297,7 +263,7 @@ COMMENT = 'Se registran los valores de los productos que se va a nacionalizar';
 
 CREATE TABLE IF NOT EXISTS `appImport`.`nacionalizacion` (
   `id_nacionalizacion` SMALLINT NOT NULL AUTO_INCREMENT UNIQUE,
-  `codigo_nacionalizacion` CHAR(9) NOT NULL COMMENT 'N01-2017',
+  `codigo_nacionalizacion` CHAR(9) NOT NULL COMMENT 'N01-2017' UNIQUE,
   `nro_pedido` CHAR(8) NOT NULL COMMENT '000-0000  0001-2017 se reinicia el contador inicial cada anio',
   `nro_factura_informativa` CHAR(8) NOT NULL COMMENT '00000000  02014403 el numero es en un solo formato',
   `date_create` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -318,7 +284,44 @@ CREATE TABLE IF NOT EXISTS `appImport`.`nacionalizacion` (
 COMMENT = 'detalle de las facturas o pedidos a nacionalizar, se crea un registro en cero en cada 
 tabla padre para que hacer el cruce cuando se haga un regimen 10 o 70 ';
 
+-- -----------------------------------------------------------------------------
+-- TABLA DE GASTOS INICIALES Y DEL PARCIAL
+-- -----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `appImport`.`gastos_nacionalizacion` (
+    `id_gastos_nacionalizacion` MEDIUMINT NOT NULL AUTO_INCREMENT UNIQUE,
+    `nro_pedido` CHAR(8) NOT NULL,
+    `codigo_nacionalizacion` CHAR(9) NOT NULL,
+    `tipo_gasto` ENUM('PARCIAL', 'INCIAL') NOT NULL,
+    `codigo_proveedor` CHAR(14) NOT NULL COMMENT 'IDENTIFICADOR DE PROVEEDOR ENTREGADO POR VINESA PARA MENORES PONER CEROS ANTES',
+    `concepto` VARCHAR(45) NOT NULL,
+    `nro_factura` VARCHAR(20) NOT NULL,
+    `fecha_emision` DATE NOT NULL,
+    `fecha_inicio` DATE DEFAULT NULL COMMENT 'RANGOS SOLO PARA ALAMACENAJES',
+    `fecha_fin` DATE DEFAULT NULL COMMENT 'RANGOS SOLO PARA ALAMACENAJES',
+    `valor` DECIMAL(6,3) NOT NULL,
+    `enviado_comtabilidad` TINYINT(1) NOT NULL DEFAULT 0,
+    `fecha_envio` DATETIME DEFAULT NULL,
+    `date_create` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `last_update` DATETIME NOT NULL,
+    `id_user` SMALLINT NOT NULL COMMENT 'NOMBRE APP USER QUE GUARDA EL REGISTRO',
+    PRIMARY KEY(`nro_factura`, `codigo_proveedor`),
 
+    CONSTRAINT `FK_GASTOS_NACIONALIZACION_PEDIDO`
+    FOREIGN KEY (`nro_pedido`) REFERENCES `appImport`.`pedido`(`nro_pedido`)
+    ON UPDATE CASCADE ON DELETE RESTRICT,
+
+    CONSTRAINT `FK_GASTOS_NACIONALIZACIO_PROVEEDOR`
+    FOREIGN KEY (`codigo_proveedor`) REFERENCES `appImport`.`proveedor`(`codigo_proveedor`)
+    ON UPDATE CASCADE ON DELETE RESTRICT,
+
+    CONSTRAINT `FK_GASTOS_NACIONALIZACION_NACIONNALIZACION`
+    FOREIGN KEY(`codigo_nacionalizacion`) REFERENCES `appImport`.`nacionalizacion`(`codigo_nacionalizacion`)
+    ON UPDATE CASCADE ON DELETE RESTRICT
+
+  )
+  ENGINE = InnoDB
+COMMENT = 'LISTADO DE FACTURAS RECIBIDAS POR SERVICIOS DE IMPORTACION TANTO LOS GASTOS INICIALES COMO LOS 
+PARCIALES';
 -- -----------------------------------------------------------------------------
 -- detalle de impuestos Pagados
 -- -----------------------------------------------------------------------------
@@ -352,6 +355,7 @@ COMMENT = 'Se registran todos los impuestos que existen en una nacionalizacion, 
 CREATE TABLE IF NOT EXISTS `appImport`.`tarifas_impuestos` (
   `id_tarifas_impuestos` SMALLINT NOT NULL AUTO_INCREMENT UNIQUE,
   `concepto` VARCHAR(45) NOT NULL UNIQUE,
+  `regimen` ENUM('10', '70') ,
   `porcentaje` DECIMAL(9,3) NOT NULL,
   `fecha_emision` VARCHAR (45) NOT NULL,
   `date_create` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -372,11 +376,12 @@ COMMENT = 'Se registran los porcentajes y los impuestos que existen  o se pagan'
 
 CREATE TABLE IF NOT EXISTS `appImport`.`usuario` (
   `id_user` SMALLINT NOT NULL AUTO_INCREMENT UNIQUE,
-  `nombres` VARCHAR(45) NOT NULL,
-  `email` VARCHAR(45) NOT NULL,
+  `nombres` VARCHAR(45) NOT NULL UNIQUE,
+  `email` VARCHAR(45) NOT NULL UNIQUE,
   `cargo` VARCHAR(45) NOT NULL,
   `username` VARCHAR(45) NOT NULL UNIQUE,
   `password` VARCHAR(120) NOT NULL,
+  `usertype` ENUM('L1','L2','L3') NOT NULL COMMENT 'L1 Administrador; L2 Ingreso Data; L3 Visualizacion',
   `last_login` DATETIME DEFAULT NULL,
   `date_create` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `last_update` DATETIME NOT NULL,
@@ -386,3 +391,21 @@ CREATE TABLE IF NOT EXISTS `appImport`.`usuario` (
 )
   ENGINE = InnoDB
 COMMENT = 'Se registran todos los impuestos que existen en una nacionalizacion, solo impuestos de la SENAE';
+
+
+-- -----------------------------------------------------------------------------
+-- TABLA DE  SEGUIMEINTO
+-- -----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `appImport`.`seguimiento` (
+  `id_seguimiento` MEDIUMINT NOT NULL AUTO_INCREMENT UNIQUE,
+  `tabla` VARCHAR(45) NOT NULL UNIQUE,
+  `old_data` VARCHAR(450) NOT NULL,
+  `new_data` VARCHAR(450) NOT NULL,
+  `id_user` SMALLINT NOT NULL COMMENT 'NOMBRE APP USER QUE GUARDA EL REGISTRO',
+  `date_create` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,   
+  PRIMARY KEY (`id_seguimiento`)
+  
+)
+  ENGINE = InnoDB
+COMMENT = 'Se registran los cambios en las tablas solo las columnas que cambian';

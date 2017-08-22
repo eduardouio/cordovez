@@ -1,0 +1,474 @@
+<html xmlns:ganttproject="http://ganttproject.sf.net/">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="author" content="Alexandre THOMAS">
+<title>GanttProject - cronograma</title>
+<style>
+	    A:link {
+		FONT-WEIGHT: bold;  TEXT-DECORATION: none;
+		FONT-SIZE: 14px ; COLOR: black;
+	    }
+	    A:visited {
+		FONT-WEIGHT: bold;  TEXT-DECORATION: none;
+		FONT-SIZE: 14px ; COLOR: black; BACKGROUND: none
+	    }
+	    A:hover {
+		FONT-WEIGHT: bold;  TEXT-DECORATION: none;
+		FONT-SIZE: 14px ; COLOR: white ; BACKGROUND: #6d9ec6;
+	    }
+	    .attachment a:link {
+	      font-weight: normal;
+	      font-size: 12px;
+	      color: #6d9ec6;
+	      background: white;
+	    }
+	    .attachment a:hover {
+	      font-weight: normal;
+	      text-decoration: underline;
+	      font-size: 12px;
+	      color: #6d9ec6;
+	      background: white;
+	    }
+	    .attachment a:visited {
+	      font-weight: normal;
+	      font-size: 12px;
+	      background: white;
+	      color: gray;
+	    }
+	    TD {
+		FONT-SIZE: 12px; COLOR: black; FONT-STYLE: normal; FONT-FAMILY: Arial, Helvetica, Geneva, sans-serif
+	    }
+	    UL {
+		FONT-SIZE: 12px; FONT-FAMILY: Arial, Helvetica, Geneva, sans-serif
+	    }
+	    LI {
+		FONT-SIZE: 12px; FONT-FAMILY: Arial, Helvetica, Geneva, sans-serif
+	    }
+	    H1 {
+		FONT-WEIGHT: bold; FONT-SIZE: 16pt; COLOR: #6d9ec6;
+	    }
+	    H2 {
+		FONT-WEIGHT: bold; FONT-SIZE: 16pt; COLOR: #000000;
+	    }
+	    H3 {
+		FONT-WEIGHT: bold; FONT-SIZE: 13pt; COLOR: #6d9ec6;
+	    }
+	    H4 {
+		FONT-WEIGHT: bold; FONT-SIZE: 13px; COLOR: #000000;
+	    }
+	    H5 {
+		FONT-WEIGHT: bold; FONT-SIZE: 10pt; COLOR: #6d9ec6;
+	    }
+	    H6 {
+		FONT-WEIGHT: bold; FONT-SIZE: 10pt; COLOR: #000000
+	    }
+
+	    </style>
+</head>
+<body bgcolor="white">
+<center>
+<br>
+<br>
+<center>
+<table width="100%" border="0">
+<tr>
+<td bgcolor="#dddddd"><font size="+2" color="#0000000"><b>MODULO IMPORTACIONES</b></font></td>
+</tr>
+</table>
+</center>
+<center>
+<table width="100%" border="0">
+<tr>
+<td bgcolor="#6d9ec6">
+<center>
+<a href="cronograma.html"></a>  |
+    <a href="cronograma-chart.html">Gantt</a> |
+    <a href="cronograma-tasks.html">Tasks</a> |
+    <a href="cronograma-resources.html">Resources</a>
+</center>
+</td>
+</tr>
+</table>
+</center>
+<br>
+<table width="800" border="0">
+<tr>
+<td bgcolor="#dddddd">
+<h5>Name</h5>
+</td><td bgcolor="#dddddd">
+<h5>Start</h5>
+</td><td bgcolor="#dddddd">
+<h5>End</h5>
+</td><td bgcolor="#dddddd">
+<h5>Milestone</h5>
+</td><td bgcolor="#dddddd">
+<h5>%</h5>
+</td><td bgcolor="#dddddd">
+<h5>Resources</h5>
+</td><td bgcolor="#dddddd">
+<h5>Notes</h5>
+</td>
+</tr>
+<tr>
+<td valign="top" style="text-decoration: underline;"><b>FASE 1.- Analisis</b></td><td valign="top">7/31/17</td><td valign="top">8/24/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top">Marcelo Andrango, Eduardo Villota</td><td valign="top">
+<pre width="40">Estapa de dise&ntilde;o de la estructura de la aplicaci&oacute;n, asi como de las 	reglas de negocio del sistema, pefiles de usuarios y especificaciones del sistema, 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 1em;"><b>Definici&oacute;n caract&eacute;risticas del sistema</b></td><td valign="top">7/31/17</td><td valign="top">8/23/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40">Listar todos los specs de la aplicaci&oacute;n para su posterior implementaci&oacute;n, las caracer&iacute;sticas deben ser aprovadas por el cliente antes de su implementaci&oacute;n, esto se define en el contrato</pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Registrar varios pedidos a diferentes proveedores, los pedidos est&aacute;n conformados por distintos productos</b></td><td valign="top">7/31/17</td><td valign="top">8/15/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Registrar pedidos en moneda extranjera y a un tipo de cambio que puede variar cuando se realice la nacionalizaci&oacute;n parcial del pedido</b></td><td valign="top">7/31/17</td><td valign="top">8/15/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Registrar importaciones en r&eacute;gimen 10</b></td><td valign="top">7/31/17</td><td valign="top">8/15/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Registrar importaciones en r&eacute;gimen 70</b></td><td valign="top">7/31/17</td><td valign="top">8/15/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Manejo de tasas de cambio para importaciones realizadas en monedas extranjeras</b></td><td valign="top">7/31/17</td><td valign="top">8/15/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Calculo de impuestos aduaneros a partir del valor CIF de la DAI en nacionalizaci&oacute;n</b></td><td valign="top">7/31/17</td><td valign="top">8/15/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Estimaci&oacute;n de costos de nacionalizar una DAI</b></td><td valign="top">7/31/17</td><td valign="top">8/15/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Registrar los gastos generados en cada tipo de importaci&oacute;n, cada uno de los gastos debe incluir al menos el n&uacute;mero de factura y el proveedor. Se debe soportar varias facturas en los gastos</b></td><td valign="top">7/31/17</td><td valign="top">8/15/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Manejo de lista de proveedores categorizados por tipos</b></td><td valign="top">7/31/17</td><td valign="top">8/15/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Manejo de lista de productos que son objetos de importaci&oacute;n, se registran las caracter&iacute;sticas necesarias para el c&aacute;lculo de impuestos y costos adicionales de ser el caso</b></td><td valign="top">7/31/17</td><td valign="top">8/15/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Manejo de bodegaje para evitar doble facturaci&oacute;n con la implementaci&oacute;n de rangos de tiempo</b></td><td valign="top">7/31/17</td><td valign="top">8/15/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Los costos derivados de Bodegaje afecta tambi&eacute;n a todo el pedido existente en la bodega despu&eacute;s de la liquidaci&oacute;n de la DAI</b></td><td valign="top">7/31/17</td><td valign="top">8/15/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Control y manejo de tarifas en los diferentes rubros como costos relacionados con la carga, fletes y otros gastos</b></td><td valign="top">7/31/17</td><td valign="top">8/15/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Provisionamiento de gastos con tiempo limitado para su justificaci&oacute;n</b></td><td valign="top">7/31/17</td><td valign="top">8/15/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Registro de informaci&oacute;n de seguros</b></td><td valign="top">7/31/17</td><td valign="top">8/15/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Manejo de autorizaciones para cambios de informaci&oacute;n por parte de los usuarios</b></td><td valign="top">7/31/17</td><td valign="top">8/15/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Definicion Perfiles de Usuario</b></td><td valign="top">8/16/17</td><td valign="top">8/17/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40">Se define los perfiles que se van a implementar en el sistema, los perfiles deben estar acordes con los requerimientos</pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Definicion Modelo de Datos</b></td><td valign="top">8/16/17</td><td valign="top">8/23/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Implementaci&oacute;n del Modelo</b></td><td valign="top">8/16/17</td><td valign="top">8/23/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Definir lista de informes</b></td><td valign="top">8/16/17</td><td valign="top">8/23/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Puesta a prueba del modelo</b></td><td valign="top">8/16/17</td><td valign="top">8/23/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Correcci&oacute;n de Errores</b></td><td valign="top">8/16/17</td><td valign="top">8/23/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>An&aacute;lisis de la arquitetura del sistema</b></td><td valign="top">8/16/17</td><td valign="top">8/23/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Distribucion de componentes del sistema</b></td><td valign="top">8/16/17</td><td valign="top">8/23/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 1em;"><b>Diagramas de procesos</b></td><td valign="top">8/24/17</td><td valign="top">8/24/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Diagrama general de procesos</b></td><td valign="top">8/24/17</td><td valign="top">8/24/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Diagrama de pedidos</b></td><td valign="top">8/24/17</td><td valign="top">8/24/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Diagrama de R&eacute;gimen 10</b></td><td valign="top">8/24/17</td><td valign="top">8/24/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Daigrama de R&eacute;gimen 70</b></td><td valign="top">8/24/17</td><td valign="top">8/24/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Diagrama Nacionalizaci&oacute;n</b></td><td valign="top">8/24/17</td><td valign="top">8/24/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="text-decoration: underline;"><b>FASE 2.- Dise&ntilde;o</b></td><td valign="top">8/25/17</td><td valign="top">8/31/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 1em;"><b>Dise&ntilde;o de la Arquitectura del Sistema BackEnd</b></td><td valign="top">8/25/17</td><td valign="top">8/28/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 1em;"><b>Dise&ntilde;o de la Arquitectura Sistema BackEnd</b></td><td valign="top">8/25/17</td><td valign="top">8/28/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 1em;"><b>Definir comunicaci&oacute;n y protocolos a usar</b></td><td valign="top">8/25/17</td><td valign="top">8/28/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 1em;"><b>Estructurar componentes del sistema</b></td><td valign="top">8/29/17</td><td valign="top">8/31/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Dise&ntilde;o de m&oacute;dulo de proveedores</b></td><td valign="top">8/29/17</td><td valign="top">8/31/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Dise&ntilde;o de m&oacute;dulo de productos</b></td><td valign="top">8/29/17</td><td valign="top">8/31/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Dise&ntilde;o de m&oacute;dulo de pedidos</b></td><td valign="top">8/29/17</td><td valign="top">8/31/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Dise&ntilde;o de m&oacute;dulo de importaciones</b></td><td valign="top">8/29/17</td><td valign="top">8/31/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Dise&ntilde;o m&oacute;dulo de parciales</b></td><td valign="top">8/29/17</td><td valign="top">8/31/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Dise&ntilde;o m&oacute;dulo de reportes</b></td><td valign="top">8/29/17</td><td valign="top">8/31/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 1em;"><b>Aprobacion del Dise&ntilde;o del Sistema Informatico</b></td><td valign="top">8/30/17</td><td valign="top">8/31/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="text-decoration: underline;"><b>FASE 3.- Desarrollo</b></td><td valign="top">9/1/17</td><td valign="top">9/19/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 1em;"><b>Base de Datos</b></td><td valign="top">9/1/17</td><td valign="top">9/4/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Implementacion SQL del modelo de sistema</b></td><td valign="top">9/1/17</td><td valign="top">9/4/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Esritura de Store Procedures y Triggers</b></td><td valign="top">9/1/17</td><td valign="top">9/4/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 1em;"><b>Back End</b></td><td valign="top">9/1/17</td><td valign="top">9/8/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Desarrolo interface de coneci&oacute;n con la BD</b></td><td valign="top">9/1/17</td><td valign="top">9/8/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Implementaci&oacute;n API REST</b></td><td valign="top">9/1/17</td><td valign="top">9/8/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Implementaci&oacute;n de reglas de negocio de acuerdo a las especificaciones</b></td><td valign="top">9/1/17</td><td valign="top">9/8/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Implementaci&oacute;n de componentes</b></td><td valign="top">9/1/17</td><td valign="top">9/8/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Manejo de sesiones</b></td><td valign="top">9/1/17</td><td valign="top">9/8/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Seguridad SQL</b></td><td valign="top">9/1/17</td><td valign="top">9/8/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 1em;"><b>Front End</b></td><td valign="top">9/11/17</td><td valign="top">9/19/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Dise&ntilde;o de formularios web</b></td><td valign="top">9/11/17</td><td valign="top">9/18/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Dise&ntilde;o de vistas de informaci&oacute;n</b></td><td valign="top">9/11/17</td><td valign="top">9/18/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Divicion en vistas parciales</b></td><td valign="top">9/11/17</td><td valign="top">9/18/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Modulos Angular</b></td><td valign="top">9/11/17</td><td valign="top">9/18/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Pruebas de funcionamiento</b></td><td valign="top">9/11/17</td><td valign="top">9/18/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 2em;"><b>Primera Entrega</b></td><td valign="top">9/19/17</td><td valign="top">9/19/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="text-decoration: underline;"><b>FASE 4 .- Correccion de Fallas Primera Entrega</b></td><td valign="top">9/20/17</td><td valign="top">10/19/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 1em;"><b>Recoleccion de  informacion de Fallas</b></td><td valign="top">9/20/17</td><td valign="top">9/22/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 1em;"><b>Correcciones al sistema</b></td><td valign="top">9/25/17</td><td valign="top">10/19/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="text-decoration: underline;"><b>FASE 5.- Puesta a produccion</b></td><td valign="top">10/20/17</td><td valign="top">10/20/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="text-decoration: underline;"><b>FASE 6.- Elaboraci&oacute;n de Informes</b></td><td valign="top">10/23/17</td><td valign="top">11/3/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 1em;"><b>Definci&oacute;n de lista de informes</b></td><td valign="top">10/23/17</td><td valign="top">11/3/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 1em;"><b>Desarrollo de informes</b></td><td valign="top">10/23/17</td><td valign="top">11/3/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+<tr>
+<td valign="top" style="padding-left: 1em;"><b>Entrega de informes</b></td><td valign="top">10/23/17</td><td valign="top">11/3/17</td><td valign="top" align="center">&nbsp;</td><td valign="top">0</td><td valign="top"></td><td valign="top">
+<pre width="40"></pre>
+</td>
+</tr>
+</table>
+</center>
+<br>
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<tr>
+<td bgcolor="#6d9ec6" width="50%"><font color="#FFFFFF"><b>Ganttproject (2.8.5 Pilsen (build 2179))</b></font></td><td bgcolor="#6d9ec6" width="50%" align="right"><b><a href="http://ganttproject.biz">ganttproject.biz</a></b>
+<br>
+<b>8/16/17 - 8:18:58 AM</b></td>
+</tr>
+</table>
+</body>
+</html>

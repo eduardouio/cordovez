@@ -1,12 +1,3 @@
-/*******************************************************************************
-  Copyright 2017 cordovez S.A.
-  @autor: Eduardo Villota
-  @date: 21-08-2017
-  @version 1.0
- 
- Introduccion: Modelo de base de datos, definicion de la estructura datos
-/******************************************************************************/
-
 -- -----------------------------------------------------------------------------
 -- Base de datos Cordovez APP
 -- -----------------------------------------------------------------------------
@@ -19,17 +10,16 @@ USE `appImport` ;
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `appImport`.`proveedor` (
   `id_proveedor` INT NOT NULL UNIQUE AUTO_INCREMENT,
-  `codigo_proveedor` CHAR(14) NOT NULL COMMENT 'IDENTIFICADOR DE PROVEEDOR ENTREGADO POR VINESA PARA MENORES PONER CEROS ANTES',
   `nombre` VARCHAR(60) NOT NULL UNIQUE,
   `tipo_provedor` ENUM('NACIONAL', 'INTERNACIONAL') NOT NULL,
   `categoria` VARCHAR(60) NOT NULL,
-  `ruc` CHAR(13) DEFAULT NULL  COMMENT 'NO PUEDE SE UNIQUE POR LOS INTERNACIONALES',
+  `identificacion_proveedor` VARCHAR(14) NOT NULL  COMMENT 'ES UNA IDENTIFICADOR INTERNACIONALES',
   `notas` VARCHAR(250) DEFAULT NULL,
   `date_create` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `last_update` DATETIME NOT NULL,
   `id_user` SMALLINT NOT NULL COMMENT 'NOMBRE APP USER QUE GUARDA EL REGISTRO',
     
-    PRIMARY KEY (`codigo_proveedor`)
+    PRIMARY KEY (`identificacion_proveedor`)
     )
 ENGINE = InnoDb
 COMMENT = 'Listado de los proveedores, nacionales e internacionales';
@@ -41,7 +31,7 @@ COMMENT = 'Listado de los proveedores, nacionales e internacionales';
 CREATE TABLE IF NOT EXISTS `appImport`.`producto` (
   `id_producto` MEDIUMINT NULL AUTO_INCREMENT UNIQUE,
   `cod_contable` CHAR(20) NOT NULL COMMENT 'contenido en mililitros de la bebida\n el codigo no tiene espacios ni guiones solo numeros \n ejemplo 01011010040117020750',
-  `codigo_proveedor` CHAR(14) NOT NULL COMMENT 'IDENTIFICADOR DE PROVEEDOR ENTREGADO POR VINESA PARA MENORES PONER CEROS ANTES',
+  `identificacion_proveedor` CHAR(14) NOT NULL COMMENT 'IDENTIFICADOR DE PROVEEDOR ENTREGADO POR VINESA PARA MENORES PONER CEROS ANTES',
   `cod_ice` CHAR(39) NOT NULL COMMENT 'ejemplo 3031-53-001982-013-000750-66-101-000029',
   `nombre` VARCHAR(60) NOT NULL UNIQUE,
   `contenidoml` SMALLINT NOT NULL,
@@ -58,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `appImport`.`producto` (
   PRIMARY KEY (`cod_contable`),
 
   CONSTRAINT `FK_PRODUCTO_PROVEEDOR`
-  FOREIGN KEY (`codigo_proveedor`) REFERENCES `appImport`.`proveedor`(`codigo_proveedor`)
+  FOREIGN KEY (`identificacion_proveedor`) REFERENCES `appImport`.`proveedor`(`identificacion_proveedor`)
   ON UPDATE CASCADE  
   ON DELETE RESTRICT  
   )
@@ -96,8 +86,6 @@ CREATE TABLE IF NOT EXISTS `appImport`.`pedido` (
   `id_pedido` MEDIUMINT NOT NULL UNIQUE AUTO_INCREMENT,
   `nro_pedido` CHAR(8) NOT NULL COMMENT '000-0000  0001-2017 se reinicia el contador inicial cada anio',
   `regimen` ENUM('70', '10') NOT NULL COMMENT 'Se selecciona un codigo de regimen \n10 no tiene gastos inciales\n70 tiene gastos inciales\n',
-  `moneda` VARCHAR(45) NOT NULL,
-  `tipo_cambio` DECIMAL(4,3) NOT NULL DEFAULT 1,
   `nro_referendo` CHAR(20) NOT NULL UNIQUE DEFAULT '000-0000-00-00000000',
   `id_incoterm` MEDIUMINT NOT NULL,
   `guia_bl` VARCHAR(45) NOT NULL DEFAULT 'PENDIENTE',
@@ -127,21 +115,21 @@ COMMENT = 'Tabla que registra un pedido usando las tablas de \nfactura\nproveedo
 CREATE TABLE IF NOT EXISTS `appImport`.`pedido_factura` (
   `id_pedido_factura` MEDIUMINT NOT NULL AUTO_INCREMENT UNIQUE,
   `nro_pedido` CHAR(8) NOT NULL,
-  `codigo_proveedor` CHAR(14) NOT NULL COMMENT 'IDENTIFICADOR DE PROVEEDOR ENTREGADO POR VINESA PARA MENORES PONER CEROS ANTES',
-  `id_factura_proveedor` VARCHAR(10) NOT NULL,
+  `id_factura_proveedor` CHAR(8) NOT NULL,
+  `identificacion_proveedor` CHAR(14) NOT NULL COMMENT 'IDENTIFICADOR DE PROVEEDOR ENTREGADO POR VINESA PARA MENORES PONER CEROS ANTES',
   `fecha_emision` DATE NOT NULL,
   `valor` DECIMAL(6,3) DEFAULT 0.0 COMMENT 'NO SE INGRESA SE LO VERIFICA SUMANDO DETALLE FACTURA',
+  `moneda` VARCHAR(45) NOT NULL,
+  `tipo_cambio` DECIMAL(4,3) NOT NULL DEFAULT 1,
   `enviado_comtabilidad` TINYINT(1) NOT NULL DEFAULT 0,
   `fecha_envio` DATETIME DEFAULT NULL,
   `date_create` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `last_update` DATETIME NOT NULL,
   `id_user` SMALLINT NOT NULL COMMENT 'NOMBRE APP USER QUE GUARDA EL REGISTRO',
-  PRIMARY KEY (`codigo_proveedor`, `id_factura_proveedor`),
-  CONSTRAINT `FK_PEDIDO_FACTURA_PEDIDO`
-  FOREIGN KEY (`nro_pedido`) REFERENCES `appImport`.`pedido`(`nro_pedido`)
-  ON UPDATE CASCADE ON DELETE RESTRICT,
+  PRIMARY KEY (`identificacion_proveedor`, `id_factura_proveedor`),
+  
   CONSTRAINT `FK_PEDIDO_FACTURA_`
-  FOREIGN KEY (`codigo_proveedor`) REFERENCES `appImport`.`proveedor`(`codigo_proveedor`)
+  FOREIGN KEY (`identificacion_proveedor`) REFERENCES `appImport`.`proveedor`(`identificacion_proveedor`)
   ON UPDATE CASCADE ON DELETE RESTRICT
      )
 ENGINE = InnoDB
@@ -177,17 +165,18 @@ COMMENT = 'Deatalle de los productos que trae un pedido, se registran los detall
 
 CREATE TABLE IF NOT EXISTS `appImport`.`tarifas` (
   `id_tarifa` MEDIUMINT NOT NULL AUTO_INCREMENT UNIQUE,
-  `codigo_proveedor` CHAR(14) NOT NULL COMMENT 'IDENTIFICADOR DE PROVEEDOR ENTREGADO POR VINESA PARA MENORES PONER CEROS ANTES',
+  `identificacion_proveedor` CHAR(14) NOT NULL COMMENT 'IDENTIFICADOR DE PROVEEDOR ENTREGADO POR VINESA PARA MENORES PONER CEROS ANTES',
   `concepto` VARCHAR(45) NOT NULL COMMENT 'flete_internacional, flete_internacional, ECT',
+  `tipo` ENUM('GASTOS INICIALES', 'GASTOS NACIONALIZACION '),
   `valor` DECIMAL(6,3) NOT NULL COMMENT 'VALOR DEL SERVICIO',
   `notas` VARCHAR(45) NULL,
   `date_create` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `last_update` DATETIME NOT NULL,
   `id_user` SMALLINT NOT NULL COMMENT 'NOMBRE APP USER QUE GUARDA EL REGISTRO',
-  PRIMARY KEY (`codigo_proveedor`, `concepto`),
+  PRIMARY KEY (`identificacion_proveedor`, `concepto`),
   
     CONSTRAINT `FK_TARIFAS_PROVEEDOR`
-    FOREIGN KEY (`codigo_proveedor`) REFERENCES `appImport`.`proveedor`(`codigo_proveedor`)
+    FOREIGN KEY (`identificacion_proveedor`) REFERENCES `appImport`.`proveedor`(`identificacion_proveedor`)
     ON UPDATE CASCADE ON DELETE RESTRICT
   )
 ENGINE = InnoDB
@@ -205,9 +194,11 @@ CREATE TABLE IF NOT EXISTS `appImport`.`factura_informativa` (
   `nro_factura_informativa` CHAR(8) NOT NULL COMMENT '00000000  02014403 el numero es en un solo formato',
   `nro_pedido` CHAR(8) NOT NULL COMMENT '000-0000  0001-2017 se reinicia el contador inicial cada anio',
   `fecha_emision` DATE NOT NULL,
-  `codigo_proveedor` CHAR(14) NOT NULL COMMENT 'IDENTIFICADOR DE PROVEEDOR ENTREGADO POR VINESA PARA MENORES PONER CEROS ANTES',  
+  `identificacion_proveedor` CHAR(14) NOT NULL COMMENT 'IDENTIFICADOR DE PROVEEDOR ENTREGADO POR VINESA PARA MENORES PONER CEROS ANTES',  
   `fele_aduana` DECIMAL(6,3) NOT NULL,
   `seguro_aduana` DECIMAL(6,3) NOT NULL,
+  `moneda` VARCHAR(45) NOT NULL,
+  `tipo_cambio` DECIMAL(4,3) NOT NULL DEFAULT 1,
   `enviado_comtabilidad` TINYINT(1) NOT NULL DEFAULT 0,
   `fecha_envio` DATETIME DEFAULT NULL,
   `date_create` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -221,7 +212,7 @@ CREATE TABLE IF NOT EXISTS `appImport`.`factura_informativa` (
   ON UPDATE CASCADE ON DELETE RESTRICT,
   
   CONSTRAINT `FK_FACTURA_INFORMATIVA_PROVEEDOR`
-  FOREIGN KEY (`codigo_proveedor`) REFERENCES `appImport`.`proveedor`(`codigo_proveedor`)
+  FOREIGN KEY (`identificacion_proveedor`) REFERENCES `appImport`.`proveedor`(`identificacion_proveedor`)
   ON UPDATE CASCADE ON DELETE RESTRICT
   )
   ENGINE = InnoDB
@@ -266,6 +257,8 @@ CREATE TABLE IF NOT EXISTS `appImport`.`nacionalizacion` (
   `codigo_nacionalizacion` CHAR(9) NOT NULL COMMENT 'N01-2017' UNIQUE,
   `nro_pedido` CHAR(8) NOT NULL COMMENT '000-0000  0001-2017 se reinicia el contador inicial cada anio',
   `nro_factura_informativa` CHAR(8) NOT NULL COMMENT '00000000  02014403 el numero es en un solo formato',
+  `moneda` VARCHAR(45) NOT NULL COMMENT 'solo para regimen 10',
+  `tipo_cambio` DECIMAL(4,3) NOT NULL DEFAULT 1 COMMENT 'solo para regimen 10',
   `date_create` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `last_update` DATETIME NOT NULL,
   `id_user` SMALLINT NOT NULL COMMENT 'NOMBRE APP USER QUE GUARDA EL REGISTRO',
@@ -284,34 +277,30 @@ CREATE TABLE IF NOT EXISTS `appImport`.`nacionalizacion` (
 COMMENT = 'detalle de las facturas o pedidos a nacionalizar, se crea un registro en cero en cada 
 tabla padre para que hacer el cruce cuando se haga un regimen 10 o 70 ';
 
+
 -- -----------------------------------------------------------------------------
--- TABLA DE GASTOS INICIALES Y DEL PARCIAL
+-- TABLA DE GASTOS DEL PARCIAL
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `appImport`.`gastos_nacionalizacion` (
     `id_gastos_nacionalizacion` MEDIUMINT NOT NULL AUTO_INCREMENT UNIQUE,
-    `nro_pedido` CHAR(8) NOT NULL,
     `codigo_nacionalizacion` CHAR(9) NOT NULL,
     `tipo_gasto` ENUM('PARCIAL', 'INCIAL') NOT NULL,
-    `codigo_proveedor` CHAR(14) NOT NULL COMMENT 'IDENTIFICADOR DE PROVEEDOR ENTREGADO POR VINESA PARA MENORES PONER CEROS ANTES',
+    `identificacion_proveedor` CHAR(14) NOT NULL COMMENT 'IDENTIFICADOR DE PROVEEDOR ENTREGADO POR VINESA PARA MENORES PONER CEROS ANTES',
     `concepto` VARCHAR(45) NOT NULL,
     `nro_factura` VARCHAR(20) NOT NULL,
     `fecha_emision` DATE NOT NULL,
-    `fecha_inicio` DATE DEFAULT NULL COMMENT 'RANGOS SOLO PARA ALAMACENAJES',
-    `fecha_fin` DATE DEFAULT NULL COMMENT 'RANGOS SOLO PARA ALAMACENAJES',
+    `fecha_inicio` DATE DEFAULT NULL,
+    `fecha_fin` DATE DEFAULT NULL,
     `valor` DECIMAL(6,3) NOT NULL,
     `enviado_comtabilidad` TINYINT(1) NOT NULL DEFAULT 0,
     `fecha_envio` DATETIME DEFAULT NULL,
     `date_create` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `last_update` DATETIME NOT NULL,
     `id_user` SMALLINT NOT NULL COMMENT 'NOMBRE APP USER QUE GUARDA EL REGISTRO',
-    PRIMARY KEY(`nro_factura`, `codigo_proveedor`),
-
-    CONSTRAINT `FK_GASTOS_NACIONALIZACION_PEDIDO`
-    FOREIGN KEY (`nro_pedido`) REFERENCES `appImport`.`pedido`(`nro_pedido`)
-    ON UPDATE CASCADE ON DELETE RESTRICT,
+    PRIMARY KEY(`nro_factura`, `identificacion_proveedor`),
 
     CONSTRAINT `FK_GASTOS_NACIONALIZACIO_PROVEEDOR`
-    FOREIGN KEY (`codigo_proveedor`) REFERENCES `appImport`.`proveedor`(`codigo_proveedor`)
+    FOREIGN KEY (`identificacion_proveedor`) REFERENCES `appImport`.`proveedor`(`identificacion_proveedor`)
     ON UPDATE CASCADE ON DELETE RESTRICT,
 
     CONSTRAINT `FK_GASTOS_NACIONALIZACION_NACIONNALIZACION`
@@ -322,6 +311,44 @@ CREATE TABLE IF NOT EXISTS `appImport`.`gastos_nacionalizacion` (
   ENGINE = InnoDB
 COMMENT = 'LISTADO DE FACTURAS RECIBIDAS POR SERVICIOS DE IMPORTACION TANTO LOS GASTOS INICIALES COMO LOS 
 PARCIALES';
+
+
+
+-- -----------------------------------------------------------------------------
+-- TABLA DE GASTOS INICIALES
+-- -----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `appImport`.`gastos_iniciales` (
+    `id_gastos_iniciales` MEDIUMINT NOT NULL AUTO_INCREMENT UNIQUE,
+    `nro_pedido` CHAR(8) NOT NULL,
+    `tipo_gasto` ENUM('PARCIAL', 'INCIAL') NOT NULL,
+    `identificacion_proveedor` CHAR(14) NOT NULL COMMENT 'IDENTIFICADOR DE PROVEEDOR ENTREGADO POR VINESA PARA MENORES PONER CEROS ANTES',
+    `concepto` VARCHAR(45) NOT NULL,
+    `nro_factura` VARCHAR(20) NOT NULL,
+    `fecha_emision` DATE NOT NULL,
+    `fecha_inicio` DATE DEFAULT NULL,
+    `fecha_fin` DATE DEFAULT NULL,
+    `valor` DECIMAL(6,3) NOT NULL,
+    `enviado_comtabilidad` TINYINT(1) NOT NULL DEFAULT 0,
+    `fecha_envio` DATETIME DEFAULT NULL,
+    `date_create` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `last_update` DATETIME NOT NULL,
+    `id_user` SMALLINT NOT NULL COMMENT 'NOMBRE APP USER QUE GUARDA EL REGISTRO',
+    PRIMARY KEY(`nro_factura`, `identificacion_proveedor`),
+
+    CONSTRAINT `FK_GASTOS_INICIALES_PEDIDO`
+    FOREIGN KEY (`nro_pedido`) REFERENCES `appImport`.`pedido`(`nro_pedido`)
+    ON UPDATE CASCADE ON DELETE RESTRICT,
+
+    CONSTRAINT `FK_GASTOS_INCIALES_PROVEEDOR`
+    FOREIGN KEY (`identificacion_proveedor`) REFERENCES `appImport`.`proveedor`(`identificacion_proveedor`)
+    ON UPDATE CASCADE ON DELETE RESTRICT
+
+  )
+  ENGINE = InnoDB
+COMMENT = 'LISTADO DE FACTURAS RECIBIDAS POR SERVICIOS DE IMPORTACION TANTO LOS GASTOS INICIALES COMO LOS 
+PARCIALES';
+
+
 -- -----------------------------------------------------------------------------
 -- detalle de impuestos Pagados
 -- -----------------------------------------------------------------------------

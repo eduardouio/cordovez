@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `appImport`.`producto` (
   `nombre` VARCHAR(60) NOT NULL UNIQUE,
   `contenidoml` SMALLINT NOT NULL,
   `unidad` VARCHAR(45) NOT NULL COMMENT 'como biene el producto, generalmente por caja',
-  `cantidad_unidad` VARCHAR(45) NOT NULL COMMENT 'las unidades que trae la caja',
+  `cantidad_unidad` SMALLINT NOT NULL COMMENT 'las unidades que trae la caja',
   `grado_alcoholico` DECIMAL(3,2) NOT NULL,
   `pais_origen` VARCHAR(45) NULL,
   `estado` ENUM('ACTIVO','INACTIVO') NOT NULL COMMENT 'Indica si el producto se importa o no',
@@ -89,6 +89,7 @@ CREATE TABLE IF NOT EXISTS `appImport`.`pedido` (
   `nro_referendo` CHAR(20) NOT NULL UNIQUE DEFAULT '000-0000-00-00000000',
   `id_incoterm` MEDIUMINT NOT NULL,
   `guia_bl` VARCHAR(45) NOT NULL DEFAULT 'PENDIENTE',
+  `peso_kgs` SMALLINT NOT NULL DEFAULT 0,
   `costo_pedido` DECIMAL(6,3) DEFAULT 0.0 COMMENT 'NO SE INGRESA SE LO VERIFICA SUMANDO FACTURAS',
   `fele_aduana` DECIMAL(6,3) NOT NULL DEFAULT 0.0,
   `seguro_aduana` DECIMAL(6,3) NOT NULL DEFAULT 0.0,
@@ -163,13 +164,13 @@ COMMENT = 'Deatalle de los productos que trae un pedido, se registran los detall
 -- TARIFAS DE COSTOS
 -- -----------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `appImport`.`tarifas` (
+CREATE TABLE IF NOT EXISTS `appImport`.`tarifa_nacional` (
   `id_tarifa` MEDIUMINT NOT NULL AUTO_INCREMENT UNIQUE,
   `identificacion_proveedor` CHAR(13) NOT NULL COMMENT 'IDENTIFICADOR DE PROVEEDOR ENTREGADO POR VINESA PARA MENORES PONER CEROS ANTES',
+  `regimen` ENUM('R70','R10','TODOS') NOT NULL,
   `concepto` VARCHAR(45) NOT NULL COMMENT 'flete_internacional, flete_internacional, ECT',
-  `tipo` ENUM('GASTOS INICIALES', 'GASTOS NACIONALIZACION '),
   `valor` DECIMAL(6,3) NOT NULL COMMENT 'VALOR DEL SERVICIO',
-  `notas` VARCHAR(45) NULL,
+  `notas` VARCHAR(90) NULL,
   `date_create` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `last_update` DATETIME NOT NULL,
   `id_user` SMALLINT NOT NULL COMMENT 'NOMBRE APP USER QUE GUARDA EL REGISTRO',
@@ -380,9 +381,11 @@ COMMENT = 'Se registran todos los impuestos que existen en una nacionalizacion, 
 CREATE TABLE IF NOT EXISTS `appImport`.`tarifas_impuestos` (
   `id_tarifas_impuestos` SMALLINT NOT NULL AUTO_INCREMENT UNIQUE,
   `concepto` VARCHAR(45) NOT NULL UNIQUE,
-  `regimen` ENUM('10', '70') ,
+  `regimen` ENUM('R10', 'R70', 'TODOS') ,
   `porcentaje` DECIMAL(9,3) NOT NULL,
   `fecha_emision` VARCHAR (45) NOT NULL,
+  `notas` VARCHAR(90) DEFAULT NULL,
+  `estado` ENUM('ACTIVO', 'INACTIVO') DEFAULT ACTIVO COMMENT 'VERIFICA SI SE USA O NO EL IMPUESTO',
   `date_create` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `last_update` DATETIME NOT NULL,
   `id_user` SMALLINT NOT NULL COMMENT 'NOMBRE APP USER QUE GUARDA EL REGISTRO',

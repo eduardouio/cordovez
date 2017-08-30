@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Welcome extends CI_Controller {
+class Tarifanacional extends CI_Controller {
 
 	/**
 	 * Index Page for this controller.
@@ -21,7 +21,18 @@ class Welcome extends CI_Controller {
 	public function index()
 	{
 		$this->load->library('twig');
-		$data['title'] = "twig loaded";
-		$this->twig->display('view.html', $data);
+		$data['title'] = "Tarifas Nacionales";
+		$data['iconTitle'] = "fa-gear";
+		$data['titleContent'] = "Registro Tarifas Nacionales";
+		$data['controller'] = "tarifa";
+		$data['actionFrm'] =  "/validateForm";
+		$this->twig->display('/pages/pageProducto.html', $data);
+	
+	}
+
+	public function validateForm(){
+		print ('Formulario recibido');
+
 	}
 }
+

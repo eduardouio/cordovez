@@ -21,9 +21,7 @@ class Welcome extends CI_Controller {
 	public function index()
 	{
 		$this->load->library('twig');
-
-$data['title'] = "twig loaded";
-
-$this->twig->display('view.html', $data);
+		$data['title'] = "twig loaded";
+		$this->twig->display('view.html', $data);
 	}
 }

@@ -32,9 +32,9 @@
          <label >Incoterm</label>
          <select
             class = "form-control"
-            name = "incoterm.incoterms"
+            name = "ipedido.id_incoterm"
             required="true" 
-            ng-model= "incoterm.incoterms"
+            ng-model= "ipedido.id_incoterm"
             >
             <option value="" disabled selected>Seleccione ...</option>
             <option value="CFR">CFR</option>
@@ -46,7 +46,7 @@
    </div>
    		<div class="col-lg-2">
 			<div class="form-group">
-				<label>Gastos Origen (USD)</label>
+				<label>Gastos Org	 (USD)</label>
 				<input 
 				class="form-control" 
 				type="text"
@@ -56,9 +56,21 @@
 				>
 			</div>
 		</div>
-				<div class="col-lg-2">
+		<div class="col-lg-2">
 			<div class="form-group">
 				<label>Flete Intern (USD)</label>
+				<input 
+				class="form-control" 
+				type="text"
+				required="true"
+				name="pedido.nro_pedido"
+				ng-model ="pedido.nro_pedido"
+				>
+			</div>
+		</div>
+		<div class="col-lg-2">
+			<div class="form-group">
+				<label>BL</label>
 				<input 
 				class="form-control" 
 				type="text"
@@ -95,9 +107,6 @@
    </div>
 </form>
 pedido.nro_referendo
-pedido.id_incoterm
-pedido.guia_bl
-pedido.peso_kgs
 pedido.costo_pedido
 pedido.fele_aduana
 pedido.seguro_aduana
@@ -107,3 +116,4 @@ pedido.enviado_comtabilidad
 pedido.fecha_envio
 pedido.notas
 pedido.date_create
+pedido.peso_kgs

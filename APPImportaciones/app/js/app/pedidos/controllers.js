@@ -1,5 +1,5 @@
 /**
- * Modulo encargado de manejar los pedidos de acuerdo al archivo de especificaciones
+ * CONTROLLER DE PEDIDOS
  *
  * @package    CordovezApp JS
  * @author    Eduardo Villota <eduardouio7@gmail.com>
@@ -9,15 +9,7 @@
  * @since    Version 1.0.0
  * @filesource
  */
-
 (function(angular){
-  var app = angular.module('cordovezApp',[
-    'ngRoute',
-    'cordovezApp.routes',
-    'cordovezApp.controllers',
-    'cordovezApp.directives',
-    'cordovezApp.filters',
-    'cordovezApp.services',
-  ]);
-
+  angula.module('PedidosController',[])
+  .controller('')
 })(window.angular);

@@ -1,0 +1,170 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+/**
+ * Modulo encargado de manejar los pedidos, CRUD y validaciones
+ *
+ * @package    CordovezApp
+ * @author    Eduardo Villota <eduardouio7@gmail.com>
+ * @copyright    Copyright (c) 2014,  Agencias y Representaciones Cordovez S.A.
+ * @license    Derechos reservados Agencias y Representaciones Cordovez S.A.
+ * @link    https://github.com/eduardouio/APPImportaciones
+ * @since    Version 1.0.0
+ * @filesource
+ */
+class Pedido extends MY_Controller {
+	private $resultDb;
+	private $numRows ;
+	private $dataView;
+	private $controllerSPA = 'pedido';
+	private $responseHTTP = array('status' => 'success');
+
+	/**
+	 * Constructor de la funcion
+	 */
+	public function __construct(){
+		parent::__construct();
+	}
+
+	/**
+	 * Carga la configuracion inicial de la SPA
+	 * @return array (config)
+	 */
+	private function _loadData(){
+		$this->dataView = array(
+				'title' => 'SPA Pedidos',
+				'base_url' => base_url(),
+				'actionFrm' => '/validateForm',
+				'controller' => $this->controllerSPA,
+				'iconTitle' => 'fa-cubes',
+				'active_pedidos' => 'active left-active',
+				);
+	}
+
+	/**
+	 * Carga la vista y dependencias completas de la SPA
+	 * @return string (template => pagePedido)
+	 */
+	public function index(){
+		$this->_loadData();
+		$this->twig->display('/pages/pagePedido.html', $this->dataView);
+		log_message('Pedido', 'clase de pedido Iniciado');
+	}
+
+	/**
+	 * Presenta una lista de todos los pedidos
+	 */
+	public function listar(){
+		$this->resultDb = $this->mymodel->getRows($this->controllerSPA, '10000');
+			//Verificar que existan datos
+			if($this->resultDb->num_rows() > 0){
+				$this->responseHTTP['data'] = $this->resultDb->result_array();
+				$this->responseHTTP['appst'] = 'Se encontraron ' .
+																			$this->resultDb->num_rows() . ' pedidos';
+			}else{
+				$this->responseHTTP['data'] = $this->resultDb->result_array();
+				$this->responseHTTP['appst'] = 'No existen registros almacenados';
+			}
+			log_message('Pedido', 'se lista correctamente los pedidos');
+			$this->__responseHttp($this->responseHTTP);
+	}
+
+	/**
+	 * registra un pedido, si la llamada no es por post rechaza la peticion
+	 * crea un pedido nuevo => comprueba que no exista y crea un nuevo registro
+	 * actualiza un pedido existente => actualiza last_update con fecha del server
+	 * @return JSON (response)
+	 */
+	public function validar(){
+		if($this->rest->_getRequestMethod()!= 'POST'){
+			$this->_notAuthorized();
+		}
+
+		$request = json_decode(file_get_contents('php://input'), true);
+
+		$pedido = $request['pedido'];
+		$this->db->where('nro_pedido',$pedido['nro_pedido']);
+		$this->resultDb = $this->db->get($this->controllerSPA);
+
+		if($this->resultDb->num_rows() != null && $request['accion'] == 'create'){
+			$this->responseHTTP['appst'] = 'Ya existe un pedido con el mismo identificador';
+			$this->responseHTTP['data'] = $this->resultDb->result_array();
+			$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
+			$this->__responseHttp($this->responseHTTP, 400);
+		}else{
+			$status = $this->_validData($pedido);
+			if ($status['status']){
+				if ($request['accion'] == 'create'){
+					$this->db->insert($this->controllerSPA, $pedido);
+					$this->responseHTTP['appst'] = 'Registro creado existosamente';
+					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
+					$this->__responseHttp($this->responseHTTP, 201);
+				}else{
+					$pedido['last_update'] = date('Y-m-d H:i:s');
+					$this->db->where('nro_pedido', $pedido['nro_pedido']);
+					$this->db->update($this->controllerSPA, $pedido);
+					$this->responseHTTP['appst'] = 'El pedido fue actualizado correctamente';
+					$this->__responseHttp($this->responseHTTP, 201);
+				}
+			}else{
+				$this->responseHTTP['appst'] =
+									'Uno de los datos ingresados es incorrecto, vuelva a intentar';
+				$this->responseHTTP['data'] = $status;
+				$this->__responseHttp($this->responseHTTP, 400);
+			}
+		}
+		}
+
+		/**
+		 * elimina un pedido de la tabla, solo lo elimina sino tiene parcilaes
+		 */
+		public function eliminar(){
+			if($this->rest->_getRequestMethod()!= 'POST'){
+				$this->_notAuthorized();
+			}
+			$request = json_decode(file_get_contents('php://input'), true);
+			$pedido = $request['pedido'];
+
+			$this->db->where('nro_pedido', $pedido['nro_pedido']);
+			$this->resultDb = $this->db->get($this->controllerSPA);
+
+			if($this->resultDb->num_rows() != null){
+				$this->db->where('nro_pedido', $pedido['nro_pedido']);
+				$this->resultDb = $this->db->get('pedido_factura');
+				if($this->resultDb->num_rows() == null){
+					$this->db->where('nro_pedido', $pedido['nro_pedido']);
+					$this->db->delete($this->controllerSPA);
+					$this->responseHTTP['appst'] = 'El pedido ' . $pedido['nro_pedido'] .
+																													' Ha sido eliminado';
+					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
+				}else {
+					$this->responseHTTP['appst'] = 'El pedido ' . $pedido['nro_pedido'] .
+								' No se puede eliminar, tiene dependencias en la base de datos';
+					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
+				}
+			}else{
+				$this->responseHTTP['appst'] = 'El pedido ' . $pedido['nro_pedido'] .
+												' No se puede eliminar, no existe en la base de datos';
+				$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
+			}
+
+			$this->__responseHttp($this->responseHTTP, 202);
+		}
+
+		/**
+		 * se validan los datos que deben estar para que la consulta no falle
+		 * @return [array] | [bolean]
+		 */
+		private function _validData($pedido){
+			$columnsLen = array(
+				'nro_pedido' => 6,
+				'regimen' => 2,
+				'id_incoterm' => 1,
+				'flete_aduana' => 1,
+				'seguro_aduana' => 1,
+				'comentarios' => 0,
+				'estado_pedido' => 7,
+				'id_user' => 1,
+			);
+			return $this->_checkColumnsData($columnsLen, $pedido);
+		}
+}

@@ -1,41 +1,57 @@
+/**
+ * Estilos personalizados de la aplicaicion
+ *
+ * @package    CordovezApp CSS
+ * @author    Eduardo Villota <eduardouio7@gmail.com>
+ * @copyright    Copyright (c) 2014,  Agencias y Representaciones Cordovez S.A.
+ * @license    Todos los derechos reservados Agencias y Representaciones Cordovez S.A.
+ * @link    https://github.com/eduardouio/APPImportaciones
+ * @since    Version 1.0.0
+ * @filesource
+ */
+
+.left-active{
+  background-color: #e0e0e0;
+}
+
 .title-proveedor{
-padding: 10px 10px 10px 10px; 
-margin: 10px 0 10px;     
-background-color: #1976D2 !important; 
-color: #fff; 
-border-radius: 4px; 
+padding: 10px 10px 10px 10px;
+margin: 10px 0 10px;
+background-color: #1976D2 !important;
+color: #fff;
+border-radius: 4px;
 box-shadow:2px 2px 4px #888;
 }
 
 .title-producto{
-padding: 10px 10px 10px 10px; 
-margin: 10px 0 10px;     
-background-color: #0097a7 !important; 
-color: #fff; 
-border-radius: 4px; 
+padding: 10px 10px 10px 10px;
+margin: 10px 0 10px;
+background-color: #0097a7 !important;
+color: #fff;
+border-radius: 4px;
 box-shadow:2px 2px 4px #888;
 }
 
 .title-tarifa{
-padding: 10px 10px 10px 10px; 
-margin: 10px 0 10px;     
-background-color: #7b1fa2 !important; 
-color: #fff; 
-border-radius: 4px; 
+padding: 10px 10px 10px 10px;
+margin: 10px 0 10px;
+background-color: #7b1fa2 !important;
+color: #fff;
+border-radius: 4px;
 box-shadow:2px 2px 4px #888;
 }
 
 .title-incoterm{
-padding: 10px 10px 10px 10px; 
-margin: 10px 0 10px;     
-background-color: #616161 !important; 
-color: #fff; 
-border-radius: 4px; 
+padding: 10px 10px 10px 10px;
+margin: 10px 0 10px;
+background-color: #616161 !important;
+color: #fff;
+border-radius: 4px;
 box-shadow:2px 2px 4px #888;
 }
 
 .title-pedido{
-background-color: #e3001b; 
+background-color: #e3001b;
 }
 
 .navbar-default .navbar-brand {
@@ -43,7 +59,7 @@ background-color: #e3001b;
  }
 
 .navbar-default .navbar-nav>li>a {
-	color: #fff;	
+	color: #fff;
 }
 
 
@@ -53,7 +69,7 @@ background-color: #e3001b;
     background-color: #58585a;
 }
 
-/** 
+/**
 #ff6e40 naranja
 #00c853 green accent-4
  light-green darken-2

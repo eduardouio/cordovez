@@ -18,7 +18,7 @@ class Detallepedido extends MY_Controller {
 	private $responseHTTP = array("status" => "success");
 
   /**
-   * Lista todos los detalles de los pedidos sino se especifica una factura
+   * Lista todos los detalles de los pedidos, sino se especifica una factura
    * retorna todos los registros de la tabla
    * @return array JSON
    */
@@ -62,7 +62,7 @@ class Detallepedido extends MY_Controller {
 			if ($status['status']){
 				if ($request['accion'] == 'create'){
 					$this->db->insert($this->controllerSPA, $detalleFactura);
-					$this->responseHTTP['appst'] = 'Factura ingredada existosamente';
+					$this->responseHTTP['appst'] = 'Factura ingresada exitosamente';
 					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 					$this->__responseHttp($this->responseHTTP, 201);
 				}else{
@@ -95,10 +95,10 @@ class Detallepedido extends MY_Controller {
 			$this->db->where('detalle_pedido_factura' , $detallePedidoFactura);
 			$this->db->delete($this->controllerSPA);
 			$this->responseHTTP['appst'] =
-																	'Regitro eliminado correctamente';
+																	'Registro eliminado correctamente';
 		}else{
 			$this->responseHTTP['appst'] =
-																	'El registro que intenta eliminar no existe';
+																	'El Registro que intenta eliminar no existe';
 		}
 
 		$this->__responseHttp($this->responseHTTP, 200);

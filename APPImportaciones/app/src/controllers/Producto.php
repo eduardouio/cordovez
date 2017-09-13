@@ -67,7 +67,7 @@ class Producto extends CI_Controller {
 			if ($status['status']){
 				if ($request['accion'] == 'create'){
 					$this->db->insert($this->controllerSPA, $detalleFactura);
-					$this->responseHTTP['appst'] = 'Factura ingredada existosamente';
+					$this->responseHTTP['appst'] = 'Factura ingresada exitosamente';
 					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 					$this->__responseHttp($this->responseHTTP, 201);
 				}else{
@@ -103,7 +103,7 @@ class Producto extends CI_Controller {
 																	'Regitro eliminado correctamente';
 		}else{
 			$this->responseHTTP['appst'] =
-																	'El registro que intenta eliminar no existe';
+																	'El Registro que intenta eliminar no existe';
 		}
 
 		$this->__responseHttp($this->responseHTTP, 200);

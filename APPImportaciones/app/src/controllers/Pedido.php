@@ -69,7 +69,7 @@ class Pedido extends MY_Controller {
 	}
 
 	/**
-	 * registra un pedido, si la llamada no es por post rechaza la peticion
+	 * registra un pedido, si la llamada no es por post rechaza la petición
 	 * crea un pedido nuevo => comprueba que no exista y crea un nuevo registro
 	 * actualiza un pedido existente => actualiza last_update con fecha del server
 	 * @return JSON (response)
@@ -115,7 +115,7 @@ class Pedido extends MY_Controller {
 		}
 
 		/**
-		 * elimina un pedido de la tabla, solo lo elimina sino tiene parcilaes
+		 * elimina un pedido de la tabla, solo lo elimina sino tiene parciales
 		 */
 		public function eliminar(){
 			if($this->rest->_getRequestMethod()!= 'POST'){

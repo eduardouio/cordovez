@@ -33,7 +33,7 @@ class MY_Controller extends CI_Controller{
 		}
 
 		/**
-		 * Check and counto columns len and value
+		 * controla las columnas y la longitud de sus valores
 		 * @return (array)
 		 */
     public function _checkColumnsData($columnsLen, $tableDb){
@@ -47,7 +47,7 @@ class MY_Controller extends CI_Controller{
 			}
 
 			if($validation["status"]){
-				foreach ($columnsLen as $key => $value) {
+				foreach ($columnsLen as $key => $value) {					
 					if(!(strlen($tableDb[$key]) >= $value)){
 						$validation["status"] = false;
 						$validation["len"][$key] = $value;

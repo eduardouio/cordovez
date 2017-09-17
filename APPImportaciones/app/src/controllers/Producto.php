@@ -1,42 +1,68 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
-class Producto extends CI_Controller {
+/**
+ * Modulo encargado de manejar los pedidos, CRUD y validaciones
+ *
+ * @package    CordovezApp
+ * @author    Eduardo Villota <eduardouio7@gmail.com>
+ * @copyright    Copyright (c) 2014,  Agencias y Representaciones Cordovez S.A.
+ * @license    Derechos reservados Agencias y Representaciones Cordovez S.A.
+ * @link    https://github.com/eduardouio/APPImportaciones
+ * @since    Version 1.0.0
+ * @filesource
+ */
+class Producto extends MY_Controller {
+	private $resultDb;
+	private $controllerSPA = "producto";
+	private $responseHTTP = array("status" => "success");
+	private $viewData;
 
 	/**
-	 * Index Page for this controller.
-	 *
-	 * Maps to the following URL
-	 * 		http://example.com/index.php/welcome
-	 *	- or -
-	 * 		http://example.com/index.php/welcome/index
-	 *	- or -
-	 * Since this controller is set as the default controller in
-	 * config/routes.php, it's displayed at http://example.com/
-	 *
-	 * So any other public methods not prefixed with an underscore will
-	 * map to /index.php/welcome/<method_name>
-	 * @see https://codeigniter.com/user_guide/general/urls.html
+	 * Carga la configuracion inicial de la SPA
+	 * @return array (config)
 	 */
-	public function index()
-	{
-		$this->load->library('twig');
-		$data['title'] = "Producto";
-		$data['iconTitle'] = "fa-dropbox";
-		$data['titleContent'] = "Registro de Producto";
-		$data['controller'] = "producto";
-		$data['actionFrm'] =  "/validateForm";
-		$this->twig->display('/pages/pageProducto.html', $data);
-
+	private function _loadData(){
+		$this->dataView = array(
+				'title' => 'SPA Pedidos',
+				'base_url' => base_url(),
+				'actionFrm' => '/validar',
+				'controller' => $this->controllerSPA,
+				'iconTitle' => 'fa-dropbox',
+				'active_pedidos' => 'active left-active',
+				);
 	}
 
 	/**
-	 * Lista todos los productos que existen en la base
+	 * Carga la vista y dependencias completas de la SPA
+	 * @return string (template => pagePedido)
+	 */
+	public function index(){
+		$this->_loadData();
+		$this->twig->display('/pages/proveedor.html', $this->dataView);
+		log_message('Pedido', 'clase de pedido Iniciado');
+	}
+	/**
+	 * Lista todos los productos que existen en la base, se puede obtener
+	 * un producto a la vez
 	 * @return array JSON
 	 */
-	public function listar(){
-			$this->resultDb = $this->db->get($this->controllerSPA);
-		if($this->resultDb->num_rows() > 0){
+	public function listar($idProducto = 0, $idProveedor = 0){
+			#listamos todos los productos
+			if( $idProducto == 0 && $idProveedor == 0 ){
+				$this->resultDb = $this->db->get($this->controllerSPA);
+			}else{
+				#obtiene una lista de los productos por producto o por proveedor
+				if($idProducto != 0 && $idProveedor == 0){
+					$this->db->where('id_producto', $idProducto);
+					$this->resultDb = $this->db->get($this->controllerSPA);
+				}elseif($idProducto == 0 && $idProveedor != 0){
+					$this->db->where('identificacion_proveedor', $idProveedor);
+					$this->resultDb = $this->db->get($this->controllerSPA);
+				}
+
+			}
+
+			if($this->resultDb->num_rows() > 0){
 			$this->responseHTTP["data"] = $this->resultDb->result_array();
 			$this->responseHTTP["infoTable"] = $this->mymodel->getInfo($this->controllerSPA);
 			$this->responseHTTP["appst"] = "Se encontraron " .
@@ -46,7 +72,7 @@ class Producto extends CI_Controller {
 			$this->responseHTTP["data"] = $this->resultDb->result_array();
 			$this->responseHTTP["appst"] = "No existen registros almacenados";
 		}
-			$this->__responseHttp($this->responseHTTP);
+			$this->__responseHttp($this->responseHTTP, 200);
 	}
 
 	/**
@@ -60,22 +86,30 @@ class Producto extends CI_Controller {
 		}
 
 		$request = json_decode(file_get_contents('php://input'), true);
+		$producto = $request['producto'];
 
-		$detalleFactura = $request['detallePedidoFactura'];
+		$this->db->where('cod_contable', $producto['cod_contable']);
+		$this->resultDb = $this->db->get($this->controllerSPA);
+		if($this->resultDb->num_rows() != null && $request['accion'] == 'create'){
+			$this->responseHTTP['appst'] =
+														'Ya existe un registro con el mismo identificador';
+			$this->responseHTTP['data'] = $this->resultDb->result_array();
+			$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
+			$this->__responseHttp($this->responseHTTP, 400);
+		}else{
 		#comprobamos que el registro exista
-			$status = $this->_validData($detalleFactura);
+			$status = $this->_validData($producto);
 			if ($status['status']){
 				if ($request['accion'] == 'create'){
-					$this->db->insert($this->controllerSPA, $detalleFactura);
-					$this->responseHTTP['appst'] = 'Factura ingresada exitosamente';
+					$this->db->insert($this->controllerSPA, $producto);
+					$this->responseHTTP['appst'] = 'Producto agregado existosamente';
 					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 					$this->__responseHttp($this->responseHTTP, 201);
 				}else{
-					$detalleFactura['last_update'] = date('Y-m-d H:i:s');
-					$this->db->where('detalle_pedido_factura', $request['detalle_pedido_factura']);
-					$this->db->update($this->controllerSPA, $detalleFactura);
+					$producto['last_update'] = date('Y-m-d H:i:s');
+					$this->db->where('id_producto', $request['id_producto']);
+					$this->db->update($this->controllerSPA, $producto);
 					$this->responseHTTP['appst'] = 'Item de factura actualizado';
-					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 					$this->__responseHttp($this->responseHTTP, 201);
 				}
 			}else{
@@ -84,7 +118,7 @@ class Producto extends CI_Controller {
 				$this->responseHTTP['data'] = $status;
 				$this->__responseHttp($this->responseHTTP, 400);
 			}
-
+		}
 	}
 
 	/**
@@ -92,18 +126,18 @@ class Producto extends CI_Controller {
 	 * dependencias
 	 * @return array JSON
 	 */
-	public function eliminar($detallePedidoFactura){
-		$this->db->where('detalle_pedido_factura' , $detallePedidoFactura);
+	public function eliminar($idProducto){
+		$this->db->where('id_producto' , $idProducto);
 		$this->resultDb = $this->db->get($this->controllerSPA);
 
 		if  ($this->resultDb->num_rows() > 0){
-			$this->db->where('detalle_pedido_factura' , $detallePedidoFactura);
+			$this->db->where('id_producto' , $idProducto);
 			$this->db->delete($this->controllerSPA);
 			$this->responseHTTP['appst'] =
 																	'Regitro eliminado correctamente';
 		}else{
 			$this->responseHTTP['appst'] =
-																	'El Registro que intenta eliminar no existe';
+																	'El registro que intenta eliminar no existe';
 		}
 
 		$this->__responseHttp($this->responseHTTP, 200);
@@ -115,15 +149,22 @@ class Producto extends CI_Controller {
 	 */
 	private function _validData($data){
 		$columnsLen = array(
-			'id_pedido_factura' => 1,
-			'cod_contable' =>  20,
-			'nro_cajas' => 1,
-			'costo_und' => 1,
+			'cod_contable' => 20,
+			'identificacion_proveedor' => 5,
+			'cod_ice' => 39,
+			'nombre' => 4,
+			'capacidad_ml' => 1,
+			'cantidad_x_caja' => 1,
+			'grado_alcoholico' => 1,
+			'costo_unidad' => 1,
+			'estado' => 1,
+			'custodia_doble' => 1,
+			'comentarios' => 0,
 			'id_user' => 1
 		);
 		return $this->_checkColumnsData($columnsLen, $data);
 	}
 
 
-
 }
+//http://www.xvideos.com/video30144333/cum0rsmooke_-_2017-09-10_22h33_06

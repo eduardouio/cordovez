@@ -11,53 +11,35 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @since    Version 1.0.0
  * @filesource
  */
-class Proveedor extends MY_Controller {
+class Factgstinicial70 extends MY_Controller {
 	private $resultDb;
-	private $controllerSPA = "proveedor";
+	private $controllerSPA = "factura_pagos_pedido_gasto_inicial_r70";
 	private $responseHTTP = array("status" => "success");
 	private $viewData;
 
 	/**
-	 * Carga la configuracion inicial de la SPA
-	 * @return array (config)
-	 */
-	private function _loadData(){
-		$this->dataView = array(
-				'title' => 'SPA Proveedores',
-				'base_url' => base_url(),
-				'actionFrm' => '/validar',
-				'controller' => $this->controllerSPA,
-				'iconTitle' => 'fa-dropbox',
-				'active_pedidos' => 'active left-active',
-				);
-	}
-
-	/**
-	 * Carga la vista y dependencias completas de la SPA
-	 * @return string (template => pagePedido)
-	 */
-	public function index(){
-		$this->_loadData();
-		$this->twig->display('/pages/pagePedido.html', $this->dataView);
-		log_message('Pedido', 'clase de pedido Iniciado');
-	}
-
-	/**
-	 * Lista todos los proveedors que existen en la base, se puede obtener
-	 * un producto a la vez
+	 * Lista las facturas informativas de acuerdo a tres criterio
+	 * Por proveedor $idPedido = 0
+	 * Por pedido $idProveedor = 0
+	 * Todas las facturas $idProveedor = 0 & $idPedido = 0
 	 * @return array JSON
 	 */
-	public function listar($idProveedor = 0){
-			if($idProveedor == 0){
+	public function listar($idGastosIniciales = 0, $idFacPagos = 0){
+		#listamos todos
+			if($idGastosIniciales == 0 && $idFacPagos == 0){
 				$this->resultDb = $this->db->get($this->controllerSPA);
-			}else{
-				$this->db->where('id_proveedor', $idProveedor);
+			}elseif($idGastosIniciales != 0 && $idFacPagos == 0){
+				$this->db->where('id_gastos_iniciales', $idGastosIniciales);
+				$this->resultDb = $this->db->get($this->controllerSPA);
+			}elseif($idGastosIniciales == 0 && $idFacPagos != 0) {
+				$this->db->where('id_factura_pagos_pedido_gasto_inicial', $idFacPagos);
 				$this->resultDb = $this->db->get($this->controllerSPA);
 			}
 
 			if($this->resultDb->num_rows() > 0){
 			$this->responseHTTP["data"] = $this->resultDb->result_array();
-			$this->responseHTTP["infoTable"] = $this->mymodel->getInfo($this->controllerSPA);
+			$this->responseHTTP["infoTable"] =
+																	$this->mymodel->getInfo($this->controllerSPA);
 			$this->responseHTTP["appst"] = "Se encontraron " .
 																			$this->resultDb->num_rows() .
 																			" items";
@@ -79,10 +61,11 @@ class Proveedor extends MY_Controller {
 		}
 
 		$request = json_decode(file_get_contents('php://input'), true);
-		$proveedor = $request['proveedor'];
-
-		$this->db->where('identificacion_proveedor',
-																				$proveedor['identificacion_proveedor']);
+		$facpGstInicial = $request['factura_pagos_pedido_gasto_inicial_r70'];
+		#verificamos que el registro existe
+		$this->db->where('id_gastos_iniciales',
+																				$facpGstInicial['id_gastos_iniciales']);
+		$this->db->where('id_factura_pagos', $facpGstInicial['id_factura_pagos']);
 		$this->resultDb = $this->db->get($this->controllerSPA);
 		if($this->resultDb->num_rows() != null && $request['accion'] == 'create'){
 			$this->responseHTTP['appst'] =
@@ -91,24 +74,25 @@ class Proveedor extends MY_Controller {
 			$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 			$this->__responseHttp($this->responseHTTP, 400);
 		}else{
-		#comprobamos que el registro exista
-			$status = $this->_validData($proveedor);
+		#validamos la informacion
+			$status = $this->_validData($facpGstInicial);
 			if ($status['status']){
 				if ($request['accion'] == 'create'){
-					$this->db->insert($this->controllerSPA, $proveedor);
+					$this->db->insert($this->controllerSPA, $facpGstInicial);
 					$this->responseHTTP['appst'] = 'Registro agregado existosamente';
 					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 					$this->__responseHttp($this->responseHTTP, 201);
 				}else{
-					$proveedor['last_update'] = date('Y-m-d H:i:s');
-					$this->db->where('id_proveedor', $request['id_proveedor']);
-					$this->db->update($this->controllerSPA, $proveedor);
+					$facpGstInicial['last_update'] = date('Y-m-d H:i:s');
+					$this->db->where('id_factura_pagos_pedido_gasto_inicial',
+														 $request['id_factura_pagos_pedido_gasto_inicial']);
+					$this->db->update($this->controllerSPA, $facpGstInicial);
 					$this->responseHTTP['appst'] = 'Registro actualizado actualizado';
 					$this->__responseHttp($this->responseHTTP, 201);
 				}
 			}else{
 				$this->responseHTTP['appst'] =
-									'Uno de los datos ingresados es incorrecto, vuelva a intentar';
+								'Uno de los datos ingresados es incorrecto, vuelva a intentar';
 				$this->responseHTTP['data'] = $status;
 				$this->__responseHttp($this->responseHTTP, 400);
 			}
@@ -121,15 +105,20 @@ class Proveedor extends MY_Controller {
 	 * dependencias
 	 * @return array JSONPedidos
 	 */
-	public function eliminar($idProveedor){
-		$this->db->where('id_proveedor' , $idProveedor);
-		$this->resultDb = $this->db->get($this->controllerSPA);
+	public function eliminar($idFactGastoInicial){
+		if(!isset($idFactGastoInicial)){
+			$this->_notAuthorized();
+		}
+		
 
+		$this->db->where('id_factura_pagos_pedido_gasto_inicial',
+																											$idFactGastoInicial);
+		$this->resultDb = $this->db->get($this->controllerSPA);
 		if  ($this->resultDb->num_rows() > 0){
-			$this->db->where('id_proveedor' , $idProveedor);
-			$this->db->delete($this->controllerSPA);
-			$this->responseHTTP['appst'] =
-																	'Regitro eliminado correctamente';
+				$this->db->where('id_factura_pagos_pedido_gasto_inicial' ,
+																												$idFactGastoInicial);
+				$this->db->delete($this->controllerSPA);
+				$this->responseHTTP['appst'] = 'Regitro eliminado correctamente';
 		}else{
 			$this->responseHTTP['appst'] =
 																	'El registro que intenta eliminar no existe';
@@ -139,17 +128,15 @@ class Proveedor extends MY_Controller {
 	}
 
 	/**
-	 * se validan los datos que deben estar para que la consulta no falle
+	 * Se validan las columnas que debe tener la consulta para que no falle
 	 * @return [array] | [bolean]
 	 */
 	private function _validData($data){
 		$columnsLen = array(
-				'nombre' => 4,
-				'tipo_provedor' => 6,
-				'categoria' => 8,
-				'identificacion_proveedor' => 6,
-				'comentarios' => 0,
-				'id_user' => 1
+			'id_gastos_iniciales' => 1,
+			'id_factura_pagos' => 1,
+			'valor' => 1,
+			'id_user' => 1
 		);
 		return $this->_checkColumnsData($columnsLen, $data);
 	}

@@ -11,60 +11,40 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @since    Version 1.0.0
  * @filesource
  */
-class Proveedor extends MY_Controller {
+class Impnacionalizacion extends MY_Controller {
 	private $resultDb;
-	private $controllerSPA = "proveedor";
+	private $controllerSPA = "impuestos_nacionalizacion";
 	private $responseHTTP = array("status" => "success");
 	private $viewData;
 
-	/**
-	 * Carga la configuracion inicial de la SPA
-	 * @return array (config)
-	 */
-	private function _loadData(){
-		$this->dataView = array(
-				'title' => 'SPA Proveedores',
-				'base_url' => base_url(),
-				'actionFrm' => '/validar',
-				'controller' => $this->controllerSPA,
-				'iconTitle' => 'fa-dropbox',
-				'active_pedidos' => 'active left-active',
-				);
-	}
 
 	/**
-	 * Carga la vista y dependencias completas de la SPA
-	 * @return string (template => pagePedido)
-	 */
-	public function index(){
-		$this->_loadData();
-		$this->twig->display('/pages/pagePedido.html', $this->dataView);
-		log_message('Pedido', 'clase de pedido Iniciado');
-	}
-
-	/**
-	 * Lista todos los proveedors que existen en la base, se puede obtener
-	 * un producto a la vez
+	 * Lista los impuestos para una nacionalizacion
+	 * Si no se especifica lista todos los impuestos de nacionalizacion
 	 * @return array JSON
 	 */
-	public function listar($idProveedor = 0){
-			if($idProveedor == 0){
+	public function listar($idNacionalizacion = 0){
+		#Listamos los gastos_iniciales_r70 de un pedido
+			if($idNacionalizacion != 0){
+        $this->db->where('id_nacionalizacion', $idNacionalizacion);
 				$this->resultDb = $this->db->get($this->controllerSPA);
+
 			}else{
-				$this->db->where('id_proveedor', $idProveedor);
-				$this->resultDb = $this->db->get($this->controllerSPA);
-			}
+        $this->resultDb = $this->db->get($this->controllerSPA);
+      }
 
 			if($this->resultDb->num_rows() > 0){
 			$this->responseHTTP["data"] = $this->resultDb->result_array();
-			$this->responseHTTP["infoTable"] = $this->mymodel->getInfo($this->controllerSPA);
 			$this->responseHTTP["appst"] = "Se encontraron " .
 																			$this->resultDb->num_rows() .
 																			" items";
+																			
 		}else{
 			$this->responseHTTP["data"] = $this->resultDb->result_array();
 			$this->responseHTTP["appst"] = "No existen registros almacenados";
-		}
+			$this->responseHTTP["getInfo"] = 
+																	$this->mymodel->getInfo($this->controllerSPA);
+		}	
 			$this->__responseHttp($this->responseHTTP, 200);
 	}
 
@@ -79,10 +59,10 @@ class Proveedor extends MY_Controller {
 		}
 
 		$request = json_decode(file_get_contents('php://input'), true);
-		$proveedor = $request['proveedor'];
-
-		$this->db->where('identificacion_proveedor',
-																				$proveedor['identificacion_proveedor']);
+		$impNacionalizacion = $request['impuestos_nacionalizacion'];
+		#verificamos que el registro existe
+		$this->db->where('id_nacionalizacion',$impNacionalizacion['id_nacionalizacion']);
+		$this->db->where('concepto',$impNacionalizacion['concepto']);
 		$this->resultDb = $this->db->get($this->controllerSPA);
 		if($this->resultDb->num_rows() != null && $request['accion'] == 'create'){
 			$this->responseHTTP['appst'] =
@@ -91,24 +71,24 @@ class Proveedor extends MY_Controller {
 			$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 			$this->__responseHttp($this->responseHTTP, 400);
 		}else{
-		#comprobamos que el registro exista
-			$status = $this->_validData($proveedor);
+		#validamos la informacion
+			$status = $this->_validData($impNacionalizacion);
 			if ($status['status']){
 				if ($request['accion'] == 'create'){
-					$this->db->insert($this->controllerSPA, $proveedor);
+					$this->db->insert($this->controllerSPA, $impNacionalizacion);
 					$this->responseHTTP['appst'] = 'Registro agregado existosamente';
 					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 					$this->__responseHttp($this->responseHTTP, 201);
 				}else{
-					$proveedor['last_update'] = date('Y-m-d H:i:s');
-					$this->db->where('id_proveedor', $request['id_proveedor']);
-					$this->db->update($this->controllerSPA, $proveedor);
-					$this->responseHTTP['appst'] = 'Registro actualizado actualizado';
+					$impNacionalizacion['last_update'] = date('Y-m-d H:i:s');
+					$this->db->where('id_impuestos', $request['id_impuestos']);
+					$this->db->update($this->controllerSPA, $impNacionalizacion);
+					$this->responseHTTP['appst'] = 'Registro actualizado Correctamente';
 					$this->__responseHttp($this->responseHTTP, 201);
 				}
 			}else{
 				$this->responseHTTP['appst'] =
-									'Uno de los datos ingresados es incorrecto, vuelva a intentar';
+								'Uno de los datos ingresados es incorrecto, vuelva a intentar';
 				$this->responseHTTP['data'] = $status;
 				$this->__responseHttp($this->responseHTTP, 400);
 			}
@@ -121,15 +101,23 @@ class Proveedor extends MY_Controller {
 	 * dependencias
 	 * @return array JSONPedidos
 	 */
-	public function eliminar($idProveedor){
-		$this->db->where('id_proveedor' , $idProveedor);
+	public function eliminar($idImpuestos){
+		$this->db->where('id_impuestos' , $idImpuestos);
 		$this->resultDb = $this->db->get($this->controllerSPA);
 
 		if  ($this->resultDb->num_rows() > 0){
-			$this->db->where('id_proveedor' , $idProveedor);
-			$this->db->delete($this->controllerSPA);
-			$this->responseHTTP['appst'] =
-																	'Regitro eliminado correctamente';
+			#comprobamos que no tenga dependencias
+			$this->db->where('id_impuestos' , $idImpuestos);
+			$this->resultDb = $this->db->get('liquidacion_impuestos');
+
+			if(!$this->resultDb->num_rows() > 0){
+				$this->db->where('id_impuestos' , $idImpuestos);
+				$this->db->delete($this->controllerSPA);
+				$this->responseHTTP['appst'] = 'Regitro eliminado correctamente';
+			}else{
+				$this->responseHTTP['appst'] = 'El Registro tiene dependencias no' .
+																	'Puede ser eliminado';
+			}
 		}else{
 			$this->responseHTTP['appst'] =
 																	'El registro que intenta eliminar no existe';
@@ -139,17 +127,16 @@ class Proveedor extends MY_Controller {
 	}
 
 	/**
-	 * se validan los datos que deben estar para que la consulta no falle
+	 * Se validan las columnas que debe tener la consulta para que no falle
 	 * @return [array] | [bolean]
 	 */
 	private function _validData($data){
 		$columnsLen = array(
-				'nombre' => 4,
-				'tipo_provedor' => 6,
-				'categoria' => 8,
-				'identificacion_proveedor' => 6,
-				'comentarios' => 0,
-				'id_user' => 1
+          'id_nacionalizacion' => 1,
+          'concepto' => 4,
+          'valor_provisionado' => 1,
+          'comentarios' => 0,
+          'id_user' => 1,
 		);
 		return $this->_checkColumnsData($columnsLen, $data);
 	}

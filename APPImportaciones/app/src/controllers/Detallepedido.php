@@ -18,7 +18,7 @@ class Detallepedido extends MY_Controller {
 	private $responseHTTP = array("status" => "success");
 
   /**
-   * Lista todos los detalles de los pedidos, sino se especifica una factura
+   * Lista todos los detalles de los pedidos sino se especifica una factura
    * retorna todos los registros de la tabla
    * @return array JSON
    */
@@ -57,12 +57,24 @@ class Detallepedido extends MY_Controller {
 		$request = json_decode(file_get_contents('php://input'), true);
 
 		$detalleFactura = $request['detallePedidoFactura'];
+
+		$this->db->where('id_pedido_factura',
+																				$detalleFactura['id_pedido_factura']);
+		$this->db->where('cod_contable' , $detalleFactura['cod_contable']);
+		$this->resultDb = $this->db->get($this->controllerSPA);
+		if($this->resultDb->num_rows() != null && $request['accion'] == 'create'){
+			$this->responseHTTP['appst'] =
+															'Ya existe un registro con el mismo identificador';
+			$this->responseHTTP['data'] = $this->resultDb->result_array();
+			$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
+			$this->__responseHttp($this->responseHTTP, 400);
+		}else{
 		#comprobamos que el registro exista
 			$status = $this->_validData($detalleFactura);
 			if ($status['status']){
 				if ($request['accion'] == 'create'){
 					$this->db->insert($this->controllerSPA, $detalleFactura);
-					$this->responseHTTP['appst'] = 'Factura ingresada exitosamente';
+					$this->responseHTTP['appst'] = 'Factura ingredada existosamente';
 					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 					$this->__responseHttp($this->responseHTTP, 201);
 				}else{
@@ -79,7 +91,7 @@ class Detallepedido extends MY_Controller {
 				$this->responseHTTP['data'] = $status;
 				$this->__responseHttp($this->responseHTTP, 400);
 			}
-
+		}
 	}
 
   /**
@@ -90,15 +102,15 @@ class Detallepedido extends MY_Controller {
 	public function eliminar($detallePedidoFactura){
     $this->db->where('detalle_pedido_factura' , $detallePedidoFactura);
 		$this->resultDb = $this->db->get($this->controllerSPA);
-	
+
 		if  ($this->resultDb->num_rows() > 0){
 			$this->db->where('detalle_pedido_factura' , $detallePedidoFactura);
 			$this->db->delete($this->controllerSPA);
 			$this->responseHTTP['appst'] =
-																	'Registro eliminado correctamente';
+																	'Regitro eliminado correctamente';
 		}else{
 			$this->responseHTTP['appst'] =
-																	'El Registro que intenta eliminar no existe';
+																	'El registro que intenta eliminar no existe';
 		}
 
 		$this->__responseHttp($this->responseHTTP, 200);

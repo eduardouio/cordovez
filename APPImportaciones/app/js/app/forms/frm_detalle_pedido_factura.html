@@ -1,0 +1,44 @@
+<form>
+  <div class="row">
+    <div class="col-md-3">
+      <div class="form-group">
+         <label>Identificacion Proveedor: </label>
+         <input
+            class="form-control"
+            required="true"
+            type="text"
+            maxlength="13"
+            name="proveedor.identificacion_proveedor"
+            ng-model="proveedor.identificacion_proveedor"
+            />
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+         <label>Tipo de Proveedor:</label>
+         <select
+            class = "form-control"
+            name = "proveedor.tipo_provedor"
+            ng-model= "proveedor.tipo_provedor"
+            >
+            <option value="" disabled selected>Seleccione ...</option>
+            <option value="NACIONAL">NACIONAL</option>
+            <option value="INTERNACIONAL">INTERNACIONAL</option>
+         </select>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+         <label>Identificacion Proveedor: </label>
+         <input
+            class="form-control"
+            required="true"
+            type="text"
+            maxlength="13"
+            name="proveedor.identificacion_proveedor"
+            ng-model="proveedor.identificacion_proveedor"
+            />
+      </div>
+    </div>
+  </div>
+</form>

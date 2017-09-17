@@ -13,7 +13,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Pedido extends MY_Controller {
 	private $resultDb;
-	private $numRows ;
 	private $dataView;
 	private $controllerSPA = 'pedido';
 	private $responseHTTP = array('status' => 'success');
@@ -53,8 +52,15 @@ class Pedido extends MY_Controller {
 	/**
 	 * Presenta una lista de todos los pedidos
 	 */
-	public function listar(){
-		$this->resultDb = $this->mymodel->getRows($this->controllerSPA, '10000');
+	public function listar($idPedido = 0 ){
+
+		if ($idPedido == 0){
+			$this->resultDb = $this->db->get($this->controllerSPA);
+		}else{
+			$this->db->where('id_pedido', $idPedido);
+			$this->resultDb = $this->db->get($this->controllerSPA);
+		}
+
 			//Verificar que existan datos
 			if($this->resultDb->num_rows() > 0){
 				$this->responseHTTP['data'] = $this->resultDb->result_array();
@@ -69,7 +75,7 @@ class Pedido extends MY_Controller {
 	}
 
 	/**
-	 * registra un pedido, si la llamada no es por post rechaza la petición
+	 * registra un pedido, si la llamada no es por post rechaza la peticion
 	 * crea un pedido nuevo => comprueba que no exista y crea un nuevo registro
 	 * actualiza un pedido existente => actualiza last_update con fecha del server
 	 * @return JSON (response)
@@ -115,7 +121,7 @@ class Pedido extends MY_Controller {
 		}
 
 		/**
-		 * elimina un pedido de la tabla, solo lo elimina sino tiene parciales
+		 * elimina un pedido de la tabla, solo lo elimina sino tiene parcilaes
 		 */
 		public function eliminar(){
 			if($this->rest->_getRequestMethod()!= 'POST'){

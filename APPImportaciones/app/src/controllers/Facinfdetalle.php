@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 /**
- * Modulo encargado de manejar los proveedores, CRUD y validaciones
+ * Valida los datos de las provisiones
  *
  * @package    CordovezApp
  * @author    Eduardo Villota <eduardouio7@gmail.com>
@@ -11,53 +11,31 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @since    Version 1.0.0
  * @filesource
  */
-class Proveedor extends MY_Controller {
+class Facinfdetalle extends MY_Controller {
 	private $resultDb;
-	private $controllerSPA = "proveedor";
+	private $controllerSPA = "factura_informativa_detalle";
 	private $responseHTTP = array("status" => "success");
-	private $viewData;
 
 	/**
-	 * Carga la configuracion inicial de la SPA
-	 * @return array (config)
-	 */
-	private function _loadData(){
-		$this->dataView = array(
-				'title' => 'SPA Proveedores',
-				'base_url' => base_url(),
-				'actionFrm' => '/validar',
-				'controller' => $this->controllerSPA,
-				'iconTitle' => 'fa-dropbox',
-				'active_pedidos' => 'active left-active',
-				);
-	}
-
-	/**
-	 * Carga la vista y dependencias completas de la SPA
-	 * @return string (template => pagePedido)
-	 */
-	public function index(){
-		$this->_loadData();
-		$this->twig->display('/pages/pagePedido.html', $this->dataView);
-		log_message('Pedido', 'clase de pedido Iniciado');
-	}
-
-	/**
-	 * Lista todos los proveedors que existen en la base, se puede obtener
-	 * un producto a la vez
+	 * Lista los detalles de la factura informativa
+	 * Por proveedor $idPedido = 0
+	 * Por pedido $idProveedor = 0
+	 * Todas las facturas $idProveedor = 0 & $idPedido = 0
 	 * @return array JSON
 	 */
-	public function listar($idProveedor = 0){
-			if($idProveedor == 0){
-				$this->resultDb = $this->db->get($this->controllerSPA);
-			}else{
-				$this->db->where('id_proveedor', $idProveedor);
-				$this->resultDb = $this->db->get($this->controllerSPA);
-			}
+	public function listar( $idFacInformativa ){
+		#listamos la justificacion de un gasto inicial sino todos
+		if(!isset( $idFacInformativa )){
+			$this->_notAuthorized();
+		}
 
-			if($this->resultDb->num_rows() > 0){
+		$this->db->where( 'id_factura_informativa', $idFacInformativa );
+		$this->resultDb = $this->db->get($this->controllerSPA);
+			
+		if($this->resultDb->num_rows() > 0){
 			$this->responseHTTP["data"] = $this->resultDb->result_array();
-			$this->responseHTTP["infoTable"] = $this->mymodel->getInfo($this->controllerSPA);
+			$this->responseHTTP["infoTable"] =
+																	$this->mymodel->getInfo($this->controllerSPA);
 			$this->responseHTTP["appst"] = "Se encontraron " .
 																			$this->resultDb->num_rows() .
 																			" items";
@@ -65,6 +43,7 @@ class Proveedor extends MY_Controller {
 			$this->responseHTTP["data"] = $this->resultDb->result_array();
 			$this->responseHTTP["appst"] = "No existen registros almacenados";
 		}
+
 			$this->__responseHttp($this->responseHTTP, 200);
 	}
 
@@ -79,41 +58,44 @@ class Proveedor extends MY_Controller {
 		}
 
 		$request = json_decode(file_get_contents('php://input'), true);
-		$proveedor = $request['proveedor'];
+		$facInfDetalle = $request['factura_informativa_detalle'];
 
-		$this->db->where('identificacion_proveedor',
-																				$proveedor['identificacion_proveedor']);
+		#verificamos que el registro existe
+		$this->db->where('id_factura_informativa',
+																			$facInfDetalle['id_factura_informativa']);
+		$this->db->where('cod_contable', $facInfDetalle['cod_contable']);
+
 		$this->resultDb = $this->db->get($this->controllerSPA);
 		if($this->resultDb->num_rows() != null && $request['accion'] == 'create'){
 			$this->responseHTTP['appst'] =
-															'Ya existe un pedido con el mismo identificador';
+															'El registro ya existe, no se puede duplicar';
 			$this->responseHTTP['data'] = $this->resultDb->result_array();
 			$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 			$this->__responseHttp($this->responseHTTP, 400);
 		}else{
-		#comprobamos que el registro exista
-			$status = $this->_validData($proveedor);
+		#validamos la informacion
+			$status = $this->_validData($facInfDetalle);
 			if ($status['status']){
 				if ($request['accion'] == 'create'){
-					$this->db->insert($this->controllerSPA, $proveedor);
+					$this->db->insert($this->controllerSPA, $facInfDetalle);
 					$this->responseHTTP['appst'] = 'Registro agregado existosamente';
 					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 					$this->__responseHttp($this->responseHTTP, 201);
 				}else{
-					$proveedor['last_update'] = date('Y-m-d H:i:s');
-					$this->db->where('id_proveedor', $request['id_proveedor']);
-					$this->db->update($this->controllerSPA, $proveedor);
+					$facInfDetalle['last_update'] = date('Y-m-d H:i:s');
+					$this->db->where('id_factura_informativa_detalle',
+														 $request['id_factura_informativa_detalle']);
+					$this->db->update($this->controllerSPA, $facInfDetalle);
 					$this->responseHTTP['appst'] = 'Registro actualizado actualizado';
 					$this->__responseHttp($this->responseHTTP, 201);
 				}
 			}else{
 				$this->responseHTTP['appst'] =
-									'Uno de los datos ingresados es incorrecto, vuelva a intentar';
+								'Uno de los datos ingresados es incorrecto, vuelva a intentar';
 				$this->responseHTTP['data'] = $status;
 				$this->__responseHttp($this->responseHTTP, 400);
 			}
 		}
-
 	}
 
 	/**
@@ -121,15 +103,19 @@ class Proveedor extends MY_Controller {
 	 * dependencias
 	 * @return array JSONPedidos
 	 */
-	public function eliminar($idProveedor){
-		$this->db->where('id_proveedor' , $idProveedor);
+	public function eliminar($idFactInfDetalle){
+		if(!isset($idFactInfDetalle)){
+			$this->_notAuthorized();
+		}
+		
+
+		$this->db->where('id_factura_informativa_detalle', $idFactInfDetalle);
 		$this->resultDb = $this->db->get($this->controllerSPA);
 
 		if  ($this->resultDb->num_rows() > 0){
-			$this->db->where('id_proveedor' , $idProveedor);
-			$this->db->delete($this->controllerSPA);
-			$this->responseHTTP['appst'] =
-																	'Regitro eliminado correctamente';
+				$this->db->where('id_factura_informativa_detalle' ,  $idFactInfDetalle);
+				$this->db->delete($this->controllerSPA);
+				$this->responseHTTP['appst'] = 'Regitro eliminado correctamente';
 		}else{
 			$this->responseHTTP['appst'] =
 																	'El registro que intenta eliminar no existe';
@@ -139,17 +125,15 @@ class Proveedor extends MY_Controller {
 	}
 
 	/**
-	 * se validan los datos que deben estar para que la consulta no falle
+	 * Se validan las columnas que debe tener la consulta para que no falle
 	 * @return [array] | [bolean]
 	 */
-	private function _validData($data){
+	private function _validData( $data ){
 		$columnsLen = array(
-				'nombre' => 4,
-				'tipo_provedor' => 6,
-				'categoria' => 8,
-				'identificacion_proveedor' => 6,
-				'comentarios' => 0,
-				'id_user' => 1
+						'id_factura_informativa' => 1,
+						'cod_contable' => 20,
+						'nro_cajas' => 1,
+						'id_user' => 1,
 		);
 		return $this->_checkColumnsData($columnsLen, $data);
 	}

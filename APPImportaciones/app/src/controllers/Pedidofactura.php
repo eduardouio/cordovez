@@ -78,7 +78,7 @@ class Pedidofactura extends MY_Controller {
 			if ($status['status']){
 				if ($request['accion'] == 'create'){
 					$this->db->insert($this->controllerSPA, $pedidoFactura);
-					$this->responseHTTP['appst'] = 'Factura ingredada existosamente';
+					$this->responseHTTP['appst'] = 'Factura ingresada exitosamente';
 					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 					$this->__responseHttp($this->responseHTTP, 201);
 				}else{

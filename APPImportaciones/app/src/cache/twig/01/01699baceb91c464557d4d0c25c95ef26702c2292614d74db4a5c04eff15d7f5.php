@@ -16,16 +16,10 @@ class __TwigTemplate_73c1c4721800b15008830863732c3bfd1cbc1c9483812fbce8c75b64c13
     protected function doDisplay(array $context, array $blocks = array())
     {
         // line 1
-        echo "<main>
-  <div ng-view class=\"container\">
-    ";
-        // line 3
-        echo twig_escape_filter($this->env, (2 + 5), "html", null, true);
-        echo " * ";
-        echo twig_escape_filter($this->env, (5 + 43), "html", null, true);
-        echo " = 99
+        echo "  <div ng-view>
+    
   </div>
-</main>
+
 ";
     }
 
@@ -34,14 +28,9 @@ class __TwigTemplate_73c1c4721800b15008830863732c3bfd1cbc1c9483812fbce8c75b64c13
         return "base/appjs.html.twig";
     }
 
-    public function isTraitable()
-    {
-        return false;
-    }
-
     public function getDebugInfo()
     {
-        return array (  23 => 3,  19 => 1,);
+        return array (  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -54,11 +43,10 @@ class __TwigTemplate_73c1c4721800b15008830863732c3bfd1cbc1c9483812fbce8c75b64c13
 
     public function getSourceContext()
     {
-        return new Twig_Source("<main>
-  <div ng-view class=\"container\">
-    {{2+5}} * {{5+43}} = 99
+        return new Twig_Source("  <div ng-view>
+    
   </div>
-</main>
+
 ", "base/appjs.html.twig", "/var/www/html/app/src/views/base/appjs.html.twig");
     }
 }

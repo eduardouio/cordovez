@@ -62,16 +62,27 @@ background-color: #e3001b;
 	color: #fff;
 }
 
-
-
 .navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.active>a:hover {
     color: #fff;
     background-color: #58585a;
 }
 
-/**
-#ff6e40 naranja
-#00c853 green accent-4
- light-green darken-2
-#0288d1 light-blue darken-2
-**/
+.modal-title{
+	color: #0084a1;
+}
+
+@media (min-width: 768px)
+.modal-dialog {
+    width: 900px;
+  }
+    
+
+    
+    width: 900px;
+    margin: 30px auto;
+
+
+body{
+	font-size: 13px
+}
+

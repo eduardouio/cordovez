@@ -16,12 +16,7 @@ class __TwigTemplate_ecf2eed02dd82f8d3ca67e35e7a4308c9e3d5ab4ebf6e038de018cb03e1
     protected function doDisplay(array $context, array $blocks = array())
     {
         // line 1
-        echo "                        <!-- /.col-lg-12 -->
-                    </div>
-                    <!-- /.row -->
-                </div>
-                <!-- /#page-wrapper -->
-                            
+        echo "
 <small> &copy; Todos los Derechos reservados Importadora Cordovez 2017 <br>
             Desarrollado por Eduardo Villota <a href=\"mailto:eduardouio7@gmail.com\">eduardouio7@gmail.com 
           </a></small>";
@@ -47,12 +42,7 @@ class __TwigTemplate_ecf2eed02dd82f8d3ca67e35e7a4308c9e3d5ab4ebf6e038de018cb03e1
 
     public function getSourceContext()
     {
-        return new Twig_Source("                        <!-- /.col-lg-12 -->
-                    </div>
-                    <!-- /.row -->
-                </div>
-                <!-- /#page-wrapper -->
-                            
+        return new Twig_Source("
 <small> &copy; Todos los Derechos reservados Importadora Cordovez 2017 <br>
             Desarrollado por Eduardo Villota <a href=\"mailto:eduardouio7@gmail.com\">eduardouio7@gmail.com 
           </a></small>", "base/signaturefoot.html.twig", "/var/www/html/app/src/views/base/signaturefoot.html.twig");

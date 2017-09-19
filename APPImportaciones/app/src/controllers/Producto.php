@@ -102,7 +102,7 @@ class Producto extends MY_Controller {
 			if ($status['status']){
 				if ($request['accion'] == 'create'){
 					$this->db->insert($this->controllerSPA, $producto);
-					$this->responseHTTP['appst'] = 'Producto agregado existosamente';
+					$this->responseHTTP['appst'] = 'Registro ingresada exitosamente';
 					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 					$this->__responseHttp($this->responseHTTP, 201);
 				}else{

@@ -16,11 +16,9 @@ class __TwigTemplate_3d139f146e9d1307c90fad05d06aa94b5e006e89a12decc09c710f55e60
     protected function doDisplay(array $context, array $blocks = array())
     {
         // line 1
-        echo "<br>
-<nav class=\"navbar navbar-default title-";
-        // line 2
+        echo "<div class=\"navbar navbar-default title-";
         echo twig_escape_filter($this->env, ($context["controller"] ?? null), "html", null, true);
-        echo "\">
+        echo "\" container>
   <div class=\"container-fluid\">
     <div class=\"navbar-header\">
       <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#bs-example-navbar-collapse-1\" aria-expanded=\"false\">
@@ -30,7 +28,7 @@ class __TwigTemplate_3d139f146e9d1307c90fad05d06aa94b5e006e89a12decc09c710f55e60
         <span class=\"icon-bar\"></span>
       </button>
       <a class=\"navbar-brand\" href=\"#\">";
-        // line 11
+        // line 10
         echo twig_escape_filter($this->env, ($context["titleContent"] ?? null), "html", null, true);
         echo " <span class=\"fa ";
         echo twig_escape_filter($this->env, ($context["iconTitle"] ?? null), "html", null, true);
@@ -38,13 +36,13 @@ class __TwigTemplate_3d139f146e9d1307c90fad05d06aa94b5e006e89a12decc09c710f55e60
     </div>
     <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">
       <ul class=\"nav navbar-nav\" style=\"color: #fff\">
-        <li class=\"active\"><a href=\"#\"><span class=\"fa fa-list fa-fw\"></span> Listar Pedidos <span class=\"sr-only\">(current)</span></a></li>
-        <li><a href=\"#\"><span class=\"fa fa-file fa-fw\"></span> Nuevo Pedido</a></li>
-        <li><a href=\"#\"><span class=\"fa fa-money fa-fw\"></span> Registrar Gasto</a></li>
+        <li class=\"active\"><a href=\"\"><span class=\"fa fa-list fa-fw\"></span> Listar Pedidos <span class=\"sr-only\">(current)</span></a></li>
+        <li><a href=\"#/nuevo-pedido\"><span class=\"fa fa-file fa-fw\"></span> Nuevo Pedido</a></li>
+        <li><a href=\"\"><span class=\"fa fa-money fa-fw\"></span> Registrar Gasto</a></li>
       </ul>
     </div>
   </div>
-</nav>
+</div>
 ";
     }
 
@@ -60,7 +58,7 @@ class __TwigTemplate_3d139f146e9d1307c90fad05d06aa94b5e006e89a12decc09c710f55e60
 
     public function getDebugInfo()
     {
-        return array (  34 => 11,  22 => 2,  19 => 1,);
+        return array (  32 => 10,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -73,8 +71,7 @@ class __TwigTemplate_3d139f146e9d1307c90fad05d06aa94b5e006e89a12decc09c710f55e60
 
     public function getSourceContext()
     {
-        return new Twig_Source("<br>
-<nav class=\"navbar navbar-default title-{{controller}}\">
+        return new Twig_Source("<div class=\"navbar navbar-default title-{{controller}}\" container>
   <div class=\"container-fluid\">
     <div class=\"navbar-header\">
       <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#bs-example-navbar-collapse-1\" aria-expanded=\"false\">
@@ -87,13 +84,13 @@ class __TwigTemplate_3d139f146e9d1307c90fad05d06aa94b5e006e89a12decc09c710f55e60
     </div>
     <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">
       <ul class=\"nav navbar-nav\" style=\"color: #fff\">
-        <li class=\"active\"><a href=\"#\"><span class=\"fa fa-list fa-fw\"></span> Listar Pedidos <span class=\"sr-only\">(current)</span></a></li>
-        <li><a href=\"#\"><span class=\"fa fa-file fa-fw\"></span> Nuevo Pedido</a></li>
-        <li><a href=\"#\"><span class=\"fa fa-money fa-fw\"></span> Registrar Gasto</a></li>
+        <li class=\"active\"><a href=\"\"><span class=\"fa fa-list fa-fw\"></span> Listar Pedidos <span class=\"sr-only\">(current)</span></a></li>
+        <li><a href=\"#/nuevo-pedido\"><span class=\"fa fa-file fa-fw\"></span> Nuevo Pedido</a></li>
+        <li><a href=\"\"><span class=\"fa fa-money fa-fw\"></span> Registrar Gasto</a></li>
       </ul>
     </div>
   </div>
-</nav>
+</div>
 ", "base/titlecontent.html.twig", "/var/www/html/app/src/views/base/titlecontent.html.twig");
     }
 }

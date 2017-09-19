@@ -17,12 +17,7 @@ class __TwigTemplate_de3bab0ef3ce6f800ab846b0f314e45eddb57eace4dbcf55e9f42d2879c
     {
         // line 1
         echo "
-                <div class=\"row\">
-                    <div class=\"col-lg-12\">
-                        <div class=\"panel panel-default\">
-                            <div class=\"panel-heading\">
-                                <div class=\"panel-body\">
-                                    <div class=\"row\">
+                
 ";
     }
 
@@ -47,12 +42,7 @@ class __TwigTemplate_de3bab0ef3ce6f800ab846b0f314e45eddb57eace4dbcf55e9f42d2879c
     public function getSourceContext()
     {
         return new Twig_Source("
-                <div class=\"row\">
-                    <div class=\"col-lg-12\">
-                        <div class=\"panel panel-default\">
-                            <div class=\"panel-heading\">
-                                <div class=\"panel-body\">
-                                    <div class=\"row\">
+                
 ", "base/contentopen.html.twig", "/var/www/html/app/src/views/base/contentopen.html.twig");
     }
 }

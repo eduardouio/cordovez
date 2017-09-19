@@ -18,7 +18,7 @@ class Detallepedido extends MY_Controller {
 	private $responseHTTP = array("status" => "success");
 
   /**
-   * Lista todos los detalles de los pedidos sino se especifica una factura
+   * Lista todos los detalles de los pedidos, sino se especifica una factura
    * retorna todos los registros de la tabla
    * @return array JSON
    */
@@ -74,7 +74,7 @@ class Detallepedido extends MY_Controller {
 			if ($status['status']){
 				if ($request['accion'] == 'create'){
 					$this->db->insert($this->controllerSPA, $detalleFactura);
-					$this->responseHTTP['appst'] = 'Factura ingredada existosamente';
+					$this->responseHTTP['appst'] = 'Factura ingresada exitosamente';
 					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 					$this->__responseHttp($this->responseHTTP, 201);
 				}else{

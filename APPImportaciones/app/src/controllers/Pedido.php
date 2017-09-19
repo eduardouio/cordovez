@@ -121,7 +121,7 @@ class Pedido extends MY_Controller {
 		}
 
 		/**
-		 * elimina un pedido de la tabla, solo lo elimina sino tiene parcilaes
+		 * elimina un pedido de la tabla, solo lo elimina sino tiene parciales
 		 */
 		public function eliminar(){
 			if($this->rest->_getRequestMethod()!= 'POST'){

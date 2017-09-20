@@ -33,13 +33,16 @@ class Detallepedido extends MY_Controller {
 
 		if($this->resultDb->num_rows() > 0){
 			$this->responseHTTP["data"] = $this->resultDb->result_array();
-			$this->responseHTTP["infoTable"] = $this->mymodel->getInfo($this->controllerSPA);
-			$this->responseHTTP["appst"] = "Se encontraron " .
+			$this->responseHTTP["infoTable"] = 
+																$this->mymodel->getInfo($this->controllerSPA);
+			$this->responseHTTP["message"] = "Se encontraron " .
 																			$this->resultDb->num_rows() .
-																			" items";
+																			" registros";
+			$this->responseHTTP["appst"] = 1100;																
 		}else{
 			$this->responseHTTP["data"] = $this->resultDb->result_array();
-			$this->responseHTTP["appst"] = "No existen registros almacenados";
+			$this->responseHTTP["message"] = "No existen registros almacenados";
+			$this->responseHTTP["appst"] = 2100;
 		}
 			$this->__responseHttp($this->responseHTTP);
   }
@@ -63,8 +66,9 @@ class Detallepedido extends MY_Controller {
 		$this->db->where('cod_contable' , $detalleFactura['cod_contable']);
 		$this->resultDb = $this->db->get($this->controllerSPA);
 		if($this->resultDb->num_rows() != null && $request['accion'] == 'create'){
-			$this->responseHTTP['appst'] =
-															'Ya existe un registro con el mismo identificador';
+			$this->responseHTTP['message'] =
+														'Ya existe un registro con el mismo identificador';
+			$this->responseHTTP["appst"] = 2300;
 			$this->responseHTTP['data'] = $this->resultDb->result_array();
 			$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 			$this->__responseHttp($this->responseHTTP, 400);
@@ -74,20 +78,24 @@ class Detallepedido extends MY_Controller {
 			if ($status['status']){
 				if ($request['accion'] == 'create'){
 					$this->db->insert($this->controllerSPA, $detalleFactura);
-					$this->responseHTTP['appst'] = 'Factura ingresada exitosamente';
+					$this->responseHTTP['message'] = 'Regitro ingresado exitosamente';
+					$this->responseHTTP["appst"] = 1200;
 					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 					$this->__responseHttp($this->responseHTTP, 201);
 				}else{
 					$detalleFactura['last_update'] = date('Y-m-d H:i:s');
-					$this->db->where('detalle_pedido_factura', $request['detalle_pedido_factura']);
+					$this->db->where('detalle_pedido_factura', 
+																						$request['detalle_pedido_factura']);
 					$this->db->update($this->controllerSPA, $detalleFactura);
-					$this->responseHTTP['appst'] = 'Item de factura actualizado';
+					$this->responseHTTP['message'] = 'Registro actualizado';
+					$this->responseHTTP["appst"] = 1300;
 					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 					$this->__responseHttp($this->responseHTTP, 201);
 				}
 			}else{
-				$this->responseHTTP['appst'] =
-									'Uno de los datos ingresados es incorrecto, vuelva a intentar';
+				$this->responseHTTP['message'] =
+								'Uno de los registro es incorrecto, vuelva a intentar';
+				$this->responseHTTP["appst"] = 1400;
 				$this->responseHTTP['data'] = $status;
 				$this->__responseHttp($this->responseHTTP, 400);
 			}
@@ -106,11 +114,13 @@ class Detallepedido extends MY_Controller {
 		if  ($this->resultDb->num_rows() > 0){
 			$this->db->where('detalle_pedido_factura' , $detallePedidoFactura);
 			$this->db->delete($this->controllerSPA);
-			$this->responseHTTP['appst'] =
+			$this->responseHTTP['message'] =
 																	'Regitro eliminado correctamente';
+		$this->responseHTTP["appst"] = 1500;
 		}else{
-			$this->responseHTTP['appst'] =
+			$this->responseHTTP['message'] =
 																	'El registro que intenta eliminar no existe';
+		$this->responseHTTP["appst"] = 2500;
 		}
 
 		$this->__responseHttp($this->responseHTTP, 200);

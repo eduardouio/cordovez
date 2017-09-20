@@ -26,7 +26,8 @@ class Facgstnacionalizacion extends MY_Controller {
 	public function listar($idGastosNacionalizacion = 0){
 		#listamos la justificacion de un gasto inicial sino todos
 			if($idGastosNacionalizacion != 0) {
-				$this->db->where('id_gastos_nacionalizacion', $idGastosNacionalizacion);
+				$this->db->where('id_gastos_nacionalizacion',
+													 $idGastosNacionalizacion);
 				$this->resultDb = $this->db->get($this->controllerSPA);
 			}else{
 				$this->resultDb = $this->db->get($this->controllerSPA);
@@ -35,13 +36,14 @@ class Facgstnacionalizacion extends MY_Controller {
 			if($this->resultDb->num_rows() > 0){
 			$this->responseHTTP["data"] = $this->resultDb->result_array();
 			$this->responseHTTP["infoTable"] =
-																	$this->mymodel->getInfo($this->controllerSPA);
-			$this->responseHTTP["appst"] = "Se encontraron " .
-																			$this->resultDb->num_rows() .
-																			" items";
+								 $this->mymodel->getInfo($this->controllerSPA);
+			$this->responseHTTP["message"] = "Se encontraron " .
+									  $this->resultDb->num_rows() ."registros";
+			$this->responseHTTP["appst"] = 1100;	
 		}else{
 			$this->responseHTTP["data"] = $this->resultDb->result_array();
-			$this->responseHTTP["appst"] = "No existen registros almacenados";
+			$this->responseHTTP["message"] = "No existen registros almacenados";
+			$this->responseHTTP["appst"] = 2500;
 		}
 			$this->__responseHttp($this->responseHTTP, 200);
 	}
@@ -60,13 +62,16 @@ class Facgstnacionalizacion extends MY_Controller {
 		$facGstNacionalizacion = $request['factura_gastos_nacionalizacion'];
 		#verificamos que el registro existe
 		$this->db->where('id_gastos_nacionalizacion',
-																	$facGstNacionalizacion['id_gastos_nacionalizacion']);
-		$this->db->where('id_factura_pagos', $facGstNacionalizacion['id_factura_pagos']);
+						  $facGstNacionalizacion['id_gastos_nacionalizacion']);
+		$this->db->where('id_factura_pagos', 
+									$facGstNacionalizacion['id_factura_pagos']);
 
 		$this->resultDb = $this->db->get($this->controllerSPA);
-		if($this->resultDb->num_rows() != null && $request['accion'] == 'create'){
-			$this->responseHTTP['appst'] =
-															'Ya existe un pedido con el mismo identificador';
+		if($this->resultDb->num_rows() != null && 
+											$request['accion'] == 'create'){
+			$this->responseHTTP['message'] =
+							'Ya existe un registro con el mismo identificador';
+			$this->responseHTTP["appst"] = 2300;
 			$this->responseHTTP['data'] = $this->resultDb->result_array();
 			$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 			$this->__responseHttp($this->responseHTTP, 400);
@@ -75,21 +80,29 @@ class Facgstnacionalizacion extends MY_Controller {
 			$status = $this->_validData($facGstNacionalizacion);
 			if ($status['status']){
 				if ($request['accion'] == 'create'){
-					$this->db->insert($this->controllerSPA, $facGstNacionalizacion);
-					$this->responseHTTP['appst'] = 'Registro agregado existosamente';
-					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
+					$this->db->insert($this->controllerSPA, 
+													  $facGstNacionalizacion);
+					$this->responseHTTP['message'] = 
+											  'Registro creado existosamente';
+					$this->responseHTTP["appst"] = 1200;
+					$this->responseHTTP['lastInfo'] = 
+													$this->mymodel->lastInfo();
 					$this->__responseHttp($this->responseHTTP, 201);
 				}else{
 					$facGstNacionalizacion['last_update'] = date('Y-m-d H:i:s');
 					$this->db->where('id_factura_gastos_nacionalizacion',
-														 $request['id_factura_gastos_nacionalizacion']);
-					$this->db->update($this->controllerSPA, $facGstNacionalizacion);
-					$this->responseHTTP['appst'] = 'Registro actualizado actualizado';
+								 $request['id_factura_gastos_nacionalizacion']);
+					$this->db->update($this->controllerSPA, 
+														$facGstNacionalizacion);
+					$this->responseHTTP['appst'] = 'Registro actualizado';
+					$this->responseHTTP["appst"] = 1300;
 					$this->__responseHttp($this->responseHTTP, 201);
 				}
 			}else{
-				$this->responseHTTP['appst'] =
-								'Uno de los datos ingresados es incorrecto, vuelva a intentar';
+				$this->responseHTTP['message'] =
+			  								 'Uno de los registro ingresados'.
+			  								' es incorrecto, vuelva a intentar';
+				$this->responseHTTP["appst"] = 1400;
 				$this->responseHTTP['data'] = $status;
 				$this->__responseHttp($this->responseHTTP, 400);
 			}
@@ -109,16 +122,19 @@ class Facgstnacionalizacion extends MY_Controller {
 		
 
 		$this->db->where('id_factura_gastos_nacionalizacion',
-																									$idFactGastoNacionalizacion);
+												  $idFactGastoNacionalizacion);
 		$this->resultDb = $this->db->get($this->controllerSPA);
 		if  ($this->resultDb->num_rows() > 0){
 				$this->db->where('id_factura_gastos_nacionalizacion' ,
-																									$idFactGastoNacionalizacion);
+												  $idFactGastoNacionalizacion);
 				$this->db->delete($this->controllerSPA);
-				$this->responseHTTP['appst'] = 'Regitro eliminado correctamente';
+				$this->responseHTTP['message'] = 
+											 'Regitro eliminado correctamente';
+		$this->responseHTTP["appst"] = 1500;
 		}else{
-			$this->responseHTTP['appst'] =
-																	'El registro que intenta eliminar no existe';
+			$this->responseHTTP['message'] =
+								  'El registro que intenta eliminar no existe';
+		$this->responseHTTP["appst"] = 2500;
 		}
 
 		$this->__responseHttp($this->responseHTTP, 200);

@@ -64,11 +64,13 @@ class Pedido extends MY_Controller {
 			//Verificar que existan datos
 			if($this->resultDb->num_rows() > 0){
 				$this->responseHTTP['data'] = $this->resultDb->result_array();
-				$this->responseHTTP['appst'] = 'Se encontraron ' .
-																			$this->resultDb->num_rows() . ' pedidos';
+				$this->responseHTTP['message'] = 'Se encontraron ' .
+																			$this->resultDb->num_rows() . 'registros';
+				$this->responseHTTP["appst"] = 1100;
 			}else{
 				$this->responseHTTP['data'] = $this->resultDb->result_array();
-				$this->responseHTTP['appst'] = 'No existen registros almacenados';
+				$this->responseHTTP['message'] = 'No existen registros almacenados';
+				$this->responseHTTP["appst"] = 2100;
 			}
 			log_message('Pedido', 'se lista correctamente los pedidos');
 			$this->__responseHttp($this->responseHTTP);
@@ -92,7 +94,9 @@ class Pedido extends MY_Controller {
 		$this->resultDb = $this->db->get($this->controllerSPA);
 
 		if($this->resultDb->num_rows() != null && $request['accion'] == 'create'){
-			$this->responseHTTP['appst'] = 'Ya existe un pedido con el mismo identificador';
+			$this->responseHTTP['message'] = 'Ya existe un pedido'.
+																								 'con el mismo identificador';
+			$this->responseHTTP["appst"] = 2300;
 			$this->responseHTTP['data'] = $this->resultDb->result_array();
 			$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 			$this->__responseHttp($this->responseHTTP, 400);
@@ -101,19 +105,23 @@ class Pedido extends MY_Controller {
 			if ($status['status']){
 				if ($request['accion'] == 'create'){
 					$this->db->insert($this->controllerSPA, $pedido);
-					$this->responseHTTP['appst'] = 'Registro creado existosamente';
+					$this->responseHTTP['message'] = 'Registro creado existosamente';
+					$this->responseHTTP["appst"] = 1200;
 					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 					$this->__responseHttp($this->responseHTTP, 201);
 				}else{
 					$pedido['last_update'] = date('Y-m-d H:i:s');
 					$this->db->where('nro_pedido', $pedido['nro_pedido']);
 					$this->db->update($this->controllerSPA, $pedido);
-					$this->responseHTTP['appst'] = 'El pedido fue actualizado correctamente';
+					$this->responseHTTP['message'] = 
+																	'El registro fue actualizado correctamente';
+					$this->responseHTTP["appst"] = 1300;
 					$this->__responseHttp($this->responseHTTP, 201);
 				}
 			}else{
-				$this->responseHTTP['appst'] =
-									'Uno de los datos ingresados es incorrecto, vuelva a intentar';
+				$this->responseHTTP['message'] =
+								'Uno de los datos ingresados es incorrecto, vuelva a intentar';
+				$this->responseHTTP["appst"] = 1400;
 				$this->responseHTTP['data'] = $status;
 				$this->__responseHttp($this->responseHTTP, 400);
 			}
@@ -139,17 +147,20 @@ class Pedido extends MY_Controller {
 				if($this->resultDb->num_rows() == null){
 					$this->db->where('nro_pedido', $pedido['nro_pedido']);
 					$this->db->delete($this->controllerSPA);
-					$this->responseHTTP['appst'] = 'El pedido ' . $pedido['nro_pedido'] .
-																													' Ha sido eliminado';
+					$this->responseHTTP['message'] = 'El registro' . 
+					'                     	$pedido['nro_pedido']  Ha sido eliminado';
+					$this->responseHTTP["appst"] = 1500;
 					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 				}else {
-					$this->responseHTTP['appst'] = 'El pedido ' . $pedido['nro_pedido'] .
+					$this->responseHTTP['message'] = 'El pedido' . $pedido['nro_pedido'] .
 								' No se puede eliminar, tiene dependencias en la base de datos';
+					$this->responseHTTP["appst"] = 2400;
 					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 				}
 			}else{
-				$this->responseHTTP['appst'] = 'El pedido ' . $pedido['nro_pedido'] .
+				$this->responseHTTP['message'] = 'El pedido ' . $pedido['nro_pedido'] .
 												' No se puede eliminar, no existe en la base de datos';
+				$this->responseHTTP["appst"] = 2100;
 				$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 			}
 

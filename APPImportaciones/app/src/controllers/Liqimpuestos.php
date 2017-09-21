@@ -33,15 +33,15 @@ class Liqimpuestos extends MY_Controller {
 
 			if($this->resultDb->num_rows() > 0){
 			$this->responseHTTP['data'] = $this->resultDb->result_array();
-			$this->responseHTTP['appst'] = 'Se encontraron ' .
-																			$this->resultDb->num_rows() .
-																			' items';
-																			
+			$this->responseHTTP['message'] = 'Se encontraron ' .
+								     $this->resultDb->num_rows() .' registros';
+			$this->responseHTTP["appst"] =	1100;															
 		}else{
 			$this->responseHTTP['data'] = $this->resultDb->result_array();
-			$this->responseHTTP['appst'] = 'No existen registros almacenados';
+			$this->responseHTTP['message'] = 'No existen registros almacenados';
+			$this->responseHTTP["appst"] = 2100;
 			$this->responseHTTP['getInfo'] = 
-																	$this->mymodel->getInfo($this->controllerSPA);
+								  $this->mymodel->getInfo($this->controllerSPA);
 		}	
 			$this->__responseHttp($this->responseHTTP, 200);
 	}
@@ -62,9 +62,11 @@ class Liqimpuestos extends MY_Controller {
 		$this->db->where('id_impuestos',$liqImpuestos['id_impuestos']);
 		$this->db->where('nro_documento',$liqImpuestos['nro_documento']);
 		$this->resultDb = $this->db->get($this->controllerSPA);
-		if($this->resultDb->num_rows() != null && $request['accion'] == 'create'){
-			$this->responseHTTP['appst'] =
-															'Ya existe un pedido con el mismo identificador';
+		if($this->resultDb->num_rows() != null && 
+											   $request['accion'] == 'create'){
+			$this->responseHTTP['message'] =
+							'Ya existe un registro con el mismo identificador';
+			$this->responseHTTP["appst"] = 2300;
 			$this->responseHTTP['data'] = $this->resultDb->result_array();
 			$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 			$this->__responseHttp($this->responseHTTP, 400);
@@ -74,20 +76,26 @@ class Liqimpuestos extends MY_Controller {
 			if ($status['status']){
 				if ($request['accion'] == 'create'){
 					$this->db->insert($this->controllerSPA, $liqImpuestos);
-					$this->responseHTTP['appst'] = 'Registro agregado existosamente';
-					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
+					$this->responseHTTP['message'] = 
+											   'Registro creado existosamente';
+					$this->responseHTTP["appst"] = 1200;
+					$this->responseHTTP['lastInfo'] = 
+													 $this->mymodel->lastInfo();
 					$this->__responseHttp($this->responseHTTP, 201);
 				}else{
 					$liqImpuestos['last_update'] = date('Y-m-d H:i:s');
 					$this->db->where('id_liquidacion_impuestos', 
-																						$request['id_liquidacion_impuestos']);
+										  $request['id_liquidacion_impuestos']);
 					$this->db->update($this->controllerSPA, $liqImpuestos);
-					$this->responseHTTP['appst'] = 'Registro actualizado Correctamente';
+					$this->responseHTTP['message'] = 
+										   'Registro actualizado Correctamente';
+					$this->responseHTTP["appst"] = 1300;
 					$this->__responseHttp($this->responseHTTP, 201);
 				}
 			}else{
-				$this->responseHTTP['appst'] =
-								'Uno de los datos ingresados es incorrecto, vuelva a intentar';
+				$this->responseHTTP['message'] = 'Uno de los registros'.
+								  'ingresados es incorrecto, vuelva a intentar';
+				$this->responseHTTP["appst"] = 1400;
 				$this->responseHTTP['data'] = $status;
 				$this->__responseHttp($this->responseHTTP, 400);
 			}
@@ -112,11 +120,13 @@ class Liqimpuestos extends MY_Controller {
 		if  ($this->resultDb->num_rows() > 0){
 				$this->db->where('id_liquidacion_impuestos' , $idliqImpuestos);
 				$this->db->delete($this->controllerSPA);
-				$this->responseHTTP['appst'] = 'Regitro eliminado correctamente';
-
+				$this->responseHTTP['message'] = 
+											  'Regitro eliminado correctamente';
+				$this->responseHTTP["appst"] = 1500;
 		}else{
-			$this->responseHTTP['appst'] =
-																	'El registro que intenta eliminar no existe';
+			$this->responseHTTP['message'] = 
+								   'El registro que intenta eliminar no existe';
+			$this->responseHTTP["appst"] = 2500;	
 		}
 
 		$this->__responseHttp($this->responseHTTP, 200);

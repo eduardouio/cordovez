@@ -32,20 +32,22 @@ class Factgstinicial70 extends MY_Controller {
 				$this->db->where('id_gastos_iniciales', $idGastosIniciales);
 				$this->resultDb = $this->db->get($this->controllerSPA);
 			}elseif($idGastosIniciales == 0 && $idFacPagos != 0) {
-				$this->db->where('id_factura_pagos_pedido_gasto_inicial', $idFacPagos);
+				$this->db->where('id_factura_pagos_pedido_gasto_inicial',
+																 $idFacPagos);
 				$this->resultDb = $this->db->get($this->controllerSPA);
 			}
 
 			if($this->resultDb->num_rows() > 0){
 			$this->responseHTTP["data"] = $this->resultDb->result_array();
 			$this->responseHTTP["infoTable"] =
-																	$this->mymodel->getInfo($this->controllerSPA);
-			$this->responseHTTP["appst"] = "Se encontraron " .
-																			$this->resultDb->num_rows() .
-																			" items";
+								$this->mymodel->getInfo($this->controllerSPA);
+			$this->responseHTTP["message"] = "Se encontraron " .
+								    $this->resultDb->num_rows() ." registros";
+			$this->responseHTTP["appst"] = 1100;
 		}else{
 			$this->responseHTTP["data"] = $this->resultDb->result_array();
-			$this->responseHTTP["appst"] = "No existen registros almacenados";
+			$this->responseHTTP["message"] = "No existen registros almacenados";
+			$this->responseHTTP["appst"] = 2100;
 		}
 			$this->__responseHttp($this->responseHTTP, 200);
 	}
@@ -64,12 +66,15 @@ class Factgstinicial70 extends MY_Controller {
 		$facpGstInicial = $request['factura_pagos_pedido_gasto_inicial_r70'];
 		#verificamos que el registro existe
 		$this->db->where('id_gastos_iniciales',
-																				$facpGstInicial['id_gastos_iniciales']);
-		$this->db->where('id_factura_pagos', $facpGstInicial['id_factura_pagos']);
+									  $facpGstInicial['id_gastos_iniciales']);
+		$this->db->where('id_factura_pagos', 
+										 $facpGstInicial['id_factura_pagos']);
 		$this->resultDb = $this->db->get($this->controllerSPA);
-		if($this->resultDb->num_rows() != null && $request['accion'] == 'create'){
-			$this->responseHTTP['appst'] =
-															'Ya existe un pedido con el mismo identificador';
+		if($this->resultDb->num_rows() != null && 
+											  $request['accion'] == 'create'){
+			$this->responseHTTP['message'] =
+						   'Ya existe un registro con el mismo identificador';
+			$this->responseHTTP["appst"] = 2300;
 			$this->responseHTTP['data'] = $this->resultDb->result_array();
 			$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 			$this->__responseHttp($this->responseHTTP, 400);
@@ -79,20 +84,25 @@ class Factgstinicial70 extends MY_Controller {
 			if ($status['status']){
 				if ($request['accion'] == 'create'){
 					$this->db->insert($this->controllerSPA, $facpGstInicial);
-					$this->responseHTTP['appst'] = 'Registro agregado existosamente';
-					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
+					$this->responseHTTP['message'] = 
+											  'Registro creado existosamente';
+					$this->responseHTTP["appst"] = 1200;
+					$this->responseHTTP['lastInfo'] = 
+												   $this->mymodel->lastInfo();
 					$this->__responseHttp($this->responseHTTP, 201);
 				}else{
 					$facpGstInicial['last_update'] = date('Y-m-d H:i:s');
 					$this->db->where('id_factura_pagos_pedido_gasto_inicial',
-														 $request['id_factura_pagos_pedido_gasto_inicial']);
+						   $request['id_factura_pagos_pedido_gasto_inicial']);
 					$this->db->update($this->controllerSPA, $facpGstInicial);
-					$this->responseHTTP['appst'] = 'Registro actualizado actualizado';
+					$this->responseHTTP['message'] = 'Registro actualizado';
+					$this->responseHTTP["appst"] = 1300;
 					$this->__responseHttp($this->responseHTTP, 201);
 				}
 			}else{
-				$this->responseHTTP['appst'] =
-								'Uno de los datos ingresados es incorrecto, vuelva a intentar';
+				$this->responseHTTP['message'] = 	'Uno de los registros'.
+								'ingresados es incorrecto, vuelva a intentar';
+				$this->responseHTTP["appst"] = 1400;
 				$this->responseHTTP['data'] = $status;
 				$this->__responseHttp($this->responseHTTP, 400);
 			}
@@ -112,16 +122,19 @@ class Factgstinicial70 extends MY_Controller {
 		
 
 		$this->db->where('id_factura_pagos_pedido_gasto_inicial',
-																											$idFactGastoInicial);
+											        	$idFactGastoInicial);
 		$this->resultDb = $this->db->get($this->controllerSPA);
 		if  ($this->resultDb->num_rows() > 0){
 				$this->db->where('id_factura_pagos_pedido_gasto_inicial' ,
-																												$idFactGastoInicial);
+													 	$idFactGastoInicial);
 				$this->db->delete($this->controllerSPA);
-				$this->responseHTTP['appst'] = 'Regitro eliminado correctamente';
+				$this->responseHTTP['message'] = 
+											'Regitro eliminado correctamente';
+				$this->responseHTTP["appst"] = 1500;	
 		}else{
-			$this->responseHTTP['appst'] =
-																	'El registro que intenta eliminar no existe';
+			$this->responseHTTP['appst'] = 'El registro que intenta'.
+														' eliminar no existe';
+			$this->responseHTTP["appst"] = 2500;
 		}
 
 		$this->__responseHttp($this->responseHTTP, 200);

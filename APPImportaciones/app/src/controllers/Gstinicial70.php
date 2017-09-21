@@ -41,19 +41,20 @@ class Gstinicial70 extends MY_Controller {
 
 			if($this->resultDb->num_rows() > 0){
 			$this->responseHTTP["data"] = $this->resultDb->result_array();
-			$this->responseHTTP["appst"] = "Se encontraron " .
-																			$this->resultDb->num_rows() .
-																			" items";
+			$this->responseHTTP["message"] = "Se encontraron " .
+								$this->resultDb->num_rows() . " registros";
+			$this->responseHTTP["appst"] = 1100;
 		}else{
 			$this->responseHTTP["data"] = $this->resultDb->result_array();
-			$this->responseHTTP["appst"] = "No existen registros almacenados";
+			$this->responseHTTP["message"] = "No existen registros almacenados";
+			$this->responseHTTP["appst"] = 2100;
 		}
 			$this->__responseHttp($this->responseHTTP, 200);
 	}
-
+$this->responseHTTP["appst"] = 1100;
 	/**
-	 *  Valida los datos recibidos por post antes de crear o actualizar el
-	 * registro, solo aceptan datos por post
+	 	$this->responseHTTP["appst"] =*  Valida los datos recibidos por post 
+	 	antes de crear o actualizar el registro, solo aceptan datos por post
 	 * @return array JSON
 	 */
 	public function validar(){
@@ -67,9 +68,11 @@ class Gstinicial70 extends MY_Controller {
 		$this->db->where('nro_pedido',$gstIncial70['nro_pedido']);
 		$this->db->where('concepto',$gstIncial70['concepto']);
 		$this->resultDb = $this->db->get($this->controllerSPA);
-		if($this->resultDb->num_rows() != null && $request['accion'] == 'create'){
-			$this->responseHTTP['appst'] =
-															'Ya existe un pedido con el mismo identificador';
+		if($this->resultDb->num_rows() != null && 
+											   $request['accion'] == 'create'){
+			$this->responseHTTP['message'] = 'Ya existe un pedido'.
+			 									  'con el mismo identificador';
+			$this->responseHTTP["appst"] = 2300;
 			$this->responseHTTP['data'] = $this->resultDb->result_array();
 			$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 			$this->__responseHttp($this->responseHTTP, 400);
@@ -79,20 +82,25 @@ class Gstinicial70 extends MY_Controller {
 			if ($status['status']){
 				if ($request['accion'] == 'create'){
 					$this->db->insert($this->controllerSPA, $gstIncial70);
-					$this->responseHTTP['appst'] = 'Registro agregado existosamente';
-					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
+					$this->responseHTTP['message'] = 'Registro creado'.
+					 										   'existosamente';
+					$this->responseHTTP["appst"] =1200;
+					$this->responseHTTP['lastInfo'] = 
+													$this->mymodel->lastInfo();
 					$this->__responseHttp($this->responseHTTP, 201);
 				}else{
 					$gstIncial70['last_update'] = date('Y-m-d H:i:s');
 					$this->db->where('id_gastos_iniciales',
-																						$request['id_gastos_iniciales']);
+											  $request['id_gastos_iniciales']);
 					$this->db->update($this->controllerSPA, $gstIncial70);
-					$this->responseHTTP['appst'] = 'Registro actualizado actualizado';
+					$this->responseHTTP['message'] = 'Registro actualizado';
+					$this->responseHTTP["appst"] = 1300;
 					$this->__responseHttp($this->responseHTTP, 201);
 				}
 			}else{
-				$this->responseHTTP['appst'] =
-								'Uno de los datos ingresados es incorrecto, vuelva a intentar';
+				$this->responseHTTP['message'] = 'Uno de los datos ingresados'.
+				 							'es incorrecto, vuelva a intentar';
+				$this->responseHTTP["appst"] = 1400;
 				$this->responseHTTP['data'] = $status;
 				$this->__responseHttp($this->responseHTTP, 400);
 			}
@@ -112,19 +120,24 @@ class Gstinicial70 extends MY_Controller {
 		if  ($this->resultDb->num_rows() > 0){
 			#comprobamos que no tenga dependencias
 			$this->db->where('id_gastos_iniciales' , $idGstInicial);
-			$this->resultDb = $this->db->get('factura_pagos_pedido_gasto_inicial_r70');
+			$this->resultDb = 
+					  $this->db->get('factura_pagos_pedido_gasto_inicial_r70');
 
 			if(!$this->resultDb->num_rows() > 0){
 				$this->db->where('id_gastos_iniciales' , $idGstInicial);
 				$this->db->delete($this->controllerSPA);
-				$this->responseHTTP['appst'] = 'Regitro eliminado correctamente';
+				$this->responseHTTP['message'] = 'Regitro eliminado'.
+															   'correctamente';
+				$this->responseHTTP["appst"] = 1500;
 			}else{
-				$this->responseHTTP['appst'] = 'El Registro tiene dependencias no' .
-																	'Puede ser eliminado';
+				$this->responseHTTP['message'] = 'El Registro tiene'.
+				 			             'dependencias no puede ser eliminado';
+				$this->responseHTTP["appst"] = 2400;
 			}
 		}else{
-			$this->responseHTTP['appst'] =
-																	'El registro que intenta eliminar no existe';
+			$this->responseHTTP['message'] = 'El registro que intenta'.
+			 											  'eliminar no existe';
+			$this->responseHTTP["appst"] = 2500;
 		}
 
 		$this->__responseHttp($this->responseHTTP, 200);

@@ -17,7 +17,7 @@ class __TwigTemplate_238d403db5dde966d0d9a8244659b7b1357e7ac298a9bdacf9c10956dd0
     {
         // line 1
         echo "<!DOCTYPE html>
-<html lang=\"es\" ng-app=\"cordovezApp\">
+<html lang=\"es\" ng-app=\"cordovezApp\" ng-controller = \"loginController\">
 <head>
     <meta charset=\"utf-8\">
     <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">
@@ -59,127 +59,183 @@ class __TwigTemplate_238d403db5dde966d0d9a8244659b7b1357e7ac298a9bdacf9c10956dd0
         <script src=\"https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js\"></script>
         <script src=\"https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js\"></script>
         <![endif]-->
-    <style type=\"text/css\">
-    @import url(http://fonts.googleapis.com/css?family=Roboto);
+   
+   <style type=\"text/css\">
+     body { 
+  background: url(";
+        // line 29
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "/img/importaciones-comercio.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
 
-    /****** LOGIN MODAL ******/
-    .loginmodal-container {
-      padding: 30px;
-      max-width: 350px;
-      width: 100% !important;
-      background-color: #F7F7F7;
-      margin: 0 auto;
-      border-radius: 2px;
-      box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
-      overflow: hidden;
-      font-family: roboto;
-    }
-
-    .loginmodal-container h1 {
-      text-align: center;
-      font-size: 1.8em;
-      font-family: roboto;
-    }
-
-    .loginmodal-container input[type=submit] {
-      width: 100%;
-      display: block;
-      margin-bottom: 10px;
-      position: relative;
-    }
-
-    .loginmodal-container input[type=text], input[type=password] {
-      height: 44px;
-      font-size: 16px;
-      width: 100%;
-      margin-bottom: 10px;
-      -webkit-appearance: none;
-      background: #fff;
-      border: 1px solid #d9d9d9;
-      border-top: 1px solid #c0c0c0;
-      /* border-radius: 2px; */
-      padding: 0 8px;
-      box-sizing: border-box;
-      -moz-box-sizing: border-box;
-    }
-
-    .loginmodal-container input[type=text]:hover, input[type=password]:hover {
-      border: 1px solid #b9b9b9;
-      border-top: 1px solid #a0a0a0;
-      -moz-box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
-      -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
-      box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
-    }
-
-    .loginmodal {
-      text-align: center;
-      font-size: 14px;
-      font-family: 'Arial', sans-serif;
-      font-weight: 700;
-      height: 36px;
-      padding: 0 8px;
-    /* border-radius: 3px; */
-    /* -webkit-user-select: none;
-      user-select: none; */
-    }
-
-    .loginmodal-submit {
-      /* border: 1px solid #3079ed; */
-      border: 0px;
-      color: #fff;
-      text-shadow: 0 1px rgba(0,0,0,0.1);
-      background-color: #4d90fe;
-      padding: 17px 0px;
-      font-family: roboto;
-      font-size: 14px;
-      /* background-image: -webkit-gradient(linear, 0 0, 0 100%,   from(#4d90fe), to(#4787ed)); */
-    }
-
-    .loginmodal-submit:hover {
-      /* border: 1px solid #2f5bb7; */
-      border: 0px;
-      text-shadow: 0 1px rgba(0,0,0,0.3);
-      background-color: #357ae8;
-      /* background-image: -webkit-gradient(linear, 0 0, 0 100%,   from(#4d90fe), to(#357ae8)); */
-    }
-
-    .loginmodal-container a {
-      text-decoration: none;
-      color: #666;
-      font-weight: 400;
-      text-align: center;
-      display: inline-block;
-      opacity: 0.6;
-      transition: opacity ease 0.5s;
-    }
-
-    .login-help{
-      font-size: 12px;
-    }
-    </style>
+.panel-default {
+opacity: 0.9;
+margin-top:30px;
+}
+.form-group.last { margin-bottom:0px; }
+   </style>
 </head>
 
 <body>
-
+<h1>";
+        // line 45
+        echo twig_escape_filter($this->env, ($context["userName"] ?? null), "html", null, true);
+        echo "</h1>
 <div class=\"container\">
-    \t  <div class=\"modal-dialog\">
-\t\t\t\t<div class=\"loginmodal-container\">
-\t\t\t\t\t<h1>Login to Your Account</h1><br>
-\t\t\t\t  <form method=\"post\" action=\"";
-        // line 132
-        echo twig_escape_filter($this->env, ($context["actionFrm"] ?? null), "html", null, true);
-        echo "\">
-\t\t\t\t\t<input type=\"text\" name=\"username\" placeholder=\"Username\">
-\t\t\t\t\t<input type=\"password\" name=\"password\" placeholder=\"Password\">
-\t\t\t\t\t<input type=\"submit\" name=\"login\" class=\"login loginmodal-submit\" value=\"Login\">
-\t\t\t\t  </form>
+    <div class=\"row\">
+        <div class=\"col-md-4 col-md-offset-7\">
+            <div class=\"panel panel-default\">
+                <div class=\"panel-heading\">
+                    <span class=\"glyphicon glyphicon-lock\"></span> Inicio de Sesion</div>
+                <div class=\"panel-body\">
+                    <form class=\"form-horizontal\" role=\"form\">
+                    <div class=\"form-group\">
+                        <label for=\"userName\" class=\"col-sm-3 control-label\">
+                            Email</label>
+                        <div class=\"col-sm-9\">
+                            <input 
+                            type=\"text\" 
+                            class=\"form-control\" 
+                            name=\"userName\" 
+                            ng-model=\"userName\" 
+                            placeholder=\"Usuario\" 
+                            required = \"true\">
+                        </div>
+                    </div>
+                    <div class=\"form-group\">
+                        <label for=\"inputPassword3\" class=\"col-sm-3 control-label\">
+                            Password</label>
+                        <div class=\"col-sm-9\">
+                            <input type=\"password\" class=\"form-control\" id=\"inputPassword3\" placeholder=\"Password\" required>
+                        </div>
+                    </div>
+                    <div class=\"form-group\">
+                        <div class=\"col-sm-offset-3 col-sm-9\">
+                            <div class=\"checkbox\">
+                                <label>
+                                    <input type=\"checkbox\"/>
+                                    Remember me
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=\"form-group last\">
+                        <div class=\"col-sm-offset-3 col-sm-9\">
+                            <button type=\"submit\" class=\"btn btn-success btn-sm\">
+                                Sign in</button>
+                                 <button type=\"reset\" class=\"btn btn-default btn-sm\">
+                                Reset</button>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+                <div class=\"panel-footer\">
+                    No tiene una cuenta? <a href=\"mailto:eduardouio7@gmail.com\">Solicitar Cuenta</a></div>
+            </div>
+        </div>
+    </div>
+</div>
 
-\t\t\t\t  <div class=\"login-help\">
-\t\t\t\t\t<a href=\"#\">Register</a> - <a href=\"#\">Forgot Password</a>
-\t\t\t\t  </div>
-\t\t\t\t</div>
-\t\t\t</div>
-\t\t  </div>
+<script type=\"text/javascript\">
+  
+  var host = '";
+        // line 103
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "';
+  var httpResult = {};
+// Funciones Auxiliares
+// Retorna la cantidad de metodos y propiedades de un objeto
+    function inspeccionar(obj)
+{
+  var msg = '';
+  for (var property in obj)
+  {
+    if (typeof obj[property] == 'function')
+    {
+      var inicio = obj[property].toString().indexOf('function');
+      var fin = obj[property].toString().indexOf(')')+1;
+      var propertyValue=obj[property].toString().substring(inicio,fin);
+      msg +=(typeof obj[property])+' '+property+' : '+propertyValue+' ;\\n';
+    }
+    else if (typeof obj[property] == 'unknown')
+    {
+      msg += 'unknown '+property+' : unknown ;\\n';
+    }
+    else
+    {
+      msg +=(typeof obj[property])+' '+property+' : '+obj[property]+' ;\\n';
+    }
+  }
+  return msg;
+}
+</script>
+
+<script type=\"text/javascript\">
+  setTimeout(function(){ reloadPage() }, 600000);
+
+    function reloadPage(argument) {
+        location.reload();
+    }
+
+</script>
+
+<!-- NG APP cordovezApp-->
+<script src=\"";
+        // line 142
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "js/lib/angular.min.js\"></script>
+<script src=\"";
+        // line 143
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "js/lib/angular-route.min.js\"></script>
+<script src=\"";
+        // line 144
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "js/app/app.js\"></script>
+<script src=\"";
+        // line 145
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "js/app/login/loginApp.js\"></script>
+<script src=\"";
+        // line 146
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "js/app/login/controllers.js\"></script>
+
+
+
+            <!-- jQuery -->
+            <script src=\"";
+        // line 151
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "vendor/jquery/jquery.min.js\"></script>
+            <!-- Bootstrap Core JavaScript -->
+            <script src=\"";
+        // line 153
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "vendor/bootstrap/js/bootstrap.min.js\"></script>
+            <!-- Metis Menu Plugin JavaScript -->
+            <script src=\"";
+        // line 155
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "vendor/metisMenu/metisMenu.min.js\"></script>
+            <!-- Custom Theme JavaScript -->
+            <script src=\"";
+        // line 157
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "dist/js/sb-admin-2.js\"></script>
+
+            <script type=\"text/javascript\">
+  \$('#myModal').on('shown.bs.modal', function () {
+  \$('#myInput').focus()
+})
+
+</script>
+</html>
+
 </body>
 ";
     }
@@ -196,7 +252,7 @@ class __TwigTemplate_238d403db5dde966d0d9a8244659b7b1357e7ac298a9bdacf9c10956dd0
 
     public function getDebugInfo()
     {
-        return array (  170 => 132,  54 => 19,  49 => 17,  44 => 15,  39 => 13,  34 => 11,  29 => 9,  19 => 1,);
+        return array (  228 => 157,  223 => 155,  218 => 153,  213 => 151,  205 => 146,  201 => 145,  197 => 144,  193 => 143,  189 => 142,  147 => 103,  86 => 45,  67 => 29,  54 => 19,  49 => 17,  44 => 15,  39 => 13,  34 => 11,  29 => 9,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -210,7 +266,7 @@ class __TwigTemplate_238d403db5dde966d0d9a8244659b7b1357e7ac298a9bdacf9c10956dd0
     public function getSourceContext()
     {
         return new Twig_Source("<!DOCTYPE html>
-<html lang=\"es\" ng-app=\"cordovezApp\">
+<html lang=\"es\" ng-app=\"cordovezApp\" ng-controller = \"loginController\">
 <head>
     <meta charset=\"utf-8\">
     <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">
@@ -234,124 +290,147 @@ class __TwigTemplate_238d403db5dde966d0d9a8244659b7b1357e7ac298a9bdacf9c10956dd0
         <script src=\"https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js\"></script>
         <script src=\"https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js\"></script>
         <![endif]-->
-    <style type=\"text/css\">
-    @import url(http://fonts.googleapis.com/css?family=Roboto);
+   
+   <style type=\"text/css\">
+     body { 
+  background: url({{base_url}}/img/importaciones-comercio.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
 
-    /****** LOGIN MODAL ******/
-    .loginmodal-container {
-      padding: 30px;
-      max-width: 350px;
-      width: 100% !important;
-      background-color: #F7F7F7;
-      margin: 0 auto;
-      border-radius: 2px;
-      box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
-      overflow: hidden;
-      font-family: roboto;
-    }
-
-    .loginmodal-container h1 {
-      text-align: center;
-      font-size: 1.8em;
-      font-family: roboto;
-    }
-
-    .loginmodal-container input[type=submit] {
-      width: 100%;
-      display: block;
-      margin-bottom: 10px;
-      position: relative;
-    }
-
-    .loginmodal-container input[type=text], input[type=password] {
-      height: 44px;
-      font-size: 16px;
-      width: 100%;
-      margin-bottom: 10px;
-      -webkit-appearance: none;
-      background: #fff;
-      border: 1px solid #d9d9d9;
-      border-top: 1px solid #c0c0c0;
-      /* border-radius: 2px; */
-      padding: 0 8px;
-      box-sizing: border-box;
-      -moz-box-sizing: border-box;
-    }
-
-    .loginmodal-container input[type=text]:hover, input[type=password]:hover {
-      border: 1px solid #b9b9b9;
-      border-top: 1px solid #a0a0a0;
-      -moz-box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
-      -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
-      box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
-    }
-
-    .loginmodal {
-      text-align: center;
-      font-size: 14px;
-      font-family: 'Arial', sans-serif;
-      font-weight: 700;
-      height: 36px;
-      padding: 0 8px;
-    /* border-radius: 3px; */
-    /* -webkit-user-select: none;
-      user-select: none; */
-    }
-
-    .loginmodal-submit {
-      /* border: 1px solid #3079ed; */
-      border: 0px;
-      color: #fff;
-      text-shadow: 0 1px rgba(0,0,0,0.1);
-      background-color: #4d90fe;
-      padding: 17px 0px;
-      font-family: roboto;
-      font-size: 14px;
-      /* background-image: -webkit-gradient(linear, 0 0, 0 100%,   from(#4d90fe), to(#4787ed)); */
-    }
-
-    .loginmodal-submit:hover {
-      /* border: 1px solid #2f5bb7; */
-      border: 0px;
-      text-shadow: 0 1px rgba(0,0,0,0.3);
-      background-color: #357ae8;
-      /* background-image: -webkit-gradient(linear, 0 0, 0 100%,   from(#4d90fe), to(#357ae8)); */
-    }
-
-    .loginmodal-container a {
-      text-decoration: none;
-      color: #666;
-      font-weight: 400;
-      text-align: center;
-      display: inline-block;
-      opacity: 0.6;
-      transition: opacity ease 0.5s;
-    }
-
-    .login-help{
-      font-size: 12px;
-    }
-    </style>
+.panel-default {
+opacity: 0.9;
+margin-top:30px;
+}
+.form-group.last { margin-bottom:0px; }
+   </style>
 </head>
 
 <body>
-
+<h1>{{userName}}</h1>
 <div class=\"container\">
-    \t  <div class=\"modal-dialog\">
-\t\t\t\t<div class=\"loginmodal-container\">
-\t\t\t\t\t<h1>Login to Your Account</h1><br>
-\t\t\t\t  <form method=\"post\" action=\"{{actionFrm}}\">
-\t\t\t\t\t<input type=\"text\" name=\"username\" placeholder=\"Username\">
-\t\t\t\t\t<input type=\"password\" name=\"password\" placeholder=\"Password\">
-\t\t\t\t\t<input type=\"submit\" name=\"login\" class=\"login loginmodal-submit\" value=\"Login\">
-\t\t\t\t  </form>
+    <div class=\"row\">
+        <div class=\"col-md-4 col-md-offset-7\">
+            <div class=\"panel panel-default\">
+                <div class=\"panel-heading\">
+                    <span class=\"glyphicon glyphicon-lock\"></span> Inicio de Sesion</div>
+                <div class=\"panel-body\">
+                    <form class=\"form-horizontal\" role=\"form\">
+                    <div class=\"form-group\">
+                        <label for=\"userName\" class=\"col-sm-3 control-label\">
+                            Email</label>
+                        <div class=\"col-sm-9\">
+                            <input 
+                            type=\"text\" 
+                            class=\"form-control\" 
+                            name=\"userName\" 
+                            ng-model=\"userName\" 
+                            placeholder=\"Usuario\" 
+                            required = \"true\">
+                        </div>
+                    </div>
+                    <div class=\"form-group\">
+                        <label for=\"inputPassword3\" class=\"col-sm-3 control-label\">
+                            Password</label>
+                        <div class=\"col-sm-9\">
+                            <input type=\"password\" class=\"form-control\" id=\"inputPassword3\" placeholder=\"Password\" required>
+                        </div>
+                    </div>
+                    <div class=\"form-group\">
+                        <div class=\"col-sm-offset-3 col-sm-9\">
+                            <div class=\"checkbox\">
+                                <label>
+                                    <input type=\"checkbox\"/>
+                                    Remember me
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=\"form-group last\">
+                        <div class=\"col-sm-offset-3 col-sm-9\">
+                            <button type=\"submit\" class=\"btn btn-success btn-sm\">
+                                Sign in</button>
+                                 <button type=\"reset\" class=\"btn btn-default btn-sm\">
+                                Reset</button>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+                <div class=\"panel-footer\">
+                    No tiene una cuenta? <a href=\"mailto:eduardouio7@gmail.com\">Solicitar Cuenta</a></div>
+            </div>
+        </div>
+    </div>
+</div>
 
-\t\t\t\t  <div class=\"login-help\">
-\t\t\t\t\t<a href=\"#\">Register</a> - <a href=\"#\">Forgot Password</a>
-\t\t\t\t  </div>
-\t\t\t\t</div>
-\t\t\t</div>
-\t\t  </div>
+<script type=\"text/javascript\">
+  
+  var host = '{{base_url}}';
+  var httpResult = {};
+// Funciones Auxiliares
+// Retorna la cantidad de metodos y propiedades de un objeto
+    function inspeccionar(obj)
+{
+  var msg = '';
+  for (var property in obj)
+  {
+    if (typeof obj[property] == 'function')
+    {
+      var inicio = obj[property].toString().indexOf('function');
+      var fin = obj[property].toString().indexOf(')')+1;
+      var propertyValue=obj[property].toString().substring(inicio,fin);
+      msg +=(typeof obj[property])+' '+property+' : '+propertyValue+' ;\\n';
+    }
+    else if (typeof obj[property] == 'unknown')
+    {
+      msg += 'unknown '+property+' : unknown ;\\n';
+    }
+    else
+    {
+      msg +=(typeof obj[property])+' '+property+' : '+obj[property]+' ;\\n';
+    }
+  }
+  return msg;
+}
+</script>
+
+<script type=\"text/javascript\">
+  setTimeout(function(){ reloadPage() }, 600000);
+
+    function reloadPage(argument) {
+        location.reload();
+    }
+
+</script>
+
+<!-- NG APP cordovezApp-->
+<script src=\"{{base_url}}js/lib/angular.min.js\"></script>
+<script src=\"{{base_url}}js/lib/angular-route.min.js\"></script>
+<script src=\"{{base_url}}js/app/app.js\"></script>
+<script src=\"{{base_url}}js/app/login/loginApp.js\"></script>
+<script src=\"{{base_url}}js/app/login/controllers.js\"></script>
+
+
+
+            <!-- jQuery -->
+            <script src=\"{{base_url}}vendor/jquery/jquery.min.js\"></script>
+            <!-- Bootstrap Core JavaScript -->
+            <script src=\"{{base_url}}vendor/bootstrap/js/bootstrap.min.js\"></script>
+            <!-- Metis Menu Plugin JavaScript -->
+            <script src=\"{{base_url}}vendor/metisMenu/metisMenu.min.js\"></script>
+            <!-- Custom Theme JavaScript -->
+            <script src=\"{{base_url}}dist/js/sb-admin-2.js\"></script>
+
+            <script type=\"text/javascript\">
+  \$('#myModal').on('shown.bs.modal', function () {
+  \$('#myInput').focus()
+})
+
+</script>
+</html>
+
 </body>
 ", "/pages/pageLogin.html.twig", "/var/www/html/app/src/views/pages/pageLogin.html.twig");
     }

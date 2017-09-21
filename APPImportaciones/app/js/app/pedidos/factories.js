@@ -16,7 +16,7 @@ var serviceBase = host + 'index.php/';
 Factory Incoterms
 -----------------------------------------------------------------------------**/
 cordovezApp.factory('serviceIncoterms' , ['$http', '$rootScope', '$q' ,
-																function($http, $rootScope, $q){
+											 function($http, $rootScope, $q){
 	console.log('[Debug] load Factory serviceIncoterms');
 
 	//funcion estandar para GET
@@ -48,11 +48,31 @@ cordovezApp.factory('serviceIncoterms' , ['$http', '$rootScope', '$q' ,
 
 	var service = {};
 
-    //#Lista los incoterms por tipo ejemplo FOB EXW etc
-	service.getIncotermsTypes = function(incoterms){
-   	console.log['[Debug] service.getIncotermsTypes'];
-   	return httpGet('incoterm/getType/' + incoterms);
-   };
+    //#Lista los incoterms por tipo
+	service.getIncoterms = function(){
+        console.log('[Debug] service.getIncoterms');
+        return httpGet('incoterm/getIncoterms/');
+    };
+
+    //#Lista los incoterms por tipo
+    service.getincotermsCountries = function(incoterm){
+        console.log('[Debug] service.getincotermsCountries');
+        return httpGet('incoterm/getIncoterms/' + incoterm); 
+    };
+
+    //#Lista los incoterms por tipo
+    service.getIincotermsCities = function(incoterm , country){
+        console.log('[Debug] service.getIincotermsCities');
+        return httpGet('incoterm/getIncoterms/' + incoterm + '/' + country); 
+    };
+
+    //#Lista los incoterms por tipo
+    service.getIncotermsParam = function(incoterm , country, city){
+        console.log('[Debug] service.getIncotermsParam');
+        return httpGet('incoterm/getIncoterms/' + incoterm + '/' + 
+                                                        country + '/' + city);           
+    };
+
 
 	 return service;
 

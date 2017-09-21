@@ -1,4 +1,4 @@
-<?php
+	<?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 /**
  * Modulo encargado de manejar los proveedores, CRUD y validaciones
@@ -13,31 +13,91 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Incoterm extends MY_Controller {
 	private $resultDb;
-	private $controllerSPA = "incoterm_provicion";
+	private $controllerSPA = "incoterm_provision";
 	private $responseHTTP = array("status" => "success");
 	private $viewData;
 
 
 	/**
-	 * Obtiene una lista de los incoterms de acuerdo con los tipos y aplica filtro
-	 * $name = nombre de la columna incoterm
-	 * Ejemplo:
-	 * Listar Tipo de incoterms => $type = FOB FCR EXW etc
-	 * Lostar por Pais 
-	 * @return array JSON
-	 */
-	public function getType(){
-		#obtiene un listado de todos los incoterms rependiento el tipo
+	* Obtiene la lista de incoterms de acuerdo al los siguientes criterios, 
+	* progresivamente si se da el parametro $city se debe tener valores para los
+	* dos anteriores y de la misma forma en caso de $country
+	*
+	* (Nada) => Lista incoterms por tipo
+	* Si $iconterm => Lista Los incoterms por pais
+	* Si $incoterm & $country => lista las ciudades donde coincidan los dos param
+	* Si $incoterm & $country & $city Lista las tipos de incoterms disponibles
+	* es el origen especificado ejemplo
+	* 
+	* $incoterm = 'FOB'; 
+	* $country =  'ESPANA'; 
+	* $city = 'MADRID'
+	*
+	* Retorna 
+	* +-------------+---------------------+---------+-----------+--------+------
+	* | id_incoterm | tipo                | pais    | incoterms | ciudad | tarifa 
+	* +-------------+---------------------+---------+-----------+--------+--------
+	* |           5 | GASTO INTERNACIONAL | ESPAÑA  | FOB       | BILVAO |      0 
+	* |          16 | FLETE               | ESPAÑA  | FOB       | BILVAO |      0 
+	* +-------------+---------------------+---------+-----------+--------+--------
+	*
+	* @param $incoterm tipo de incoterm
+	* @param $country  nombre del pais
+	* @param $incoterm  nombre de la ciudad
+	*
+	* @return array JSON
+	* 
+	**/
+	public function getIncoterms($incoterm = "", $country = "" , $city = ""){
 			
-      $this->db->select('incoterms');
-      $this->db->group_by('incoterms');
-      $this->resultDb = $this->db->get($this->controllerSPA);
-      
-			if($this->resultDb->num_rows() > 0){
+		#base_url/getIncoterms/
+		if($incoterm == "" && $country == ""  && $city == ""){
+			$this->db->select('incoterms');
+			$this->db->group_by('incoterms');
+			$this->resultDb = $this->db->get($this->controllerSPA);	
+		}
+
+		#base_url/getIncoterms/exw/
+		if($incoterm != "" && $country == ""  && $city == ""){
+			$this->db->select('pais');
+			$this->db->where('incoterms' , $incoterm);
+    	$this->db->group_by('pais');
+    	$this->resultDb = $this->db->get($this->controllerSPA);
+		}
+
+		#base_url/getIncoterms/exw/argentina
+		if($incoterm != "" && $country != ""  && $city == ""){
+			$this->db->select('ciudad');
+			$this->db->where('incoterms' , $incoterm);
+			$this->db->where('pais' , $country);
+    	$this->db->group_by('ciudad');
+    	$this->resultDb = $this->db->get($this->controllerSPA);
+		}
+
+		#base_url/getIncotrems/exw/argentina/mendoza
+		if($incoterm != "" && $country != ""  && $city != ""){
+			$columns = array (
+												'id_incoterm',
+												'incoterms',
+												'tipo',
+												'pais',
+												'ciudad',
+												'tarifa',
+												'comentarios'
+												);
+			$this->db->select($columns);
+			$this->db->where('incoterms' , $incoterm);
+			$this->db->where('pais' , $country);
+			$this->db->where('ciudad' , $city);
+    	$this->resultDb = $this->db->get($this->controllerSPA);
+		}
+		
+
+    if($this->resultDb->num_rows() > 0){
 			$this->responseHTTP["data"] = $this->resultDb->result_array();
 			$this->responseHTTP["message"] = "Se encontraron " .
 																			$this->resultDb->num_rows() .
-																			" items";
+																			" registros";
 			$this->responseHTTP["count"] = $this->resultDb->num_rows();
 			$this->responseHTTP["appst"] = "1100";
 
@@ -50,4 +110,6 @@ class Incoterm extends MY_Controller {
 		}	
 			$this->__responseHttp($this->responseHTTP, 200);
 	}
+
+
 }

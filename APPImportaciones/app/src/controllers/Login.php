@@ -57,6 +57,8 @@ class Login extends MY_Controller {
 		if($this->rest->_getRequestMethod()!= 'POST'){
 			$this->_notAuthorized();
 		}
+
+		print (var_dump('datos recibidos'));
 		//$request =  json_decode(file_get_contents('php://input',true));
 		$user = $this->input->post();
 

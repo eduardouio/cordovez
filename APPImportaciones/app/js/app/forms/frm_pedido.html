@@ -8,7 +8,7 @@
 				type="text"
 				required="true"
 				name="nro_pedido"
-				ng-model ="nro_pedido"
+				ng-model ="pedido.nro_pedido"
 				placeholder="0000-00" 
 				maxlength="6" 
 				minlength="6" 
@@ -23,7 +23,7 @@
 				class="form-control" 
 				required="true" 
 				name="regimen"
-				ng-model="regimen"
+				ng-model="pedido.regimen"
 				>
 				<option value="" disabled selected>Seleccione ...</option>
 				<option value="70">Régimen 70</option>
@@ -42,22 +42,22 @@
 				placeholder="0.00" 
 				required="true"
 				name="seguro_aduana"
-				ng-model ="seguro_aduana"
+				ng-model ="pedido.seguro_aduana"
 				>
 			</div>
 		</div>
 
 		<div class="col-md-2">
 			<div class="form-group">
-				<label>Flete Aduana</label>
+				<label>Gst Origen</label>
 				<input 
 				class="form-control" 
 				type="number"
 				required="true"
 				step="0.01" 
 				placeholder="0.00" 
-				name="flete_aduana"
-				ng-model ="flete_aduana"
+				name="antes_fob"
+				ng-model ="pedido.antes_fob"
 				>
 			</div>
 		</div>
@@ -71,7 +71,7 @@
 				step="0.01" 
 				placeholder="0.00" 
 				name="flete_aduana"
-				ng-model ="flete_aduana"
+				ng-model = "pedido.flete_aduana"
 				>
 				<input 
          type="hidden" 
@@ -83,7 +83,12 @@
 
 		<div class="col-md-2">
 			<label>Incoterm</label>
-			<button data-toggle="modal" data-target="#myModal" type="button" class="btn btn-info">
+			<button 
+			data-toggle="modal" 
+			data-target="#myModal" 
+			type="button" 
+			class="btn btn-info" 
+			ng-click="getIncoterms()">
 				<span class="fa fa-plus fa-fw"> </span>
 			</button>
 		</div>
@@ -112,7 +117,7 @@
       <div class="modal-header">
         <h3 class="modal-title" id="myModalLabel">Seleccione un Incoterm</h3>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+          <span aria-hidden="true" class="btn btn-danger">X</span>
         </button>
       </div>
       <div class="modal-body">
@@ -124,9 +129,15 @@
 						<select
 						class="form-control" 
 						required="true" 
+						ng-model = "incotermName"
+						ng-change = "getIncotermsCountries(incotermName)"
 						>
 						<option value="" disabled selected>Seleccione ...</option>
-						<option ng-repeat = "(key, value) in incoterms" value="{{value.incoterms}}">{{value.incoterms}}</option>
+						<option 
+						ng-repeat = "(key, value) in incoterms.incoterm" 
+						value="{{value.incoterms}}">
+						{{value.incoterms}}
+						</option>
 						</select>
 					</div>
        </div>
@@ -139,33 +150,60 @@
 						<select
 						class="form-control" 
 						required="true" 
+						ng-model = "country"
+						ng-change ="getIncotermsCities(incotermName, country)"
 						>
 						<option value="" disabled selected>Seleccione ...</option>
-						<option ng-repeat = "(key, value) in incoterms" value="{{value.pais}}">{{value.pais}}</option>
+						<option ng-repeat = "(key, value) in incoterms.countries" value="{{value.pais}}">{{value.pais}}</option>
 						</select>
 					</div>
        </div>
        </div>
-
-       <div class="row">
+        <div class="row">
        	<div class="col-sm-12">
        			<div class="form-group">
 						<label>Ciudad de Origen</label>
 						<select
 						class="form-control" 
-						required="true" 
+						required="true"
+						ng-model = "city"
+						ng-change = "getIncotermParam(incotermName ,country, city)"
 						>
 						<option value="" disabled selected>Seleccione ...</option>
-						<option ng-repeat = "(key, value) in incoterms" value="{{value.ciudad}}">{{value.ciudad}}</option>
+						<option ng-repeat = "(key, value) in incoterms.cities" value="{{value.ciudad}}">{{value.ciudad}}</option>
 						</select>
+					</div>
+
+					<div class="row">
+						<div class="col-sm-12">
+							<table class="table table-condensed table-hover table-condensed">
+								<thead>
+									<tr>
+										<th>id</th>
+										<th>tipo</th>
+										<th>tarifa</th>
+										<th>comentarios</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat = "(key, value) in incoterms.param">
+										<td>{{value.id_incoterm}}</td>
+										<td>{{value.tipo}}</td>
+										<td>{{value.tarifa | currency }}</td>
+										<td>{{value.comentarios}}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<button type="button" class="btn btn-primary" style="width: 100%">Aplicar</button>
+						</div>
 					</div>
        </div>
        </div>
        	</form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-primary">Seleccionar Incoterm</button>
       </div>
     </div>
   </div>

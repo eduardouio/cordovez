@@ -29,13 +29,10 @@ class Facturapagos extends MY_Controller {
 
 		if( $this->resultDb->num_rows > 0 ){
 			$this->responseHTTP["data"] = $this->resultDb->result_array();
-			$this->responseHTTP["message"] = "registro encontrado'.
-															 'correctamente";
-			$this->responseHTTP["appst"] = 1100;
+			$this->responseHTTP["appst"] = "El registro listado correctamente";
 		}else{
 			$this->responseHTTP["data"] = $this->resultDb->result_array();
-			$this->responseHTTP["message"] = "El registro no existe";
-			$this->responseHTTP["appst"] = 2500;
+			$this->responseHTTP["appst"] = "El registro solicitado no existe";
 		}
 
 
@@ -64,14 +61,13 @@ class Facturapagos extends MY_Controller {
 			if($this->resultDb->num_rows() > 0){
 			$this->responseHTTP["data"] = $this->resultDb->result_array();
 			$this->responseHTTP["infoTable"] =
-								 $this->mymodel->getInfo($this->controllerSPA);
-			$this->responseHTTP["message"] = "Se encontraron " .
-							$this->resultDb->num_rows() . " registros";
-			$this->responseHTTP["appst"] = 1100;
+																	$this->mymodel->getInfo($this->controllerSPA);
+			$this->responseHTTP["appst"] = "Se encontraron " .
+																			$this->resultDb->num_rows() .
+																			" items";
 		}else{
 			$this->responseHTTP["data"] = $this->resultDb->result_array();
-			$this->responseHTTP["message"] = "No existen registros almacenados";
-			$this->responseHTTP["appst"] = 2100;
+			$this->responseHTTP["appst"] = "No existen registros almacenados";
 		}
 			$this->__responseHttp($this->responseHTTP, 200);
 	}
@@ -91,14 +87,12 @@ class Facturapagos extends MY_Controller {
 		#verificamos que el registro existe
 		$this->db->where('nro_factura', $facPgPedido['nro_factura']);
 		$this->db->where('identificacion_proveedor', 
-									 $facPgPedido['identificacion_proveedor']);
+																			$facPgPedido['identificacion_proveedor']);
 
 		$this->resultDb = $this->db->get($this->controllerSPA);
-		if($this->resultDb->num_rows() != null && 
-											   $request['accion'] == 'create'){
-			$this->responseHTTP['message'] = 'Ya existe un registro'.
-												  'con el mismo identificador';
-			$this->responseHTTP["appst"] = 2300;
+		if($this->resultDb->num_rows() != null && $request['accion'] == 'create'){
+			$this->responseHTTP['appst'] =
+														'Ya existe un registro con el mismo identificador';
 			$this->responseHTTP['data'] = $this->resultDb->result_array();
 			$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 			$this->__responseHttp($this->responseHTTP, 400);
@@ -108,31 +102,28 @@ class Facturapagos extends MY_Controller {
 			if ($status['status']){
 
 				#anulamos las fechas en blanco se las pasa como null
-				$facPgPedido['fecha_emision'] = 
-								(empty($facPgPedido['fecha_emision'])) ? null : 
-											   	$facPgPedido['fecha_emision'] ;
+				$facPgPedido['fecha_emision'] = (empty($facPgPedido['fecha_emision'])) ? 
+																				null : 
+																								$facPgPedido['fecha_emision'] ;
+
+				print(var_dump($facPgPedido['fecha_emision']));
 
 				if ($request['accion'] == 'create'){
 					$this->db->insert($this->controllerSPA, $facPgPedido);
-					$this->responseHTTP['message'] = 'Registro creado'.
-															  'existosamente';
-					$this->responseHTTP["appst"] = 1200;
-					$this->responseHTTP['lastInfo'] = 
-													$this->mymodel->lastInfo();
+					$this->responseHTTP['appst'] = 'Registro agregado existosamente';
+					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 					$this->__responseHttp($this->responseHTTP, 201);
 				}else{
 					$facPgPedido['last_update'] = date('Y-m-d H:i:s');
 					$this->db->where('id_factura_pagos',
-												 $request['id_factura_pagos']);
+														 $request['id_factura_pagos']);
 					$this->db->update($this->controllerSPA, $facPgPedido);
-					$this->responseHTTP['message'] = 'Registro actualizado';
-					$this->responseHTTP["appst"] = 1300;
+					$this->responseHTTP['appst'] = 'Registro actualizado actualizado';
 					$this->__responseHttp($this->responseHTTP, 201);
 				}
 			}else{
-				$this->responseHTTP['message'] = 'Uno de los registros'.
-				 				'ingresados es incorrecto, vuelva a intentar';
-				$this->responseHTTP["appst"] = 1400;
+				$this->responseHTTP['appst'] =
+								'Uno de los datos ingresados es incorrecto, vuelva a intentar';
 				$this->responseHTTP['data'] = $status;
 				$this->__responseHttp($this->responseHTTP, 400);
 			}
@@ -163,19 +154,16 @@ class Facturapagos extends MY_Controller {
 			if  ($this->resultDb->num_rows() > 0){
 				$this->db->where('id_factura_pagos',  $idFacPagos);
 				$this->db->delete($this->controllerSPA);
-				$this->responseHTTP['message'] = 'Regitro eliminado'.
-															  'correctamente';
-				$this->responseHTTP["appst"] = 1500;
+				$this->responseHTTP['appst'] = 'Regitro eliminado correctamente';
 			}else{
-				$this->responseHTTP['message'] = 'El registro que intenta'.
-														 'eliminar no existe';
-				$this->responseHTTP["appst"] = 2500;
+				$this->responseHTTP['appst'] =
+							'El registro que intenta eliminar no existe';
 			}
 
 		}else{
-			$this->responseHTTP['message'] = 'El registro no se puede'.
-			 									'eliminar tiene dependencias';
-			$this->responseHTTP["appst"] = 2400;
+			$this->responseHTTP['appst'] =
+																	'El registro no se puede eliminar ' . 
+																	'tiene dependencias';
 		}
 
 		$this->__responseHttp($this->responseHTTP, 200);

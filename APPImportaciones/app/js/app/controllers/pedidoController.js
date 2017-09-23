@@ -10,10 +10,9 @@
  * @filesource
  */
 cordovezApp.controller('pedidosController',
- 										function($scope , $location , $timeout, serviceIncoterms) {
+ 										function($scope , $location , $timeout, incotermsFactory) {
 
-
-
+  
   //Alamcena todos los datos de los incoterms
   $scope.incoterms = {};
   $scope.viewIncoterms = {
@@ -25,7 +24,7 @@ cordovezApp.controller('pedidosController',
   //Listado de incoterms para obtener la lista de incoterms
   $scope.getIncoterms = function(){
      
-    var responseHttp = serviceIncoterms.getIncoterms();
+    var responseHttp = incotermsFactory.getIncoterms();
 
       responseHttp.then(
         function(response){
@@ -41,7 +40,7 @@ cordovezApp.controller('pedidosController',
 
   //Obtiene la lista de paises por incoterm
   $scope.getIncotermsCountries = function(incoterm){
-     var responseHttp = serviceIncoterms.getincotermsCountries(incoterm);
+     var responseHttp = incotermsFactory.getincotermsCountries(incoterm);
 
       responseHttp.then(
         function(response){
@@ -60,7 +59,7 @@ cordovezApp.controller('pedidosController',
       country = country.replace('Ñ' , 'N');      
     }
 
-     var responseHttp = serviceIncoterms.getIincotermsCities(incoterm, 
+     var responseHttp = incotermsFactory.getIincotermsCities(incoterm, 
                                                                       country);
 
       responseHttp.then(
@@ -80,7 +79,7 @@ cordovezApp.controller('pedidosController',
       country = country.replace('Ñ' , 'N');      
     }
 
-    var responseHttp = serviceIncoterms.getIncotermsParam(incoterm,  country , city);
+    var responseHttp = incotermsFactory.getIncotermsParam(incoterm,  country , city);
       responseHttp.then(
         function(response){
           $scope.incoterms['param'] = response.data;
@@ -96,8 +95,6 @@ cordovezApp.controller('pedidosController',
     //identificamos de donde viene la llamada a la funcion
     var mypath = location.path();
     var callNuevoPedido = /\/nuevo-pedido/;
-
-
    };
 	
 

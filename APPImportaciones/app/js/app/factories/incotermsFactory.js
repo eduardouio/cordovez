@@ -1,5 +1,6 @@
 /**
- * MODULO ENCARGADO DE MANEJAR LAS PETICIONES GET Y POST EN EL SERVIDOR
+ * Modulo encargado demanejar el controller
+ * http://base_url/app/index.php/incoterm
  *
  * @package    CordovezApp JS
  * @author    Eduardo Villota <eduardouio7@gmail.com>
@@ -10,16 +11,14 @@
  * @filesource
  */
 
-var serviceBase = host + 'index.php/';
+var serviceBase = host + 'index.php/incoterm';
 
-/**-----------------------------------------------------------------------------
-Factory Incoterms
------------------------------------------------------------------------------**/
-cordovezApp.factory('serviceIncoterms' , ['$http', '$rootScope', '$q' ,
+
+cordovezApp.factory('incotermsFactory' , ['$http', '$rootScope', '$q' ,
 											 function($http, $rootScope, $q){
-	console.log('[Debug] load Factory serviceIncoterms');
+	console.log('[Debug] load Factory incotermsFactory');
 
-	//funcion estandar para GET
+    //funcion estandar para GET
          function httpGet(url){
          var deferred = $q.defer();
          var promise = deferred.promise;
@@ -73,7 +72,17 @@ cordovezApp.factory('serviceIncoterms' , ['$http', '$rootScope', '$q' ,
                                                         country + '/' + city);           
     };
 
+    //#lista los proveedores
+    service.getSuppliers = function(idSupplier){
+        console.log('[Debug] service.getSuppliers');
+        if(idSupplier === 0 ){
+          return httpGet('listar');    
+        }else{
+          return httpGet('listar/' + idSupplier);
+        }
+    };
 
-	 return service;
+     return service;
+
 
 }])

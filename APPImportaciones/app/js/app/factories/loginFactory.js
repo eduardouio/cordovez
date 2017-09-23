@@ -13,10 +13,8 @@
 
 var serviceBase = host + 'index.php/';
 
-/**-----------------------------------------------------------------------------
-Factory Incoterms
------------------------------------------------------------------------------**/
-cordovezApp.factory('serviceIncoterms' , ['$http', '$rootScope', '$q' ,
+
+cordovezApp.factory('factoryLogin' , ['$http', '$rootScope', '$q' ,
 											 function($http, $rootScope, $q){
 
     //funciones comunes de login 
@@ -40,9 +38,9 @@ cordovezApp.factory('serviceIncoterms' , ['$http', '$rootScope', '$q' ,
 
     	$http.post(serviceBase + url , data).then(
     		function (response){
-    			return deferred.resolve(promise);
-    		}, function(eror){
-    			return deferred.deject(error);
+    			return deferred.resolve(response.data);
+    		}, function(error){
+    			return deferred.reject(error);
     		});
     	return promise;
     }
@@ -52,7 +50,13 @@ cordovezApp.factory('serviceIncoterms' , ['$http', '$rootScope', '$q' ,
 	//#Envia el formulario a validar
 	service.postFormData = function(userData){
 		console.log('[Debug] postFormData');
-		return httpGet('login/validar', userData)
-	};
+		return httpPost('login/validar', userData)
+    };
 
+    service.checkSession = function(){
+        console.log('[Debug] service.checkSession');
+        return httpGet('login/checkSession');
+    }
+
+    return service;
 }]);

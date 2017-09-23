@@ -1,4 +1,4 @@
-<form >
+<form>
 	<div class="row">
 		<div class="col-md-2">
 			<div class="form-group">
@@ -34,7 +34,7 @@
 	
    	<div class="col-md-2">
 			<div class="form-group">
-				<label>Seguro Aduana</label>
+				<label>Seguro</label>
 				<input 
 				class="form-control" 
 				type="number"
@@ -87,21 +87,48 @@
 			data-toggle="modal" 
 			data-target="#myModal" 
 			type="button" 
-			class="btn btn-info" 
+			class="btn btn-default btn-sm" 
 			ng-click="getIncoterms()">
 				<span class="fa fa-plus fa-fw"> </span>
 			</button>
 		</div>
 </div>
-
-
+<div class="row">
+	<div class="col-md-3">
+					<div class="form-group">
+				<label>Pais Origen</label>
+				<img src="{{selectedCountry.flag}}"/>
+				<input 
+				class="form-control" 
+				type="text"
+				required="true"
+				name="paiso_origen"
+				ng-model = "pedido.paiso_origen"
+				>
+			</div>
+	</div>
+	<div class="col-md-3">
+		<label>País Origen</label>
+		    <angucomplete 
+		    id="ex1" 
+		    placeholder="Buscar Pais" 
+		    pause="100" 
+		    selectedobject="selectedCountry" 
+		    localdata="countries" 
+		    searchfields="name" 
+		    titlefield="name" 
+		    minlength="1" 
+		    inputclass="form-control form-control-small" 
+		    matchclass="highlight" />
+	</div>
+</div
    <div class="row">
       <div class="col-md-12">
       	<hr>
-         <button type="submit" class="btn btn-primary">
+         <button type="submit" class="btn btn-primary btn-sm">
          <span class="fa fa-save fa-fw"></span>
          Guardar Registro</button>
-         <button type="reset" class="btn btn-secondary">
+         <button type="reset" class="btn btn-secondary btn-sm">
          <span class="fa fa-refresh fa-fw"></span>
          Limpiar Formulario</button>
        </div>
@@ -109,16 +136,15 @@
  </div>
 </form>
 
-
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h3 class="modal-title" id="myModalLabel">Seleccione un Incoterm</h3>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true" class="btn btn-danger">X</span>
-        </button>
+        <span  class="pull-right" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="btn btn-danger btn-sm">X</span>
+        </span>
       </div>
       <div class="modal-body">
        	<form>

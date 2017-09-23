@@ -16,7 +16,7 @@ cordovezApp.config(function($routeProvider, $locationProvider) {
 	$routeProvider
 		
 		.when('/nuevo-pedido', {
-			templateUrl : host + '/js/app/forms/frm_pedido.html',
+			templateUrl : host + '/js/app/views/forms/frm_pedido.html',
 			controller 	: 'pedidosController',
 			controllerAs : 'pedidosCtrl'
 		})

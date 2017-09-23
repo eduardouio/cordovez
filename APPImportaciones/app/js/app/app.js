@@ -10,7 +10,8 @@
  * @filesource
  */
 
-var cordovezApp = angular.module('cordovezApp', ['ngRoute']);
+var cordovezApp = angular.module('cordovezApp', ['ngRoute', 'ngTouch', 
+																															'angucomplete']);
 
 
 

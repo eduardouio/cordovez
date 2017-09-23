@@ -63,7 +63,10 @@ class __TwigTemplate_8a1c68b9ca3bd2ec99c021d16d432c968600b368e22f2432cc2222b9f50
                         <li><a href=\"#\"><i class=\"fa fa-gear fa-fw\"></i> Settings</a>
                         </li>
                         <li class=\"divider\"></li>
-                        <li><a href=\"login.html\"><i class=\"fa fa-sign-out fa-fw\"></i> Logout</a>
+                        <li><a href=\"";
+        // line 45
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "index.php/login/cerrarSesion\"><i class=\"fa fa-sign-out fa-fw\"></i> Logout</a>
                         </li>
                     </ul>
                     <!-- /.dropdown-user -->
@@ -85,7 +88,7 @@ class __TwigTemplate_8a1c68b9ca3bd2ec99c021d16d432c968600b368e22f2432cc2222b9f50
 
     public function getDebugInfo()
     {
-        return array (  33 => 13,  19 => 1,);
+        return array (  68 => 45,  33 => 13,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -142,7 +145,7 @@ class __TwigTemplate_8a1c68b9ca3bd2ec99c021d16d432c968600b368e22f2432cc2222b9f50
                         <li><a href=\"#\"><i class=\"fa fa-gear fa-fw\"></i> Settings</a>
                         </li>
                         <li class=\"divider\"></li>
-                        <li><a href=\"login.html\"><i class=\"fa fa-sign-out fa-fw\"></i> Logout</a>
+                        <li><a href=\"{{base_url}}index.php/login/cerrarSesion\"><i class=\"fa fa-sign-out fa-fw\"></i> Logout</a>
                         </li>
                     </ul>
                     <!-- /.dropdown-user -->

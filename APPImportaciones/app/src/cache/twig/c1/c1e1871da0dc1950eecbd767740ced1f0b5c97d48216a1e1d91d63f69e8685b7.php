@@ -17,7 +17,7 @@ class __TwigTemplate_238d403db5dde966d0d9a8244659b7b1357e7ac298a9bdacf9c10956dd0
     {
         // line 1
         echo "<!DOCTYPE html>
-<html lang=\"es\" ng-app=\"cordovezApp\" ng-controller = \"loginController\">
+<html lang=\"es\" ng-app=\"cordovezApp\" ng-controller=\"loginController\">
 <head>
     <meta charset=\"utf-8\">
     <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">
@@ -62,10 +62,7 @@ class __TwigTemplate_238d403db5dde966d0d9a8244659b7b1357e7ac298a9bdacf9c10956dd0
    
    <style type=\"text/css\">
      body { 
-  background: url(";
-        // line 29
-        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "/img/importaciones-comercio.jpg) no-repeat center center fixed; 
+  background: url(http://deskbg.com/s3/wpp/0/416/abstract-white-desktop-background.jpg) no-repeat center center fixed; 
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -78,39 +75,104 @@ margin-top:30px;
 }
 .form-group.last { margin-bottom:0px; }
    </style>
+
+   <style>
+.ng-enter {
+transition: 0.75s;
+}
+
+.ng-enter-stagger{
+  transition-delay: 0.1s;
+}
+
+.ng-leave-stagger{
+  transition-delay: 0.1s;
+}
+
+.ng-enter-active{
+  opacity: 1;
+}
+
+.ng-leave{
+  transition: 0.75s;
+  opacity: 1;
+}
+
+.ng-leave-active{
+  opacity: 0;
+}
+
+}
+
+</style>
+
 </head>
 
 <body>
-<h1>";
-        // line 45
-        echo twig_escape_filter($this->env, ($context["userName"] ?? null), "html", null, true);
-        echo "</h1>
 <div class=\"container\">
+  <div class=\"row\">
+    &nbsp;
+  </div>
+  <div class=\"row\" ng-show=\"showError\">
+    <div class=\"col-md-5 thumbnail\">
+      <span class=\"btn text text-danger pull-right\"
+      ng-click=\"showError = false\"
+      >X</span>
+      <h4 class=\"text text-danger\">";
+        // line 85
+        echo "{{message}}";
+        echo "</h4>
+    </div>
+  </div>
+  <div class=\"row\"  ng-show=\"showSuccess\">
+    <div class=\"col-md-5\" thumbnail>
+      <span class=\"btn text text-danger pull-right\"
+      ng-click=\"showSuccess = false\"
+      >X</span>
+      <span class=\"text text-success\">";
+        // line 93
+        echo "{{message}}";
+        echo "</span>
+      <img src=\"";
+        // line 94
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "/img/spiner.gif\" style=\"width: 15%; height: auto\">
+    </div>
+  </div>
     <div class=\"row\">
         <div class=\"col-md-4 col-md-offset-7\">
             <div class=\"panel panel-default\">
                 <div class=\"panel-heading\">
+
                     <span class=\"glyphicon glyphicon-lock\"></span> Inicio de Sesion</div>
                 <div class=\"panel-body\">
-                    <form class=\"form-horizontal\" role=\"form\">
+                    <form class=\"form-horizontal\" role=\"form\" ng-submit=\"sendData(user)\">
                     <div class=\"form-group\">
                         <label for=\"userName\" class=\"col-sm-3 control-label\">
-                            Email</label>
+                            Usuario</label>
                         <div class=\"col-sm-9\">
                             <input 
                             type=\"text\" 
                             class=\"form-control\" 
-                            name=\"userName\" 
-                            ng-model=\"userName\" 
+                            name=\"user.username\" 
+                            ng-model=\"user.username\" 
                             placeholder=\"Usuario\" 
-                            required = \"true\">
+                            required = \"true\"
+                            autofocus=\"true\">
                         </div>
                     </div>
                     <div class=\"form-group\">
                         <label for=\"inputPassword3\" class=\"col-sm-3 control-label\">
-                            Password</label>
+                            Contraseña</label>
                         <div class=\"col-sm-9\">
-                            <input type=\"password\" class=\"form-control\" id=\"inputPassword3\" placeholder=\"Password\" required>
+                            <input 
+                            type=\"password\" 
+                            class=\"form-control\" 
+                            id=\"inputPassword3\" 
+                            placeholder=\"Password\" 
+                            name=\"user.password\" 
+                            ng-model=\"user.password\" 
+                            required>
                         </div>
                     </div>
                     <div class=\"form-group\">
@@ -118,32 +180,34 @@ margin-top:30px;
                             <div class=\"checkbox\">
                                 <label>
                                     <input type=\"checkbox\"/>
-                                    Remember me
+                                    Recordarme
                                 </label>
                             </div>
                         </div>
                     </div>
                     <div class=\"form-group last\">
                         <div class=\"col-sm-offset-3 col-sm-9\">
-                            <button type=\"submit\" class=\"btn btn-success btn-sm\">
-                                Sign in</button>
+                             <input 
+                             class=\"btn btn-primary btn-sm\" 
+                             type=\"submit\" id=\"submit\" value=\"Iniciar Sesión\" />
                                  <button type=\"reset\" class=\"btn btn-default btn-sm\">
-                                Reset</button>
+                                Limpiar</button>
                         </div>
                     </div>
                     </form>
                 </div>
                 <div class=\"panel-footer\">
-                    No tiene una cuenta? <a href=\"mailto:eduardouio7@gmail.com\">Solicitar Cuenta</a></div>
+                    No tiene una cuenta? <a href=\"mailto:someone@example.com?Subject=Hello%20again\">Solicitar Cuenta</a></div>
             </div>
         </div>
     </div>
+
 </div>
 
 <script type=\"text/javascript\">
   
   var host = '";
-        // line 103
+        // line 164
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "';
   var httpResult = {};
@@ -185,46 +249,55 @@ margin-top:30px;
 
 <!-- NG APP cordovezApp-->
 <script src=\"";
-        // line 142
+        // line 203
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "js/lib/angular.min.js\"></script>
 <script src=\"";
-        // line 143
+        // line 204
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "js/lib/angular-route.min.js\"></script>
 <script src=\"";
-        // line 144
+        // line 205
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "js/lib/angular-touch.min.js\"></script>
+
+<script src=\"";
+        // line 207
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "js/app/app.js\"></script>
 <script src=\"";
-        // line 145
+        // line 208
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "js/app/login/loginApp.js\"></script>
+        echo "js/app/factories/loginFactory.js\"></script>
 <script src=\"";
-        // line 146
+        // line 209
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "js/app/login/controllers.js\"></script>
+        echo "js/app/directives/autocompleteDirective.js\"></script>
+<script src=\"";
+        // line 210
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "js/app/controllers/loginController.js\"></script>
 
 
 
             <!-- jQuery -->
             <script src=\"";
-        // line 151
+        // line 215
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/jquery/jquery.min.js\"></script>
             <!-- Bootstrap Core JavaScript -->
             <script src=\"";
-        // line 153
+        // line 217
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/bootstrap/js/bootstrap.min.js\"></script>
             <!-- Metis Menu Plugin JavaScript -->
             <script src=\"";
-        // line 155
+        // line 219
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/metisMenu/metisMenu.min.js\"></script>
             <!-- Custom Theme JavaScript -->
             <script src=\"";
-        // line 157
+        // line 221
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "dist/js/sb-admin-2.js\"></script>
 
@@ -252,7 +325,7 @@ margin-top:30px;
 
     public function getDebugInfo()
     {
-        return array (  228 => 157,  223 => 155,  218 => 153,  213 => 151,  205 => 146,  201 => 145,  197 => 144,  193 => 143,  189 => 142,  147 => 103,  86 => 45,  67 => 29,  54 => 19,  49 => 17,  44 => 15,  39 => 13,  34 => 11,  29 => 9,  19 => 1,);
+        return array (  301 => 221,  296 => 219,  291 => 217,  286 => 215,  278 => 210,  274 => 209,  270 => 208,  266 => 207,  261 => 205,  257 => 204,  253 => 203,  211 => 164,  138 => 94,  134 => 93,  123 => 85,  54 => 19,  49 => 17,  44 => 15,  39 => 13,  34 => 11,  29 => 9,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -266,7 +339,7 @@ margin-top:30px;
     public function getSourceContext()
     {
         return new Twig_Source("<!DOCTYPE html>
-<html lang=\"es\" ng-app=\"cordovezApp\" ng-controller = \"loginController\">
+<html lang=\"es\" ng-app=\"cordovezApp\" ng-controller=\"loginController\">
 <head>
     <meta charset=\"utf-8\">
     <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">
@@ -293,7 +366,7 @@ margin-top:30px;
    
    <style type=\"text/css\">
      body { 
-  background: url({{base_url}}/img/importaciones-comercio.jpg) no-repeat center center fixed; 
+  background: url(http://deskbg.com/s3/wpp/0/416/abstract-white-desktop-background.jpg) no-repeat center center fixed; 
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -306,36 +379,95 @@ margin-top:30px;
 }
 .form-group.last { margin-bottom:0px; }
    </style>
+
+   <style>
+.ng-enter {
+transition: 0.75s;
+}
+
+.ng-enter-stagger{
+  transition-delay: 0.1s;
+}
+
+.ng-leave-stagger{
+  transition-delay: 0.1s;
+}
+
+.ng-enter-active{
+  opacity: 1;
+}
+
+.ng-leave{
+  transition: 0.75s;
+  opacity: 1;
+}
+
+.ng-leave-active{
+  opacity: 0;
+}
+
+}
+
+</style>
+
 </head>
 
 <body>
-<h1>{{userName}}</h1>
 <div class=\"container\">
+  <div class=\"row\">
+    &nbsp;
+  </div>
+  <div class=\"row\" ng-show=\"showError\">
+    <div class=\"col-md-5 thumbnail\">
+      <span class=\"btn text text-danger pull-right\"
+      ng-click=\"showError = false\"
+      >X</span>
+      <h4 class=\"text text-danger\">{{'{{message}}'}}</h4>
+    </div>
+  </div>
+  <div class=\"row\"  ng-show=\"showSuccess\">
+    <div class=\"col-md-5\" thumbnail>
+      <span class=\"btn text text-danger pull-right\"
+      ng-click=\"showSuccess = false\"
+      >X</span>
+      <span class=\"text text-success\">{{'{{message}}'}}</span>
+      <img src=\"{{base_url}}/img/spiner.gif\" style=\"width: 15%; height: auto\">
+    </div>
+  </div>
     <div class=\"row\">
         <div class=\"col-md-4 col-md-offset-7\">
             <div class=\"panel panel-default\">
                 <div class=\"panel-heading\">
+
                     <span class=\"glyphicon glyphicon-lock\"></span> Inicio de Sesion</div>
                 <div class=\"panel-body\">
-                    <form class=\"form-horizontal\" role=\"form\">
+                    <form class=\"form-horizontal\" role=\"form\" ng-submit=\"sendData(user)\">
                     <div class=\"form-group\">
                         <label for=\"userName\" class=\"col-sm-3 control-label\">
-                            Email</label>
+                            Usuario</label>
                         <div class=\"col-sm-9\">
                             <input 
                             type=\"text\" 
                             class=\"form-control\" 
-                            name=\"userName\" 
-                            ng-model=\"userName\" 
+                            name=\"user.username\" 
+                            ng-model=\"user.username\" 
                             placeholder=\"Usuario\" 
-                            required = \"true\">
+                            required = \"true\"
+                            autofocus=\"true\">
                         </div>
                     </div>
                     <div class=\"form-group\">
                         <label for=\"inputPassword3\" class=\"col-sm-3 control-label\">
-                            Password</label>
+                            Contraseña</label>
                         <div class=\"col-sm-9\">
-                            <input type=\"password\" class=\"form-control\" id=\"inputPassword3\" placeholder=\"Password\" required>
+                            <input 
+                            type=\"password\" 
+                            class=\"form-control\" 
+                            id=\"inputPassword3\" 
+                            placeholder=\"Password\" 
+                            name=\"user.password\" 
+                            ng-model=\"user.password\" 
+                            required>
                         </div>
                     </div>
                     <div class=\"form-group\">
@@ -343,26 +475,28 @@ margin-top:30px;
                             <div class=\"checkbox\">
                                 <label>
                                     <input type=\"checkbox\"/>
-                                    Remember me
+                                    Recordarme
                                 </label>
                             </div>
                         </div>
                     </div>
                     <div class=\"form-group last\">
                         <div class=\"col-sm-offset-3 col-sm-9\">
-                            <button type=\"submit\" class=\"btn btn-success btn-sm\">
-                                Sign in</button>
+                             <input 
+                             class=\"btn btn-primary btn-sm\" 
+                             type=\"submit\" id=\"submit\" value=\"Iniciar Sesión\" />
                                  <button type=\"reset\" class=\"btn btn-default btn-sm\">
-                                Reset</button>
+                                Limpiar</button>
                         </div>
                     </div>
                     </form>
                 </div>
                 <div class=\"panel-footer\">
-                    No tiene una cuenta? <a href=\"mailto:eduardouio7@gmail.com\">Solicitar Cuenta</a></div>
+                    No tiene una cuenta? <a href=\"mailto:someone@example.com?Subject=Hello%20again\">Solicitar Cuenta</a></div>
             </div>
         </div>
     </div>
+
 </div>
 
 <script type=\"text/javascript\">
@@ -408,9 +542,12 @@ margin-top:30px;
 <!-- NG APP cordovezApp-->
 <script src=\"{{base_url}}js/lib/angular.min.js\"></script>
 <script src=\"{{base_url}}js/lib/angular-route.min.js\"></script>
+<script src=\"{{base_url}}js/lib/angular-touch.min.js\"></script>
+
 <script src=\"{{base_url}}js/app/app.js\"></script>
-<script src=\"{{base_url}}js/app/login/loginApp.js\"></script>
-<script src=\"{{base_url}}js/app/login/controllers.js\"></script>
+<script src=\"{{base_url}}js/app/factories/loginFactory.js\"></script>
+<script src=\"{{base_url}}js/app/directives/autocompleteDirective.js\"></script>
+<script src=\"{{base_url}}js/app/controllers/loginController.js\"></script>
 
 
 

@@ -34,24 +34,29 @@ class __TwigTemplate_45d44c1cb2b4a7962c1f6c29bfb45318cde76a9459f5a6f72d0dea3a58c
         // line 12
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/bootstrap/css/bootstrap.min.css\" rel=\"stylesheet\">
-    <!-- MetisMenu CSS -->
+   
     <link href=\"";
         // line 14
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "vendor/autocomplete/autocomplete.css\" rel=\"stylesheet\">
+    <!-- MetisMenu CSS -->
+    <link href=\"";
+        // line 16
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/metisMenu/metisMenu.min.css\" rel=\"stylesheet\">
     <!-- Custom CSS -->
     <link href=\"";
-        // line 16
+        // line 18
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "dist/css/sb-admin-2.css\" rel=\"stylesheet\">
     <!-- Custom Fonts -->
     <link href=\"";
-        // line 18
+        // line 20
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/font-awesome/css/font-awesome.min.css\" rel=\"stylesheet\" type=\"text/css\">
     <!-- Custom Styles -->
     <link href=\"";
-        // line 20
+        // line 22
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/styles/cordovez.css\" rel=\"stylesheet\" type=\"text/css\">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -75,7 +80,7 @@ class __TwigTemplate_45d44c1cb2b4a7962c1f6c29bfb45318cde76a9459f5a6f72d0dea3a58c
 
     public function getDebugInfo()
     {
-        return array (  55 => 20,  50 => 18,  45 => 16,  40 => 14,  35 => 12,  30 => 10,  19 => 1,);
+        return array (  60 => 22,  55 => 20,  50 => 18,  45 => 16,  40 => 14,  35 => 12,  30 => 10,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -100,6 +105,8 @@ class __TwigTemplate_45d44c1cb2b4a7962c1f6c29bfb45318cde76a9459f5a6f72d0dea3a58c
     <title>{{title}}</title>
     <!-- Bootstrap Core CSS -->
     <link href=\"{{base_url}}vendor/bootstrap/css/bootstrap.min.css\" rel=\"stylesheet\">
+   
+    <link href=\"{{base_url}}vendor/autocomplete/autocomplete.css\" rel=\"stylesheet\">
     <!-- MetisMenu CSS -->
     <link href=\"{{base_url}}vendor/metisMenu/metisMenu.min.css\" rel=\"stylesheet\">
     <!-- Custom CSS -->

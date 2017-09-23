@@ -77,47 +77,55 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
 <script src=\"";
         // line 50
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "js/app/app.js\"></script>
+        echo "js/lib/angular-touch.min.js\"></script>
 <script src=\"";
         // line 51
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "js/app/pedidos/routes.js\"></script>
+        echo "js/app/app.js\"></script>
 <script src=\"";
         // line 52
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "js/app/pedidos/factories.js\"></script>
+        echo "js/app/routes/";
+        echo twig_escape_filter($this->env, ($context["controller"] ?? null), "html", null, true);
+        echo "Routes.js\"></script>
 <script src=\"";
         // line 53
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "js/app/pedidos/directives.js\"></script>
+        echo "js/app/directives/autocompleteDirective.js\"></script>
 <script src=\"";
         // line 54
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "js/app/pedidos/controllers.js\"></script>
+        echo "js/app/factories/";
+        echo twig_escape_filter($this->env, ($context["controller"] ?? null), "html", null, true);
+        echo "Factory.js\"></script>
 <script src=\"";
         // line 55
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "js/app/pedidos/filters.js\"></script>
-
-
+        echo "js/app/factories/incotermsFactory.js\"></script>
+<script src=\"";
+        // line 56
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "js/app/controllers/";
+        echo twig_escape_filter($this->env, ($context["controller"] ?? null), "html", null, true);
+        echo "Controller.js\"></script>
             <!-- jQuery -->
             <script src=\"";
-        // line 59
+        // line 58
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/jquery/jquery.min.js\"></script>
             <!-- Bootstrap Core JavaScript -->
             <script src=\"";
-        // line 61
+        // line 60
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/bootstrap/js/bootstrap.min.js\"></script>
             <!-- Metis Menu Plugin JavaScript -->
             <script src=\"";
-        // line 63
+        // line 62
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/metisMenu/metisMenu.min.js\"></script>
             <!-- Custom Theme JavaScript -->
             <script src=\"";
-        // line 65
+        // line 64
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "dist/js/sb-admin-2.js\"></script>
 
@@ -143,7 +151,7 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
 
     public function getDebugInfo()
     {
-        return array (  121 => 65,  116 => 63,  111 => 61,  106 => 59,  99 => 55,  95 => 54,  91 => 53,  87 => 52,  83 => 51,  79 => 50,  75 => 49,  71 => 48,  29 => 9,  19 => 1,);
+        return array (  129 => 64,  124 => 62,  119 => 60,  114 => 58,  107 => 56,  103 => 55,  97 => 54,  93 => 53,  87 => 52,  83 => 51,  79 => 50,  75 => 49,  71 => 48,  29 => 9,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -205,14 +213,13 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
 <!-- NG APP cordovezApp-->
 <script src=\"{{base_url}}js/lib/angular.min.js\"></script>
 <script src=\"{{base_url}}js/lib/angular-route.min.js\"></script>
+<script src=\"{{base_url}}js/lib/angular-touch.min.js\"></script>
 <script src=\"{{base_url}}js/app/app.js\"></script>
-<script src=\"{{base_url}}js/app/pedidos/routes.js\"></script>
-<script src=\"{{base_url}}js/app/pedidos/factories.js\"></script>
-<script src=\"{{base_url}}js/app/pedidos/directives.js\"></script>
-<script src=\"{{base_url}}js/app/pedidos/controllers.js\"></script>
-<script src=\"{{base_url}}js/app/pedidos/filters.js\"></script>
-
-
+<script src=\"{{base_url}}js/app/routes/{{controller}}Routes.js\"></script>
+<script src=\"{{base_url}}js/app/directives/autocompleteDirective.js\"></script>
+<script src=\"{{base_url}}js/app/factories/{{controller}}Factory.js\"></script>
+<script src=\"{{base_url}}js/app/factories/incotermsFactory.js\"></script>
+<script src=\"{{base_url}}js/app/controllers/{{controller}}Controller.js\"></script>
             <!-- jQuery -->
             <script src=\"{{base_url}}vendor/jquery/jquery.min.js\"></script>
             <!-- Bootstrap Core JavaScript -->

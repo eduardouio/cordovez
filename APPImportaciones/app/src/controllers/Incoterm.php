@@ -104,8 +104,7 @@ class Incoterm extends MY_Controller {
     if($this->resultDb->num_rows() > 0){
 			$this->responseHTTP["data"] = $this->resultDb->result_array();
 			$this->responseHTTP["message"] = "Se encontraron " .
-																			$this->resultDb->num_rows() .
-																			" registros";
+									$this->resultDb->num_rows() . " registros";
 			$this->responseHTTP["count"] = $this->resultDb->num_rows();
 			$this->responseHTTP["appst"] = "1100";
 
@@ -113,7 +112,7 @@ class Incoterm extends MY_Controller {
 			$this->responseHTTP["data"] = $this->resultDb->result_array();
 			$this->responseHTTP["message"] = "No existen registros almacenados";
 			$this->responseHTTP["getInfo"] = 
-																	$this->mymodel->getInfo($this->controllerSPA);
+								  $this->mymodel->getInfo($this->controllerSPA);
 			$this->responseHTTP["appst"] = "2100" ;
 		}	
 			$this->__responseHttp($this->responseHTTP, 200);

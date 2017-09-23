@@ -16,6 +16,13 @@ class Liqimpuestos extends MY_Controller {
 	private $controllerSPA = 'liquidacion_impuestos';
 	private $responseHTTP = array('status' => 'success');
 
+	/**
+	 * Constructor de la funcion
+	 */
+	public function __construct(){
+		parent::__construct();
+	}
+
 
 	/**
 	 * Lista los impuestos para una nacionalizacion

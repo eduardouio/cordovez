@@ -1,7 +1,10 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 /**
- * Valida los datos de las provisiones
+ * Valida los datos de las provisiones, ditribuyendo las facturas a los pedidos
+ * y luego estos a los diferntes rubros:
+ *
+ * 
  *
  * @package    CordovezApp
  * @author    Eduardo Villota <eduardouio7@gmail.com>
@@ -15,6 +18,13 @@ class Facpgpedido extends MY_Controller {
 	private $resultDb;
 	private $controllerSPA = "factura_pagos_pedido";
 	private $responseHTTP = array("status" => "success");
+
+	/**
+	 * Constructor de la funcion
+	 */
+	public function __construct(){
+		parent::__construct();
+	}
 
 	/**	
 	* Presenta una factura pedido desde el id que lo indentifica

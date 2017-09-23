@@ -18,6 +18,14 @@ class Producto extends MY_Controller {
 	private $viewData;
 
 	/**
+	 * Constructor de la funcion
+	 */
+	public function __construct(){
+		parent::__construct();
+	}
+
+
+	/**
 	 * Carga la configuracion inicial de la SPA
 	 * @return array (config)
 	 */

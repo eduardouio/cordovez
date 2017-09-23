@@ -17,6 +17,31 @@ class Pedidofactura extends MY_Controller {
 	private $controllerSPA = "pedido_factura";
 	private $responseHTTP = array("status" => "success");
 
+		/**
+	 * Constructor de la funcion
+	 */
+	public function __construct(){
+		parent::__construct();
+	}
+
+	
+	public function presentar($idPedidoFactura){
+		$this->db->where('id_pedido_factura' , $idPedidoFactura);
+		$this->resultDb = $this->db->get($this->controllerSPA);
+			if($this->resultDb->num_rows() > 0){
+				$this->responseHTTP["data"] = $this->resultDb->result_array();
+        $this->responseHTTP["appst"] = "Se encontraron " .
+																				$this->resultDb->num_rows() .
+																				" registros ";
+			}else{
+        $this->responseHTTP["data"] = $this->resultDb->result_array();
+        $this->responseHTTP["appst"] = "No existen registros almacenados";
+        $this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
+      }
+      $this->__responseHttp($this->responseHTTP);
+
+	}
+
 	/**
 	 * Busca las facturas de pedido para un pedido en especial, sino se pasa
 	 * el indentificador del pedido por url restorna la lista completa de
@@ -42,7 +67,7 @@ class Pedidofactura extends MY_Controller {
 						$this->responseHTTP["data"] = $this->resultDb->result_array();
 		        $this->responseHTTP["appst"] = "Se encontraron " .
 																						$this->resultDb->num_rows() .
-																						" Facturas de Pedido ";
+																						" registros ";
 					}else{
 		        $this->responseHTTP["data"] = $this->resultDb->result_array();
 		        $this->responseHTTP["appst"] = "No existen registros almacenados";

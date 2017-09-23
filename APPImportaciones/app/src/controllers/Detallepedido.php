@@ -1,3 +1,4 @@
+
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 /**
@@ -16,6 +17,14 @@ class Detallepedido extends MY_Controller {
 	private $resultDb;
 	private $controllerSPA = "detalle_pedido_factura";
 	private $responseHTTP = array("status" => "success");
+
+		/**
+	 * Constructor de la funcion
+	 */
+	public function __construct(){
+		parent::__construct();
+	}
+
 
   /**
    * Lista todos los detalles de los pedidos, sino se especifica una factura

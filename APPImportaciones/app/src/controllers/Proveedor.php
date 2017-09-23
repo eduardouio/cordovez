@@ -17,6 +17,14 @@ class Proveedor extends MY_Controller {
 	private $responseHTTP = array("status" => "success");
 	private $viewData;
 
+		/**
+	 * Constructor de la funcion
+	 */
+	public function __construct(){
+		parent::__construct();
+	}
+
+
 	/**
 	 * Carga la configuracion inicial de la SPA
 	 * @return array (config)

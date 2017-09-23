@@ -58,9 +58,7 @@ class Login extends MY_Controller {
 			$this->_notAuthorized();
 		}
 
-		print (var_dump('datos recibidos'));
-		//$request =  json_decode(file_get_contents('php://input',true));
-		$user = $this->input->post();
+		$user = json_decode(file_get_contents('php://input'), true);
 
 		$this->db->where('username' , $user['username']);
 		$this->resultDb = $this->db->get($this->controllerSPA);
@@ -89,7 +87,8 @@ class Login extends MY_Controller {
 													);
 
 					$this->session->set_userdata($userData);
-					$this->responseHTTP['appst'] = 'Sesión iniciada correctamente';
+					$this->responseHTTP['message'] = 'Bienvenid@ ' . $userData['nombres'];
+					$this->responseHTTP['appst'] = 1000;
 					$this->responseHTTP['userData'] = $userData;
 				}else{
 					$this->_putData($user);
@@ -104,14 +103,40 @@ class Login extends MY_Controller {
 
 	}
 
+
+	/**
+	*	Cierra la sesion del usuario en linea
+	*/
+	public function cerrarSesion(){
+		$this->session->sess_destroy();
+		$this->index();
+
+	}
+
+	/**
+	* Retorna los datos de session
+	*/
+	public function checkSession(){
+
+		$userData = $this->session->userdata();
+		if(isset($userData['logged_in'])){
+			if($userData['logged_in']){
+			$this->responseHTTP['appst'] = 1000;
+			$this->__responseHttp($this->responseHTTP, 200);
+			}
+		}
+	}
+
 	/**
 	 * Notifica de un  error de inicio de sesion
 	 */
 	private function _putData($user){
-		$this->responseHTTP['appst'] =
+		$this->responseHTTP['message'] =
 														'El nombre de usuario o contraseña es incorrecto!';
+		$this->responseHTTP['appst'] = 2000;
 		$this->responseHTTP['userdata'] = $user;
 	}
+
 
 	/**
 	 * Encripta el passwod

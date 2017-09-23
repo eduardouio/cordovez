@@ -19,6 +19,13 @@ class Impnacionalizacion extends MY_Controller {
 
 
 	/**
+	 * Constructor de la funcion
+	 */
+	public function __construct(){
+		parent::__construct();
+	}
+
+	/**
 	 * Lista los impuestos para una nacionalizacion
 	 * Si no se especifica lista todos los impuestos de nacionalizacion
 	 * @return array JSON

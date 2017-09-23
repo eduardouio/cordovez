@@ -17,6 +17,13 @@ class Factinformativa extends MY_Controller {
 	private $responseHTTP = array("status" => "success");
 	private $viewData;
 
+	/**
+	 * Constructor de la funcion
+	 */
+	public function __construct(){
+		parent::__construct();
+	}
+
 
 	public function presentar($idFactInformativa = 0){
 		#listamos todos

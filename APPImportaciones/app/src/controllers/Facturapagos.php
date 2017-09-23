@@ -16,6 +16,14 @@ class Facturapagos extends MY_Controller {
 	private $controllerSPA = "factura_pagos";
 	private $responseHTTP = array("status" => "success");
 
+	/**
+	 * Constructor de la funcion
+	 */
+	public function __construct(){
+		parent::__construct();
+	}
+
+
 	/**	
 	* Presenta una factura pedido desde el id que lo indentifica
 	*/

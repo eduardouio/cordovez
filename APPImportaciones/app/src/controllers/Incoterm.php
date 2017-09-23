@@ -19,6 +19,14 @@ class Incoterm extends MY_Controller {
 
 
 	/**
+	 * Constructor de la funcion
+	 */
+	public function __construct(){
+		parent::__construct();
+	}
+
+
+	/**
 	* Obtiene la lista de incoterms de acuerdo al los siguientes criterios, 
 	* progresivamente si se da el parametro $city se debe tener valores para los
 	* dos anteriores y de la misma forma en caso de $country

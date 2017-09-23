@@ -15,6 +15,13 @@ class Facinfdetalle extends MY_Controller {
 	private $resultDb;
 	private $controllerSPA = "factura_informativa_detalle";
 	private $responseHTTP = array("status" => "success");
+	
+	/**
+	 * Constructor de la funcion
+	 */
+	public function __construct(){
+		parent::__construct();
+	}
 
 	/**
 	 * Lista los detalles de la factura informativa

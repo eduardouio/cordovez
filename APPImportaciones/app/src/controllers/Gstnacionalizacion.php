@@ -18,6 +18,13 @@ class Gstnacionalizacion extends MY_Controller {
 	private $viewData;
 
 	/**
+	 * Constructor de la funcion
+	 */
+	public function __construct(){
+		parent::__construct();
+	}
+
+	/**
 	 * Lista las facturas informativas de acuerdo a tres criterio
 	 * Por proveedor $idPedido = 0
 	 * Por pedido $idProveedor = 0

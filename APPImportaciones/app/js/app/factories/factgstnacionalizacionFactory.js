@@ -1,6 +1,6 @@
 /**
  * Factoria de gastos nacionalizacion Corresponde al controller de 
- * http://base_url/appindex.php/gstnacionalizacion/
+ * http://base_url/app/index.php/gstnacionalizacion/
  *
  * @package    cordovezApp JS
  * @author    Eduardo Villota <eduardouio7@gmail.com>
@@ -47,5 +47,32 @@ cordovezApp.factory('facgstnaciohnalizacionFactory' , ['$http', '$rootScope', '$
     }
 
 	var service = {};
+
+    //app/index.php/gstnacionalizacion/listar/:idExpenseNationalization
+    service.getExpenseNationalitation = function(idExpenseNationalitation){
+        console.log('[Debug] service.getExpenseNationalitation');
+        return httpGet('listar/' + idExpenseNationalitation)
+    };
+
+    //app/index.php/gstnacionalizacion/listar
+    service.listExpenseNationalitation = function(){
+        console.log('[Debug] service.listExpenseNationalitation');
+        return httpGet('listar');
+    };
+
+    //app/index.php/gstnacionalizacion/validar
+    service.putExpenseNationalization = function(expenseNationalitation){
+        console.log('[Debug} service.putExpenseNationalization ');
+        return httpPost('validar' , expenseNationalitation )
+    };
+
+    //app/index.php/gstnacionalizacion/eliminar/idExpenseNationalization
+    service.delExpenseNationalization = function(idExpenseNationalization){
+        console.log('[Debug] service.delExpenseNationalization');
+        return httpGet('eliminar/' + idExpenseNationalization);
+    };
+
+
+    return service;
 
 }]);

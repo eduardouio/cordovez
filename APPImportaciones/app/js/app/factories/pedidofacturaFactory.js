@@ -81,4 +81,6 @@ cordovezApp.factory('pedidofacturaFactory' , ['$http', '$rootScope', '$q' ,
         return httpGet('eliminar/' + idOrderInvoice);
     }
 
+    return service;
+
 }]);

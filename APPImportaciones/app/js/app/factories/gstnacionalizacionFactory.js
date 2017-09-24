@@ -1,6 +1,6 @@
 /**
  * Factoria de gastos nacionalizacion Corresponde al controller de 
- * http://base_url/app/index.php/nacionalizacion/
+ * http://base_url/app/index.php/gstnacionalizacion/
  *
  * @package    cordovezApp JS
  * @author    Eduardo Villota <eduardouio7@gmail.com>
@@ -12,10 +12,10 @@
  */
 
 
-var serviceBase = host + 'index.php/nacionalizacion/';
+var serviceBase = host + 'index.php/gstnacionalizacion/';
 
 
-cordovezApp.factory('gastosinicialesFactory' , ['$http', '$rootScope', '$q' ,
+cordovezApp.factory('gastonacionalizacionFactory' , ['$http', '$rootScope', '$q' ,
 											 function($http, $rootScope, $q){
 
     //funciones comunes de login 
@@ -48,6 +48,36 @@ cordovezApp.factory('gastosinicialesFactory' , ['$http', '$rootScope', '$q' ,
 
 	var service = {};
 
+    //app/index.php/gstnacionalizacion/listar
+    service.listExpensesNationalization = function(){
+        console.log('[Debug] service.listExpensesNationalization');
+        return httpGet('listar');
+    };
+
+    //app/index.php/gstnacionalizacion/listar/:idNationalization/
+    service.getExpenseNationalization = function(idNationalization){
+        console.log('[Debug] service.getExpenseNationalization');
+        return httpGet('listar/' + idNationalization);
+    };
+
+    //app/index.php/gstnacionalizacion/listar/0/:idExpensesNationalization/
+    service.getExpenseNationalizationByExpenses = function
+                                                    (idExpensesNationalization){
+      console.log('[Debug] service.getExpenseNationalizationByExpenses');
+      return httpGet('listar/0/' + idExpensesNationalization);
+    };
+
+    //app/index.php/gstnacionalizacion/validar
+    service.putExpenseNationalization = function(expenseNationalitation){
+        console.log('[Debug] service.putExpenseNationalization');
+        return httpPost('validar' , expenseNationalitation);
+    };
+
+    //app/index.php/gstnacionalizacion/eliminar
+    service.delExpenseNationalization = function(idExpensesNationalization){
+        console.log('[Debug] service.delExpenseNationalization');
+        return httpGet('eliminar/' + idExpensesNationalization);
+    };
 
     return service;
 

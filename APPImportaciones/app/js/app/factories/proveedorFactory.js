@@ -60,4 +60,30 @@ cordovezApp.factory('proveedoresFactory' , ['$http', '$rootScope', '$q' ,
 
 	var service = {};
 
+    //app/index.php/proveedor/listar
+    service.listSupplier = function(){
+        console.log('[Debug] service.listSupplier');
+        return httpGet('listar');
+    };
+
+    //app/index.php/proveedor/listar/:idSupplier
+    service.getSupplier = function(idSupplier){
+        console.log('[Debug] service.getSupplier');
+        return httpGet('listar/' + idSupplier);
+    };
+
+    //app/index.php/proveedor/validar => create & update
+    service.putSupplier = function(supplier){
+        console.log('[Debug] service.putSupplier');
+        return httpPost('validar' , supplier);
+    };
+
+    //app/index.php/proveedor/eliminar:idSupplier
+    service.delSupplier = function(idSupplier){
+        console.log('[Debug] service.delSupplier');
+        return httpGet('eliminar/' + idSupplier);
+    };
+
+    return service;
+
 }]);

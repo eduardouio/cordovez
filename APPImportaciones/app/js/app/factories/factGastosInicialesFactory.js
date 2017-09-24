@@ -47,8 +47,43 @@ cordovezApp.factory('factgstinicialesFactory' , ['$http', '$rootScope', '$q' ,
 
 	var service = {};
 
+    //app/index.php/factgstinicial70/presentar/:idFactGastInicial
+    service.getInvInitExpenses = function(idInvoice){
+      console.log('[Debug] service.getInvInitExpenses');
+      return httpGet('presentar/' + idInvoice);
+    };
+
+
     //app/index.php/factgstinicial70/listar/
-    service.listInit
+    service.listInvInitExpenses = function (){
+      console.log('[Debug] service.listInvInitExpenses');
+      return httpGet('listar');
+    };
+
+    //app/index.php/factgstinicial70/listar/:idGastosIniciales
+    service.getIniExpensesByInitExpenses = function(idInvInitExpense){
+      console.log('[Debug] service.getIniExpensesByInitExpenses');
+      return httpGet('listar/' + idInvInitExpense)
+    };
+
+    //app/index.php/factgstinicial70/listar/0/:idFacPagosPedido
+    service.getIniExpensesByInvExpenses = function(ifInvExpenses){
+      console.log('[Debug] service.getIniExpensesByInvExpenses');
+      return httpGet('listar/0/' + ifInvExpenses);
+    };
+
+    //app/index.php/factgstinicial70/validar => create & update
+    service.piuInvInitExpense = function(invExpenses){
+      console.log('[Debug] service.piuInvInitExpense');
+      return httpPost('validad' , invExpenses);
+    };
+
+    //app/index.php/factgstinicial70/eliminar/:idInvInitExpense
+    service.delInvInitExpense = function(idInvInitExpense){
+      console.log('[Debug] service.delInvInitExpense');
+      return httpGet('eliminar' + idInvInitExpense)
+    };
+
 
     return service;
 

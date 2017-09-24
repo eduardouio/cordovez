@@ -1,7 +1,7 @@
 /**
  * Factoria de factura informativa detalle Corresponde al controller de Gastos
  * iniciales
- * http://base_url/app/index.php/gstinicial70/
+ * http://base_url/app/index.php/facinfdetalle/
  *
  * @package    cordovezApp JS
  * @author    Eduardo Villota <eduardouio7@gmail.com>
@@ -12,7 +12,7 @@
  * @filesource
  */
 
-var serviceBase = host + 'index.php/gstinicial70/';
+var serviceBase = host + 'index.php/facinfdetalle/';
 
 cordovezApp.factory('fcatinfoDetalleFactory' , ['$http', '$rootScope', '$q' ,
 											 function($http, $rootScope, $q){
@@ -47,8 +47,23 @@ cordovezApp.factory('fcatinfoDetalleFactory' , ['$http', '$rootScope', '$q' ,
 
 	var service = {};
 
-   
+    //app/index.php/facinfdetalle/listar/:idInfoInvoice
+    service.listInvoiceInfoDetail = function(){
+        console.log('[Debug] service.listInvoiceInfoDetail');
+        return httpGet('listar/' + idInfoInvoice);
+    };
 
+    //app/index.php/facinfdetalle/validar/ => update & create
+    service.putInvoiceInfoDetail = function(){
+        console.log('[Debug] service.putInvoiceInfoDetail');
+        return httpGet('validar/' + idInfoInvoice);
+    };
+
+    //app/index.php/facinfdetalle/eliminar/:idInfoInvoice
+    service.delInvoiceInfoDetail = function(){
+        console.log('[Debug] service.delInvoiceInfoDetail');
+        return httpGet('eliminar/' + idInfoInvoice);
+    };
 
     return service;
 }]);

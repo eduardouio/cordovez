@@ -80,6 +80,6 @@ cordovezApp.factory('productoFactory' , ['$http', '$rootScope', '$q' ,
       return httpGet('eliminar/' + idProduct);
     }
 
-
     return  service;
+
 }]);

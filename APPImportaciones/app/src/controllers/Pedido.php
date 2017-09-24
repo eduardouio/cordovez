@@ -148,7 +148,7 @@ class Pedido extends MY_Controller {
 					$this->db->where('nro_pedido', $pedido['nro_pedido']);
 					$this->db->delete($this->controllerSPA);
 					$this->responseHTTP['message'] = 'El registro' . 
-					'                     	$pedido['nro_pedido']  Ha sido eliminado';
+																$pedido['nro_pedido'] . ' Ha sido eliminado';
 					$this->responseHTTP["appst"] = 1500;
 					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 				}else {

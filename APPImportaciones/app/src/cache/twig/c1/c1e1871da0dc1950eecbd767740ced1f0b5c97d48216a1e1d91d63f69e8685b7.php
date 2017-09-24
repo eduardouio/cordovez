@@ -62,7 +62,10 @@ class __TwigTemplate_238d403db5dde966d0d9a8244659b7b1357e7ac298a9bdacf9c10956dd0
    
    <style type=\"text/css\">
      body { 
-  background: url(http://deskbg.com/s3/wpp/0/416/abstract-white-desktop-background.jpg) no-repeat center center fixed; 
+  background: url('";
+        // line 29
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "/img/appbackground.jpg') no-repeat center center fixed; 
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -325,7 +328,7 @@ transition: 0.75s;
 
     public function getDebugInfo()
     {
-        return array (  301 => 221,  296 => 219,  291 => 217,  286 => 215,  278 => 210,  274 => 209,  270 => 208,  266 => 207,  261 => 205,  257 => 204,  253 => 203,  211 => 164,  138 => 94,  134 => 93,  123 => 85,  54 => 19,  49 => 17,  44 => 15,  39 => 13,  34 => 11,  29 => 9,  19 => 1,);
+        return array (  304 => 221,  299 => 219,  294 => 217,  289 => 215,  281 => 210,  277 => 209,  273 => 208,  269 => 207,  264 => 205,  260 => 204,  256 => 203,  214 => 164,  141 => 94,  137 => 93,  126 => 85,  67 => 29,  54 => 19,  49 => 17,  44 => 15,  39 => 13,  34 => 11,  29 => 9,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -366,7 +369,7 @@ transition: 0.75s;
    
    <style type=\"text/css\">
      body { 
-  background: url(http://deskbg.com/s3/wpp/0/416/abstract-white-desktop-background.jpg) no-repeat center center fixed; 
+  background: url('{{base_url}}/img/appbackground.jpg') no-repeat center center fixed; 
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;

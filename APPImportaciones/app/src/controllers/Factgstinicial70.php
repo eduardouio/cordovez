@@ -1,7 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 /**
- * Modulo encargado de manejar los proveedores, CRUD y validaciones
+ * Modulo encargado de manejar las justificaiones de los gastos iniciales
+ * cada uno de los gastos iniciales factura son la justificacion de las
+ * provisiones gastos iniciales
  *
  * @package    CordovezApp
  * @author    Eduardo Villota <eduardouio7@gmail.com>
@@ -24,9 +26,35 @@ class Factgstinicial70 extends MY_Controller {
 		parent::__construct();
 	}
 
+	
+	/**
+	* Presenta una factura del gasto inicial
+	* @param  $idFactGastoInicial identificacion del registro
+	* @return array response JSON
+	*/
+	public function presentar($idFactGastoInicial){
+		$this->db->where('id_factura_pagos_pedido_gasto_inicial',
+																													$idFactGastoInicial);
+		$this->resultDb = $this->db->get($this->controllerSPA);
+
+		if($this->resultDb->num_rows() > 0){
+			$this->responseHTTP["data"] = $this->resultDb->result_array();
+			$this->responseHTTP["infoTable"] =
+								$this->mymodel->getInfo($this->controllerSPA);
+			$this->responseHTTP["message"] = "Se encontraron " .
+								    $this->resultDb->num_rows() ." registros";
+			$this->responseHTTP["appst"] = 1100;
+		}else{
+			$this->responseHTTP["data"] = $this->resultDb->result_array();
+			$this->responseHTTP["message"] = "No existen registros almacenados";
+			$this->responseHTTP["appst"] = 2100;
+		}
+
+	}
+
 	/**
 	 * Lista las facturas informativas de acuerdo a tres criterio
-	 * Por proveedor $idPedido = 0
+	 * Por $idGastosIniciales = 0 (hace referencia la tabla de gastos iniciales)
 	 * Por pedido $idProveedor = 0
 	 * Todas las facturas $idProveedor = 0 & $idPedido = 0
 	 * @return array JSON

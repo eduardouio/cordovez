@@ -20,15 +20,15 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
         <!-- /#page-wrapper -->
     </div>
     <!-- /#wrapper -->
+    <div id=\"toast\"></div>
 </body>
 
 <script type=\"text/javascript\">
   
   var host = '";
-        // line 9
+        // line 10
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "';
-  var httpResult = {};
 // Funciones Auxiliares
 // Retorna la cantidad de metodos y propiedades de un objeto
     function inspeccionar(obj)
@@ -56,6 +56,7 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
 }
 </script>
 
+
 <script type=\"text/javascript\">
   setTimeout(function(){ reloadPage() }, 600000);
 
@@ -65,19 +66,12 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
 
 </script>
 
-<!-- NG APP cordovezApp-->
-<script src=\"";
-        // line 48
-        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "js/lib/angular.min.js\"></script>
+<!-- Libraries Angular-->
 <script src=\"";
         // line 49
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "js/lib/angular-route.min.js\"></script>
-<script src=\"";
-        // line 50
-        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "js/lib/angular-touch.min.js\"></script>
+<!-- APP Angular -->
 <script src=\"";
         // line 51
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
@@ -88,48 +82,109 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
         echo "js/app/routes/";
         echo twig_escape_filter($this->env, ($context["controller"] ?? null), "html", null, true);
         echo "Routes.js\"></script>
-<script src=\"";
-        // line 53
-        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "js/app/directives/autocompleteDirective.js\"></script>
-<script src=\"";
-        // line 54
-        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "js/app/factories/";
-        echo twig_escape_filter($this->env, ($context["controller"] ?? null), "html", null, true);
-        echo "Factory.js\"></script>
-<script src=\"";
-        // line 55
-        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "js/app/factories/incotermsFactory.js\"></script>
+<!-- Directives-->
+
+<!-- Factories-->
 <script src=\"";
         // line 56
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "js/app/controllers/";
-        echo twig_escape_filter($this->env, ($context["controller"] ?? null), "html", null, true);
-        echo "Controller.js\"></script>
-            <!-- jQuery -->
-            <script src=\"";
+        echo "/js/app/factories/loginFactory.js\"></script>
+<script src=\"";
+        // line 57
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "/js/app/factories/countriesFactory.js\"></script>
+<script src=\"";
         // line 58
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "vendor/jquery/jquery.min.js\"></script>
-            <!-- Bootstrap Core JavaScript -->
-            <script src=\"";
+        echo "/js/app/factories/detallepedidoFactory.js\"></script>
+<script src=\"";
+        // line 59
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "/js/app/factories/facinformativaFactory.js\"></script>
+<script src=\"";
         // line 60
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "vendor/bootstrap/js/bootstrap.min.js\"></script>
-            <!-- Metis Menu Plugin JavaScript -->
-            <script src=\"";
+        echo "/js/app/factories/facpagospedidoFactory.js\"></script>
+<script src=\"";
+        // line 61
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "/js/app/factories/factGastosInicialesFactory.js\"></script>
+<script src=\"";
         // line 62
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "vendor/metisMenu/metisMenu.min.js\"></script>
-            <!-- Custom Theme JavaScript -->
-            <script src=\"";
+        echo "/js/app/factories/factgstnacionalizacionFactory.js\"></script>
+<script src=\"";
+        // line 63
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "/js/app/factories/factinfdetalleFactory.js\"></script>
+<script src=\"";
         // line 64
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "/js/app/factories/gastosInicialesFactory.js\"></script>
+<script src=\"";
+        // line 65
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "/js/app/factories/gstnacionalizacionFactory.js\"></script>
+<script src=\"";
+        // line 66
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "/js/app/factories/incotermsFactory.js\"></script>
+<script src=\"";
+        // line 67
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "/js/app/factories/nacionalizacionFactory.js\"></script>
+<script src=\"";
+        // line 68
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "/js/app/factories/pedidoFactory.js\"></script>
+<script src=\"";
+        // line 69
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "/js/app/factories/pedidofacturaFactory.js\"></script>
+<script src=\"";
+        // line 70
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "/js/app/factories/productoFactory.js\"></script>
+<script src=\"";
+        // line 71
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "/js/app/factories/proveedorFactory.js\"></script>
+
+<script src=\"";
+        // line 73
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "js/app/controllers/nuevoPedidoController.js\"></script>
+<script src=\"";
+        // line 74
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "js/app/controllers/presentarPedidoController.js\"></script>
+<!-- jQuery -->
+<script src=\"";
+        // line 76
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "vendor/jquery/jquery.min.js\"></script>
+<script src=\"";
+        // line 77
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "vendor/jquery-toast/jquery.toast.js\"></script>
+<!--autocomplete-->
+<!-- Bootstrap Core JavaScript -->
+<script src=\"";
+        // line 80
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "vendor/bootstrap/js/bootstrap.min.js\"></script>
+<!-- Metis Menu Plugin JavaScript -->
+<script src=\"";
+        // line 82
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "vendor/metisMenu/metisMenu.min.js\"></script>
+<!-- Custom Theme JavaScript -->
+<script src=\"";
+        // line 84
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "dist/js/sb-admin-2.js\"></script>
 
-            <script type=\"text/javascript\">
+<script type=\"text/javascript\">
   \$('#myModal').on('shown.bs.modal', function () {
   \$('#myInput').focus()
 })
@@ -151,7 +206,7 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
 
     public function getDebugInfo()
     {
-        return array (  129 => 64,  124 => 62,  119 => 60,  114 => 58,  107 => 56,  103 => 55,  97 => 54,  93 => 53,  87 => 52,  83 => 51,  79 => 50,  75 => 49,  71 => 48,  29 => 9,  19 => 1,);
+        return array (  184 => 84,  179 => 82,  174 => 80,  168 => 77,  164 => 76,  159 => 74,  155 => 73,  150 => 71,  146 => 70,  142 => 69,  138 => 68,  134 => 67,  130 => 66,  126 => 65,  122 => 64,  118 => 63,  114 => 62,  110 => 61,  106 => 60,  102 => 59,  98 => 58,  94 => 57,  90 => 56,  81 => 52,  77 => 51,  72 => 49,  30 => 10,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -168,12 +223,12 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
         <!-- /#page-wrapper -->
     </div>
     <!-- /#wrapper -->
+    <div id=\"toast\"></div>
 </body>
 
 <script type=\"text/javascript\">
   
   var host = '{{base_url}}';
-  var httpResult = {};
 // Funciones Auxiliares
 // Retorna la cantidad de metodos y propiedades de un objeto
     function inspeccionar(obj)
@@ -201,6 +256,7 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
 }
 </script>
 
+
 <script type=\"text/javascript\">
   setTimeout(function(){ reloadPage() }, 600000);
 
@@ -210,26 +266,45 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
 
 </script>
 
-<!-- NG APP cordovezApp-->
-<script src=\"{{base_url}}js/lib/angular.min.js\"></script>
+<!-- Libraries Angular-->
 <script src=\"{{base_url}}js/lib/angular-route.min.js\"></script>
-<script src=\"{{base_url}}js/lib/angular-touch.min.js\"></script>
+<!-- APP Angular -->
 <script src=\"{{base_url}}js/app/app.js\"></script>
 <script src=\"{{base_url}}js/app/routes/{{controller}}Routes.js\"></script>
-<script src=\"{{base_url}}js/app/directives/autocompleteDirective.js\"></script>
-<script src=\"{{base_url}}js/app/factories/{{controller}}Factory.js\"></script>
-<script src=\"{{base_url}}js/app/factories/incotermsFactory.js\"></script>
-<script src=\"{{base_url}}js/app/controllers/{{controller}}Controller.js\"></script>
-            <!-- jQuery -->
-            <script src=\"{{base_url}}vendor/jquery/jquery.min.js\"></script>
-            <!-- Bootstrap Core JavaScript -->
-            <script src=\"{{base_url}}vendor/bootstrap/js/bootstrap.min.js\"></script>
-            <!-- Metis Menu Plugin JavaScript -->
-            <script src=\"{{base_url}}vendor/metisMenu/metisMenu.min.js\"></script>
-            <!-- Custom Theme JavaScript -->
-            <script src=\"{{base_url}}dist/js/sb-admin-2.js\"></script>
+<!-- Directives-->
 
-            <script type=\"text/javascript\">
+<!-- Factories-->
+<script src=\"{{base_url}}/js/app/factories/loginFactory.js\"></script>
+<script src=\"{{base_url}}/js/app/factories/countriesFactory.js\"></script>
+<script src=\"{{base_url}}/js/app/factories/detallepedidoFactory.js\"></script>
+<script src=\"{{base_url}}/js/app/factories/facinformativaFactory.js\"></script>
+<script src=\"{{base_url}}/js/app/factories/facpagospedidoFactory.js\"></script>
+<script src=\"{{base_url}}/js/app/factories/factGastosInicialesFactory.js\"></script>
+<script src=\"{{base_url}}/js/app/factories/factgstnacionalizacionFactory.js\"></script>
+<script src=\"{{base_url}}/js/app/factories/factinfdetalleFactory.js\"></script>
+<script src=\"{{base_url}}/js/app/factories/gastosInicialesFactory.js\"></script>
+<script src=\"{{base_url}}/js/app/factories/gstnacionalizacionFactory.js\"></script>
+<script src=\"{{base_url}}/js/app/factories/incotermsFactory.js\"></script>
+<script src=\"{{base_url}}/js/app/factories/nacionalizacionFactory.js\"></script>
+<script src=\"{{base_url}}/js/app/factories/pedidoFactory.js\"></script>
+<script src=\"{{base_url}}/js/app/factories/pedidofacturaFactory.js\"></script>
+<script src=\"{{base_url}}/js/app/factories/productoFactory.js\"></script>
+<script src=\"{{base_url}}/js/app/factories/proveedorFactory.js\"></script>
+
+<script src=\"{{base_url}}js/app/controllers/nuevoPedidoController.js\"></script>
+<script src=\"{{base_url}}js/app/controllers/presentarPedidoController.js\"></script>
+<!-- jQuery -->
+<script src=\"{{base_url}}vendor/jquery/jquery.min.js\"></script>
+<script src=\"{{base_url}}vendor/jquery-toast/jquery.toast.js\"></script>
+<!--autocomplete-->
+<!-- Bootstrap Core JavaScript -->
+<script src=\"{{base_url}}vendor/bootstrap/js/bootstrap.min.js\"></script>
+<!-- Metis Menu Plugin JavaScript -->
+<script src=\"{{base_url}}vendor/metisMenu/metisMenu.min.js\"></script>
+<!-- Custom Theme JavaScript -->
+<script src=\"{{base_url}}dist/js/sb-admin-2.js\"></script>
+
+<script type=\"text/javascript\">
   \$('#myModal').on('shown.bs.modal', function () {
   \$('#myInput').focus()
 })

@@ -29,36 +29,46 @@ class __TwigTemplate_45d44c1cb2b4a7962c1f6c29bfb45318cde76a9459f5a6f72d0dea3a58c
         // line 10
         echo twig_escape_filter($this->env, ($context["title"] ?? null), "html", null, true);
         echo "</title>
+    <!-- Angula JS -->
+    <script src=\"";
+        // line 12
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "js/lib/angular.min.js\"></script>
+
+    <!-- Jauery Autocomplete CSS -->   
+
     <!-- Bootstrap Core CSS -->
     <link href=\"";
-        // line 12
+        // line 17
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/bootstrap/css/bootstrap.min.css\" rel=\"stylesheet\">
    
-    <link href=\"";
-        // line 14
-        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "vendor/autocomplete/autocomplete.css\" rel=\"stylesheet\">
     <!-- MetisMenu CSS -->
     <link href=\"";
-        // line 16
+        // line 20
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/metisMenu/metisMenu.min.css\" rel=\"stylesheet\">
     <!-- Custom CSS -->
     <link href=\"";
-        // line 18
+        // line 22
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "dist/css/sb-admin-2.css\" rel=\"stylesheet\">
     <!-- Custom Fonts -->
     <link href=\"";
-        // line 20
+        // line 24
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/font-awesome/css/font-awesome.min.css\" rel=\"stylesheet\" type=\"text/css\">
     <!-- Custom Styles -->
     <link href=\"";
-        // line 22
+        // line 26
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/styles/cordovez.css\" rel=\"stylesheet\" type=\"text/css\">
+
+    <link href=\"";
+        // line 28
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "vendor/jquery-toast/jquery.toast.css\"rel=\"stylesheet\" type=\"text/css\">
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -80,7 +90,7 @@ class __TwigTemplate_45d44c1cb2b4a7962c1f6c29bfb45318cde76a9459f5a6f72d0dea3a58c
 
     public function getDebugInfo()
     {
-        return array (  60 => 22,  55 => 20,  50 => 18,  45 => 16,  40 => 14,  35 => 12,  30 => 10,  19 => 1,);
+        return array (  69 => 28,  64 => 26,  59 => 24,  54 => 22,  49 => 20,  43 => 17,  35 => 12,  30 => 10,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -103,10 +113,14 @@ class __TwigTemplate_45d44c1cb2b4a7962c1f6c29bfb45318cde76a9459f5a6f72d0dea3a58c
     <meta name=\"description\" content=\"Aplicacion de Manejo de importaciones\">
     <meta name=\"author\" content=\"Eduardo Villota eduardouio7@gmail.com\">
     <title>{{title}}</title>
+    <!-- Angula JS -->
+    <script src=\"{{base_url}}js/lib/angular.min.js\"></script>
+
+    <!-- Jauery Autocomplete CSS -->   
+
     <!-- Bootstrap Core CSS -->
     <link href=\"{{base_url}}vendor/bootstrap/css/bootstrap.min.css\" rel=\"stylesheet\">
    
-    <link href=\"{{base_url}}vendor/autocomplete/autocomplete.css\" rel=\"stylesheet\">
     <!-- MetisMenu CSS -->
     <link href=\"{{base_url}}vendor/metisMenu/metisMenu.min.css\" rel=\"stylesheet\">
     <!-- Custom CSS -->
@@ -115,6 +129,9 @@ class __TwigTemplate_45d44c1cb2b4a7962c1f6c29bfb45318cde76a9459f5a6f72d0dea3a58c
     <link href=\"{{base_url}}vendor/font-awesome/css/font-awesome.min.css\" rel=\"stylesheet\" type=\"text/css\">
     <!-- Custom Styles -->
     <link href=\"{{base_url}}vendor/styles/cordovez.css\" rel=\"stylesheet\" type=\"text/css\">
+
+    <link href=\"{{base_url}}vendor/jquery-toast/jquery.toast.css\"rel=\"stylesheet\" type=\"text/css\">
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>

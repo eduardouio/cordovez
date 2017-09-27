@@ -99,7 +99,7 @@ class Pedido extends MY_Controller {
 			$this->responseHTTP["appst"] = 2300;
 			$this->responseHTTP['data'] = $this->resultDb->result_array();
 			$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
-			$this->__responseHttp($this->responseHTTP, 400);
+			$this->__responseHttp($this->responseHTTP, 201);
 		}else{
 			$status = $this->_validData($pedido);
 			if ($status['status']){
@@ -123,7 +123,7 @@ class Pedido extends MY_Controller {
 								'Uno de los datos ingresados es incorrecto, vuelva a intentar';
 				$this->responseHTTP["appst"] = 1400;
 				$this->responseHTTP['data'] = $status;
-				$this->__responseHttp($this->responseHTTP, 400);
+				$this->__responseHttp($this->responseHTTP, 200);
 			}
 		}
 		}
@@ -175,14 +175,13 @@ class Pedido extends MY_Controller {
 			$columnsLen = array(
 				'nro_pedido' => 6,
 				'regimen' => 2,
-				'id_incoterm' => 1,
+				'incoterm' => 1,
 				'antes_fob' => 1,
 				'antes_fob_provisionado' => 1,
 				'pais_origen' => 1,
 				'ciudad_origen' => 1,			
 				'flete_aduana' => 1,
 				'seguro_aduana' => 1,
-				'comentarios' => 0,
 				'estado_pedido' => 7,
 				'id_user' => 1,
 			);

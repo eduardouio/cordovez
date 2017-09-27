@@ -1,7 +1,9 @@
 	<?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 /**
- * Modulo encargado de manejar los proveedores, CRUD y validaciones
+ * Modulo encargado de manejar los proveedores, CRUD y validaciones si el inco
+ * erm no existe se coloca un registro cero significa que no hay valores por 
+ * por defecto para los gastos iniciales 
  *
  * @package    CordovezApp
  * @author    Eduardo Villota <eduardouio7@gmail.com>
@@ -56,7 +58,16 @@ class Incoterm extends MY_Controller {
 	* @return array JSON
 	* 
 	**/
-	public function getIncoterms($incoterm = "", $country = "" , $city = ""){
+	public function getIncoterms(){
+				if($this->rest->_getRequestMethod()!= 'POST'){
+					$this->_notAuthorized();
+				}
+
+		$request = json_decode(file_get_contents('php://input'), true);
+		//print var_dump($request);
+		$incoterm = isset($request['incoterm']) ? $request['incoterm'] : '';
+		$country = isset($request['country']) ? $request['country'] : '' ;
+		$city = isset($request['city']) ? $request['city'] : '' ;
 			
 		#base_url/getIncoterms/
 		if($incoterm == "" && $country == ""  && $city == ""){

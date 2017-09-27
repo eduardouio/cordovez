@@ -2,12 +2,12 @@
         <!-- /#page-wrapper -->
     </div>
     <!-- /#wrapper -->
+    <div id="toast"></div>
 </body>
 
 <script type="text/javascript">
   
   var host = '{{base_url}}';
-  var httpResult = {};
 // Funciones Auxiliares
 // Retorna la cantidad de metodos y propiedades de un objeto
     function inspeccionar(obj)
@@ -35,6 +35,7 @@
 }
 </script>
 
+
 <script type="text/javascript">
   setTimeout(function(){ reloadPage() }, 600000);
 
@@ -44,26 +45,45 @@
 
 </script>
 
-<!-- NG APP cordovezApp-->
-<script src="{{base_url}}js/lib/angular.min.js"></script>
+<!-- Libraries Angular-->
 <script src="{{base_url}}js/lib/angular-route.min.js"></script>
-<script src="{{base_url}}js/lib/angular-touch.min.js"></script>
+<!-- APP Angular -->
 <script src="{{base_url}}js/app/app.js"></script>
 <script src="{{base_url}}js/app/routes/{{controller}}Routes.js"></script>
-<script src="{{base_url}}js/app/directives/autocompleteDirective.js"></script>
-<script src="{{base_url}}js/app/factories/{{controller}}Factory.js"></script>
-<script src="{{base_url}}js/app/factories/incotermsFactory.js"></script>
-<script src="{{base_url}}js/app/controllers/{{controller}}Controller.js"></script>
-            <!-- jQuery -->
-            <script src="{{base_url}}vendor/jquery/jquery.min.js"></script>
-            <!-- Bootstrap Core JavaScript -->
-            <script src="{{base_url}}vendor/bootstrap/js/bootstrap.min.js"></script>
-            <!-- Metis Menu Plugin JavaScript -->
-            <script src="{{base_url}}vendor/metisMenu/metisMenu.min.js"></script>
-            <!-- Custom Theme JavaScript -->
-            <script src="{{base_url}}dist/js/sb-admin-2.js"></script>
+<!-- Directives-->
 
-            <script type="text/javascript">
+<!-- Factories-->
+<script src="{{base_url}}/js/app/factories/loginFactory.js"></script>
+<script src="{{base_url}}/js/app/factories/countriesFactory.js"></script>
+<script src="{{base_url}}/js/app/factories/detallepedidoFactory.js"></script>
+<script src="{{base_url}}/js/app/factories/facinformativaFactory.js"></script>
+<script src="{{base_url}}/js/app/factories/facpagospedidoFactory.js"></script>
+<script src="{{base_url}}/js/app/factories/factGastosInicialesFactory.js"></script>
+<script src="{{base_url}}/js/app/factories/factgstnacionalizacionFactory.js"></script>
+<script src="{{base_url}}/js/app/factories/factinfdetalleFactory.js"></script>
+<script src="{{base_url}}/js/app/factories/gastosInicialesFactory.js"></script>
+<script src="{{base_url}}/js/app/factories/gstnacionalizacionFactory.js"></script>
+<script src="{{base_url}}/js/app/factories/incotermsFactory.js"></script>
+<script src="{{base_url}}/js/app/factories/nacionalizacionFactory.js"></script>
+<script src="{{base_url}}/js/app/factories/pedidoFactory.js"></script>
+<script src="{{base_url}}/js/app/factories/pedidofacturaFactory.js"></script>
+<script src="{{base_url}}/js/app/factories/productoFactory.js"></script>
+<script src="{{base_url}}/js/app/factories/proveedorFactory.js"></script>
+
+<script src="{{base_url}}js/app/controllers/nuevoPedidoController.js"></script>
+<script src="{{base_url}}js/app/controllers/presentarPedidoController.js"></script>
+<!-- jQuery -->
+<script src="{{base_url}}vendor/jquery/jquery.min.js"></script>
+<script src="{{base_url}}vendor/jquery-toast/jquery.toast.js"></script>
+<!--autocomplete-->
+<!-- Bootstrap Core JavaScript -->
+<script src="{{base_url}}vendor/bootstrap/js/bootstrap.min.js"></script>
+<!-- Metis Menu Plugin JavaScript -->
+<script src="{{base_url}}vendor/metisMenu/metisMenu.min.js"></script>
+<!-- Custom Theme JavaScript -->
+<script src="{{base_url}}dist/js/sb-admin-2.js"></script>
+
+<script type="text/javascript">
   $('#myModal').on('shown.bs.modal', function () {
   $('#myInput').focus()
 })

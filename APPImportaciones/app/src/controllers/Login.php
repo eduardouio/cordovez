@@ -122,6 +122,7 @@ class Login extends MY_Controller {
 		if(isset($userData['logged_in'])){
 			if($userData['logged_in']){
 			$this->responseHTTP['appst'] = 1000;
+			$this->responseHTTP['message'] = 'Session Avtiva';
 			$this->__responseHttp($this->responseHTTP, 200);
 			}
 		}

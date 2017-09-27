@@ -57,8 +57,8 @@ class Gstinicial70 extends MY_Controller {
 			$this->responseHTTP["appst"] = 2100;
 		}
 			$this->__responseHttp($this->responseHTTP, 200);
+
 	}
-$this->responseHTTP["appst"] = 1100;
 	/**
 	 	$this->responseHTTP["appst"] =*  Valida los datos recibidos por post 
 	 	antes de crear o actualizar el registro, solo aceptan datos por post
@@ -82,7 +82,7 @@ $this->responseHTTP["appst"] = 1100;
 			$this->responseHTTP["appst"] = 2300;
 			$this->responseHTTP['data'] = $this->resultDb->result_array();
 			$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
-			$this->__responseHttp($this->responseHTTP, 400);
+			$this->__responseHttp($this->responseHTTP, 200);
 		}else{
 		#validamos la informacion
 			$status = $this->_validData($gstIncial70);
@@ -109,7 +109,7 @@ $this->responseHTTP["appst"] = 1100;
 				 							'es incorrecto, vuelva a intentar';
 				$this->responseHTTP["appst"] = 1400;
 				$this->responseHTTP['data'] = $status;
-				$this->__responseHttp($this->responseHTTP, 400);
+				$this->__responseHttp($this->responseHTTP, 200);
 			}
 		}
 
@@ -159,7 +159,6 @@ $this->responseHTTP["appst"] = 1100;
         'nro_pedido' => 6,
         'concepto' => 1,
         'valor_provisionado' => 1,
-        'comentarios' => 0,
         'id_user' => 1,
 		);
 		return $this->_checkColumnsData($columnsLen, $data);

@@ -10,13 +10,11 @@
  * @since    Version 1.0.0
  * @filesource
  */
-
-
-var serviceBase = host + 'index.php/nacionalizacion/';
-
-
-cordovezApp.factory('gastosinicialesFactory' , ['$http', '$rootScope', '$q' ,
+cordovezApp.factory('nacionalizacionFactory' , ['$http', '$rootScope', '$q' ,
 											 function($http, $rootScope, $q){
+
+    console.log('[Debug] gastosinicialesFactory');
+    var serviceBase = host + 'index.php/nacionalizacion/';
 
     //funciones comunes de login 
     function httpGet(url){

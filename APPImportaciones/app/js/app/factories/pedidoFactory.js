@@ -10,14 +10,11 @@
  * @since    Version 1.0.0
  * @filesource
  */
-
-var serviceBase = host + 'index.php/pedido/';
-
-/**-----------------------------------------------------------------------------
-Factory Incoterms
------------------------------------------------------------------------------**/
 cordovezApp.factory('pedidoFactory' , ['$http', '$rootScope', '$q' ,
 											 function($http, $rootScope, $q){
+
+    console.log('[Debug] pedidoFactory');
+    var serviceBase = host + 'index.php/pedido/';
 
     //funciones comunes de login 
     function httpGet(url){

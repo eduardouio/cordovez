@@ -10,10 +10,22 @@
  * @filesource
  */
 
-var cordovezApp = angular.module('cordovezApp', ['ngRoute', 'ngTouch', 
-																															'angucomplete']);
+var cordovezApp = angular.module('cordovezApp', ['ngRoute']);
 
 
-
+cordovezApp.directive('stringToNumber', function() {
+  return {
+    require: 'ngModel',
+    link: function(scope, element, attrs, ngModel) {
+      ngModel.$parsers.push(function(value) {
+        return '' + value;
+      });
+      ngModel.$formatters.push(function(value) {
+        e = parseFloat(value).toFixed(2);
+        return parseFloat(e);
+      });
+    }
+  };
+});
 	
 	

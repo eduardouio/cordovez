@@ -10,15 +10,12 @@
  * @since    Version 1.0.0
  * @filesource
  */
-
-
-var serviceBase = host + 'index.php/producto/';
-
-/**-----------------------------------------------------------------------------
-Factory Incoterms
------------------------------------------------------------------------------**/
 cordovezApp.factory('productoFactory' , ['$http', '$rootScope', '$q' ,
-											 function($http, $rootScope, $q){
+                                             function($http, $rootScope, $q){
+
+    console.log('[Debug] productoFactory');
+    var serviceBase = host + 'index.php/producto/';
+
 
     //funciones comunes de login 
     function httpGet(url){
@@ -70,15 +67,15 @@ cordovezApp.factory('productoFactory' , ['$http', '$rootScope', '$q' ,
 
     //app/index.php/producto/listar/validar
     service.putProduct = function(product){
-      console.log('[Debug] service.putProduct);
-      reurn httpPost('validar/', product);
+      console.log('[Debug] service.putProduct');
+      return httpPost('validar/', product);
     };
 
     //app/index.php/producto/eliminar
     service.delProduct = function(idProduct){
       console.log('[Debug] service.delProduct');
       return httpGet('eliminar/' + idProduct);
-    }
+    };
 
     return  service;
 

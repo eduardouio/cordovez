@@ -11,12 +11,12 @@
  * @since    Version 1.0.0
  * @filesource
  */
-
-var serviceBase = host + 'index.php/facinfdetalle/';
-
 cordovezApp.factory('fcatinfoDetalleFactory' , ['$http', '$rootScope', '$q' ,
 											 function($http, $rootScope, $q){
 
+    console.log('[Debug] fcatinfoDetalleFactory');
+    var serviceBase = host + 'index.php/facinfdetalle/';
+    
     //funciones comunes de login 
     function httpGet(url){
     	var deferred = $q.defer();

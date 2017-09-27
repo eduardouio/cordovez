@@ -10,16 +10,12 @@
  * @since    Version 1.0.0
  * @filesource
  */
-
-
-var serviceBase = host + 'index.php/factinformativa/';
-
-/**-----------------------------------------------------------------------------
-Factory Incoterms
------------------------------------------------------------------------------**/
 cordovezApp.factory('facInformativaFactory' , ['$http', '$rootScope', '$q' ,
 											 function($http, $rootScope, $q){
 
+    console.log('[Debug] facInformativaFactory');
+    var serviceBase = host + 'index.php/factinformativa/';
+    
     //funciones comunes de login 
     function httpGet(url){
     	var deferred = $q.defer();

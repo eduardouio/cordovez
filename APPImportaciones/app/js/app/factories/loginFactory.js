@@ -9,18 +9,15 @@
  * @since    Version 1.0.0
  * @filesource
  */
-
-
-var serviceBase = host + 'index.php/';
-
-
 cordovezApp.factory('factoryLogin' , ['$http', '$rootScope', '$q' ,
-											 function($http, $rootScope, $q){
+                                             function($http, $rootScope, $q){
 
+    console.log('[Debug] factoryLogin');
+    var serviceBase = host + 'index.php/login/';
     //funciones comunes de login 
     function httpGet(url){
-    	var deferred = $q.defer();
-    	var promise = deferred.promise;
+        var deferred = $q.defer();
+        var promise = deferred.promise;
 
     	$http.get(serviceBase + url ).then(
     		function(response){
@@ -50,12 +47,15 @@ cordovezApp.factory('factoryLogin' , ['$http', '$rootScope', '$q' ,
 	//#Envia el formulario a validar
 	service.postFormData = function(userData){
 		console.log('[Debug] postFormData');
-		return httpPost('login/validar', userData)
+		return httpPost('validar/', userData)
     };
 
+    /** 
+    * Comprieba la sesion y redirecciona
+    */
     service.checkSession = function(){
         console.log('[Debug] service.checkSession');
-        return httpGet('login/checkSession');
+        return httpGet('checkSession/');
     }
 
     return service;

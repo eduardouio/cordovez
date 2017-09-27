@@ -10,13 +10,12 @@
  * @since    Version 1.0.0
  * @filesource
  */
-
-
-var serviceBase = host + 'index.php/factgstinicial70/';
-
 cordovezApp.factory('factgstinicialesFactory' , ['$http', '$rootScope', '$q' ,
 											 function($http, $rootScope, $q){
 
+    console.log('[Debug] factgstinicialesFactory');
+    var serviceBase = host + 'index.php/factgstinicial70/';
+    
     //funciones comunes de login 
     function httpGet(url){
     	var deferred = $q.defer();

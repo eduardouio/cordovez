@@ -10,13 +10,12 @@
  * @since    Version 1.0.0
  * @filesource
  */
-
-var serviceBase = host + 'index.php/incoterm';
-
-
 cordovezApp.factory('incotermsFactory' , ['$http', '$rootScope', '$q' ,
 											 function($http, $rootScope, $q){
-	console.log('[Debug] load Factory incotermsFactory');
+	
+    console.log('[Debug] load Factory incotermsFactory');
+    
+    var serviceBase = host + 'index.php/incoterm/';
 
     //funcion estandar para GET
          function httpGet(url){
@@ -47,39 +46,55 @@ cordovezApp.factory('incotermsFactory' , ['$http', '$rootScope', '$q' ,
 
 	var service = {};
 
+    var query = {
+        'incoterm' : '',
+        'country':'',
+        'city':''
+    };
+
     //#Lista los incoterms por tipo
 	service.getIncoterms = function(){
         console.log('[Debug] service.getIncoterms');
-        return httpGet('incoterm/getIncoterms/');
+             
+        return httpPost('getIncoterms/',   {
+                                        'incoterm' : '',
+                                        'country':'',
+                                        'city':''   
+                                            });
     };
 
     //#Lista los incoterms por tipo
     service.getincotermsCountries = function(incoterm){
         console.log('[Debug] service.getincotermsCountries');
-        return httpGet('incoterm/getIncoterms/' + incoterm); 
+        query['incoterm'] = incoterm;
+        return httpPost('getIncoterms/',   {
+                                        'incoterm' : incoterm,
+                                        'country':'',
+                                        'city':''   
+                                            });
     };
 
     //#Lista los incoterms por tipo
     service.getIincotermsCities = function(incoterm , country){
         console.log('[Debug] service.getIincotermsCities');
-        return httpGet('incoterm/getIncoterms/' + incoterm + '/' + country); 
+        query['incoterm'] = incoterm;
+        query['country'] = country;
+        return httpPost('getIncoterms/',   {
+                                        'incoterm' : incoterm,
+                                        'country':country,
+                                        'city':''   
+                                            });
     };
 
     //#Lista los incoterms por tipo
     service.getIncotermsParam = function(incoterm , country, city){
         console.log('[Debug] service.getIncotermsParam');
-        return httpGet('incoterm/getIncoterms/' + incoterm + '/' + 
-                                                        country + '/' + city);           
-    };
-
-    //#lista los proveedores
-    service.getSuppliers = function(idSupplier){
-        console.log('[Debug] service.getSuppliers');
-        if(idSupplier === 0 ){
-          return httpGet('listar');    
-        }else{
-          return httpGet('listar/' + idSupplier);
-        }
+        //solucionar problema con la ñ
+        return httpPost('getIncoterms/',   {
+                                        'incoterm' : incoterm,
+                                        'country': country,
+                                        'city': city   
+                                            });
     };
 
      return service;

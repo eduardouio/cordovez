@@ -10,14 +10,13 @@
  * @since    Version 1.0.0
  * @filesource
  */
-
-
-var serviceBase = host + 'index.php/detallepedido/';
-
 cordovezApp.factory('detallePedidoFactory' , ['$http', '$rootScope', '$q' ,
 											 function($http, $rootScope, $q){
 
-    //funciones comunes de login 
+    console.log('[Debug] detallePedidoFactory');
+    var serviceBase = host + 'index.php/detallepedido/';
+    
+    //funciones comunes de login
     function httpGet(url){
     	var deferred = $q.defer();
     	var promise = deferred.promise;

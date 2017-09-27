@@ -10,15 +10,11 @@
  * @since    Version 1.0.0
  * @filesource
  */
-
-
-var serviceBase = host + 'index.php/proveedor/';
-
-/**-----------------------------------------------------------------------------
-Factory Incoterms
------------------------------------------------------------------------------**/
 cordovezApp.factory('proveedoresFactory' , ['$http', '$rootScope', '$q' ,
 											 function($http, $rootScope, $q){
+
+    console.log('[Debug] proveedoresFactory');
+    var serviceBase = host + 'index.php/proveedor/';
 
     //funciones comunes de login 
     function httpGet(url){
@@ -47,18 +43,8 @@ cordovezApp.factory('proveedoresFactory' , ['$http', '$rootScope', '$q' ,
     		});
     	return promise;
     }
-
-    //#lista los productos de un prpoveedor
-    service.getProductsSupplier = function(idSupplier){
-      console.log('[Debug] service.getProductsSupplier');
-      if(idSupplier === 0 ){
-          return httpGet('listar');    
-        }else{
-          return httpGet('listar/0/' + idSupplier);
-        }
-    };  
-
-	var service = {};
+    
+    var service = {};
 
     //app/index.php/proveedor/listar
     service.listSupplier = function(){

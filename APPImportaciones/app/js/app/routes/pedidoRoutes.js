@@ -17,8 +17,14 @@ cordovezApp.config(function($routeProvider, $locationProvider) {
 		
 		.when('/nuevo-pedido', {
 			templateUrl : host + '/js/app/views/forms/frm_pedido.html',
-			controller 	: 'pedidosController',
-			controllerAs : 'pedidosCtrl'
+			controller 	: 'nuevoPedidoController',
+			controllerAs : 'npedidoCtrl'
+		})
+
+		.when('/presentar-pedido/:idPedido', {
+			templateUrl : host + '/js/app/views/tpl_pedido_presentacion.html',
+			controller 	: 'presentarPedidoController',
+			controllerAs : 'ppedidoCtrl'
 		})
 		
 		.otherwise({

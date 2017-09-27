@@ -1,5 +1,3 @@
-//Lista de oaises
-        $scope.countries = 
   [
   {
     "name": "Alandia",
@@ -311,11 +309,7 @@
     "region": "Americas",
     "flag": "https://restcountries.eu/data/bol.svg"
   },
-  {
-    "name": null,
-    "region": "Americas",
-    "flag": "https://restcountries.eu/data/bes.svg"
-  },
+
   {
     "name": "Brasil",
     "region": "Americas",
@@ -365,11 +359,6 @@
     "name": "Cuba",
     "region": "Americas",
     "flag": "https://restcountries.eu/data/cub.svg"
-  },
-  {
-    "name": null,
-    "region": "Americas",
-    "flag": "https://restcountries.eu/data/cuw.svg"
   },
   {
     "name": "Dominica",
@@ -472,7 +461,7 @@
     "flag": "https://restcountries.eu/data/pry.svg"
   },
   {
-    "name": "Perú",
+    "name": "Peru",
     "region": "Americas",
     "flag": "https://restcountries.eu/data/per.svg"
   },
@@ -510,11 +499,6 @@
     "name": "San Vicente y Granadinas",
     "region": "Americas",
     "flag": "https://restcountries.eu/data/vct.svg"
-  },
-  {
-    "name": null,
-    "region": "Americas",
-    "flag": "https://restcountries.eu/data/sxm.svg"
   },
   {
     "name": "Islas Georgias del Sur y Sandwich del Sur",

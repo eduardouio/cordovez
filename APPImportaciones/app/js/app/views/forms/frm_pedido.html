@@ -1,4 +1,4 @@
-<form>
+<form ng-submit="validateOrder(formdata)">
 	<div class="row">
 		<div class="col-md-2">
 			<div class="form-group">
@@ -8,8 +8,8 @@
 				type="text"
 				required="true"
 				name="nro_pedido"
-				ng-model ="pedido.nro_pedido"
-				placeholder="0000-00" 
+				ng-model ="formdata.pedido.nro_pedido"
+				placeholder="000-00" 
 				maxlength="6" 
 				minlength="6" 
 				>
@@ -23,7 +23,7 @@
 				class="form-control" 
 				required="true" 
 				name="regimen"
-				ng-model="pedido.regimen"
+				ng-model="formdata.pedido.regimen"
 				>
 				<option value="" disabled selected>Seleccione ...</option>
 				<option value="70">Régimen 70</option>
@@ -31,10 +31,79 @@
 				</select>
 			</div>
 		</div>
-	
-   	<div class="col-md-2">
+
+				<div class="col-md-2">
+			<label>Incoterm</label>
+				<span class="label label-info">{{incotermName}}</span>
+			<button 
+			data-toggle="modal" 
+			data-target="#myModal" 
+			type="button" 
+			class="form-control btn btn-default btn-sm" 
+			ng-click="getIncoterms()">
+				<span class="fa fa-plus fa-fw"> </span>Añadir
+			</button>
+		</div>
+		<div class="col-md-3">
+		<label>País Origen</label>
+				<input
+				class="form-control" 
+				type="text"
+				required="true"
+				name = "pais_origen"
+				ng-model = "formdata.pedido.pais_origen"
+				readonly
+				</select>
+	</div>
+	<div class="col-md-3">
+					<div class="form-group">
+				<label>Ciudad Origen</label>
+				<input 
+				class="form-control" 
+				type="text"
+				required="true"
+				name="pais_ciudad_origen"
+				ng-model = "formdata.pedido.ciudad_origen"
+				readonly
+				>
+			</div>
+			</div>
+ 
+
+</div>
+<div class="row">
+	<div class="col-md-2">
+					<div class="form-group">
+				<label>Flete <span class="label label-warning">Provisión</span></label>
+				<input 
+				class="form-control" 
+				type="number"
+				required="true"
+				step="0.01" 
+				string-to-number
+				placeholder="0.00" 
+				ng-model = "formdata.helper.gasto_flete"
+				>
+			</div>
+	</div>
+			<div class="col-md-2">
 			<div class="form-group">
-				<label>Seguro</label>
+				<label>Gst Origen <span class="label label-warning">Provisión</span></label>
+				<input 
+				class="form-control" 
+				type="number"
+				string-to-number
+				required="true"
+				step="0.01" 
+				placeholder="0.00" 
+				ng-model = "formdata.helper.gasto_origen"
+				name="antes_fob_provisionado"				
+				>
+			</div>
+		</div>
+	  	<div class="col-md-2">
+			<div class="form-group">
+				<label>Seguro <span class="label label-info">SENAE</span></label>
 				<input 
 				class="form-control" 
 				type="number"
@@ -42,28 +111,13 @@
 				placeholder="0.00" 
 				required="true"
 				name="seguro_aduana"
-				ng-model ="pedido.seguro_aduana"
-				>
-			</div>
-		</div>
-
-		<div class="col-md-2">
-			<div class="form-group">
-				<label>Gst Origen</label>
-				<input 
-				class="form-control" 
-				type="number"
-				required="true"
-				step="0.01" 
-				placeholder="0.00" 
-				name="antes_fob"
-				ng-model ="pedido.antes_fob"
+				ng-model ="formdata.pedido.seguro_aduana"
 				>
 			</div>
 		</div>
 		<div class="col-md-2">
 			<div class="form-group">
-				<label>Flete Aduana</label>
+				<label>Flete <span class="label label-info">SENAE</span></label>
 				<input 
 				class="form-control" 
 				type="number"
@@ -71,56 +125,22 @@
 				step="0.01" 
 				placeholder="0.00" 
 				name="flete_aduana"
-				ng-model = "pedido.flete_aduana"
+				ng-model = "formdata.pedido.flete_aduana"
 				>
-				<input 
-         type="hidden" 
-         name="pedido.id_user"
-         ng-model="pedido.id_user"
-         value="{[pedido.id_user]}">
 			</div>
 		</div>
 
-		<div class="col-md-2">
-			<label>Incoterm</label>
-			<button 
-			data-toggle="modal" 
-			data-target="#myModal" 
-			type="button" 
-			class="btn btn-default btn-sm" 
-			ng-click="getIncoterms()">
-				<span class="fa fa-plus fa-fw"> </span>
-			</button>
-		</div>
-</div>
-<div class="row">
-	<div class="col-md-3">
-					<div class="form-group">
-				<label>Pais Origen</label>
-				<img src="{{selectedCountry.flag}}"/>
-				<input 
-				class="form-control" 
-				type="text"
-				required="true"
-				name="paiso_origen"
-				ng-model = "pedido.paiso_origen"
-				>
+		<div class="col-md-4">
+			<div class="form-group">
+				<label>Comentarios</label>
+				<textarea 
+				rows="3" 
+				maxlength="250" 
+				ng-model="formdata.pedido.comentarios" 
+				class="form-control">
+				</textarea>
 			</div>
-	</div>
-	<div class="col-md-3">
-		<label>País Origen</label>
-		    <angucomplete 
-		    id="ex1" 
-		    placeholder="Buscar Pais" 
-		    pause="100" 
-		    selectedobject="selectedCountry" 
-		    localdata="countries" 
-		    searchfields="name" 
-		    titlefield="name" 
-		    minlength="1" 
-		    inputclass="form-control form-control-small" 
-		    matchclass="highlight" />
-	</div>
+		</div>
 </div
    <div class="row">
       <div class="col-md-12">
@@ -160,7 +180,7 @@
 						>
 						<option value="" disabled selected>Seleccione ...</option>
 						<option 
-						ng-repeat = "(key, value) in incoterms.incoterm" 
+						ng-repeat = "(key, value) in incoterms.incoterm.data" 
 						value="{{value.incoterms}}">
 						{{value.incoterms}}
 						</option>
@@ -169,7 +189,7 @@
        </div>
        </div>
 
-       <div class="row">
+       <div class="row" ng-show = "showIncoterms.countries">
        	<div class="col-sm-12">
        			<div class="form-group">
 						<label>Pais de Origen</label>
@@ -180,12 +200,13 @@
 						ng-change ="getIncotermsCities(incotermName, country)"
 						>
 						<option value="" disabled selected>Seleccione ...</option>
-						<option ng-repeat = "(key, value) in incoterms.countries" value="{{value.pais}}">{{value.pais}}</option>
+						<option ng-repeat = "(key, value) in incoterms.countries.data" value="{{value.pais}}">{{value.pais}}</option>
 						</select>
 					</div>
        </div>
        </div>
-        <div class="row">
+
+        <div class="row" ng-show = "showIncoterms.cities">
        	<div class="col-sm-12">
        			<div class="form-group">
 						<label>Ciudad de Origen</label>
@@ -196,13 +217,13 @@
 						ng-change = "getIncotermParam(incotermName ,country, city)"
 						>
 						<option value="" disabled selected>Seleccione ...</option>
-						<option ng-repeat = "(key, value) in incoterms.cities" value="{{value.ciudad}}">{{value.ciudad}}</option>
+						<option ng-repeat = "(key, value) in incoterms.cities.data" value="{{value.ciudad}}">{{value.ciudad}}</option>
 						</select>
 					</div>
 
-					<div class="row">
+					<div class="row" ng-show = "showIncoterms.params">
 						<div class="col-sm-12">
-							<table class="table table-condensed table-hover table-condensed">
+							<table class="table table-condensed table-hover table-condensed table-bordered table-striped">
 								<thead>
 									<tr>
 										<th>id</th>
@@ -212,7 +233,7 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr ng-repeat = "(key, value) in incoterms.param">
+									<tr ng-repeat = "(key, value) in incoterms.param.data">
 										<td>{{value.id_incoterm}}</td>
 										<td>{{value.tipo}}</td>
 										<td>{{value.tarifa | currency }}</td>
@@ -222,9 +243,16 @@
 							</table>
 						</div>
 					</div>
-					<div class="row">
+					<div class="row" ng-show = "showIncoterms.button">
 						<div class="col-sm-12">
-							<button type="button" class="btn btn-primary" style="width: 100%">Aplicar</button>
+							<button 
+							type="button" 
+							data-dismiss="modal"
+							class="btn btn-primary" 
+							ng-click = "putIncoterms(incoterms.param)"
+							style="width: 100%">
+							Aplicar Incoterm
+						</button>
 						</div>
 					</div>
        </div>

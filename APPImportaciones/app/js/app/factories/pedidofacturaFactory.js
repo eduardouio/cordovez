@@ -10,15 +10,11 @@
  * @since    Version 1.0.0
  * @filesource
  */
-
-
-var serviceBase = host + 'index.php/pedidofactura/';
-
-/**-----------------------------------------------------------------------------
-Factory Incoterms
------------------------------------------------------------------------------**/
 cordovezApp.factory('pedidofacturaFactory' , ['$http', '$rootScope', '$q' ,
 											 function($http, $rootScope, $q){
+
+    console.log('[Debug] pedidofacturaFactory');
+    var serviceBase = host + 'index.php/pedidofactura/';
 
     //funciones comunes de login 
     function httpGet(url){
@@ -54,7 +50,7 @@ cordovezApp.factory('pedidofacturaFactory' , ['$http', '$rootScope', '$q' ,
     //obtiene las facturas de un pedido
     service.getOrderInvoices = function(year , idOrder){
         console.log('[Debug] service.getOrderInvoices');
-        return httpGet('listar/ + year  + '-' + idOrder);
+        return httpGet('listar/' + year  + '-' + idOrder);
     }
 
     //pedidofactura/listar/

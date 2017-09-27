@@ -10,13 +10,12 @@
  * @since    Version 1.0.0
  * @filesource
  */
-
-
-var serviceBase = host + 'index.php/facpgpedido/';
-
 cordovezApp.factory('facpagospedidoFactory' , ['$http', '$rootScope', '$q' ,
 											 function($http, $rootScope, $q){
-
+    
+    console.log('[Debug] facpagospedidoFactory');
+    var serviceBase = host + 'index.php/facpgpedido/';
+    
     //funciones comunes de login 
     function httpGet(url){
     	var deferred = $q.defer();

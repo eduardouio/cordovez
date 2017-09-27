@@ -10,14 +10,12 @@
  * @since    Version 1.0.0
  * @filesource
  */
-
-
-var serviceBase = host + 'index.php/gstnacionalizacion/';
-
-
 cordovezApp.factory('gastonacionalizacionFactory' , ['$http', '$rootScope', '$q' ,
 											 function($http, $rootScope, $q){
-
+    
+    console.log('[Debug] gastonacionalizacionFactory');
+    var serviceBase = host + 'index.php/gstnacionalizacion/';
+    
     //funciones comunes de login 
     function httpGet(url){
     	var deferred = $q.defer();

@@ -19,6 +19,7 @@ cordovezApp.controller('nuevoPedidoController', [
                                               'detallePedidoFactory', 
                                               'gastosinicialesFactory',
                                               'incotermsFactory',
+                                              'proveedoresFactory',
                                       function(
                                               $scope, 
                                               $location,
@@ -29,10 +30,12 @@ cordovezApp.controller('nuevoPedidoController', [
                                               detallePedidoFactory, 
                                               gastosinicialesFactory,
                                               incotermsFactory,
+                                              proveedoresFactory,
                                         ) {
 
   console.log('[Debug] nuevoPedidoController');
 
+  
   //Funcion para validar un pedido y guardalo
   $scope.validateOrder = function(order){
     console.log('$scope.validateOrder');
@@ -56,9 +59,11 @@ cordovezApp.controller('nuevoPedidoController', [
     }
 
     //completamos y guardamos el pedido
+    var fecha = document.getElementById('fecha_arribo').value;
     pedido['id_user'] = $scope.idUser;
     pedido['antes_fob'] = 0;
     pedido['estado_pedido'] = "ABIERTO";
+    pedido['fecha_arribo'] = fecha.replace(/\//g,'-');
     var myPedido = {
                   'accion' : 'create',
                   'pedido' : pedido
@@ -80,7 +85,7 @@ cordovezApp.controller('nuevoPedidoController', [
         //guardamos los gastos inicilaes
         saveExpenses(gastos_iniciales_r70[0]);
         saveExpenses(gastos_iniciales_r70[1]);
-        $location.path('/presentar-pedido/' + pedido.nro_pedido);
+        $location.path('/listar-pedido/' + pedido.nro_pedido);
         $scope.validError(response.appst, response.message);
     },function(error){
       var message = error.message.slice(1,40);
@@ -224,6 +229,12 @@ cordovezApp.controller('nuevoPedidoController', [
   });
   };
 
+  //regresa a la lista de los pedidos
+  $scope.goBack = function(){
+    $location.path('/');
+   };
+
+   
   //Inicia parametros Controller
   $scope.main = function(){
     console.log('[Debug] $scope.main()');

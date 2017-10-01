@@ -47,6 +47,7 @@ cordovezApp.controller('loginController',
 			}else{	
 				$scope.showError = true;
 				$scope.showSuccess = false;
+				$scope.userData = {};
 			}
 			$scope.message = response.message;
 		},function(error){

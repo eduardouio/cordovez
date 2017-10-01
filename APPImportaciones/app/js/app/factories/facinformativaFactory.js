@@ -42,7 +42,7 @@ cordovezApp.factory('facInformativaFactory' , ['$http', '$rootScope', '$q' ,
     			return deferred.reject(error);
     		});
     	return promise;
-    }
+    };
 
 	var service = {};
 
@@ -50,7 +50,7 @@ cordovezApp.factory('facInformativaFactory' , ['$http', '$rootScope', '$q' ,
     service.getInvoice = function (idInvoice){
         console.log('[Debug] service.getInvoice');
         return httpGet('presentar/' + idInvoice);
-    }
+    };
 
     //app/index.php/factinformativa/presentar/:idOrder
     service.getInvoicebyOrder = function(idOrder){
@@ -74,7 +74,7 @@ cordovezApp.factory('facInformativaFactory' , ['$http', '$rootScope', '$q' ,
     service.delInvoice = function(idInvoice){
         console.log('[Debug] service.delInvoice');
         return httpGet('eliminar/' + idInvoice);
-    }
+    };
 
     return service;
 

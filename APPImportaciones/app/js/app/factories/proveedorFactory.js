@@ -18,8 +18,8 @@ cordovezApp.factory('proveedoresFactory' , ['$http', '$rootScope', '$q' ,
 
     //funciones comunes de login 
     function httpGet(url){
-    	var deferred = $q.defer();
-    	var promise = deferred.promise;
+        var deferred = $q.defer();
+        var promise = deferred.promise;
 
     	$http.get(serviceBase + url ).then(
     		function(response){
@@ -50,6 +50,12 @@ cordovezApp.factory('proveedoresFactory' , ['$http', '$rootScope', '$q' ,
     service.listSupplier = function(){
         console.log('[Debug] service.listSupplier');
         return httpGet('listar');
+    };//app/index.php/proveedor/listar
+
+    //app/index.php/proveedor/listarProveedorTipo/:internacional
+    service.listSupplierByType = function(type){
+        console.log('[Debug] listSupplierByType');
+        return httpGet('listarproveedortipo/' + type);
     };
 
     //app/index.php/proveedor/listar/:idSupplier

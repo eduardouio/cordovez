@@ -56,7 +56,7 @@ cordovezApp.factory('nacionalizacionFactory' , ['$http', '$rootScope', '$q' ,
     service.listNationalization = function (){
       console.log('[Debug] service.listNationalization');
       return httpGet('listar');
-    }
+    };
 
     //app/index.php/nacionalizacion/listar/:idOrser
     service.getNationalizationByOrder = function(idOrder){
@@ -68,7 +68,7 @@ cordovezApp.factory('nacionalizacionFactory' , ['$http', '$rootScope', '$q' ,
     service.getNationalizationByInvoice = function(idInfoInvoice){
         console.log('[Debug] service.getNationalizationByInvoice');
         return httpGet('listar/0/' + idInfoInvoice);
-    }
+    };
 
     //app/index.php/nacionalizacion/validar => create & update
     service.putNationalization = function (nationalization){
@@ -80,7 +80,7 @@ cordovezApp.factory('nacionalizacionFactory' , ['$http', '$rootScope', '$q' ,
     service.delNationalization = function(idNationalization){
       console.log('[Debug] service.delNationalization');
       return httpGet('eliminar' + idNationalization);
-    }
+    };
 
   return service;
 

@@ -65,4 +65,4 @@ cordovezApp.factory('detallePedidoFactory' , ['$http', '$rootScope', '$q' ,
 
   return service;
 
-}])
+}]);

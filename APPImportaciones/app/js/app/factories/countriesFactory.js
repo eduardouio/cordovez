@@ -46,4 +46,4 @@ cordovezApp.factory('countriesFactory' , ['$http', '$rootScope', '$q' ,
 
   return service;
 
-}])
+}]);

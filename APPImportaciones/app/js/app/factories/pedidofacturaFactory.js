@@ -12,7 +12,7 @@
  */
 cordovezApp.factory('pedidofacturaFactory' , ['$http', '$rootScope', '$q' ,
 											 function($http, $rootScope, $q){
-
+   
     console.log('[Debug] pedidofacturaFactory');
     var serviceBase = host + 'index.php/pedidofactura/';
 
@@ -44,26 +44,26 @@ cordovezApp.factory('pedidofacturaFactory' , ['$http', '$rootScope', '$q' ,
     	return promise;
     }
 
-	var service = {};
-
+    var service = {};
+    
     //pedidofactura/listar/:year/:id/
     //obtiene las facturas de un pedido
-    service.getOrderInvoices = function(year , idOrder){
-        console.log('[Debug] service.getOrderInvoices');
-        return httpGet('listar/' + year  + '-' + idOrder);
-    }
+    service.getOrderInvoices = function(orderNro){
+        console.log('[Debug] service.getOrderInvoices ' + orderNro);
+        return httpGet('listar/' + orderNro );
+    };
 
     //pedidofactura/listar/
     service.getAllOrderInvoices = function(){
         console.log('[Debug] service.getAllOrderInvoices');
         return httpGet('listar/');
-    }
+    };
 
     //pedidofactura/presentar/:id
     service.getOrderInvoice = function(idOrderInvoice){
         console.log('[Debug] service.getOrderInvoice');
         return httpGet('presentar/' + idOrderInvoice);
-    }
+    };
 
     //app/index.php/pedidofactura/validar/ => update and create
     service.putOrderInvoice = function(ordeInvoice){
@@ -75,8 +75,7 @@ cordovezApp.factory('pedidofacturaFactory' , ['$http', '$rootScope', '$q' ,
     service.delOrderInvoice = function(idOrderInvoice){
         console.log('[Debug] service.delOrderInvoice');
         return httpGet('eliminar/' + idOrderInvoice);
-    }
-
+    };
     return service;
 
 }]);

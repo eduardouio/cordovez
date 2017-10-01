@@ -56,7 +56,7 @@ cordovezApp.factory('factoryLogin' , ['$http', '$rootScope', '$q' ,
     service.checkSession = function(){
         console.log('[Debug] service.checkSession');
         return httpGet('checkSession/');
-    }
+    };
 
     return service;
 }]);

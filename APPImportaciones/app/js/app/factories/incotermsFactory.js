@@ -100,4 +100,4 @@ cordovezApp.factory('incotermsFactory' , ['$http', '$rootScope', '$q' ,
      return service;
 
 
-}])
+}]);

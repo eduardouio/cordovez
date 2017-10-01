@@ -75,7 +75,7 @@ cordovezApp.factory('facpagospedidoFactory' , ['$http', '$rootScope', '$q' ,
     service.delPaidOrder = function(idPaidOrder){
         console.log('[Debug] service.delPaidOrder');
         return httpGet('eliminar/' + idPaidOrder);
-    }
+    };
 
     return service;
 

@@ -18,7 +18,7 @@ class __TwigTemplate_45d44c1cb2b4a7962c1f6c29bfb45318cde76a9459f5a6f72d0dea3a58c
         // line 1
         echo "<!DOCTYPE html>
 <!-- header -->    
-<html lang=\"es\" ng-app=\"cordovezApp\">
+<html lang=\"es\" ng-app=\"cordovezApp\" class=\"ng-cloak\">
 <head>
     <meta charset=\"utf-8\">
     <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">
@@ -34,40 +34,44 @@ class __TwigTemplate_45d44c1cb2b4a7962c1f6c29bfb45318cde76a9459f5a6f72d0dea3a58c
         // line 12
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "js/lib/angular.min.js\"></script>
-
     <!-- Jauery Autocomplete CSS -->   
 
     <!-- Bootstrap Core CSS -->
     <link href=\"";
-        // line 17
+        // line 16
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/bootstrap/css/bootstrap.min.css\" rel=\"stylesheet\">
    
     <!-- MetisMenu CSS -->
     <link href=\"";
-        // line 20
+        // line 19
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/metisMenu/metisMenu.min.css\" rel=\"stylesheet\">
     <!-- Custom CSS -->
     <link href=\"";
-        // line 22
+        // line 21
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "dist/css/sb-admin-2.css\" rel=\"stylesheet\">
     <!-- Custom Fonts -->
     <link href=\"";
-        // line 24
+        // line 23
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/font-awesome/css/font-awesome.min.css\" rel=\"stylesheet\" type=\"text/css\">
     <!-- Custom Styles -->
     <link href=\"";
-        // line 26
+        // line 25
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/styles/cordovez.css\" rel=\"stylesheet\" type=\"text/css\">
 
     <link href=\"";
-        // line 28
+        // line 27
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/jquery-toast/jquery.toast.css\"rel=\"stylesheet\" type=\"text/css\">
+
+    <link src=\"";
+        // line 29
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "vendor/datepicker/css/bootstrap-datepicker3.standalone.min.css\">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -90,7 +94,7 @@ class __TwigTemplate_45d44c1cb2b4a7962c1f6c29bfb45318cde76a9459f5a6f72d0dea3a58c
 
     public function getDebugInfo()
     {
-        return array (  69 => 28,  64 => 26,  59 => 24,  54 => 22,  49 => 20,  43 => 17,  35 => 12,  30 => 10,  19 => 1,);
+        return array (  73 => 29,  68 => 27,  63 => 25,  58 => 23,  53 => 21,  48 => 19,  42 => 16,  35 => 12,  30 => 10,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -105,7 +109,7 @@ class __TwigTemplate_45d44c1cb2b4a7962c1f6c29bfb45318cde76a9459f5a6f72d0dea3a58c
     {
         return new Twig_Source("<!DOCTYPE html>
 <!-- header -->    
-<html lang=\"es\" ng-app=\"cordovezApp\">
+<html lang=\"es\" ng-app=\"cordovezApp\" class=\"ng-cloak\">
 <head>
     <meta charset=\"utf-8\">
     <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">
@@ -115,7 +119,6 @@ class __TwigTemplate_45d44c1cb2b4a7962c1f6c29bfb45318cde76a9459f5a6f72d0dea3a58c
     <title>{{title}}</title>
     <!-- Angula JS -->
     <script src=\"{{base_url}}js/lib/angular.min.js\"></script>
-
     <!-- Jauery Autocomplete CSS -->   
 
     <!-- Bootstrap Core CSS -->
@@ -131,6 +134,8 @@ class __TwigTemplate_45d44c1cb2b4a7962c1f6c29bfb45318cde76a9459f5a6f72d0dea3a58c
     <link href=\"{{base_url}}vendor/styles/cordovez.css\" rel=\"stylesheet\" type=\"text/css\">
 
     <link href=\"{{base_url}}vendor/jquery-toast/jquery.toast.css\"rel=\"stylesheet\" type=\"text/css\">
+
+    <link src=\"{{base_url}}vendor/datepicker/css/bootstrap-datepicker3.standalone.min.css\">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->

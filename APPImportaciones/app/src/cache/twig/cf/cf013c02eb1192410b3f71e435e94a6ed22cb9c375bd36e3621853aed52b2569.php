@@ -58,7 +58,7 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
 
 
 <script type=\"text/javascript\">
-  setTimeout(function(){ reloadPage() }, 600000);
+  setTimeout(function(){ reloadPage() }, 6000000);
 
 \tfunction reloadPage(argument) {
 \t\tlocation.reload();
@@ -128,70 +128,96 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
 <script src=\"";
         // line 66
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "/js/app/factories/incotermsFactory.js\"></script>
+        echo "/js/app/factories/proveedorFactory.js\"></script>
 <script src=\"";
         // line 67
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "/js/app/factories/nacionalizacionFactory.js\"></script>
+        echo "/js/app/factories/incotermsFactory.js\"></script>
 <script src=\"";
         // line 68
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "/js/app/factories/pedidoFactory.js\"></script>
+        echo "/js/app/factories/nacionalizacionFactory.js\"></script>
 <script src=\"";
         // line 69
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "/js/app/factories/pedidofacturaFactory.js\"></script>
+        echo "/js/app/factories/pedidoFactory.js\"></script>
 <script src=\"";
         // line 70
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "/js/app/factories/productoFactory.js\"></script>
+        echo "/js/app/factories/pedidofacturaFactory.js\"></script>
 <script src=\"";
         // line 71
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "/js/app/factories/proveedorFactory.js\"></script>
-
+        echo "/js/app/factories/productoFactory.js\"></script>
 <script src=\"";
-        // line 73
+        // line 72
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "js/app/controllers/nuevoPedidoController.js\"></script>
 <script src=\"";
-        // line 74
+        // line 73
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "js/app/controllers/presentarPedidoController.js\"></script>
-<!-- jQuery -->
 <script src=\"";
-        // line 76
+        // line 74
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "vendor/jquery/jquery.min.js\"></script>
+        echo "js/app/controllers/facturasPedidoController.js\"></script>
+<script src=\"";
+        // line 75
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "js/app/controllers/listarPedidosController.js\"></script>
+<!-- jQuery -->
 <script src=\"";
         // line 77
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "vendor/jquery/jquery.min.js\"></script>
+<script src=\"";
+        // line 78
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/jquery-toast/jquery.toast.js\"></script>
 <!--autocomplete-->
-<!-- Bootstrap Core JavaScript -->
-<script src=\"";
-        // line 80
-        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "vendor/bootstrap/js/bootstrap.min.js\"></script>
 <!-- Metis Menu Plugin JavaScript -->
 <script src=\"";
-        // line 82
+        // line 81
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/metisMenu/metisMenu.min.js\"></script>
 <!-- Custom Theme JavaScript -->
 <script src=\"";
-        // line 84
+        // line 83
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "dist/js/sb-admin-2.js\"></script>
+<script src=\"";
+        // line 84
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "vendor/datepicker/js/bootstrap-datepicker.min.js\"></script>
+<!-- Bootstrap Core JavaScript -->
+<script src=\"";
+        // line 86
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "vendor/bootstrap/js/bootstrap.min.js\">
+</script>
+<script type=\"text/javascript\">
+  window.onload = cargar();
+  function cargar(){
+    \$('.input-group.date').datepicker({
+          startView: 2,
+          maxViewMode: 2,
+          todayBtn: \"linked\",
+          clearBtn: true,
+          language: \"es\",
+          autoClose : true,
+    });
+  }
+</script>
 
 <script type=\"text/javascript\">
   \$('#myModal').on('shown.bs.modal', function () {
   \$('#myInput').focus()
 })
-
 </script>
-</html>
-";
+<script type=\"text/javascript\">
+  //\$('.dropdown-toggle').dropdown()
+</script>
+</html>";
     }
 
     public function getTemplateName()
@@ -206,7 +232,7 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
 
     public function getDebugInfo()
     {
-        return array (  184 => 84,  179 => 82,  174 => 80,  168 => 77,  164 => 76,  159 => 74,  155 => 73,  150 => 71,  146 => 70,  142 => 69,  138 => 68,  134 => 67,  130 => 66,  126 => 65,  122 => 64,  118 => 63,  114 => 62,  110 => 61,  106 => 60,  102 => 59,  98 => 58,  94 => 57,  90 => 56,  81 => 52,  77 => 51,  72 => 49,  30 => 10,  19 => 1,);
+        return array (  195 => 86,  190 => 84,  186 => 83,  181 => 81,  175 => 78,  171 => 77,  166 => 75,  162 => 74,  158 => 73,  154 => 72,  150 => 71,  146 => 70,  142 => 69,  138 => 68,  134 => 67,  130 => 66,  126 => 65,  122 => 64,  118 => 63,  114 => 62,  110 => 61,  106 => 60,  102 => 59,  98 => 58,  94 => 57,  90 => 56,  81 => 52,  77 => 51,  72 => 49,  30 => 10,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -258,7 +284,7 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
 
 
 <script type=\"text/javascript\">
-  setTimeout(function(){ reloadPage() }, 600000);
+  setTimeout(function(){ reloadPage() }, 6000000);
 
 \tfunction reloadPage(argument) {
 \t\tlocation.reload();
@@ -284,33 +310,50 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
 <script src=\"{{base_url}}/js/app/factories/factinfdetalleFactory.js\"></script>
 <script src=\"{{base_url}}/js/app/factories/gastosInicialesFactory.js\"></script>
 <script src=\"{{base_url}}/js/app/factories/gstnacionalizacionFactory.js\"></script>
+<script src=\"{{base_url}}/js/app/factories/proveedorFactory.js\"></script>
 <script src=\"{{base_url}}/js/app/factories/incotermsFactory.js\"></script>
 <script src=\"{{base_url}}/js/app/factories/nacionalizacionFactory.js\"></script>
 <script src=\"{{base_url}}/js/app/factories/pedidoFactory.js\"></script>
 <script src=\"{{base_url}}/js/app/factories/pedidofacturaFactory.js\"></script>
 <script src=\"{{base_url}}/js/app/factories/productoFactory.js\"></script>
-<script src=\"{{base_url}}/js/app/factories/proveedorFactory.js\"></script>
-
 <script src=\"{{base_url}}js/app/controllers/nuevoPedidoController.js\"></script>
 <script src=\"{{base_url}}js/app/controllers/presentarPedidoController.js\"></script>
+<script src=\"{{base_url}}js/app/controllers/facturasPedidoController.js\"></script>
+<script src=\"{{base_url}}js/app/controllers/listarPedidosController.js\"></script>
 <!-- jQuery -->
 <script src=\"{{base_url}}vendor/jquery/jquery.min.js\"></script>
 <script src=\"{{base_url}}vendor/jquery-toast/jquery.toast.js\"></script>
 <!--autocomplete-->
-<!-- Bootstrap Core JavaScript -->
-<script src=\"{{base_url}}vendor/bootstrap/js/bootstrap.min.js\"></script>
 <!-- Metis Menu Plugin JavaScript -->
 <script src=\"{{base_url}}vendor/metisMenu/metisMenu.min.js\"></script>
 <!-- Custom Theme JavaScript -->
 <script src=\"{{base_url}}dist/js/sb-admin-2.js\"></script>
+<script src=\"{{base_url}}vendor/datepicker/js/bootstrap-datepicker.min.js\"></script>
+<!-- Bootstrap Core JavaScript -->
+<script src=\"{{base_url}}vendor/bootstrap/js/bootstrap.min.js\">
+</script>
+<script type=\"text/javascript\">
+  window.onload = cargar();
+  function cargar(){
+    \$('.input-group.date').datepicker({
+          startView: 2,
+          maxViewMode: 2,
+          todayBtn: \"linked\",
+          clearBtn: true,
+          language: \"es\",
+          autoClose : true,
+    });
+  }
+</script>
 
 <script type=\"text/javascript\">
   \$('#myModal').on('shown.bs.modal', function () {
   \$('#myInput').focus()
 })
-
 </script>
-</html>
-", "base/footer.html.twig", "/var/www/html/app/src/views/base/footer.html.twig");
+<script type=\"text/javascript\">
+  //\$('.dropdown-toggle').dropdown()
+</script>
+</html>", "base/footer.html.twig", "/var/www/html/app/src/views/base/footer.html.twig");
     }
 }

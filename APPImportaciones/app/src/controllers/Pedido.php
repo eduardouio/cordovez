@@ -57,7 +57,7 @@ class Pedido extends MY_Controller {
 		if ($idPedido == 0){
 			$this->resultDb = $this->db->get($this->controllerSPA);
 		}else{
-			$this->db->where('id_pedido', $idPedido);
+			$this->db->where('nro_pedido', $idPedido);
 			$this->resultDb = $this->db->get($this->controllerSPA);
 		}
 
@@ -90,6 +90,7 @@ class Pedido extends MY_Controller {
 		$request = json_decode(file_get_contents('php://input'), true);
 
 		$pedido = $request['pedido'];
+
 		$this->db->where('nro_pedido',$pedido['nro_pedido']);
 		$this->resultDb = $this->db->get($this->controllerSPA);
 
@@ -104,6 +105,8 @@ class Pedido extends MY_Controller {
 			$status = $this->_validData($pedido);
 			if ($status['status']){
 				if ($request['accion'] == 'create'){
+					$pedido['fecha_arribo'] = date('Y-m-d' ,
+																						strtotime($pedido['fecha_arribo']));
 					$this->db->insert($this->controllerSPA, $pedido);
 					$this->responseHTTP['message'] = 'Registro creado existosamente';
 					$this->responseHTTP["appst"] = 1200;
@@ -111,6 +114,10 @@ class Pedido extends MY_Controller {
 					$this->__responseHttp($this->responseHTTP, 201);
 				}else{
 					$pedido['last_update'] = date('Y-m-d H:i:s');
+					$pedido['fecha_arribo'] = date('Y-m-d' ,
+																						strtotime($pedido['fecha_arribo']));
+
+					print(var_dump($pedido));
 					$this->db->where('nro_pedido', $pedido['nro_pedido']);
 					$this->db->update($this->controllerSPA, $pedido);
 					$this->responseHTTP['message'] = 

@@ -52,17 +52,17 @@ class Pedidofactura extends MY_Controller {
 	 *@param $year strin desde url
 	 * @return array JSON
 	 */
-  public function listar($idOrder = 0 , $year = 0){
+  public function listar($idOrder = 0){
 
 				if($idOrder != 0){
-					$this->db->where('nro_pedido', $idOrder.'-'.$year);
-					$this->resultDb = $this->db->get($this->controllerSPA);
+					$this->db->where('nro_pedido', $idOrder);
+					$this->resultDb = $this->db->get('pedidoFacturaView');
 					$this->responseHTTP["data"] = $this->resultDb->result_array();
 	        $this->responseHTTP["appst"] = "Se encontraron " .
 																					$this->resultDb->num_rows() .
-																		" facturas Para el pedido " . $idOrder.$year;
+																		" facturas Para el pedido " . $idOrder;
 				}else{
-					$this->resultDb = $this->db->get($this->controllerSPA);
+					$this->resultDb = $this->db->get($this->pedidoFacturaView);
 					if($this->resultDb->num_rows() > 0){
 						$this->responseHTTP["data"] = $this->resultDb->result_array();
 		        $this->responseHTTP["appst"] = "Se encontraron " .
@@ -97,17 +97,29 @@ class Pedidofactura extends MY_Controller {
 		if($this->resultDb->num_rows() != null && $request['accion'] == 'create'){
 			$this->responseHTTP['appst'] = 'La factura que intenta ingresar ya existe';
 			$this->responseHTTP['data'] = $this->resultDb->result_array();
-			$this->__responseHttp($this->responseHTTP, 400);
+			$this->__responseHttp($this->responseHTTP, 200);
 		}else{
 			$status = $this->_validData($pedidoFactura);
 			if ($status['status']){
 				if ($request['accion'] == 'create'){
+
+					$pedidoFactura['fecha_emision']  =  date('Y-m-d',
+																	strtotime($pedidoFactura['fecha_emision']));
+					$pedidoFactura['vencimiento_pago'] =  date('Y-m-d',
+																strtotime($pedidoFactura['vencimiento_pago']));
+
 					$this->db->insert($this->controllerSPA, $pedidoFactura);
 					$this->responseHTTP['appst'] = 'Factura ingresada exitosamente';
 					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 					$this->__responseHttp($this->responseHTTP, 201);
 				}else{
-					$pedido['last_update'] = date('Y-m-d H:i:s');
+					#seteamos las fechas
+					$pedidoFactura['last_update'] = date('Y-m-d H:i:s');
+					$pedidoFactura['fecha_emision']  =  date('Y-m-d',
+																	strtotime($pedidoFactura['fecha_emision']));
+					$pedidoFactura['vencimiento_pago'] =  date('Y-m-d',
+																strtotime($pedidoFactura['vencimiento_pago']));
+
 					$this->db->where('id_pedido_factura', $request['id_pedido_factura']);
 					$this->db->update($this->controllerSPA, $pedidoFactura);
 					$this->responseHTTP['appst'] = 'Factura Actualizada';
@@ -118,7 +130,7 @@ class Pedidofactura extends MY_Controller {
 				$this->responseHTTP['appst'] =
 									'Uno de los datos ingresados es incorrecto, vuelva a intentar';
 				$this->responseHTTP['data'] = $status;
-				$this->__responseHttp($this->responseHTTP, 400);
+				$this->__responseHttp($this->responseHTTP, 200);
 			}
 		}
 
@@ -154,11 +166,11 @@ class Pedidofactura extends MY_Controller {
 			'nro_pedido' => 6,
 			'id_factura_proveedor' => 0,
 			'identificacion_proveedor' => 0,
-			'fecha_emision' => 19,
+			'fecha_emision' => 10,
 			'valor' => 1,
 			'moneda' => 1,
 			'tipo_cambio' => 1,
-			'vencimiento_pago' => 19,
+			'vencimiento_pago' => 10,
 			'id_user' => 1,
 		);
 		return $this->_checkColumnsData($columnsLen, $pedido);

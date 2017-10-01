@@ -143,10 +143,19 @@ transition: 0.75s;
     </div>
   </div>
     <div class=\"row\">
-        <div class=\"col-md-4 col-md-offset-7\">
+      <div class=\"col-sm-5 text-center\" >
+        <img src=\"";
+        // line 99
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "img/cordovez.png\" style=\"width: 70%; height: auto\">
+<br>
+        <h3 class=\"text-primary\">MODULO DE IMPORTACIONES 
+        <b>CORDOVEZ S.A.</b>
+      </h3>
+      </div>
+        <div class=\"col-md-4 col-md-offset-2\">
             <div class=\"panel panel-default\">
                 <div class=\"panel-heading\">
-
                     <span class=\"glyphicon glyphicon-lock\"></span> Inicio de Sesion</div>
                 <div class=\"panel-body\">
                     <form class=\"form-horizontal\" role=\"form\" ng-submit=\"sendData(user)\">
@@ -204,13 +213,33 @@ transition: 0.75s;
             </div>
         </div>
     </div>
+    <div class=\"row\">
+      &nbsp;
+    </div>
+    <div class=\"row\">
+      &nbsp;
+    </div>
+    <div class=\"row\">
+      &nbsp;
+    </div>
+    <div class=\"row\">
+      &nbsp;
+    </div>
+    <div class=\"row\">
+      <div class=\"col-sm-5\">
+        
+<small> &copy; Todos los Derechos reservados Importadora Cordovez 2017 <br>
+            Desarrollado por Eduardo Villota <a href=\"mailto:eduardouio7@gmail.com\">eduardouio7@gmail.com 
+          </a></small>
+      </div>
+    </div>
 
 </div>
 
 <script type=\"text/javascript\">
   
   var host = '";
-        // line 164
+        // line 190
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "';
   var httpResult = {};
@@ -241,43 +270,34 @@ transition: 0.75s;
 }
 </script>
 
-<script type=\"text/javascript\">
-  setTimeout(function(){ reloadPage() }, 600000);
-
-    function reloadPage(argument) {
-        location.reload();
-    }
-
-</script>
-
 <!-- NG APP cordovezApp-->
 <script src=\"";
-        // line 203
+        // line 220
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "js/lib/angular.min.js\"></script>
 <script src=\"";
-        // line 204
+        // line 221
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "js/lib/angular-route.min.js\"></script>
 <script src=\"";
-        // line 205
+        // line 222
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "js/lib/angular-touch.min.js\"></script>
 
 <script src=\"";
-        // line 207
+        // line 224
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "js/app/app.js\"></script>
 <script src=\"";
-        // line 208
+        // line 225
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "js/app/factories/loginFactory.js\"></script>
 <script src=\"";
-        // line 209
+        // line 226
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "js/app/directives/autocompleteDirective.js\"></script>
 <script src=\"";
-        // line 210
+        // line 227
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "js/app/controllers/loginController.js\"></script>
 
@@ -285,22 +305,22 @@ transition: 0.75s;
 
             <!-- jQuery -->
             <script src=\"";
-        // line 215
+        // line 232
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/jquery/jquery.min.js\"></script>
             <!-- Bootstrap Core JavaScript -->
             <script src=\"";
-        // line 217
+        // line 234
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/bootstrap/js/bootstrap.min.js\"></script>
             <!-- Metis Menu Plugin JavaScript -->
             <script src=\"";
-        // line 219
+        // line 236
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/metisMenu/metisMenu.min.js\"></script>
             <!-- Custom Theme JavaScript -->
             <script src=\"";
-        // line 221
+        // line 238
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "dist/js/sb-admin-2.js\"></script>
 
@@ -328,7 +348,7 @@ transition: 0.75s;
 
     public function getDebugInfo()
     {
-        return array (  304 => 221,  299 => 219,  294 => 217,  289 => 215,  281 => 210,  277 => 209,  273 => 208,  269 => 207,  264 => 205,  260 => 204,  256 => 203,  214 => 164,  141 => 94,  137 => 93,  126 => 85,  67 => 29,  54 => 19,  49 => 17,  44 => 15,  39 => 13,  34 => 11,  29 => 9,  19 => 1,);
+        return array (  324 => 238,  319 => 236,  314 => 234,  309 => 232,  301 => 227,  297 => 226,  293 => 225,  289 => 224,  284 => 222,  280 => 221,  276 => 220,  243 => 190,  149 => 99,  141 => 94,  137 => 93,  126 => 85,  67 => 29,  54 => 19,  49 => 17,  44 => 15,  39 => 13,  34 => 11,  29 => 9,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -438,10 +458,16 @@ transition: 0.75s;
     </div>
   </div>
     <div class=\"row\">
-        <div class=\"col-md-4 col-md-offset-7\">
+      <div class=\"col-sm-5 text-center\" >
+        <img src=\"{{base_url}}img/cordovez.png\" style=\"width: 70%; height: auto\">
+<br>
+        <h3 class=\"text-primary\">MODULO DE IMPORTACIONES 
+        <b>CORDOVEZ S.A.</b>
+      </h3>
+      </div>
+        <div class=\"col-md-4 col-md-offset-2\">
             <div class=\"panel panel-default\">
                 <div class=\"panel-heading\">
-
                     <span class=\"glyphicon glyphicon-lock\"></span> Inicio de Sesion</div>
                 <div class=\"panel-body\">
                     <form class=\"form-horizontal\" role=\"form\" ng-submit=\"sendData(user)\">
@@ -499,6 +525,26 @@ transition: 0.75s;
             </div>
         </div>
     </div>
+    <div class=\"row\">
+      &nbsp;
+    </div>
+    <div class=\"row\">
+      &nbsp;
+    </div>
+    <div class=\"row\">
+      &nbsp;
+    </div>
+    <div class=\"row\">
+      &nbsp;
+    </div>
+    <div class=\"row\">
+      <div class=\"col-sm-5\">
+        
+<small> &copy; Todos los Derechos reservados Importadora Cordovez 2017 <br>
+            Desarrollado por Eduardo Villota <a href=\"mailto:eduardouio7@gmail.com\">eduardouio7@gmail.com 
+          </a></small>
+      </div>
+    </div>
 
 </div>
 
@@ -531,15 +577,6 @@ transition: 0.75s;
   }
   return msg;
 }
-</script>
-
-<script type=\"text/javascript\">
-  setTimeout(function(){ reloadPage() }, 600000);
-
-    function reloadPage(argument) {
-        location.reload();
-    }
-
 </script>
 
 <!-- NG APP cordovezApp-->

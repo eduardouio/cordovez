@@ -46,6 +46,7 @@ class MY_Controller extends CI_Controller{
 				}
 			}
 
+
 			if($validation["status"]){
 				foreach ($columnsLen as $key => $value) {					
 					if(!(strlen($tableDb[$key]) >= $value)){
@@ -54,6 +55,7 @@ class MY_Controller extends CI_Controller{
 					}
 				}
 			}
+
 			return $validation;
     }
 

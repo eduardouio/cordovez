@@ -124,6 +124,27 @@ class Proveedor extends MY_Controller {
 
 	}
 
+	/**	
+	* Retorna una lista de los proveedores nacionales e internaicones
+	*/
+	public function listarProveedorTipo($tipo = 'nacional'){
+	
+			$this->db->where('tipo_provedor', $tipo);
+			$this->resultDb =  $this->db->get($this->controllerSPA);
+
+			if($this->resultDb->num_rows() > 0){
+			$this->responseHTTP["data"] = $this->resultDb->result_array();
+			$this->responseHTTP["infoTable"] = $this->mymodel->getInfo($this->controllerSPA);
+			$this->responseHTTP["appst"] = "Se encontraron " .
+																			$this->resultDb->num_rows() .
+																			" items";
+		}else{
+			$this->responseHTTP["data"] = $this->resultDb->result_array();
+			$this->responseHTTP["appst"] = "No existen registros almacenados";
+		}
+			$this->__responseHttp($this->responseHTTP, 200);
+		}
+
 	/**
 	 * Elimina un registro de la tabla
 	 * dependencias

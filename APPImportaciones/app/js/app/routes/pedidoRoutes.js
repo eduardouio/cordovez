@@ -15,17 +15,27 @@ cordovezApp.config(function($routeProvider, $locationProvider) {
 	$locationProvider.hashPrefix('');
 	$routeProvider
 		
+		.when('/' , {
+			templateUrl : host + '/js/app/views/tpl_lista_pedidos.html',
+			controller : 'listarPedidosController',
+		})
+
 		.when('/nuevo-pedido', {
 			templateUrl : host + '/js/app/views/forms/frm_pedido.html',
 			controller 	: 'nuevoPedidoController',
-			controllerAs : 'npedidoCtrl'
 		})
 
-		.when('/presentar-pedido/:idPedido', {
+		.when('/facturas-pedido/:idOrder', {
+			templateUrl : host + '/js/app/views/tpl_facturas_pedido.html',
+			controller 	: 'facturasPedidoController',
+		})
+
+		.when('/presentar-pedido/:idOrder', {
 			templateUrl : host + '/js/app/views/tpl_pedido_presentacion.html',
 			controller 	: 'presentarPedidoController',
-			controllerAs : 'ppedidoCtrl'
 		})
+
+
 		
 		.otherwise({
 			redirectTo: '/'

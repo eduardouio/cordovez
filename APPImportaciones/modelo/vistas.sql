@@ -30,6 +30,7 @@ AS
     dpf.costo_und,
     dpf.detalle_pedido_factura
   FROM detalle_pedido_factura AS dpf 
+  LEFT JOIN pedido AS ped USING(id_pedido_factura)
   LEFT JOIN producto AS pr USING(cod_contable) 
   LEFT JOIN proveedor AS prv USING(identificacion_proveedor)
   WHERE dpf.id_pedido_factura = 4;

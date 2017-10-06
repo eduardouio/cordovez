@@ -79,4 +79,17 @@ class MY_Controller extends CI_Controller{
         $this->rest->_responseHttp('Entrada No autorizada favor vuelva a ' .
                   base_url(),405);
     }
+
+
+    /**	
+    * Formate a las fechas para que Mysql las pueda grabar
+    * @param $date (string) => dd-mm-yyyy
+    *	@return $date (dame) => yyyy-mm-dd
+    */
+    public function formatDate($date){
+    	list($d,$m,$y) = explode('-',$date);
+    	$timemestamp = mktime(0,0,0,$d,$m,$y);
+    	return date('Y-m-d', $timemestamp);
+
+    }
 }

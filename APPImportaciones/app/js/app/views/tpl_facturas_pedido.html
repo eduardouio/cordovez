@@ -62,6 +62,7 @@
 </div>
 </div>
 <br>
+<div ng-show="viewData.show.viewList">
 <div class="row">
    <div class="col-sm-12">
    <div class="table-responsive">
@@ -69,7 +70,6 @@
          <thead>
             <tr style="background-color: #c1c1c1;">
                <th>#</th>
-               <th>Pedido</th>
                <th>Nro Factura</th>
                <th>Proveedor</th>
                <th>F Emision</th>
@@ -81,13 +81,15 @@
          <tr ng-repeat = "(key, value) in viewData.pedidos_factura | filter:searchText">
             <tr ng-repeat = "(key, value) in viewData.pedidos_factura">
                      <td>{{$index + 1}}</td>
-                     <td>{{value.nro_pedido}}</td>
                      <td>
-                     {{value.id_factura_proveedor}}
-                     </td>
-                     <a href="#/verProveedor/{{value.id_proveedor}}">
-                     <td>{{value.nombre}}</td>
+                      <a href="#/verFacturaPedido/{{value.id_pedido_factura}}">
+                      {{value.id_factura_proveedor}}</td>
+                      </a>
+                     <td>
+                     <a href="#/verProveedor/{{value.identificacion_proveedor}}">
+                     {{value.nombre}}
                   </a>
+                   </td>
                      <td>{{value.fecha_emision | date }} </td>
                      <td>{{value.vencimiento_pago | date }}
                         <span class="label label-danger pull-right">{{value.estado}}</span>
@@ -100,7 +102,10 @@
                             <span class="caret"></span>
                           </button>
                           <ul class="dropdown-menu" aria-labelledby="dLabel">
-                            <li> <a href="#/agregarProducto/{{value.id_pedido_factura}}">Agregar Producto</a> </li>
+                            <li> <a href="#/agregarProducto/{{value.id_pedido_factura}}"
+                              ng-click="viewData.helper.selected = value.id_pedido_factura"
+                              >
+                            Agregar Producto</a> </li>
                             <li> <a href="#/verProductos/{{value.id_pedido_factura}}">Ver Productos</a> </li>
                             <li> <a href="#/editarFacturaPedido/{{value.id_pedido_factura}}">Editar Factura</a> </li>
                             <li> <a href="#/eliminarFacturaPedido/{{value.id_pedido_factura}}">Elminar Factura</a> </li>
@@ -112,7 +117,43 @@
    </div>
    </div>
 </div>
+</div>
 <hr>
+<div ng-show="viewData.show.addProduct">
+  <div class="row">
+    <div class="col-sm-10">
+ <form action="" method="POST" role="form">
+  <legend>Registrar Nuevo Prodcuto
+    <small>
+    <b>Factura : 125410</b>
+    <span class="lable label-info" >PRATAC S.A.</span>      
+    </small>
+  </legend>
+  
+    </div>
+    <div class="col-sm-2"> 
+      <button>
+        <span class="fa fa-chevron-circle-left"> </span>
+      Cancelar
+    </button>
+    </div>
+  </div>      
+  <div class="row">
+    <div class="col-sm-3">
+        <div class="form-group">
+          <label for=""></label>
+          <input 
+          type="text" 
+          class="form-control" 
+          id="" 
+          placeholder="Input field">
+        </div>
+    </div>
+  </div>
+      </form>
+  
+</div>
+<div ng-show="viewData.show.viewProducts">
 <div class="row">
    <div class="col-sm-9"><b>Productos Factura <span class="text-primary">010-17</span></b></div>
    <div class="col-sm-3"><b>Proveedor<span class="text-primary">010-17</span></b></div>
@@ -121,7 +162,7 @@
    <div class="col-sm-12">
    <table class="table table-hover table-bordered table-striped">
          <thead>
-            <tr style="background-color: #CCDFDE">
+            <tr style="background-color: #e0e0e0">
                <th>#</th>
                <th>Nombre</th>
                <th>Nro Cajas</th>
@@ -134,7 +175,31 @@
             </tr>
          </thead>
          <tr>
-            
+            <td>1</td>
+            <td>VINO TINTO RESERVADO MALBEC</td>
+            <td>12</td>
+            <td>{{120*12}}</td>
+            <td>{{9.99 | currency}}</td>
+            <td> {{(120*12) * 9.99 | currency}}</td>
+            <td>320</td>
+            <td>{{(120*12)-320}}</td>
+            <td>
+              <div class="dropdown">
+                           <button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                           Acciones <span class="fa fa-list fa-fw" ></span>
+                            <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" aria-labelledby="dLabel">
+                            <li> <a href="#/agregarProducto/{{value.id_pedido_factura}}"
+                              ng-click="viewData.helper.selected = value.id_pedido_factura"
+                              >
+                            Agregar Producto</a> </li>
+                            <li> <a href="#/verProductos/{{value.id_pedido_factura}}">Ver Productos</a> </li>
+                            <li> <a href="#/editarFacturaPedido/{{value.id_pedido_factura}}">Editar Factura</a> </li>
+                            <li> <a href="#/eliminarFacturaPedido/{{value.id_pedido_factura}}">Elminar Factura</a> </li>
+                          </ul>
+                        </div>
+            </td>
          </tr>
 
       
@@ -143,9 +208,10 @@
 </div>
 
  </div>
+ </div>
 <!--tabPedido-->
 
-<!-- Modal -->
+<!-- Modal Nueva factura pedido -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
    <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -201,6 +267,7 @@
                            ng-model ="viewData.pedido_factura.identificacion_proveedor" 
                            required="true" 
                            name="regimen"
+                           id="nombreProveedor"
                            >
                         <option value="" disabled selected>Seleccione ...</option>
                         <option

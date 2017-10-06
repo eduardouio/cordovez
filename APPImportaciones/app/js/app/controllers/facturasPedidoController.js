@@ -34,7 +34,11 @@ cordovezApp.controller('facturasPedidoController', [
                 'proveedores' : [],
                 'helper' : {},
                 'userInfo' : {},
-                'show' : {}
+                'show' : {
+                  'viewProducts':true,
+                  'addProduct':false,
+                  'viewList':true,
+                }
                   };
   
     $scope.validateOrderInvoice = function(orderInvoice){
@@ -43,23 +47,38 @@ cordovezApp.controller('facturasPedidoController', [
       orderInvoice['id_user'] = $scope.viewData.userInfo['id_user'];
       orderInvoice['fecha_emision'] = fecha_emision.replace(/\//g,'-');
       orderInvoice['vencimiento_pago'] = fecha_vencimiento.replace(/\//g,'-');
-      orderInvoice['valor'] = 0;
+      orderInvoice['valor'] = 0.0;
+      
       //preparamos objeto de la base
-
       myOrderInvoice = {
         'accion' : 'create',
         'pedidoFactura' : orderInvoice
-      }
-
+      };
+      
+      //se envia a guardar
       var httpResponse = pedidofacturaFactory.putOrderInvoice(myOrderInvoice);
-
       httpResponse.then(function(response){
         $scope.validError(response.appst, response.message);
-        $('#myModal').close();
+        $('#myModal').modal('hide');
+      //vemos lo que tiene el
+      nuewOrderInvoice = orderInvoice;
+      nuewOrderInvoice['date_create'] = new Date()
+      nuewOrderInvoice['estado'] = 'ABIERTO';
+      nuewOrderInvoice['date_create'] = new Date().toLocaleString();
+      nuewOrderInvoice['identificacion_proveedor'] = 
+                        $scope.viewData.pedido_factura.identificacion_proveedor;
+      nuewOrderInvoice['id_pedido_factura'] = response.lastInfo['lastInsertId'];
+
+      var e = document.getElementById('nombreProveedor');
+      nuewOrderInvoice['nombre'] = e.options[e.selectedIndex].text;
+
+        $scope.viewData.pedidos_factura.push(nuewOrderInvoice);
+        $scope.viewData.pedido_factura = {};
+        $scope.viewData.pedido_factura['nro_pedido'] = 
+                                        $scope.viewData.pedido[0]['nro_pedido'];
       },function(error){
         $scope.validError(0, error); 
       });
-      
     };
 
     //carga la informacion inicial de los proveedores
@@ -72,7 +91,18 @@ cordovezApp.controller('facturasPedidoController', [
         var message = error.message.slice(1,40);
         $scope.validError(0, message); 
       });
-    };    
+    };   
+
+    //muestra los productos de una factura
+    $scope.showProducts = function(){
+      //var httpResponse = detallePedidoFactory.
+    }; 
+
+
+    //reupera la factura seleccionada
+    $scope.sleectItem = function(idSelected){
+      
+    }
 
     
     //#/agregarProducto/:idOrderInvoice
@@ -80,7 +110,6 @@ cordovezApp.controller('facturasPedidoController', [
     //#/editarFacturaPedido/:idOrderInvoice
     //#/eliminarFacturaPedido/:idOrderInvoice
     $scope.invoiceFunctions = function(){
-
 
       function addProduct(idOrderInvoice){
 
@@ -92,11 +121,11 @@ cordovezApp.controller('facturasPedidoController', [
       }
 
 
-      function editidOrderInvoice(idOrderInvoice){
+      function editOrderInvoice(idOrderInvoice){
 
       }
 
-      function delidOrderInvoice(idOrderInvoice){
+      function deleteOrderInvoice(idOrderInvoice){
 
       }
 

@@ -41,7 +41,10 @@
          <tbody>
             <tr ng-repeat = "(key, value) in (viewData.pedidos) | filter:searchText">
                      <td>{{$index + 1}}</td>
-                     <td>{{value.nro_pedido}}</td>
+                     <td><a href="#/presentar-pedido/{{value.nro_pedido}}">
+                     {{value.nro_pedido}}
+                     </a>
+                   </td>
                      <td>{{value.regimen}}</td>
                      <td>{{value.incoterm}}</td>
                      <td>{{value.pais_origen}}</td>

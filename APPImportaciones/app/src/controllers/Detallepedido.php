@@ -35,15 +35,15 @@ class Detallepedido extends MY_Controller {
 		#lista lis item de una factura de pedido
 		if ($idPedidoFactura != 0 ){
 			$this->db->where('id_pedido_factura', $idPedidoFactura);
-			$this->resultDb = $this->db->get($this->controllerSPA);
+			$this->resultDb = $this->db->get('detallesPedidosView');
 		}else{
-			$this->resultDb = $this->db->get($this->controllerSPA);
+			$this->resultDb = $this->db->get('detallesPedidosView');
 		}
 
 		if($this->resultDb->num_rows() > 0){
 			$this->responseHTTP["data"] = $this->resultDb->result_array();
 			$this->responseHTTP["infoTable"] = 
-								 $this->mymodel->getInfo($this->controllerSPA);
+								 $this->mymodel->getInfo('detallesPedidosView');
 			$this->responseHTTP["message"] = "Se encontraron " .
 								    $this->resultDb->num_rows() . " registros";
 			$this->responseHTTP["appst"] = 1100;																

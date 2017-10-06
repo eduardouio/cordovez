@@ -82,8 +82,11 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
         echo "js/app/routes/";
         echo twig_escape_filter($this->env, ($context["controller"] ?? null), "html", null, true);
         echo "Routes.js\"></script>
+<script src=\"";
+        // line 53
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "js/app/filters/filters.js\"></script>
 <!-- Directives-->
-
 <!-- Factories-->
 <script src=\"";
         // line 56
@@ -232,7 +235,7 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
 
     public function getDebugInfo()
     {
-        return array (  195 => 86,  190 => 84,  186 => 83,  181 => 81,  175 => 78,  171 => 77,  166 => 75,  162 => 74,  158 => 73,  154 => 72,  150 => 71,  146 => 70,  142 => 69,  138 => 68,  134 => 67,  130 => 66,  126 => 65,  122 => 64,  118 => 63,  114 => 62,  110 => 61,  106 => 60,  102 => 59,  98 => 58,  94 => 57,  90 => 56,  81 => 52,  77 => 51,  72 => 49,  30 => 10,  19 => 1,);
+        return array (  198 => 86,  193 => 84,  189 => 83,  184 => 81,  178 => 78,  174 => 77,  169 => 75,  165 => 74,  161 => 73,  157 => 72,  153 => 71,  149 => 70,  145 => 69,  141 => 68,  137 => 67,  133 => 66,  129 => 65,  125 => 64,  121 => 63,  117 => 62,  113 => 61,  109 => 60,  105 => 59,  101 => 58,  97 => 57,  93 => 56,  87 => 53,  81 => 52,  77 => 51,  72 => 49,  30 => 10,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -297,8 +300,8 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
 <!-- APP Angular -->
 <script src=\"{{base_url}}js/app/app.js\"></script>
 <script src=\"{{base_url}}js/app/routes/{{controller}}Routes.js\"></script>
+<script src=\"{{base_url}}js/app/filters/filters.js\"></script>
 <!-- Directives-->
-
 <!-- Factories-->
 <script src=\"{{base_url}}/js/app/factories/loginFactory.js\"></script>
 <script src=\"{{base_url}}/js/app/factories/countriesFactory.js\"></script>

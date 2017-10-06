@@ -103,13 +103,15 @@ class Pedidofactura extends MY_Controller {
 			if ($status['status']){
 				if ($request['accion'] == 'create'){
 
-					$pedidoFactura['fecha_emision']  =  date('Y-m-d',
-																	strtotime($pedidoFactura['fecha_emision']));
-					$pedidoFactura['vencimiento_pago'] =  date('Y-m-d',
-																strtotime($pedidoFactura['vencimiento_pago']));
+					$pedidoFactura['fecha_emision']  = 
+														$this->formatDate($pedidoFactura['fecha_emision']);
+					$pedidoFactura['vencimiento_pago'] = 
+													$this->formatDate($pedidoFactura['vencimiento_pago']);
 
+					//print var_dump($pedidoFactura);
 					$this->db->insert($this->controllerSPA, $pedidoFactura);
-					$this->responseHTTP['appst'] = 'Factura ingresada exitosamente';
+					$this->responseHTTP['appst'] = 1200;
+					$this->responseHTTP['message'] = 'Factura ingresada exitosamente';
 					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
 					$this->__responseHttp($this->responseHTTP, 201);
 				}else{
@@ -122,7 +124,8 @@ class Pedidofactura extends MY_Controller {
 
 					$this->db->where('id_pedido_factura', $request['id_pedido_factura']);
 					$this->db->update($this->controllerSPA, $pedidoFactura);
-					$this->responseHTTP['appst'] = 'Factura Actualizada';
+					$this->responseHTTP['appst'] = 1300;
+					$this->responseHTTP['message'] = 'Factura Actualizada';
 					//print var_dump($this->mymodel->lastInfo());
 					$this->__responseHttp($this->responseHTTP, 201);
 				}

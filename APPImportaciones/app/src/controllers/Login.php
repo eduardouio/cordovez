@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
- * Modulo encargado del inicio de sesion
+ * Encargado del inicio de sesion
  *
  * @package    CordovezApp
  * @author    Eduardo Villota <eduardouio7@gmail.com>
@@ -12,12 +12,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @since    Version 1.0.0
  * @filesource
  */
-
 class Login extends MY_Controller {
-	private $resultDb;
-	private $controllerSPA = "usuario";
+	private $controller = "usuario";
 	private $cryptKey  = 'qJB0rGtIn5UB1xG03efyCp';
-	private $responseHTTP = array('status' => 'success');
 	private $dataView;
 
 
@@ -25,82 +22,56 @@ class Login extends MY_Controller {
 		parent::__construct();
 	}
 
-	/**
-	 * CARGA CONFIGURACION INICIAL DEL MODULO SPA Y DEL controller
-	 * @return array (config)
-	 */
+
 	private function _loadData(){
 		$this->dataView = array(
-				'title' => 'SPA Login',
+				'title' => 'Inicio de Sesión',
 				'base_url' => base_url(),
 				'actionFrm' => base_url() . 'index.php/login/validar',
-				'controller' => $this->controllerSPA,
+				'controller' => $this->controller,
 				'iconTitle' => 'fa-cubes',
-				'active_pedidos' => 'active left-active',
 				);
 	}
 
 	/**
-	 * CARGA EL SPA DEL MODULO DE PEDIDOS
+	 * Pagina de inicio controller
 	 * @return string (template => pagePedido)
 	 */
 	public function index(){
 		$this->_loadData();
 		$this->twig->display('/pages/pageLogin.html', $this->dataView);
-		log_message('Login', 'clase de Login iniciada');
 	}
 
 	/**
-	 * Valida la informacion de inicio de sesion crea cookie de session
+	 * Formulario de inicio de sesion
 	 */
 	public function validar(){
-		if($this->rest->_getRequestMethod()!= 'POST'){
-			$this->_notAuthorized();
-		}
+		if(!$_POST){$this->_notAuthorized();}
 
-		$user = json_decode(file_get_contents('php://input'), true);
-
+		$user = $_POST;
 		$this->db->where('username' , $user['username']);
-		$this->resultDb = $this->db->get($this->controllerSPA);
-		if($this->resultDb->num_rows() == 1){
-			$userDb = $this->resultDb->result_array();
-			$userDb = $userDb[0];
-			if($user['username'] == $userDb['username']){
-				#comparamos los passwod
-				$encrypPasswd = $userDb['password'];
-				$password = $user['password'];
-				if ($encrypPasswd == $this->_encryptIt($user['password'])){
-					#actualiza lastlogin
-					$lastlogin = array(
-						'last_login' => date('Y-m-d H:i:s')
-					);
-					$this->db->where('username', $userDb['username']);
-					$this->db->update($this->controllerSPA, $lastlogin);
-
-					#creamos la cookie de session
-					$userData = array('username' => $userDb['username'],
-														'id_user' => $userDb['id_user'],
-														'nombres' => $userDb['nombres'],
-														'usertype' => $userDb['usertype'],
-														'logged_in' => true,
-														'last_login' => date('Y-m-d H:i:s')
-													);
-
-					$this->session->set_userdata($userData);
-					$this->responseHTTP['message'] = 'Bienvenid@ ' . $userData['nombres'];
-					$this->responseHTTP['appst'] = 1000;
-					$this->responseHTTP['userData'] = $userData;
-				}else{
-					$this->_putData($user);
-				}
-			}else{
-				$this->_putData($user);
-			}
+		$resultDb = $this->db->get($this->controller);
+		$userDb = $resultDb->result_array();
+		$userDb = $userDb[0];
+		if(
+			 !$userDb['username'] == $user['username'] || 
+			 !$userDb['password'] == $this->_encryptIt($user['password'])
+			){
+			print('usuario o contraseña incorrectos!.');
 		}else{
-			$this->_putData($user);
-		}
-		$this->__responseHttp($this->responseHTTP, 200);
+			#actualizamos el ultimo login
+			$lastlogin = array('last_login' => date('Y-m-d H:i:s'));			
+			$this->db->where('username', $userDb['username']);
+			$this->db->update($this->controller, $lastlogin);
 
+			#creamos la cookie de session
+			$userData = $userDb;
+			$userData['logged_in'] = true;
+			$userData['last_login'] = $lastlogin;
+			unset($userData['password']);
+			$this->session->set_userdata($userData);
+			$this->_redirectOrdersPage();
+		}
 	}
 
 
@@ -110,32 +81,6 @@ class Login extends MY_Controller {
 	public function cerrarSesion(){
 		$this->session->sess_destroy();
 		$this->index();
-
-	}
-
-	/**
-	* Retorna los datos de session
-	*/
-	public function checkSession(){
-
-		$userData = $this->session->userdata();
-		if(isset($userData['logged_in'])){
-			if($userData['logged_in']){
-			$this->responseHTTP['appst'] = 1000;
-			$this->responseHTTP['message'] = 'Session Avtiva';
-			$this->__responseHttp($this->responseHTTP, 200);
-			}
-		}
-	}
-
-	/**
-	 * Notifica de un  error de inicio de sesion
-	 */
-	private function _putData($user){
-		$this->responseHTTP['message'] =
-														'El nombre de usuario o contraseña es incorrecto!';
-		$this->responseHTTP['appst'] = 2000;
-		$this->responseHTTP['userdata'] = $user;
 	}
 
 
@@ -144,8 +89,10 @@ class Login extends MY_Controller {
 	 * @param string $q
 	 * @return string $qEncode
 	 */
-	private function _encryptIt( $q ) {
-	    $qEncoded      = base64_encode( mcrypt_encrypt( MCRYPT_RIJNDAEL_256, md5( $this->cryptKey ), $q, MCRYPT_MODE_CBC, md5( md5( $this->cryptKey ) ) ) );
+	private function _encryptIt($q){
+	    $qEncoded = base64_encode( mcrypt_encrypt( MCRYPT_RIJNDAEL_256, 
+	    						md5($this->cryptKey), $q, MCRYPT_MODE_CBC, md5( 
+	    																							md5($this->cryptKey))));
 	    return( $qEncoded );
 	}
 
@@ -154,9 +101,10 @@ class Login extends MY_Controller {
 	 * @param string $q
 	 * @return strinf $qDecoded
 	 */
-	private function _decryptIt( $q ) {
-	    $qDecoded      = rtrim( mcrypt_decrypt( MCRYPT_RIJNDAEL_256, md5( $this->cryptKey ), base64_decode( $q ), MCRYPT_MODE_CBC, md5( md5( $this->cryptKey ) ) ), "\0");
+	private function _decryptIt($q){
+	    $qDecoded = rtrim( mcrypt_decrypt( MCRYPT_RIJNDAEL_256, md5(
+	    						$this->cryptKey), base64_decode($q), MCRYPT_MODE_CBC, md5( 
+	    																						md5($this->cryptKey))),"\0");
 	    return( $qDecoded );
 	}
-
 }

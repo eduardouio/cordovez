@@ -1,7 +1,7 @@
 <?php
 
 /* base/header.html.twig */
-class __TwigTemplate_45d44c1cb2b4a7962c1f6c29bfb45318cde76a9459f5a6f72d0dea3a58cf9342 extends Twig_Template
+class __TwigTemplate_c78ecd5f42bcdf908c7a515f7a23ec37a4e15fe03ab63e9dadf070df4aeeac9a extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
     {
@@ -106,41 +106,6 @@ class __TwigTemplate_45d44c1cb2b4a7962c1f6c29bfb45318cde76a9459f5a6f72d0dea3a58c
 
     public function getSourceContext()
     {
-        return new Twig_Source("<!DOCTYPE html>
-<!-- header -->    
-<html lang=\"es\">
-<head>
-    <meta charset=\"utf-8\">
-    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">
-    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
-    <meta name=\"description\" content=\"Aplicacion de Manejo de importaciones\">
-    <meta name=\"author\" content=\"Eduardo Villota eduardouio7@gmail.com\">
-    <title>{{title}}</title>
-    <!-- Jauery Autocomplete CSS -->   
-
-    <!-- Bootstrap Core CSS -->
-    <link href=\"{{base_url}}vendor/bootstrap/css/bootstrap.min.css\" rel=\"stylesheet\">
-   
-    <!-- MetisMenu CSS -->
-    <link href=\"{{base_url}}vendor/metisMenu/metisMenu.min.css\" rel=\"stylesheet\">
-    <!-- Custom CSS -->
-    <link href=\"{{base_url}}dist/css/sb-admin-2.css\" rel=\"stylesheet\">
-    <!-- Custom Fonts -->
-    <link href=\"{{base_url}}vendor/font-awesome/css/font-awesome.min.css\" rel=\"stylesheet\" type=\"text/css\">
-    <!-- Custom Styles -->
-    <link href=\"{{base_url}}vendor/styles/cordovez.css\" rel=\"stylesheet\" type=\"text/css\">
-
-    <link href=\"{{base_url}}vendor/jquery/jqueryui-min.css\"rel=\"stylesheet\" type=\"text/css\">
-    <!-- jQuery -->
-    <script src=\"{{base_url}}vendor/jquery/jquery.min.js\"></script>
-    <script src=\"{{base_url}}vendor/jquery/jqueryui.min.js\"></script>
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src=\"https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js\"></script>
-        <script src=\"https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js\"></script>
-        <![endif]-->
-</head>", "base/header.html.twig", "/var/www/html/app/src/views/base/header.html.twig");
+        return new Twig_Source("", "base/header.html.twig", "/var/www/html/app/src/views/base/header.html.twig");
     }
 }

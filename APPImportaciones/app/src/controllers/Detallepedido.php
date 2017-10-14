@@ -14,9 +14,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @filesource
  */
 class Detallepedido extends MY_Controller {
-	private $resultDb;
-	private $controllerSPA = "detalle_pedido_factura";
-	private $responseHTTP = array("status" => "success");
+	private $controller= "detalle_pedido_factura";
+	private $template = '/pages/pagePedidoFacturaDetalle.html';
 
 		/**
 	 * Constructor de la funcion
@@ -25,116 +24,125 @@ class Detallepedido extends MY_Controller {
 		parent::__construct();
 	}
 
+	/**
+	* Crea un nuevo producto en una factuar
+	*/
+	public function nuevo($idInvoice){
+		$this->db->where('id_pedido_factura', $idInvoice);
+		$invoicedb = $this->db->get('pedido_factura');
+		$invoice = $invoicedb->result_array();
+		$this->db->where('identificacion_proveedor', 
+																		$invoice[0]['identificacion_proveedor']);
+		$products = $this->db->get('producto');
+		$config['create'] = true;		
+		$config['products'] = $products->result_array();
+		$config['productsarray'] = json_encode($products->result_array());
+		$config['invoice'] = $invoice;
+		$this->responseHttp($config);
+	}
 
-  /**
-   * Lista todos los detalles de los pedidos, sino se especifica una factura
-   * retorna todos los registros de la tabla
-   * @return array JSON
-   */
-  public function listar($idPedidoFactura = 0){
-		#lista lis item de una factura de pedido
-		if ($idPedidoFactura != 0 ){
-			$this->db->where('id_pedido_factura', $idPedidoFactura);
-			$this->resultDb = $this->db->get('detallesPedidosView');
+
+	/**
+	* Prepara el formulario para la edicion
+	*/
+	public function editar($idDetail){
+		$this->db->where('detalle_pedido_factura', $idDetail);
+		$resultDb = $this->db->get($this->controller);
+		$detail = $resultDb->result_array();
+		$this->db->where('cod_contable', $detail[0]['cod_contable']);
+		$resultDb = $this->db->get('producto');
+		$product = $resultDb->result_array();
+		$config['edit'] = true;
+		$config['detail'] = $detail;
+		$config['nombre'] = $product[0]['nombre'];
+		$this->responseHttp($config);
+
+	}
+
+	
+	/**	
+	* Elimina un detalle de factura
+	*/
+	public function eliminar($idDetail){
+		$this->db->where('detalle_pedido_factura', $idDetail);
+		$resultDb = $this->db->get($this->controller);
+		$detail = $resultDb->result_array();
+
+		$this->db->where('detalle_pedido_factura', $idDetail);
+		if ($this->db->delete($this->controller)){
+			$config['orderDetail'] = $detail[0]['id_pedido_factura'];
+			$config['viewMessage'] = true;
+			$config['deleted'] = true;
+			$config['message'] = 'La factura fue eliminada Exitosamente!';
+			$this->responseHttp($config);
 		}else{
-			$this->resultDb = $this->db->get('detallesPedidosView');
-		}
-
-		if($this->resultDb->num_rows() > 0){
-			$this->responseHTTP["data"] = $this->resultDb->result_array();
-			$this->responseHTTP["infoTable"] = 
-								 $this->mymodel->getInfo('detallesPedidosView');
-			$this->responseHTTP["message"] = "Se encontraron " .
-								    $this->resultDb->num_rows() . " registros";
-			$this->responseHTTP["appst"] = 1100;																
-		}else{
-			$this->responseHTTP["data"] = $this->resultDb->result_array();
-			$this->responseHTTP["message"] = "No existen registros almacenados";
-			$this->responseHTTP["appst"] = 2100;
-		}
-			$this->__responseHttp($this->responseHTTP);
-  }
-
-  /**
-   *  Valida los datos recibidos por post antes de crear o actualizar el
-   * registro, solo aceptan datos por post
-   * @return array JSON
-   */
-	public function validar(){
-    if($this->rest->_getRequestMethod()!= 'POST'){
-      $this->_notAuthorized();
-    }
-
-		$request = json_decode(file_get_contents('php://input'), true);
-
-		$detalleFactura = $request['detallePedidoFactura'];
-
-		$this->db->where('id_pedido_factura',
-									 	 $detalleFactura['id_pedido_factura']);
-		$this->db->where('cod_contable' , $detalleFactura['cod_contable']);
-		$this->resultDb = $this->db->get($this->controllerSPA);
-		if($this->resultDb->num_rows() != null && 
-											   $request['accion'] == 'create'){
-			$this->responseHTTP['message'] =
-							'Ya existe un registro con el mismo identificador';
-			$this->responseHTTP["appst"] = 2300;
-			$this->responseHTTP['data'] = $this->resultDb->result_array();
-			$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
-			$this->__responseHttp($this->responseHTTP, 400);
-		}else{
-		#comprobamos que el registro exista
-			$status = $this->_validData($detalleFactura);
-			if ($status['status']){
-				if ($request['accion'] == 'create'){
-					$this->db->insert($this->controllerSPA, $detalleFactura);
-					$this->responseHTTP['message'] = 
-											  'Regitro ingresado exitosamente';
-					$this->responseHTTP["appst"] = 1200;
-					$this->responseHTTP['lastInfo'] = 
-													$this->mymodel->lastInfo();
-					$this->__responseHttp($this->responseHTTP, 201);
-				}else{
-					$detalleFactura['last_update'] = date('Y-m-d H:i:s');
-					$this->db->where('detalle_pedido_factura', 
-										   $request['detalle_pedido_factura']);
-					$this->db->update($this->controllerSPA, $detalleFactura);
-					$this->responseHTTP['message'] = 'Registro actualizado';
-					$this->responseHTTP["appst"] = 1300;
-					$this->responseHTTP['lastInfo'] = 
-													$this->mymodel->lastInfo();
-					$this->__responseHttp($this->responseHTTP, 201);
-				}
-			}else{
-				$this->responseHTTP['message'] =
-						'Uno de los registro es incorrecto, vuelva a intentar';
-				$this->responseHTTP["appst"] = 1400;
-				$this->responseHTTP['data'] = $status;
-				$this->__responseHttp($this->responseHTTP, 400);
-			}
+			$config['orderDetail'] = $detail[0]['id_pedido_factura'];
+			$config['viewMessage'] = true;
+			$config['message'] = 'El pedido no puede ser Eliminado, 
+																												 tiene dependencias!';
+			$this->responseHttp($config);
 		}
 	}
 
-  /**
-   * Elimina un registro de la tabla
-   * dependencias
-   * @return array JSON
-   */
-	public function eliminar($detallePedidoFactura){
-    $this->db->where('detalle_pedido_factura' , $detallePedidoFactura);
-		$this->resultDb = $this->db->get($this->controllerSPA);
 
-		if  ($this->resultDb->num_rows() > 0){
-			$this->db->where('detalle_pedido_factura' , $detallePedidoFactura);
-			$this->db->delete($this->controllerSPA);
-			$this->responseHTTP['message'] = 'Regitro eliminado correctamente';
-		$this->responseHTTP["appst"] = 1500;
-		}else{
-			$this->responseHTTP['message'] =
-								  'El registro que intenta eliminar no existe';
-		$this->responseHTTP["appst"] = 2500;
+	/**
+	* Valida los datos antes de guardar en la base de datos
+	*/
+	public function validar(){
+		if($this->rest->_getRequestMethod()!= 'POST'){
+			$this->_notAuthorized();
 		}
 
-		$this->__responseHttp($this->responseHTTP, 200);
+		$detail =  $this->input->post();
+		$detail['id_user'] = $this->session->userdata('id_user');
+
+		if(!isset($detail['detalle_pedido_factura'])){
+				$this->db->where('cod_contable',
+																			 $detail['cod_contable']);
+				$this->db->where('id_pedido_factura',
+																		$detail['id_pedido_factura']);
+				$resultDb = $this->db->get($this->controller);
+
+				if($resultDb->num_rows() == 1 ){		
+					$config['orderInvoice'] = $resultDb->result_array();
+					$config['viewMessage'] = true;
+					$config['message'] = 'Este producto ya esta en la factura!';
+					$this->responseHttp($config);
+					return true;
+				}	
+		}
+
+		$status = $this->_validData($detail);
+
+			if ($status['status']){
+				if (!isset($detail['detalle_pedido_factura'])){
+					$this->db->insert($this->controller, $detail);
+					$this->presentarFactura($detail['id_pedido_factura']);
+					return true;
+				}else{
+					$detail['last_update'] = date('Y-m-d H:i:s');
+					$this->db->where('detalle_pedido_factura', $detail['detalle_pedido_factura']);
+					$this->db->update($this->controller, $detail);
+					$this->presentarFactura($detail['id_pedido_factura']);
+					return true;
+				}
+		}else{
+			$config['viewMessage'] = true;
+			$config['message'] = 'La información de uno de los campos es incorrecta!';
+			$config['data'] = $status['columns'];
+			$this->responseHttp($config);
+			print(var_dump($status['columns']));
+			return true;
+		}	
+	}
+
+
+	/**
+	* Presenta una factura cos sus productos
+	*/
+	public function presentarFactura($idIvoice){
+		header('Location: ' . base_url() . 'index.php/pedidofactura/presentar/' . 
+																																	$idIvoice);
 	}
 
 	/**
@@ -150,6 +158,21 @@ class Detallepedido extends MY_Controller {
 			'id_user' => 1
 		);
 		return $this->_checkColumnsData($columnsLen, $data);
+	}
+
+
+	/* *
+	* Envia la respuestas html al navegador
+	*/
+	public function responseHttp($config){
+		$config['title'] = 'Facturas Pedidos';
+		$config['base_url'] = base_url();
+		$config['rute_url'] = base_url() . 'index.php/';
+		$config['controller'] = $this->controller;
+		$config['iconTitle'] = 'fa-cubes';
+		$config['content'] = 'home';
+		$config['titleContent'] = 'Ingreso De Producto';
+		return $this->twig->display($this->template, $config);
 	}
 
 }

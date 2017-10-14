@@ -45,8 +45,7 @@ class MY_Controller extends CI_Controller{
 					$validation["columns"][$key] = $key;
 				}
 			}
-
-
+			
 			if($validation["status"]){
 				foreach ($columnsLen as $key => $value) {					
 					if(!(strlen($tableDb[$key]) >= $value)){
@@ -60,36 +59,76 @@ class MY_Controller extends CI_Controller{
     }
 
     /**
-     * REDIRECCIONA AL FORM DE LOGI
-     */
+    * Redireccion a Login 
+    */
     protected function _redirectLoginPage(){
         header('Status: 301 Moved Permanently', false, 301);
         header('Location: ' . base_url());
     }
 
-		public function __responseHttp($data, $httpstatus = 0){
-			$data['session'] = $this->session->userdata();
-			$this->rest->_responseHttp($data, $httpstatus);
+    /**
+    * Redirecciona a la pagina de inicio
+    */
+    public function _redirectOrdersPage(){
+    	header('Status: 301 Moved Permanently', false, 301);
+        header('Location: ' . base_url() . 'index.php/pedido/listar');
+    }
+		
+		/**
+		* Vista de entrada no autorizada
+		*/
+    public function _notAuthorized(){
+        print('Entrada No autorizada');
+        $this->_redirectLoginPage();
+        exit();
+    }   
+
+    /**
+    * Recibe un arreglo, calcula la diferencia entre dos fechas,
+    * retorna el arreglo con una columna entera de dias
+    * @param $array (array) arreglo de registros con fehas
+    * @param $column (string) nombre de la columna calcular
+    * @param $date (date) fecha de la que se quiere calcular la diferencia
+    * @return (array)
+    */
+    public function dateDiff($array, $column, $now){
+    	$result = array();
+			foreach ($array as $key => $value) {
+				$origin = strtotime($value[$column]);
+				$begin = date_create(date('Y-m-d' ,$origin));
+				$interval = date_diff($begin, $now, true);
+				$value['dias'] =  $interval->days;
+				$result[$key] = $value;
+			}
+
+			return $result;
 		}
 
 		/**
-		 * VALIDACION DE ENTRADA NI AUTORIZADA PARA EL LOGIN
-		 */
-    public function _notAuthorized(){
-        $this->rest->_responseHttp('Entrada No autorizada favor vuelva a ' .
-                  base_url(),405);
-    }
+		* Obtiene informacion de un usuario
+		* @param (int) userId
+		* @return (array) userData
+		*/
+		public function getUserDataDb($userId){
+			$this->db->where('id_user', $userId);
+			$resultDb = $this->db->get('usuario');
+			return $resultDb->result_array();
 
+		}
 
-    /**	
-    * Formate a las fechas para que Mysql las pueda grabar
-    * @param $date (string) => dd-mm-yyyy
-    *	@return $date (dame) => yyyy-mm-dd
-    */
-    public function formatDate($date){
-    	list($d,$m,$y) = explode('-',$date);
-    	$timemestamp = mktime(0,0,0,$d,$m,$y);
-    	return date('Y-m-d', $timemestamp);
+			/**	
+	* Obtiene registros a partir de condiciones
+	* @param (str) $col nombre de la columna
+	* @param  (str) $value valor para esa columna
+	* @param  (str) $table nombre de la tabla a consultat
+	* @return (array) result array
+	*
+	*/
+	public function _getDb($col, $value, $table = 'pedido'){
+		$this->db->where($col , $value);
+		$resultDb = $this->db->get($table);
+		if(!$resultDb->num_rows() > 0){return false;}
+		return $resultDb->result_array();
+	}
 
-    }
-}
+ 	}

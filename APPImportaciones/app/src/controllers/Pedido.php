@@ -12,10 +12,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @filesource
  */
 class Pedido extends MY_Controller {
-	private $resultDb;
-	private $dataView;
-	private $controllerSPA = 'pedido';
-	private $responseHTTP = array('status' => 'success');
+	private $controller = 'pedido';
+	private $template = '/pages/pagePedido.html';
+	public $config = array();
 
 	/**
 	 * Constructor de la funcion
@@ -25,61 +24,99 @@ class Pedido extends MY_Controller {
 	}
 
 	/**
-	 * Carga la configuracion inicial de la SPA
-	 * @return array (config)
-	 */
-	private function _loadData(){
-		$this->dataView = array(
-				'title' => 'SPA Pedidos',
-				'base_url' => base_url(),
-				'actionFrm' => '/validateForm',
-				'controller' => $this->controllerSPA,
-				'iconTitle' => 'fa-cubes',
-				'active_pedidos' => 'active left-active',
-				);
-	}
-
-	/**
-	 * Carga la vista y dependencias completas de la SPA
-	 * @return string (template => pagePedido)
+	 * Se redicrecciona a la lista de los pedidos
 	 */
 	public function index(){
-		$this->_loadData();
-		$this->twig->display('/pages/pagePedido.html', $this->dataView);
-		log_message('Pedido', 'clase de pedido Iniciado');
+		$this->listar();
 	}
 
 	/**
 	 * Presenta una lista de todos los pedidos
 	 */
-	public function listar($idPedido = 0 ){
-
-		if ($idPedido == 0){
-			$this->resultDb = $this->db->get($this->controllerSPA);
-		}else{
-			$this->db->where('nro_pedido', $idPedido);
-			$this->resultDb = $this->db->get($this->controllerSPA);
-		}
-
-			//Verificar que existan datos
-			if($this->resultDb->num_rows() > 0){
-				$this->responseHTTP['data'] = $this->resultDb->result_array();
-				$this->responseHTTP['message'] = 'Se encontraron ' .
-																			$this->resultDb->num_rows() . 'registros';
-				$this->responseHTTP["appst"] = 1100;
-			}else{
-				$this->responseHTTP['data'] = $this->resultDb->result_array();
-				$this->responseHTTP['message'] = 'No existen registros almacenados';
-				$this->responseHTTP["appst"] = 2100;
-			}
-			log_message('Pedido', 'se lista correctamente los pedidos');
-			$this->__responseHttp($this->responseHTTP);
+	public function listar($idOrder = 0 ){
+		$idOrder != 0 ? $this->db->where('nro_pedido', $idOrder) : false ;
+		$this->db->select('*');
+		$this->db->order_by('date_create', 'DESC');
+		$resultDb = $this->db->get($this->controller);
+		$data = $this->dateDiff($resultDb->result_array(), 'fecha_arribo' ,
+																										date_create(date('Y-m-d')));
+		$config['list_orders'] = true;
+		$config['list_active'] = 'class="active"';
+		$config['orders'] = $data;
+		$config['userData'] = $this->session->userdata();
+		$this->responseHttp($config);
 	}
 
 	/**
-	 * registra un pedido, si la llamada no es por post rechaza la peticion
-	 * crea un pedido nuevo => comprueba que no exista y crea un nuevo registro
-	 * actualiza un pedido existente => actualiza last_update con fecha del server
+	* Mestra un pedido completo
+	*/
+	public function presentar($nroOrder){
+		if(!$nroOrder){$this->_notAuthorized();}
+		#arreglo de datos para la vista
+		$data = array(
+								'order' => $this->_getDb('nro_pedido', $nroOrder),
+								'userData' => $this->session->userdata(),
+								'orderInvoices' => $this->_getOrderInvProducts($nroOrder),
+								'initialExpenses' => $this->_getInitialExpenses($nroOrder),
+								'nationalizations' => $this->_getNationalizations($nroOrder),
+								'invoicesInfo' => $this->_getInvoiceInformative($nroOrder)
+								);
+
+		#condiciones de cara de plantillas
+		$config['show_order'] = true;
+		$config['viewData'] = $data;
+		$config['list_active'] = 'class="active"';
+		$config['createBy'] = $this->getUserDataDb($data['order'][0]['id_user']);
+		$this->responseHttp($config);
+	}
+	
+	/**
+	* Muestra el formulario para crear un pedido
+	*/
+	public function nuevo(){
+		$config['new_active'] = 'class="active"';
+		$config['create_order'] = true;
+		$config['countries'] = $this->_getCountries();
+		$config['incoterms'] = json_encode($this->_getDb('1','1', 
+																												'incoterm_provision'));
+		$this->responseHttp($config);
+	}
+
+	/**
+	* Muestra el formulario de edicion 
+	*/
+	public function editar($nroOrder){
+		$this->db->where('nro_pedido', $nroOrder);
+		$resultDb = $this->db->get($this->controller);
+		$config['edit_order'] = true;
+		$config['order'] = $resultDb->result_array();
+		$config['incoterms'] = json_encode($this->_getDb('1','1', 
+																												'incoterm_provision'));
+		$this->responseHttp($config);
+	}
+
+	/**
+	 * elimina un pedido de la tabla, solo lo elimina sino tiene parciales
+	 */
+	public function eliminar($nroOrder){
+		$this->db->where('nro_pedido', $nroOrder);
+		if ($this->db->delete($this->controller)){
+			$config['order'] = $nroOrder;
+			$config['viewMessage'] = true;
+			$config['deleted'] = true;
+			$config['message'] = 'El Pedido fue eliminado Exitosamente!';
+			$this->responseHttp($config);
+		}else{
+			$config['order'] = $nroOrder;
+			$config['viewMessage'] = true;
+			$config['message'] = 'El pedido no puede ser Eliminado, 
+																												 tiene dependencias!';
+			$this->responseHttp($config);
+		}
+	}
+
+   /**
+	 * crea y/o modifica un pedido
 	 * @return JSON (response)
 	 */
 	public function validar(){
@@ -87,93 +124,59 @@ class Pedido extends MY_Controller {
 			$this->_notAuthorized();
 		}
 
-		$request = json_decode(file_get_contents('php://input'), true);
+		$pedido = $this->input->post();
+		$pedido['id_user'] = $this->session->userdata('id_user');
 
-		$pedido = $request['pedido'];
+		if(!isset($pedido['id_pedido'])){
+			if((int)$pedido['n_pedido'] < 100 && (int)$pedido['n_pedido'] > 9 ){
+					$pedido['n_pedido'] = '0' . $pedido['n_pedido'];
+				}elseif((int)$pedido['n_pedido'] < 9 ){
+					$pedido['n_pedido'] = '00' . $pedido['n_pedido'];
+				}
+		 
+				$pedido['nro_pedido'] =  $pedido['n_pedido']. '-'. $pedido['y_pedido'];
+				unset($pedido['n_pedido']);
+				unset($pedido['y_pedido']);
 
-		$this->db->where('nro_pedido',$pedido['nro_pedido']);
-		$this->resultDb = $this->db->get($this->controllerSPA);
+				$this->db->where('nro_pedido',$pedido['nro_pedido']);
+				$resultDb = $this->db->get($this->controller);
 
-		if($this->resultDb->num_rows() != null && $request['accion'] == 'create'){
-			$this->responseHTTP['message'] = 'Ya existe un pedido'.
-																								 'con el mismo identificador';
-			$this->responseHTTP["appst"] = 2300;
-			$this->responseHTTP['data'] = $this->resultDb->result_array();
-			$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
-			$this->__responseHttp($this->responseHTTP, 201);
-		}else{
-			$status = $this->_validData($pedido);
+				if($resultDb->num_rows() == 1 ){		
+					$config['order'] = $pedido['nro_pedido'];
+					$config['viewMessage'] = true;
+					$config['message'] = 'El pedido ya existe!';
+					$this->responseHttp($config);
+					return true;
+				}	
+		}
+
+		$status = $this->_validData($pedido);
 			if ($status['status']){
-				if ($request['accion'] == 'create'){
+				if (!isset($pedido['id_pedido'])){
 					$pedido['fecha_arribo'] = date('Y-m-d' ,
 																						strtotime($pedido['fecha_arribo']));
-					$this->db->insert($this->controllerSPA, $pedido);
-					$this->responseHTTP['message'] = 'Registro creado existosamente';
-					$this->responseHTTP["appst"] = 1200;
-					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
-					$this->__responseHttp($this->responseHTTP, 201);
+					$this->db->insert($this->controller, $pedido);
+					$this->_setinitialExpenses($pedido);
+					$this->presentar($pedido['nro_pedido']);
+					return true;
 				}else{
 					$pedido['last_update'] = date('Y-m-d H:i:s');
 					$pedido['fecha_arribo'] = date('Y-m-d' ,
 																						strtotime($pedido['fecha_arribo']));
-
-					print(var_dump($pedido));
 					$this->db->where('nro_pedido', $pedido['nro_pedido']);
-					$this->db->update($this->controllerSPA, $pedido);
-					$this->responseHTTP['message'] = 
-																	'El registro fue actualizado correctamente';
-					$this->responseHTTP["appst"] = 1300;
-					$this->__responseHttp($this->responseHTTP, 201);
+					$this->db->update($this->controller, $pedido);
+					$this->presentar($pedido['nro_pedido']);
+					return true;
 				}
-			}else{
-				$this->responseHTTP['message'] =
-								'Uno de los datos ingresados es incorrecto, vuelva a intentar';
-				$this->responseHTTP["appst"] = 1400;
-				$this->responseHTTP['data'] = $status;
-				$this->__responseHttp($this->responseHTTP, 200);
-			}
+		}else{
+			$config['order'] = $pedido['nro_pedido'];
+			$config['viewMessage'] = true;
+			$config['message'] = 'La información de uno de los campos es incorrecta!';
+			$config['data'] = $status['columns'];
+			$this->responseHttp($config);
+			return true;
 		}
-		}
-
-		/**
-		 * elimina un pedido de la tabla, solo lo elimina sino tiene parciales
-		 * ####redirect not post
-		 */
-		public function eliminar(){
-			if($this->rest->_getRequestMethod()!= 'POST'){
-				$this->_notAuthorized();
-			}
-			$request = json_decode(file_get_contents('php://input'), true);
-			$pedido = $request['pedido'];
-
-			$this->db->where('nro_pedido', $pedido['nro_pedido']);
-			$this->resultDb = $this->db->get($this->controllerSPA);
-
-			if($this->resultDb->num_rows() != null){
-				$this->db->where('nro_pedido', $pedido['nro_pedido']);
-				$this->resultDb = $this->db->get('pedido_factura');
-				if($this->resultDb->num_rows() == null){
-					$this->db->where('nro_pedido', $pedido['nro_pedido']);
-					$this->db->delete($this->controllerSPA);
-					$this->responseHTTP['message'] = 'El registro' . 
-																$pedido['nro_pedido'] . ' Ha sido eliminado';
-					$this->responseHTTP["appst"] = 1500;
-					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
-				}else {
-					$this->responseHTTP['message'] = 'El pedido' . $pedido['nro_pedido'] .
-								' No se puede eliminar, tiene dependencias en la base de datos';
-					$this->responseHTTP["appst"] = 2400;
-					$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
-				}
-			}else{
-				$this->responseHTTP['message'] = 'El pedido ' . $pedido['nro_pedido'] .
-												' No se puede eliminar, no existe en la base de datos';
-				$this->responseHTTP["appst"] = 2100;
-				$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
-			}
-
-			$this->__responseHttp($this->responseHTTP, 202);
-		}
+	}
 
 		/**
 		 * se validan los datos que deben estar para que la consulta no falle
@@ -184,15 +187,138 @@ class Pedido extends MY_Controller {
 				'nro_pedido' => 6,
 				'regimen' => 2,
 				'incoterm' => 1,
-				'antes_fob' => 1,
-				'antes_fob_provisionado' => 1,
 				'pais_origen' => 1,
 				'ciudad_origen' => 1,			
 				'flete_aduana' => 1,
+				'nro_refrendo' => 1,
 				'seguro_aduana' => 1,
-				'estado_pedido' => 7,
 				'id_user' => 1,
 			);
 			return $this->_checkColumnsData($columnsLen, $pedido);
+		}
+
+	
+	/**
+	* Obtiene el detalle de facturas y sus items de un pedido
+	* @param (str) $orderId
+	* @return (array) result array
+	*/
+	private function _getOrderInvProducts($orderId){
+		$orders = $this->_getDb('nro_pedido' , $orderId , 'pedidoFacturaView');
+		if(!$orders) { return false;}
+		
+		$ordersDetail = array();
+		foreach ($orders as $key => $value) {
+			$ordersDetail[$key] = $value;
+			$ordersDetail[$key]['orderDetail'] = $this->_getDb('id_pedido_factura' , 
+														$value['id_pedido_factura'], 'detallePedidosView');
+		}
+		return $ordersDetail;
+	}
+	
+
+	/**
+	* Obtiene los gastos iniciales del pedido
+	* @param (str) $orderId
+	* @return (array) initial Expenses
+	*/
+	private function _getInitialExpenses($orderId){
+		$initialExpenses = $this->_getDb('nro_pedido' , $orderId , 
+																												'gastos_iniciales_r70');
+		if(!$initialExpenses) { return false;}
+		$expensesDetail = array();
+
+		foreach ($initialExpenses as $key => $value) {
+			$supplier = $this->_getDb('identificacion_proveedor', 
+																						$value['identificacion_proveedor'],
+																						'proveedor' );
+			$expensesDetail[$key] = $value;
+			$expensesDetail[$key]['nombre'] = $supplier[0]['nombre'];
+			$expensesDetail[$key]['id_proveedor'] = $supplier[0]['id_proveedor'];
+
+		}
+		return $expensesDetail;
+	}
+
+
+	/**
+	* Obtiene las nacionalizaciones de un pedido
+	* @param (str) $orderId
+	* @return (array) resul array() | false
+	*/
+	private function _getNationalizations($orderId){
+		$nationalizations = $this->_getDb('nro_pedido', $orderId , 
+																														'nacionalizacion');
+		if(!$nationalizations){return false;}
+
+		return $nationalizations;
+	}
+
+
+	/**
+	* Obtiene una lista de facturas informativas
+	* @param (str) $orderId
+	* @return (array) resul array() | false
+	*/
+	private function _getInvoiceInformative($orderId){
+		$infoInvoices = $this->_getDb('nro_pedido',$orderId ,'factura_informativa');
+		if(!$infoInvoices){return false;}
+		return $infoInvoices;
+	}
+
+	/**
+	* Obtiene la lista de paises y ciudades de la tabla
+	*/
+	private function _getCountries(){
+		$this->db->select('pais');
+		$this->db->group_by('pais');
+		$resultDb = $this->db->get('incoterm_provision');
+		$countries = $resultDb->result_array();
+
+		foreach ($countries as $key => $value){
+			$this->db->select('ciudad');
+			$this->db->where('pais' , $value['pais']);
+			$this->db->group_by('ciudad');
+			$resultDb = $this->db->get('incoterm_provision');
+			$countries[$key]['cities'] = $resultDb->result_array();
+		}
+		return $countries;
+	}
+
+		/**
+		* Coloca los gastos iniciales de acuerdo al incoterm
+		*/
+		private function _setinitialExpenses($order){
+			$this->db->where('pais', $order['pais_origen']);
+			$this->db->where('ciudad', $order['ciudad_origen']);
+			$this->db->where('incoterms', $order['incoterm']);
+			$resultDb = $this->db->get('incoterm_provision');
+			$initExpenses = $resultDb->result_array();
+
+			foreach ($initExpenses as $key => $value) {
+				$initGst = array(
+											'nro_pedido' => $order['nro_pedido'],
+											'identificacion_proveedor' =>  '0000000000000',
+											'concepto' => $value['tipo'],
+											'valor_provisionado' => $value['tarifa'],
+											'comentarios' => 'CREADO AUTOMATICAMENTE',
+											'id_user' => $this->session->userdata('id_user'),
+											);
+				$this->db->insert('gastos_iniciales_r70', $initGst);
+			}
+		}
+
+		/* *
+		* Envia la respuestas html al navegador
+		*/
+		public function responseHttp($config){
+			$config['title'] = 'Pedidos';
+			$config['base_url'] = base_url();
+			$config['rute_url'] = base_url() . 'index.php/';
+			$config['controller'] = $this->controller;
+			$config['iconTitle'] = 'fa-cubes';
+			$config['content'] = 'home';
+			$config['titleContent'] = 'PEDIDOS';
+			return $this->twig->display($this->template, $config);
 		}
 }

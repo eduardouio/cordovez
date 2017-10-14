@@ -1,7 +1,7 @@
 <?php
 
 /* base/footer.html.twig */
-class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fce60ed extends Twig_Template
+class __TwigTemplate_d29a7d39ff5914ad9ba7cd1ab4004cab80c5480a6e6313fec4fa4a71995ef68c extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
     {
@@ -22,7 +22,7 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
 </body>
 
 <script type=\"text/javascript\">
-  setTimeout(function(){ reloadPage() }, 6000000);
+  setTimeout(function(){ reloadPage() }, 60000);
 
 \tfunction reloadPage(argument) {
 \t\tlocation.reload();
@@ -78,28 +78,6 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
 
     public function getSourceContext()
     {
-        return new Twig_Source("        </div>
-        <!-- /#page-wrapper -->
-    </div>
-</body>
-
-<script type=\"text/javascript\">
-  setTimeout(function(){ reloadPage() }, 6000000);
-
-\tfunction reloadPage(argument) {
-\t\tlocation.reload();
-\t}
-
-</script>
-<!--autocomplete-->
-<!-- Metis Menu Plugin JavaScript -->
-<script src=\"{{base_url}}vendor/metisMenu/metisMenu.min.js\"></script>
-<!-- Custom Theme JavaScript -->
-<script src=\"{{base_url}}dist/js/sb-admin-2.js\"></script>
-<script src=\"{{base_url}}vendor/datepicker/js/bootstrap-datepicker.min.js\"></script>
-<!-- Bootstrap Core JavaScript -->
-<script src=\"{{base_url}}vendor/bootstrap/js/bootstrap.min.js\">
-</script>
-</html>", "base/footer.html.twig", "/var/www/html/app/src/views/base/footer.html.twig");
+        return new Twig_Source("", "base/footer.html.twig", "/var/www/html/app/src/views/base/footer.html.twig");
     }
 }

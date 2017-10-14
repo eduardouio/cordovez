@@ -1,7 +1,7 @@
 <?php
 
 /* base/content.html.twig */
-class __TwigTemplate_0441768f18b4b85298f268ae9e67e6cac61b9bba8a36e9eeaf18b2a3138124df extends Twig_Template
+class __TwigTemplate_0486ccb2e05d09c1fe28487656095e8896319fef8c315806dc1f546b26e09895 extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
     {
@@ -35,12 +35,13 @@ class __TwigTemplate_0441768f18b4b85298f268ae9e67e6cac61b9bba8a36e9eeaf18b2a3138
         // line 13
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "pedido/\">
+         <span class=\"fa fa-th-large fa-fw\"></span>
          ";
-        // line 14
+        // line 15
         echo twig_escape_filter($this->env, ($context["titleContent"] ?? null), "html", null, true);
         echo " 
          <span class=\"fa ";
-        // line 15
+        // line 16
         echo twig_escape_filter($this->env, ($context["iconTitle"] ?? null), "html", null, true);
         echo " fa-fw pull-right\"></span>
          </a>
@@ -48,11 +49,11 @@ class __TwigTemplate_0441768f18b4b85298f268ae9e67e6cac61b9bba8a36e9eeaf18b2a3138
       <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">
          <ul class=\"nav navbar-nav\" style=\"color: #fff\">
             <li ";
-        // line 20
+        // line 21
         echo ($context["list_active"] ?? null);
         echo " >
                <a href=\"";
-        // line 21
+        // line 22
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "pedido/listar/\">
                <span class=\"fa fa-list fa-fw\"></span> 
@@ -61,11 +62,11 @@ class __TwigTemplate_0441768f18b4b85298f268ae9e67e6cac61b9bba8a36e9eeaf18b2a3138
                </a>
             </li>
             <li ";
-        // line 27
+        // line 28
         echo ($context["new_active"] ?? null);
         echo ">
                <a href=\"";
-        // line 28
+        // line 29
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "pedido/nuevo\">
                <span class=\"fa fa-file fa-fw\"></span> 
@@ -95,7 +96,7 @@ class __TwigTemplate_0441768f18b4b85298f268ae9e67e6cac61b9bba8a36e9eeaf18b2a3138
 
     public function getDebugInfo()
     {
-        return array (  69 => 28,  65 => 27,  56 => 21,  52 => 20,  44 => 15,  40 => 14,  36 => 13,  24 => 4,  19 => 1,);
+        return array (  70 => 29,  66 => 28,  57 => 22,  53 => 21,  45 => 16,  41 => 15,  36 => 13,  24 => 4,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -108,46 +109,6 @@ class __TwigTemplate_0441768f18b4b85298f268ae9e67e6cac61b9bba8a36e9eeaf18b2a3138
 
     public function getSourceContext()
     {
-        return new Twig_Source("<div id=\"page-wrapper\">
-<div class=\"row\">
-<br>
-<nav class=\"navbar navbar-default title-{{controller}}\" container>
-   <div class=\"container-fluid\">
-      <div class=\"navbar-header\">
-         <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#bs-example-navbar-collapse-1\" aria-expanded=\"false\">
-         <span class=\"sr-only\">Toggle navigation</span>
-         <span class=\"icon-bar\"></span>
-         <span class=\"icon-bar\"></span>
-         <span class=\"icon-bar\"></span>
-         </button>
-         <a class=\"navbar-brand\" href=\"{{rute_url}}pedido/\">
-         {{titleContent}} 
-         <span class=\"fa {{iconTitle}} fa-fw pull-right\"></span>
-         </a>
-      </div>
-      <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">
-         <ul class=\"nav navbar-nav\" style=\"color: #fff\">
-            <li {{ list_active | raw }} >
-               <a href=\"{{rute_url}}pedido/listar/\">
-               <span class=\"fa fa-list fa-fw\"></span> 
-               <span class=\"sr-only\">(current)</span>
-               Listar Pedidos 
-               </a>
-            </li>
-            <li {{ new_active | raw }}>
-               <a href=\"{{rute_url}}pedido/nuevo\">
-               <span class=\"fa fa-file fa-fw\"></span> 
-               Nuevo Pedido
-               </a>
-            </li>
-         </ul>
-      </div>
-</nav>
-</div>
-<!-- /.row -->
-<div class=\"row\">
-<div class=\"col-lg-12\">
-<div class=\"panel panel-default \">
-<div class=\"panel-body\">", "base/content.html.twig", "/var/www/html/app/src/views/base/content.html.twig");
+        return new Twig_Source("", "base/content.html.twig", "/var/www/html/app/src/views/base/content.html.twig");
     }
 }

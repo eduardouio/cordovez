@@ -3,22 +3,13 @@
 {% include 'base/navbarleft.html.twig' %}
 {% include 'base/content.html.twig' %}
 
-{% if list_orders == true %}
-	{% include 'base/sections/listar-pedidos.html.twig' %}    
+
+{% if create == true %}
+	{% include 'forms/frm-pedido-factura-detalle.html.twig' %}    
 {% endif %}
 
-{% if show_order == true %}
-	{% include 'base/sections/show-pedido.html.twig' %}    
-{% endif %}
-
-{% if create_order == true %}
-	{% include 'forms/frm-pedido.html.twig' %}    
-	<script type="text/javascript" src="{{base_url}}js/incoterms.js"></script>
-{% endif %}	
-
-{% if edit_order == true %}
-	{% include 'forms/frm-pedido-edit.html.twig' %}    
-	<script type="text/javascript" src="{{base_url}}js/incoterms.js"></script>
+{% if edit == true %}
+	{% include 'forms/frm-pedido-factura-detalle-edit.html.twig' %}    
 {% endif %}
 
 
@@ -28,14 +19,14 @@
 		<br><br>
 		<p>
 			{% if deleted == true %} 
-						<a href="{{rute_url}}pedido/listar/">
+						<a href="{{rute_url}}pedidofactura/presentar/{{orderDetail}}"> 
 				<button>
 					<span class="fa fa-list"></span>
 					Ver
 				</button>
 				</a>
 			{% else %}  
-				<a href="{{rute_url}}pedido/presentar/{{order}}">
+				<a href="{{rute_url}}pedidofactura/presentar/{{orderDetail}}">
 		<button>
 			<span class="fa fa-eye"></span>
 			Ver

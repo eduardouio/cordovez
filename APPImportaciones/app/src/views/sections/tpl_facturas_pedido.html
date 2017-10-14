@@ -184,21 +184,21 @@
             <td>320</td>
             <td>{{(120*12)-320}}</td>
             <td>
-              <div class="dropdown">
-                           <button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                           Acciones <span class="fa fa-list fa-fw" ></span>
-                            <span class="caret"></span>
-                          </button>
-                          <ul class="dropdown-menu" aria-labelledby="dLabel">
-                            <li> <a href="#/agregarProducto/{{value.id_pedido_factura}}"
-                              ng-click="viewData.helper.selected = value.id_pedido_factura"
-                              >
-                            Agregar Producto</a> </li>
-                            <li> <a href="#/verProductos/{{value.id_pedido_factura}}">Ver Productos</a> </li>
-                            <li> <a href="#/editarFacturaPedido/{{value.id_pedido_factura}}">Editar Factura</a> </li>
-                            <li> <a href="#/eliminarFacturaPedido/{{value.id_pedido_factura}}">Elminar Factura</a> </li>
-                          </ul>
-                        </div>
+            <div class="dropdown">
+                         <button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                         Acciones <span class="fa fa-list fa-fw" ></span>
+                          <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dLabel">
+                          <li> <a href="#/agregarProducto/{{value.id_pedido_factura}}"
+                            ng-click="viewData.helper.selected = value.id_pedido_factura"
+                            >
+                          Agregar Producto</a> </li>
+                          <li> <a href="#/verProductos/{{value.id_pedido_factura}}">Ver Productos</a> </li>
+                          <li> <a href="#/editarFacturaPedido/{{value.id_pedido_factura}}">Editar Factura</a> </li>
+                          <li> <a href="#/eliminarFacturaPedido/{{value.id_pedido_factura}}">Elminar Factura</a> </li>
+                        </ul>
+                      </div>
             </td>
          </tr>
 

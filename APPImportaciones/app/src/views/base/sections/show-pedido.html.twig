@@ -1,0 +1,411 @@
+<div class="well well-sm">
+   <div class="row">
+      <div class="col-sm-3">
+         <strong>Saldo:</strong> <span class="text-success">  {{119150.10}} </span>
+      </div>
+      <div class="col-sm-3">
+         <strong>Parciales:</strong> <span class="text-danger">{{2541.08}}</span>
+      </div>
+      <div class="col-sm-3">
+         <strong>Compra:</strong> <span class="text-info">{{119150.10 }}</span>
+      </div>
+      <div class="col-sm-3">
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-sm-3">
+         <strong>Moneda:</strong> <span>EUROS</span>
+      </div>
+      <div class="col-sm-3">
+         <strong>Tipo de Cambio:</strong> <span>{{1.42}}</span>
+      </div>
+      <div class="col-sm-3">
+         <strong>provisiones:</strong> <span class="text-danger">{{2541.08}}</span>
+      </div>
+      <div class="col-sm-3">
+         <strong>Creado Por:</strong> <span>{{createBy[0]['nombres']}}</span>
+      </div>
+   </div>
+</div>
+<!-- Tabs -->
+<div>
+   <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active"><a href="#pedido" role="tab" data-toggle="tab" aria-controls="pedido">Detalle Pedido &nbsp;<span class="label label-success">Abierto</span></a></li>
+      <li role="presentation"><a href="#facturas" role="tab" data-toggle="tab" aria-controls="facturas">Facturas Productos</a></li>
+      <li role="presentation"><a href="#gastos" role="tab" data-toggle="tab" aria-controls="gastos">Gastos Iniciales</a></li>
+      <li role="presentation"><a href="#nacionalizaciones" role="tab" data-toggle="tab" aria-controls="nacionalizaciones">Nacionalizaciones</a></li>
+      <li role="presentation"><a href="#impuestos" role="tab" data-toggle="tab" aria-controls="impuestos">Impuestos</a></li>
+      <li role="presentation"><a href="#facturasServicios" role="tab" data-toggle="tab" aria-controls="facturasfacturasServicios">Facturas Servicios</a></li>
+   </ul>
+   <br>
+   <br>
+   <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="pedido">
+         <div class="row">
+            <div class="col-md-2">
+               <div class="input-group">
+                  <span class="input-group-addon" >PEDIDO</span>
+                  <span class="form-control">{{viewData.order.0.nro_pedido}} </span>
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="input-group">
+                  <span class="input-group-addon">RÉGIMEN</span>
+                  <span class="form-control">{{viewData.order.0.regimen }}</span>
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="input-group">
+                  <span class="input-group-addon">INCOTERM</span>
+                  <span class="form-control">{{viewData.order.0.incoterm}} </span>
+               </div>
+            </div>
+            <div class="col-md-3">
+               <div class="input-group">
+                  <span class="input-group-addon">PAIS</span>
+                  <span class="form-control"> {{viewData.order.0.pais_origen}}</span>
+               </div>
+            </div>
+            <div class="col-md-3">
+               <div class="input-group">
+                  <span class="input-group-addon">CIUDAD</span>
+                  <span class="form-control">{{viewData.order.0.ciudad_origen}}</span>
+               </div>
+            </div>
+         </div>
+         <br>
+         <div class="row">
+            <div class="col-md-3">
+               <div class="input-group">
+                  <span class="input-group-addon">SEGURO SENAE</span>
+                  <span class="form-control"> {{viewData.order.0.seguro_aduana }}</span>
+               </div>
+            </div>
+            <div class="col-md-3">
+               <div class="input-group">
+                  <span class="input-group-addon">FLETE SENAE</span>
+                  <span class="form-control" > {{viewData.order.0.flete_aduana  }}</span>
+               </div>
+            </div>
+            <div class="col-md-3">
+               <div class="input-group">
+                  <span class="input-group-addon">ARRIBO</span>
+                  <span class="form-control" > {{viewData.order.0.fecha_arribo | date("m/d/Y") }}  </span>
+               </div>
+            </div>
+         </div>
+         <br>
+         <div class="row">
+            <div class="col-md-12">
+               <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon3">COMENTARIOS</span>
+                  <span type="text" class="form-control">{{viewData.order.0.comentarios}} </span>
+               </div>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-md-6">
+               <hr>
+               <a href="{{rute_url}}/pedido/editar/{{viewData.order.0.nro_pedido}}" class="text-primary">
+                  <button class="btn btn-sm btn-default"><span class="fa fa-pencil fa-fw"></span>Ediar</button></a>
+               <a href="{{rute_url}}/pedido/eliminar/{{viewData.order.0.nro_pedido}}">
+                  <button class="btn btn-sm btn-default"> <span class="fa fa-trash fa-fw"></span>Elimnar</button></a>
+            </div>
+         </div>
+         <!-- /tabPedido-->
+      </div>
+      <!-- /tabFacturas-->
+      <div role="tabpanel" class="tab-pane" id="facturas">
+         <div class="row">
+            <div class="col-sm-9">
+               <a href="{{rute_url}}pedidofactura/nuevo/{{viewData.order.0.nro_pedido}}">
+               <button class="btn btn-sm btn-default">
+               <span class="fa fa-plus fa-fw"> </span>
+               Agregar Factura Productos
+               </button>
+               </a>
+            </div>
+            <div class="col-sm-3">
+               <form action="buscar.php" method="POST" class="form-inline" role="form">
+                  <input 
+                     class="form-control" 
+                     type="text" 
+                     name="query" 
+                     placeholder="Buscar Registro"
+                     >
+                  <input 
+                     type="hidden" 
+                     name="orderInvoices"
+                     >
+                  <button class="btn btn-sm btn-default" type="submit" class ="btn"> 
+                  <span class="fa fa-search fa-fw">  </span>
+                  </button>
+               </form>
+            </div>
+         </div>
+         <br>
+         <div class="row">
+            <div class="col-sm-12">
+               <table class="table table-hover table-bordered table-striped">
+         <thead>
+            <tr style="background-color: #c1c1c1;">
+               <th>#</th>
+               <th>Nro Factura</th>
+               <th>Proveedor</th>
+               <th>F Emision</th>
+               <th>F Vencimiento</th>
+               <th>Moneda</th>
+               <th>Valor</th>
+               <th>Retirado</th>
+               <th>Saldo</th>
+               <th>Acciones</th>
+            </tr>
+         </thead>
+         <tbody>
+            {% for orderInvoice in viewData.orderInvoices %}
+            <tr>
+               <td>{{loop.index}}</td>
+               <td>
+                  <a href="{{rute_url}}pedidofactura/presentar/{{orderInvoice.id_pedido_factura}}">
+               {{orderInvoice.id_factura_proveedor}}
+            </a>
+            </td>               
+               <td>
+                  <a href="{{rute_url}}proveedor/presentar/{{orderInvoice.id_proveedor}}">
+               {{orderInvoice.nombre}}                     
+                  </a>
+               </td>               
+               <td>{{orderInvoice.fecha_emision}}</td>               
+               <td>{{orderInvoice.vencimiento_pago}}</td>               
+               <td>{{orderInvoice.moneda}}</td>               
+               <td>{{orderInvoice.valor}}</td>                         
+               <td>{{orderInvoice.valor}}</td>                         
+               <td>{{orderInvoice.valor}}</td>                         
+               <td> 
+                   <div class="dropdown">
+                           <button class="btn btn-sm btn-default" id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                           Acciones <span class="fa fa-list fa-fw" ></span>
+                            <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" aria-labelledby="dLabel">
+                            <li> 
+                              <a href="{{rute_url}}pedidofactura/presentar/{{orderInvoice.id_pedido_factura}}">
+                              <span class="fa fa-eye fa-fw"></span>
+                              Ver Productos
+                           </a> 
+                           </li>
+                            <li> 
+                              <a href="{{rute_url}}pedidofactura/editar/{{orderInvoice.id_pedido_factura}}">
+                                 <span class="fa fa-pencil fa-fw"></span>
+                                 Editar Factura 
+                              <span class="label label-success"> {{orderInvoice.id_factura_proveedor}}</span></a> 
+                           </li>
+                            <li>
+                             <a href="{{rute_url}}pedidofactura/eliminar/{{orderInvoice.id_pedido_factura}}">
+                              <span class="text-danger fa fa-trash fa-fw"></span>
+                              Elminar Factura 
+                              <span class="label label-danger">
+                             {{orderInvoice.id_factura_proveedor}}
+                              </span>
+                          </a> 
+                          </li>
+                          </ul>
+                        </div>
+               </td>               
+            </tr>
+            {% endfor %}
+         </tbody>
+      </table>
+            </div>
+         </div>
+         <!-- table -- >
+            <!-- /table -- >
+      </div>
+            <!-- /Tab Facturas-->
+      </div>
+      <!-- Gastos iniciales -->
+      <div role="tabpanel" class="tab-pane" id="gastos">
+         <div class="row">
+            <div class="col-sm-9">
+               <a href="{{rute_url}}gstinicial/nuevo/{{viewData.order.0.nro_pedido}}">
+               <button class="btn btn-sm btn-default">
+               <span class="fa fa-plus fa-fw"> </span>
+               Agrefar Gasto Inicial <span class="label label-warning">provisionado</span>
+               </button>
+               </a>
+            </div>
+            <div class="col-sm-3">
+               <form action="buscar.php" method="POST" class="form-inline" role="form">
+                  <input 
+                     class="form-control" 
+                     type="text" 
+                     name="query" 
+                     placeholder="Buscar Registro"
+                     >
+                  <input 
+                     type="hidden" 
+                     name="gasto_inicial"
+                     >
+                  <button class="btn btn-sm btn-default" type="submit" class ="btn"> 
+                  <span class="fa fa-search fa-fw">  </span>
+                  </button>
+               </form>
+            </div>
+         </div>
+         <br>
+         <div class="row">
+            <div class="col-sm-12">
+               <table class="table table-hover table-bordered table-striped">
+         <thead>
+            <tr style="background-color: #c1c1c1;">
+               <th>#</th>
+               <th>Concepto</th>
+               <th>Proveedor</th>
+               <th>Fecha</th>
+               <th>Valor</th>
+               <th>Acciones</th>
+            </tr>
+         </thead>
+         <tbody>
+            {% for initialExpense in viewData.initialExpenses %}
+            <tr>
+               <td>{{loop.index}}</td>
+               <td>
+               {{initialExpense.concepto}}
+            </td>               
+               <td>
+                  <a href="{{rute_url}}proveedor/presentar/{{initialExpense.id_proveedor}}">
+                     {{initialExpense.nombre}}
+                  </a>
+               </td>               
+               <td>{{initialExpense.fecha | date("m/d/Y") }}</td>               
+               <td>{{initialExpense.valor | number_format(2, '.', ',')}}</td>               
+               <td> 
+                   <div class="dropdown">
+                           <button class="btn btn-sm btn-default" id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                           Acciones <span class="fa fa-list fa-fw" ></span>
+                            <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" aria-labelledby="dLabel">
+                            <li> 
+                              <a href="{{rute_url}}pedidofactura/presentar/{{initialExpense.id_pedido_factura}}">
+                              <span class="fa fa-eye fa-fw"></span>
+                              Ver Productos
+                           </a> 
+                           </li>
+                            <li> 
+                              <a href="{{rute_url}}pedidofactura/agregarProducto/{{initialExpense.id_pedido_factura}}">
+                                 <span class="fa fa-plus fa-fw"></span>
+                              Agregar Producto
+                           </a> 
+                           </li>
+                            <li> 
+                              <a href="{{rute_url}}pedidofactura/editar/{{initialExpense.id_pedido_factura}}">
+                                 <span class="fa fa-pencil fa-fw"></span>
+                                 Editar Factura 
+                              <span class="label label-success"> {{initialExpense.id_factura_proveedor}}</span></a> 
+                           </li>
+                            <li>
+                             <a href="{{rute_url}}pedidofactura/eliminar/{{initialExpense.id_pedido_factura}}">
+                              <span class="text-danger fa fa-trash fa-fw"></span>
+                              Elminar Factura 
+                              <span class="label label-danger">
+                             {{initialExpense.id_factura_proveedor}}
+                              </span>
+                          </a>   
+                          </li>
+                          </ul>
+                        </div>
+               </td>               
+            </tr>
+            {% endfor %}
+         </tbody>
+      </table>
+            </div>
+         </div>
+      </div>
+      <!-- /Gastos iniciales -->
+      <!-- factura Nacionalizaciones -->
+      <div role="tabpanel" class="tab-pane" id="nacionalizaciones">
+         <br>
+         <div class="row">
+            <div class="col-sm-12">
+               <table class="table table-hover table-bordered table-striped">
+         <thead>
+            <tr style="background-color: #c1c1c1;">
+               <th>#</th>
+               <th>Nro Fact</th>
+               <th>Proveedor</th>
+               <th>Fecha</th>
+               <th>Valor</th>
+               <th>Acciones</th>
+            </tr>
+         </thead>
+         <tbody>
+            {% for nationalization in viewData.nationalizations %}
+            <tr>
+               <td>{{loop.index}}</td>
+               <td>
+               {{nationalization.nro_factura_informativa}}
+            </td>               
+               <td>
+                  <a href="{{rute_url}}proveedor/presentar/{{initialExpense.identificacion_proveedor}}">
+                     {{nationalization.identificacion_proveedor}}
+                  </a>
+               </td>               
+               <td>{{initialExpense.fecha | date("m/d/Y") }}</td>               
+               <td>{{initialExpense.valor | number_format(2, '.', ',')}}</td>               
+               <td> 
+                   <div class="dropdown">
+                           <button class="btn btn-sm btn-default" id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                           Acciones <span class="fa fa-list fa-fw" ></span>
+                            <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" aria-labelledby="dLabel">
+                            <li> 
+                              <a href="{{rute_url}}pedidofactura/presentar/{{initialExpense.id_pedido_factura}}">
+                              <span class="fa fa-eye fa-fw"></span>
+                              Ver Productos
+                           </a> 
+                           </li>
+                            <li> 
+                              <a href="{{rute_url}}pedidofactura/nuevo/{{initialExpense.id_pedido_factura}}">
+                                 <span class="fa fa-plus fa-fw"></span>
+                              Agregar Producto
+                           </a> 
+                           </li>
+                            <li> 
+                              <a href="{{rute_url}}pedidofactura/editar/{{initialExpense.id_pedido_factura}}">
+                                 <span class="fa fa-pencil fa-fw"></span>
+                                 Editar Factura 
+                              <span class="label label-success"> {{initialExpense.id_factura_proveedor}}</span></a> 
+                           </li>
+                            <li>
+                             <a href="{{rute_url}}pedidofactura/eliminar/{{initialExpense.id_pedido_factura}}">
+                              <span class="text-danger fa fa-trash fa-fw"></span>
+                              Elminar Factura 
+                              <span class="label label-danger">
+                             {{initialExpense.id_factura_proveedor}}
+                              </span>
+                          </a>   
+                          </li>
+                          </ul>
+                        </div>
+               </td>               
+            </tr>
+            {% endfor %}
+         </tbody>
+      </table>
+            </div>
+         </div>
+      </div>
+      <!-- /factura Nacionalizaciones -->
+      <div role="tabpanel" class="tab-pane" id="impuestos">
+      </div>
+      <div role="tabpanel" class="tab-pane" id="facturasServicios">
+      </div>
+   </div>
+</div>
+<!--/tabs-->
+<!-- modal facturas produtos -->
+

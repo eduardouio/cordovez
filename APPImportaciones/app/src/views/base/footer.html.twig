@@ -1,40 +1,7 @@
         </div>
         <!-- /#page-wrapper -->
     </div>
-    <!-- /#wrapper -->
-    <div id="toast"></div>
 </body>
-
-<script type="text/javascript">
-  
-  var host = '{{base_url}}';
-// Funciones Auxiliares
-// Retorna la cantidad de metodos y propiedades de un objeto
-    function inspeccionar(obj)
-{
-  var msg = '';
-  for (var property in obj)
-  {
-    if (typeof obj[property] == 'function')
-    {
-      var inicio = obj[property].toString().indexOf('function');
-      var fin = obj[property].toString().indexOf(')')+1;
-      var propertyValue=obj[property].toString().substring(inicio,fin);
-      msg +=(typeof obj[property])+' '+property+' : '+propertyValue+' ;\n';
-    }
-    else if (typeof obj[property] == 'unknown')
-    {
-      msg += 'unknown '+property+' : unknown ;\n';
-    }
-    else
-    {
-      msg +=(typeof obj[property])+' '+property+' : '+obj[property]+' ;\n';
-    }
-  }
-  return msg;
-}
-</script>
-
 
 <script type="text/javascript">
   setTimeout(function(){ reloadPage() }, 6000000);
@@ -44,38 +11,6 @@
 	}
 
 </script>
-
-<!-- Libraries Angular-->
-<script src="{{base_url}}js/lib/angular-route.min.js"></script>
-<!-- APP Angular -->
-<script src="{{base_url}}js/app/app.js"></script>
-<script src="{{base_url}}js/app/routes/{{controller}}Routes.js"></script>
-<script src="{{base_url}}js/app/filters/filters.js"></script>
-<!-- Directives-->
-<!-- Factories-->
-<script src="{{base_url}}/js/app/factories/loginFactory.js"></script>
-<script src="{{base_url}}/js/app/factories/countriesFactory.js"></script>
-<script src="{{base_url}}/js/app/factories/detallepedidoFactory.js"></script>
-<script src="{{base_url}}/js/app/factories/facinformativaFactory.js"></script>
-<script src="{{base_url}}/js/app/factories/facpagospedidoFactory.js"></script>
-<script src="{{base_url}}/js/app/factories/factGastosInicialesFactory.js"></script>
-<script src="{{base_url}}/js/app/factories/factgstnacionalizacionFactory.js"></script>
-<script src="{{base_url}}/js/app/factories/factinfdetalleFactory.js"></script>
-<script src="{{base_url}}/js/app/factories/gastosInicialesFactory.js"></script>
-<script src="{{base_url}}/js/app/factories/gstnacionalizacionFactory.js"></script>
-<script src="{{base_url}}/js/app/factories/proveedorFactory.js"></script>
-<script src="{{base_url}}/js/app/factories/incotermsFactory.js"></script>
-<script src="{{base_url}}/js/app/factories/nacionalizacionFactory.js"></script>
-<script src="{{base_url}}/js/app/factories/pedidoFactory.js"></script>
-<script src="{{base_url}}/js/app/factories/pedidofacturaFactory.js"></script>
-<script src="{{base_url}}/js/app/factories/productoFactory.js"></script>
-<script src="{{base_url}}js/app/controllers/nuevoPedidoController.js"></script>
-<script src="{{base_url}}js/app/controllers/presentarPedidoController.js"></script>
-<script src="{{base_url}}js/app/controllers/facturasPedidoController.js"></script>
-<script src="{{base_url}}js/app/controllers/listarPedidosController.js"></script>
-<!-- jQuery -->
-<script src="{{base_url}}vendor/jquery/jquery.min.js"></script>
-<script src="{{base_url}}vendor/jquery-toast/jquery.toast.js"></script>
 <!--autocomplete-->
 <!-- Metis Menu Plugin JavaScript -->
 <script src="{{base_url}}vendor/metisMenu/metisMenu.min.js"></script>
@@ -84,27 +19,5 @@
 <script src="{{base_url}}vendor/datepicker/js/bootstrap-datepicker.min.js"></script>
 <!-- Bootstrap Core JavaScript -->
 <script src="{{base_url}}vendor/bootstrap/js/bootstrap.min.js">
-</script>
-<script type="text/javascript">
-  window.onload = cargar();
-  function cargar(){
-    $('.input-group.date').datepicker({
-          startView: 2,
-          maxViewMode: 2,
-          todayBtn: "linked",
-          clearBtn: true,
-          language: "es",
-          autoClose : true,
-    });
-  }
-</script>
-
-<script type="text/javascript">
-  $('#myModal').on('shown.bs.modal', function () {
-  $('#myInput').focus()
-})
-</script>
-<script type="text/javascript">
-  //$('.dropdown-toggle').dropdown()
 </script>
 </html>

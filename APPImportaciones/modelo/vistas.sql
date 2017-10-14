@@ -1,16 +1,19 @@
-CREATE VIEW pedidoFacturaView 
+ALTER VIEW pedidoFacturaView 
 AS
   SELECT
 	  fp.id_pedido_factura, 
-  	fp.nro_pedido, 
-  	fp.id_factura_proveedor, 
+    fp.nro_pedido, 
+		fp.id_factura_proveedor, 
 	  fp.identificacion_proveedor, 
 	  pr.nombre,
-	  fp.fecha_emision, 
-	  fp.vencimiento_pago,
-	  DATEDIFF(fecha_emision , vencimiento_pago ) AS estado, 
-	  fp.moneda, 
-	  fp.date_create, 
+    fp.fecha_emision, 
+    fp.valor, 
+    fp.moneda, 
+	  fp.tipo_cambio, 
+    fp.vencimiento_pago,
+    DATEDIFF(fecha_emision , vencimiento_pago ) AS dias_transcurridos, 
+    fp.date_create, 
+	  fp.last_update, 
 	  fp.id_user  
   FROM
     pedido_factura AS fp

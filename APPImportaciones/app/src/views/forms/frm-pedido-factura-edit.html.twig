@@ -1,0 +1,160 @@
+<form method="post" action="{{rute_url}}pedidofactura/validar/">
+  <input type="hidden" name="id_pedido_factura" value="{{invoice[0].id_pedido_factura}}">
+  <div class="row">
+    <div class="col-md-1">
+       <div class="form-group">
+      <label>Pedido</label>
+      <input 
+      readonly="" 
+      type="text" 
+      name="nro_pedido"
+      class="form-control" 
+      value="{{invoice[0].nro_pedido}}" 
+      >
+    </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+      <label>Proveedor</label>
+    <select
+    name="identificacion_proveedor"
+    class="form-control"
+    required = "required"
+    > 
+    <option value="{{supplier[0].identificacion_proveedor}}">{{supplier[0].nombre}}</option>
+    {% for supplier in suppliers %}
+      <option value="{{supplier.identificacion_proveedor}}"> {{supplier.nombre}} </option>
+    {% endfor %}
+    </select>
+    </div>
+    </div>
+        <div class="col-md-2">
+      <div class="form-group">
+        <label>Fecha Emisión</label>
+        <div class="input-group date" data-provide="datepicker">
+            <input 
+               type="text" 
+               class="form-control" 
+               id="fecha_emision" 
+               required="required" 
+               name="fecha_emision" 
+               class="bootstrap-datepicker" 
+               value="{{invoice[0].fecha_emision}}" 
+               >
+            <div class="input-group-addon">
+               <span class="glyphicon glyphicon-th"></span>
+            </div>
+         </div>
+      </div>
+    </div>
+        <div class="col-md-2">
+      <div class="form-group">
+        <label>Vencimiento Pago</label>
+          <div class="input-group date" data-provide="datepicker">
+            <input 
+               type="text" 
+               class="form-control" 
+               required="required" 
+               name="vencimiento_pago" 
+               class="bootstrap-datepicker" 
+               value="{{invoice[0].vencimiento_pago}}" 
+               >
+            <div class="input-group-addon">
+               <span class="glyphicon glyphicon-th"></span>
+            </div>
+         </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="form-group">
+        <label>Moneda</label>
+        <select
+        name="moneda"
+        required = "required"
+        class="form-control"
+        > 
+          <option value="{{invoice[0].moneda}}">{{invoice[0].moneda}}</option>
+          {% if invoice[0].moneda == 'DOLARES' %}
+            <option value="EUROS">EUROS</option>
+          {% else %}
+            <option value="DOLARES">DOLARES</option>
+          {% endif %}
+        </select>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="form-group">
+        <label>Tipo De Cambio</label>
+        <input 
+        class="form-control" 
+        type="number"
+        step="0.01" 
+        name="tipo_cambio"
+        id="tipo_cambio"
+        value="{{invoice[0].tipo_cambio}}" 
+        required="required" 
+        >
+      </div>
+    </div>
+  </div>
+  <div class="row">
+        <div class="col-md-2">
+      <div class="form-group">
+        <label>Nro de Factura</label>
+        <input 
+        class="form-control" 
+        type="text" 
+        name="id_factura_proveedor"
+        maxlength="8"
+        required="required" 
+        value="{{invoice[0].id_factura_proveedor}}" 
+        >
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="form-group">
+        <label>Valor</label>
+        <input 
+        class="form-control" 
+        type="number" 
+        name="valor"
+        id="valor"
+        step="0.01" 
+        value="{{invoice[0].valor}}" 
+        >
+      </div>
+    </div>
+        <div class="col-md-2">
+      <div class="form-group">
+        <label>Total USD</label>
+        <input 
+        disabled=""        
+        class="form-control" 
+        id="total" 
+        >
+      </div>
+    </div>
+
+  </div>
+     <div class="row">
+      <div class="col-md-12">
+         <hr>
+         <button type="submit" class="btn btn-sm btn-default" >
+            <span class="fa fa-save fa-fw"></span>
+            Guardar Registro
+         </button>
+      <a href="{{rute_url}}pedido/presentar/{{invoice[0].nro_pedido}}" class="btn btn-sm btn-default">
+            <span class="fa fa-arrow-left fa-fw"></span>
+            Volver al Pedido <b>({{invoice[0].nro_pedido}})</b>
+         </a>
+      </div>
+   </div>
+</form>
+
+<script type="text/javascript">
+  
+  $('#valor').keyup(function(){
+    $('#total').val($('#valor').val() * $('#tipo_cambio').val());  
+  })
+  
+</script>

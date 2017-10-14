@@ -1,0 +1,77 @@
+<form method="post" action="{{rute_url}}detallepedido/validar">
+   <input type="hidden" name="detalle_pedido_factura" value="{{detail[0].detalle_pedido_factura}}">
+   <input type="hidden" name="id_pedido_factura" value="{{detail[0].id_pedido_factura}}">
+   <input type="hidden" name="cod_contable" value="{{detail[0].cod_contable}}">
+   <div class="row">
+      <div class="col-md-6">
+         <div class="form-group">
+            <label>Producto</label>
+            <input 
+            type="text" 
+            class="form-control" 
+            name="nombre" 
+            id="nombre" 
+            readonly="" 
+            disabled="" 
+            value="{{ nombre }}" 
+            >  
+         </div>
+      </div>
+            <div class="col-md-2">
+         <label>Cajas</label>
+         <input 
+         type="number" 
+         class="form-control" 
+         name="nro_cajas"
+         id="nro_cajas"
+         required="true" 
+         step="1" 
+         value="{{ detail[0].nro_cajas }}" 
+         >
+      </div>
+
+      <div class="col-md-2">
+         <div class="form-group">
+            <label>Grado Alcoholico</label>
+            <input 
+            class="form-control" 
+            type="number" 
+            step="0.01" 
+            name="grado_alcoholico"
+            required="true" 
+            id="grado_alcoholico" 
+            maxlength="4" 
+            value="{{ detail[0].grado_alcoholico }}" 
+            >
+         </div>
+      </div>
+
+
+      <div class="col-md-2">
+         <label>Costo Unidad</label>
+         <input 
+         type="number" 
+         class="form-control" 
+         name="costo_und"
+         id="costo_und"
+         required="true" 
+         step="0.01" 
+         value="{{ detail[0].costo_und }}" 
+         >
+
+   </div>
+</div>   
+   <div class="row">
+      <div class="col-md-12">
+         <hr>
+         <button type="submit" class="btn btn-sm btn-default" >
+            <span class="fa fa-save fa-fw"></span>
+            Guardar Producto
+         </button>
+      <a href="{{rute_url}}pedidofactura/presentar/{{invoice[0].id_pedido_factura}}" class="btn btn-sm btn-default">
+            <span class="fa fa-arrow-left fa-fw"></span>
+            Regresar Factura
+         </a>
+      </div>
+   </div>
+</form>

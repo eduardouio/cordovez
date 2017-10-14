@@ -1,0 +1,100 @@
+<form action="{{rute_url}}gstinicial/validar" method="post">
+<div class="row">
+	<div class="col-sm-1">
+		<div class="form-group">
+			<label>Pedido</label>
+			<input 
+			type="text" 
+			class="form-control" 
+			name="nro_pedido"
+			value="{{order[0].nro_pedido}}" 
+			readonly="true" 
+			>
+		</div>
+	</div>
+
+	<div class="col-sm-5">
+		<div class="form-group">
+			<label>Proveedor</label>
+			<select
+			name = "identificacion_proveedor"
+			class = "form-control"
+			>
+				<option selected="" disabled="">Seleccione</option>
+				{% for supplier in suppliers %}
+					<option value = "{{ supplier.identificacion_proveedor }}"> {{supplier.nombre}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+
+	<div class="col-sm-4">
+		<div class="form-group">
+			<label>Concepto</label>
+			<input 
+			type="text" 
+			class="form-control" 
+			name="Concepto"
+			id="Concepto"
+			maxlength="45" 
+			>
+		</div>
+	</div>
+<div class="col-sm-2">
+		<div class="form-group">
+			<label>Fecha</label>
+			         <div class="input-group date" data-provide="datepicker">
+            <input 
+               type="text" 
+               class="form-control" 
+               id="fecha" 
+               required="required" 
+               name="fecha" 
+               class="bootstrap-datepicker" 
+               >
+            <div class="input-group-addon">
+               <span class="glyphicon glyphicon-th"></span>
+            </div>
+         </div>
+		</div>
+	</div>	
+</div>
+
+<div class="row">
+
+	<div class="col-sm-2">
+		<div class="form-group">
+			<label>Provisión (USD)</label>
+			<input 
+			class="form-control" 
+			type="number" 
+			step="0.01" 
+			name="valor_provisionado"
+			>
+		</div>
+	</div>
+
+	<div class="col-sm-4">
+		<div class="form-group">
+			<label>Comentarios</label>
+			<textarea 
+			name="comentarios" 
+			class="form-control"
+			maxlength="250"></textarea>
+		</div>
+	</div>
+</div>
+   <div class="row">
+      <div class="col-md-12">
+         <hr>
+         <button type="submit" class="btn btn-sm btn-default" >
+            <span class="fa fa-save fa-fw"></span>
+            Guardar Registro
+         </button>
+      <a href="{{rute_url}}pedido/presentar/{{order[0].nro_pedido}}" class="btn btn-sm btn-default">
+            <span class="fa fa-arrow-left fa-fw"></span>
+            Regresar Pedido <b>({{order[0].nro_pedido}}) </b>
+         </a>
+      </div>
+   </div>
+</form>

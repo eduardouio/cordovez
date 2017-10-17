@@ -1,0 +1,90 @@
+<!--tabPedido-->
+<div class="producto">
+  <br>
+  <div class="row">
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered table-striped">
+        <thead>
+          <tr style="background-color: #c1c1c1;">
+            <th>Nombre</th>
+            <th>Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-right"> <b>ID:</b></td>
+            <td>{{ product.id_producto }}</td>
+          </tr>
+          <tr>
+            <td class="text-right"><b>Código Contable:</b></td>
+            <td>{{ product.cod_contable }}</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Código ICE:</b></td>
+            <td> {{product.cod_ice}} </td>
+          </tr>
+          <tr>           
+            <td class="text-right"><b>Nombre:</b></td>
+            <td>{{product.nombre}}</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Proveedor:</b></td>
+            <td>{{ supplier.nombre }}</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Capacidad ML:</b></td>
+            <td> {{ product.capacidad | number_format(2, '.', ',') }} ml</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Grado Alcohólico:</b></td>
+            <td> {{ product.grado_alcoholico }} </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Cantidad por Caja:</b></td>
+            <td> {{ product.cantidad_x_caja }} </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Costo Unidad:</b></td>
+            <td> {{ product.costo_unidad}} </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Estado:</b></td>
+            {% if product.estado == 1 %}
+              <td> <span class="label label-success">Activo</span> </td>
+              {% else %}
+                <td> <span class="label label-success">No se Importa</span> </td>
+            {% endif %}
+            <td> {{ product.estado}} </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Custodia Doble:</b></td>
+            {% if product.custodia_doble == 1 %}
+              <td> <span class="label label-warning">Si Tiene</span> </td>
+              {% else %}
+                <td> <span class="label label-success">No Tiene</span> </td>
+            {% endif %}
+            
+            
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Comentarios:</b></td>
+            <td> {{ product.comentarios}} </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Creado El:</b></td>
+            <td> {{ product.date_create }} </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Ultima Actualización:</b></td>
+            <td> {{ product.last_update }} </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Creado Por:</b></td>
+            <td> {{ createBy.nombres }} </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<!--tabPedido-->

@@ -113,7 +113,7 @@ class __TwigTemplate_8973728669aeba582e7989c648072f53846e9ca33613cfbd6193509a989
         // line 71
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "pedidofactura/presentar/";
-        echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["invoice"] ?? null), 0, array(), "array"), "id_pedido_factura", array()), "html", null, true);
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["invoice"] ?? null), "id_pedido_factura", array()), "html", null, true);
         echo "\" class=\"btn btn-sm btn-default\">
             <span class=\"fa fa-arrow-left fa-fw\"></span>
             Regresar Factura
@@ -219,7 +219,7 @@ class __TwigTemplate_8973728669aeba582e7989c648072f53846e9ca33613cfbd6193509a989
             <span class=\"fa fa-save fa-fw\"></span>
             Guardar Producto
          </button>
-      <a href=\"{{rute_url}}pedidofactura/presentar/{{invoice[0].id_pedido_factura}}\" class=\"btn btn-sm btn-default\">
+      <a href=\"{{rute_url}}pedidofactura/presentar/{{invoice.id_pedido_factura}}\" class=\"btn btn-sm btn-default\">
             <span class=\"fa fa-arrow-left fa-fw\"></span>
             Regresar Factura
          </a>

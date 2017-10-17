@@ -116,6 +116,12 @@ class __TwigTemplate_238d403db5dde966d0d9a8244659b7b1357e7ac298a9bdacf9c10956dd0
                   <b>CORDOVEZ S.A.</b>
                </h3>
             </div>
+            <div class=\"text-danger\">
+               ";
+        // line 78
+        echo twig_escape_filter($this->env, ($context["message"] ?? null), "html", null, true);
+        echo "
+            </div>
             <div class=\"col-md-4 col-md-offset-2\">
                <div class=\"panel panel-default\">
                   <div class=\"panel-heading\">
@@ -127,7 +133,7 @@ class __TwigTemplate_238d403db5dde966d0d9a8244659b7b1357e7ac298a9bdacf9c10956dd0
                         role=\"form\" 
                         method=\"post\" 
                         action=\"";
-        // line 87
+        // line 90
         echo twig_escape_filter($this->env, ($context["actionFrm"] ?? null), "html", null, true);
         echo "\">
                         <div class=\"form-group\">
@@ -209,7 +215,7 @@ class __TwigTemplate_238d403db5dde966d0d9a8244659b7b1357e7ac298a9bdacf9c10956dd0
       </div>
       <script type=\"text/javascript\">
          var host = '";
-        // line 166
+        // line 169
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "';
          var httpResult = {};
@@ -242,22 +248,22 @@ class __TwigTemplate_238d403db5dde966d0d9a8244659b7b1357e7ac298a9bdacf9c10956dd0
       <!-- NG APP cordovezApp-->
       <!-- jQuery -->
       <script src=\"";
-        // line 196
+        // line 199
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/jquery/jquery.min.js\"></script>
       <!-- Bootstrap Core JavaScript -->
       <script src=\"";
-        // line 198
+        // line 201
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/bootstrap/js/bootstrap.min.js\"></script>
       <!-- Metis Menu Plugin JavaScript -->
       <script src=\"";
-        // line 200
+        // line 203
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/metisMenu/metisMenu.min.js\"></script>
       <!-- Custom Theme JavaScript -->
       <script src=\"";
-        // line 202
+        // line 205
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "dist/js/sb-admin-2.js\"></script>
 </body>
@@ -277,7 +283,7 @@ class __TwigTemplate_238d403db5dde966d0d9a8244659b7b1357e7ac298a9bdacf9c10956dd0
 
     public function getDebugInfo()
     {
-        return array (  261 => 202,  256 => 200,  251 => 198,  246 => 196,  213 => 166,  131 => 87,  112 => 71,  66 => 28,  54 => 19,  49 => 17,  44 => 15,  39 => 13,  34 => 11,  29 => 9,  19 => 1,);
+        return array (  267 => 205,  262 => 203,  257 => 201,  252 => 199,  219 => 169,  137 => 90,  122 => 78,  112 => 71,  66 => 28,  54 => 19,  49 => 17,  44 => 15,  39 => 13,  34 => 11,  29 => 9,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -365,6 +371,9 @@ class __TwigTemplate_238d403db5dde966d0d9a8244659b7b1357e7ac298a9bdacf9c10956dd0
                <h3 class=\"text-primary\">MODULO DE IMPORTACIONES 
                   <b>CORDOVEZ S.A.</b>
                </h3>
+            </div>
+            <div class=\"text-danger\">
+               {{message}}
             </div>
             <div class=\"col-md-4 col-md-offset-2\">
                <div class=\"panel panel-default\">

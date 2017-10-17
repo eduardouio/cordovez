@@ -33,17 +33,32 @@ class Pedido extends MY_Controller {
 	/**
 	 * Presenta una lista de todos los pedidos
 	 */
-	public function listar($idOrder = 0 ){
-		$idOrder != 0 ? $this->db->where('nro_pedido', $idOrder) : false ;
-		$this->db->select('*');
+	public function listar($offset = 0){
 		$this->db->order_by('date_create', 'DESC');
+		$this->db->limit('10',$offset);
 		$resultDb = $this->db->get($this->controller);
-		$data = $this->dateDiff($resultDb->result_array(), 'fecha_arribo' ,
+
+		$pages_links = ($this->db->count_all_results($this->controller) /10);
+
+		if (gettype($pages_links) == 'double') {
+			(int)$pages_links = (int)$pages_links + 1;
+		};
+
+		$data = $this->dateDiff($resultDb->result_array(), 'fecha_arribo' ,		
 																										date_create(date('Y-m-d')));
-		$config['list_orders'] = true;
-		$config['list_active'] = 'class="active"';
-		$config['orders'] = $data;
-		$config['userData'] = $this->session->userdata();
+		$config = array(
+									'list_orders' => true,
+									'list_active' => 'class="active"',
+									'orders' => $data,
+									'titleContent' => 'Lista de Pedidos',
+									'userData' => $this->session->userdata(),
+									'pagination' => true,
+									'pagination_pages' => $pages_links,
+									'current_page' => (int)(($offset)/10) + 1,
+									'last_page' => (int)(($pages_links - 1) * 10),
+									'pagination_url' => base_url() . 'index.php/pedido/listar/',
+									);
+
 		$this->responseHttp($config);
 	}
 
@@ -67,6 +82,9 @@ class Pedido extends MY_Controller {
 		$config['viewData'] = $data;
 		$config['list_active'] = 'class="active"';
 		$config['createBy'] = $this->getUserDataDb($data['order'][0]['id_user']);
+		$config['titleContent'] = 'Detalle De Pedido &nbsp; &nbsp; &nbsp; <b> ' . 
+																							$data['order'][0]['nro_pedido'] . 
+																							'</b>' ;
 		$this->responseHttp($config);
 	}
 	
@@ -77,6 +95,7 @@ class Pedido extends MY_Controller {
 		$config['new_active'] = 'class="active"';
 		$config['create_order'] = true;
 		$config['countries'] = $this->_getCountries();
+		$config['titleContent'] = 'Registro de nuevo Pedido';
 		$config['incoterms'] = json_encode($this->_getDb('1','1', 
 																												'incoterm_provision'));
 		$this->responseHttp($config);
@@ -92,6 +111,7 @@ class Pedido extends MY_Controller {
 		$config['order'] = $resultDb->result_array();
 		$config['incoterms'] = json_encode($this->_getDb('1','1', 
 																												'incoterm_provision'));
+		$config['titleContent'] = 'Se Encuentra Editando El Pedido &nbsp &nbsp <b>' . $nroOrder . '</b>' ;
 		$this->responseHttp($config);
 	}
 
@@ -318,7 +338,6 @@ class Pedido extends MY_Controller {
 			$config['controller'] = $this->controller;
 			$config['iconTitle'] = 'fa-cubes';
 			$config['content'] = 'home';
-			$config['titleContent'] = 'PEDIDOS';
 			return $this->twig->display($this->template, $config);
 		}
 }

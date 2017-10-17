@@ -23,7 +23,6 @@ class Pedidofactura extends MY_Controller {
 		parent::__construct();
 	}
 
-
 	/**
 	* Presenta una factura pedido a detalle
 	*/
@@ -31,8 +30,11 @@ class Pedidofactura extends MY_Controller {
 		$this->db->where('id_pedido_factura', $idInvoice);
 		$resultDb = $this->db->get('pedido_factura');
 		$invoice = $resultDb->result_array();
+		$this->db->where('id_user', $invoice[0]['id_user']);
+		$resultDb = $this->db->get('usuario');
+		$userdata = $resultDb->result_array();
 		$config['show_invoices'] = true;
-		$config['user'] = $this->session->userdata();
+		$config['user'] = $userdata[0];
 		$config['invoice'] = $invoice;
 		$config['supplier'] = $this->_getDb('identificacion_proveedor', 
 																				$invoice[0]['identificacion_proveedor'], 

@@ -20,20 +20,17 @@ AS
   LEFT JOIN proveedor AS pr USING(identificacion_proveedor);
 
 
-CREATE VIEW detallePedidosView
+ALTER VIEW detallePedidosView
 AS
   SELECT
-    pr.id_producto, 
-    pr.nombre as 'producto',
-    pr.capacidad_ml,
-    prv.nombre,
-    prv.id_proveedor,
-    prv.identificacion_proveedor,
-    dpf.nro_cajas,
-    dpf.costo_und,
-    dpf.detalle_pedido_factura
+	dpf.*,
+    pf.nro_pedido,
+    pf.id_factura_proveedor,
+    pr.nombre,
+    pr.grado_alcoholico as 'grado_alcoholico_original',
+    pr.custodia_doble
   FROM detalle_pedido_factura AS dpf 
-  LEFT JOIN pedido AS ped USING(id_pedido_factura)
-  LEFT JOIN producto AS pr USING(cod_contable) 
-  LEFT JOIN proveedor AS prv USING(identificacion_proveedor)
-  WHERE dpf.id_pedido_factura = 4;
+  LEFT JOIN pedido_factura as pf USING(id_pedido_factura)
+  LEFT JOIN producto as pr USING(cod_contable);
+  
+  

@@ -3,6 +3,9 @@
 {% include 'base/navbarleft.html.twig' %}
 {% include 'base/content.html.twig' %}
 
+{% if show == true %}
+	{% include 'base/sections/mostrar-gasto-inicial.html.twig' %}
+{% endif %}
 
 
 {% if create == true %}
@@ -16,7 +19,7 @@
 
 {% if viewMessage == true %}
 	<div class="well">
-		<h3 class="text-primary">	{{message}} </h3>
+		<h3 class="text-primary">	{{ message }} </h3>
 		<br><br>
 		<p>
 			{% if deleted == true %} 

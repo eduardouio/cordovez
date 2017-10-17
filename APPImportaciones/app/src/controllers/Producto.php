@@ -12,10 +12,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @filesource
  */
 class Producto extends MY_Controller {
-	private $resultDb;
-	private $controllerSPA = "producto";
-	private $responseHTTP = array("status" => "success");
-	private $viewData;
+	private $controller= "producto";
+	private $template = '/pages/pageProducto.html';
 
 	/**
 	 * Constructor de la funcion
@@ -29,8 +27,25 @@ class Producto extends MY_Controller {
 	*/
 	public function presentar($idProduct){
 		$this->db->where('cod_contable' , $idProduct);
-		$resultDb = $this->db->get($this->controllerSPA);
-		print(var_dump($resultDb->result_array()));
+		$resultDb = $this->db->get($this->controller);
+		$product = $resultDb->result_array();
+		$this->db->where('identificacion_proveedor', $product[0]['identificacion_proveedor']);
+		$resultDb = $this->db->get('proveedor');
+		$supplier = $resultDb->result_array();
+
+		$this->db->where('id_user', $product[0]['id_user']);
+		$resultDb = $this->db->get('usuario');
+		$user = $resultDb->result_array();
+		$config = array(
+							'titleContent' => 'Detalle de Producto',
+							'product' => $product[0],
+							'supplier' => $supplier[0],
+							'createBy' => $user[0],
+							'title' => 'Productos',
+
+								);
+		
+		$this->responseHttp($config);
 	}
 	/**
 	 * se validan los datos que deben estar para que la consulta no falle
@@ -54,6 +69,19 @@ class Producto extends MY_Controller {
 		return $this->_checkColumnsData($columnsLen, $data);
 	}
 
+		/* *
+		* Envia la respuestas html al navegador
+		*/
+		public function responseHttp($config){
+			$config['title'] = 'Facturas Pedidos';
+			$config['base_url'] = base_url();
+			$config['rute_url'] = base_url() . 'index.php/';
+			$config['controller'] = $this->controller;
+			$config['iconTitle'] = 'fa-cubes';
+			$config['content'] = 'home';
+			return $this->twig->display($this->template, $config);
+		}
+
 
 }
-//http://www.xvideos.com/video30144333/cum0rsmooke_-_2017-09-10_22h33_06
+

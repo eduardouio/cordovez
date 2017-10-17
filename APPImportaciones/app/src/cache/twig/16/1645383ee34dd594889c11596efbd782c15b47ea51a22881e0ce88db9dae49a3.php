@@ -156,8 +156,7 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
       <div class=\"form-group\">
         <label>Total USD</label>
         <input 
-        disabled=\"\"        
-        class=\"form-control\" 
+        disabled=\"\"      
         id=\"total\" 
         value=\"0\" 
         >
@@ -173,14 +172,14 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
             Guardar Registro
          </button>
       <a href=\"";
-        // line 138
+        // line 137
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "pedido/presentar/";
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["order"] ?? null), 0, array(), "array"), "nro_pedido", array()), "html", null, true);
         echo "\" class=\"btn btn-sm btn-default\">
             <span class=\"fa fa-arrow-left fa-fw\"></span>
             Volver al Pedido <b>(";
-        // line 140
+        // line 139
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["order"] ?? null), 0, array(), "array"), "nro_pedido", array()), "html", null, true);
         echo ")</b>
          </a>
@@ -188,7 +187,7 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
    </div>
 </form>
 
-<script type=\"text/javascript\">
+<script type=\"text/javascript\"> 
   
   \$('#valor').keyup(function(){
     \$('#total').val(\$('#valor').val() * \$('#tipo_cambio').val());  
@@ -209,7 +208,7 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
 
     public function getDebugInfo()
     {
-        return array (  184 => 140,  177 => 138,  64 => 27,  53 => 25,  49 => 24,  33 => 11,  19 => 1,);
+        return array (  183 => 139,  176 => 137,  64 => 27,  53 => 25,  49 => 24,  33 => 11,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -343,8 +342,7 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
       <div class=\"form-group\">
         <label>Total USD</label>
         <input 
-        disabled=\"\"        
-        class=\"form-control\" 
+        disabled=\"\"      
         id=\"total\" 
         value=\"0\" 
         >
@@ -367,7 +365,7 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
    </div>
 </form>
 
-<script type=\"text/javascript\">
+<script type=\"text/javascript\"> 
   
   \$('#valor').keyup(function(){
     \$('#total').val(\$('#valor').val() * \$('#tipo_cambio').val());  

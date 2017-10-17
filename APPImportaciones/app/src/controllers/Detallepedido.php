@@ -24,6 +24,14 @@ class Detallepedido extends MY_Controller {
 		parent::__construct();
 	}
 
+
+	/**
+	* El index le lleva a la lista de los pedidos
+	*/
+	public function index(){
+			header('Location: ' . base_url() . 'index.php/pedido/listar/');
+	}
+
 	/**
 	* Crea un nuevo producto en una factuar
 	*/
@@ -33,10 +41,16 @@ class Detallepedido extends MY_Controller {
 		$invoice = $invoicedb->result_array();
 		$this->db->where('identificacion_proveedor', 
 																		$invoice[0]['identificacion_proveedor']);
-		$products = $this->db->get('producto');
+		$resultDb = $this->db->get('producto');
+		$products = $resultDb->result_array();
+
+		$this->db->where('id_pedido_factura', $invoice[0]['id_pedido_factura']);
+		$resultDb = $this->db->get('detalle_pedido_factura');
+		$productsInvoice = $resultDb->result_array();
+
 		$config['create'] = true;		
-		$config['products'] = $products->result_array();
-		$config['productsarray'] = json_encode($products->result_array());
+		$config['products'] = $products;
+		$config['productsarray'] = json_encode($products);
 		$config['invoice'] = $invoice;
 		$this->responseHttp($config);
 	}
@@ -52,8 +66,12 @@ class Detallepedido extends MY_Controller {
 		$this->db->where('cod_contable', $detail[0]['cod_contable']);
 		$resultDb = $this->db->get('producto');
 		$product = $resultDb->result_array();
+		$this->db->where('id_pedido_factura', $detail[0]['id_pedido_factura']);
+		$resultDb = $this->db->get('pedido_factura');
+		$invoice = $resultDb->result_array();
 		$config['edit'] = true;
 		$config['detail'] = $detail;
+		$config['invoice'] = $invoice[0];
 		$config['nombre'] = $product[0]['nombre'];
 		$this->responseHttp($config);
 
@@ -106,6 +124,7 @@ class Detallepedido extends MY_Controller {
 				if($resultDb->num_rows() == 1 ){		
 					$config['orderInvoice'] = $resultDb->result_array();
 					$config['viewMessage'] = true;
+					$config['orderDetail'] = $detail['id_pedido_factura'];
 					$config['message'] = 'Este producto ya esta en la factura!';
 					$this->responseHttp($config);
 					return true;

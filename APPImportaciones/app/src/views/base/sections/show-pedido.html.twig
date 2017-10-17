@@ -1,26 +1,27 @@
 <div class="well well-sm">
    <div class="row">
       <div class="col-sm-3">
-         <strong>Saldo:</strong> <span class="text-success">  {{119150.10}} </span>
+         <strong>Saldo:</strong> <span class="text-success">  0.00 </span>
       </div>
       <div class="col-sm-3">
-         <strong>Parciales:</strong> <span class="text-danger">{{2541.08}}</span>
+         <strong>Parciales:</strong> <span class="text-danger">0.00</span>
       </div>
       <div class="col-sm-3">
-         <strong>Compra:</strong> <span class="text-info">{{119150.10 }}</span>
+         <strong>Compra:</strong> <span class="text-info">0.00</span>
       </div>
       <div class="col-sm-3">
+         <strong>Fecha Registro:</strong> {{ viewData.order.0.date_create }}
       </div>
    </div>
    <div class="row">
       <div class="col-sm-3">
-         <strong>Moneda:</strong> <span>EUROS</span>
+         <strong>Moneda:</strong> <span></span>
       </div>
       <div class="col-sm-3">
-         <strong>Tipo de Cambio:</strong> <span>{{1.42}}</span>
+         <strong>Tipo de Cambio:</strong> <span>{{1.00}}</span>
       </div>
       <div class="col-sm-3">
-         <strong>provisiones:</strong> <span class="text-danger">{{2541.08}}</span>
+         <strong>provisiones:</strong> <span class="text-danger">{{0.00}}</span>
       </div>
       <div class="col-sm-3">
          <strong>Creado Por:</strong> <span>{{createBy[0]['nombres']}}</span>
@@ -230,7 +231,7 @@
                <a href="{{rute_url}}gstinicial/nuevo/{{viewData.order.0.nro_pedido}}">
                <button class="btn btn-sm btn-default">
                <span class="fa fa-plus fa-fw"> </span>
-               Agrefar Gasto Inicial <span class="label label-warning">provisionado</span>
+               Agregar Gasto Inicial <span class="label label-warning">provisionado</span>
                </button>
                </a>
             </div>
@@ -261,6 +262,7 @@
                <th>#</th>
                <th>Concepto</th>
                <th>Proveedor</th>
+               <th>Comentarios</th>
                <th>Fecha</th>
                <th>Valor</th>
                <th>Acciones</th>
@@ -271,15 +273,18 @@
             <tr>
                <td>{{loop.index}}</td>
                <td>
+               <a href="{{rute_url}}gstinicial/presentar/{{initialExpense.id_gastos_iniciales}}">
                {{initialExpense.concepto}}
+               </a>
             </td>               
                <td>
                   <a href="{{rute_url}}proveedor/presentar/{{initialExpense.id_proveedor}}">
                      {{initialExpense.nombre}}
                   </a>
-               </td>               
+               </td>  
+               <td>{{initialExpense.comentarios |raw }}</td>            
                <td>{{initialExpense.fecha | date("m/d/Y") }}</td>               
-               <td>{{initialExpense.valor | number_format(2, '.', ',')}}</td>               
+               <td>{{initialExpense.valor_provisionado | number_format(2, '.', ',')}}</td>               
                <td> 
                    <div class="dropdown">
                            <button class="btn btn-sm btn-default" id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -288,29 +293,23 @@
                           </button>
                           <ul class="dropdown-menu" aria-labelledby="dLabel">
                             <li> 
-                              <a href="{{rute_url}}pedidofactura/presentar/{{initialExpense.id_pedido_factura}}">
+                              <a href="{{rute_url}}gstinicial/presentar/{{initialExpense.id_gastos_iniciales}}">
                               <span class="fa fa-eye fa-fw"></span>
-                              Ver Productos
+                              Detalle Gasto Inicial
                            </a> 
                            </li>
                             <li> 
-                              <a href="{{rute_url}}pedidofactura/agregarProducto/{{initialExpense.id_pedido_factura}}">
-                                 <span class="fa fa-plus fa-fw"></span>
-                              Agregar Producto
-                           </a> 
-                           </li>
-                            <li> 
-                              <a href="{{rute_url}}pedidofactura/editar/{{initialExpense.id_pedido_factura}}">
+                              <a href="{{rute_url}}gstinicial/editar/{{initialExpense.id_gastos_iniciales}}">
                                  <span class="fa fa-pencil fa-fw"></span>
-                                 Editar Factura 
-                              <span class="label label-success"> {{initialExpense.id_factura_proveedor}}</span></a> 
+                                 Editar Gasto Inicial
+                              <span class="label label-success"> {{initialExpense.id_gastos_iniciales}}</span></a> 
                            </li>
                             <li>
-                             <a href="{{rute_url}}pedidofactura/eliminar/{{initialExpense.id_pedido_factura}}">
+                             <a href="{{rute_url}}gstinicial/eliminar/{{initialExpense.id_gastos_iniciales}}">
                               <span class="text-danger fa fa-trash fa-fw"></span>
-                              Elminar Factura 
+                              Elminar Gasto Inicial
                               <span class="label label-danger">
-                             {{initialExpense.id_factura_proveedor}}
+                             {{initialExpense.id_gastos_iniciales}}
                               </span>
                           </a>   
                           </li>

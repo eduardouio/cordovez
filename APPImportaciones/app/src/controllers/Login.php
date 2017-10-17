@@ -14,8 +14,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Login extends MY_Controller {
 	private $controller = "usuario";
+	private $template = '/pages/pageLogin.html';
 	private $cryptKey  = 'qJB0rGtIn5UB1xG03efyCp';
-	private $dataView;
 
 
 	function __construct(){
@@ -23,24 +23,28 @@ class Login extends MY_Controller {
 	}
 
 
-	private function _loadData(){
-		$this->dataView = array(
-				'title' => 'Inicio de Sesión',
-				'base_url' => base_url(),
-				'actionFrm' => base_url() . 'index.php/login/validar',
-				'controller' => $this->controller,
-				'iconTitle' => 'fa-cubes',
-				);
+	/**	
+	* Muestra el formulario de inicio de sesion
+	*/
+	public function index(){
+		$config['title'] = 'Inicio de Sesión';
+		$this->responseHttp($config);
 	}
 
-	/**
-	 * Pagina de inicio controller
-	 * @return string (template => pagePedido)
-	 */
-	public function index(){
-		$this->_loadData();
-		$this->twig->display('/pages/pageLogin.html', $this->dataView);
+
+		/* *
+	* Envia la respuestas html al navegador
+	*/
+	public function responseHttp($config){
+		$config['base_url'] = base_url();
+		$config['rute_url'] = base_url() . 'index.php/';
+		$config['actionFrm'] = base_url() . 'index.php/login/validar';
+		$config['controller'] = $this->controller;
+		$config['iconTitle'] = 'fa-users';
+		$config['content'] = 'home';
+		return $this->twig->display($this->template, $config);
 	}
+
 
 	/**
 	 * Formulario de inicio de sesion
@@ -52,13 +56,22 @@ class Login extends MY_Controller {
 		$this->db->where('username' , $user['username']);
 		$resultDb = $this->db->get($this->controller);
 		$userDb = $resultDb->result_array();
-		$userDb = $userDb[0];
-		if(
-			 !$userDb['username'] == $user['username'] || 
-			 !$userDb['password'] == $this->_encryptIt($user['password'])
+
+
+		if(!$resultDb->num_rows() == 1 ){
+			$config = array(
+				'message' => 'Usuario y/o Contraseña Incorrectos.'
+			);
+			$this->responseHttp($config);
+			return true;
+		}
+		
+		$userDb = $userDb[0];	
+		
+		if($userDb['username'] == $user['username'] &&
+			 						$userDb['password'] == $this->_encryptIt($user['password'])
 			){
-			print('usuario o contraseña incorrectos!.');
-		}else{
+			
 			#actualizamos el ultimo login
 			$lastlogin = array('last_login' => date('Y-m-d H:i:s'));			
 			$this->db->where('username', $userDb['username']);
@@ -71,7 +84,19 @@ class Login extends MY_Controller {
 			unset($userData['password']);
 			$this->session->set_userdata($userData);
 			$this->_redirectOrdersPage();
+		}else{
+			$config = array(
+				'message' => 'Usuario y/o Contraseña Incorrectos.'
+			);
+			$this->responseHttp($config);
+			return true;
 		}
+
+		$config = array(
+				'message' => 'Usuario y/o Contraseña Incorrectos.'
+			);
+			$this->responseHttp($config);
+			return true;
 	}
 
 

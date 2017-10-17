@@ -1,4 +1,5 @@
 <form action="{{rute_url}}gstinicial/validar" method="post">
+	<input type="hidden" name="id_gastos_iniciales" value="{{initExpense.id_gastos_iniciales}}">
 <div class="row">
 	<div class="col-sm-1">
 		<div class="form-group">
@@ -7,7 +8,7 @@
 			type="text" 
 			class="form-control" 
 			name="nro_pedido"
-			value="{{order[0].nro_pedido}}" 
+			value="{{order.nro_pedido}}" 
 			readonly="true" 
 			>
 		</div>
@@ -20,7 +21,7 @@
 			name = "identificacion_proveedor"
 			class = "form-control"
 			>
-				<option selected="" disabled="">Seleccione</option>
+				<option value="{{supplier.identificacion_proveedor}}"> {{supplier.nombre}} </option>
 				{% for supplier in suppliers %}
 					<option value = "{{ supplier.identificacion_proveedor }}"> {{supplier.nombre}}</option>
 				{% endfor %}
@@ -36,7 +37,8 @@
 			class="form-control" 
 			name="concepto"
 			id="concepto"
-			maxlength="45" 
+			maxlength="45"
+			value="{{ initExpense.concepto }}" 
 			>
 		</div>
 	</div>
@@ -51,6 +53,7 @@
                required="required" 
                name="fecha" 
                class="bootstrap-datepicker" 
+               value="{{ initExpense.fecha }}" 
                >
             <div class="input-group-addon">
                <span class="glyphicon glyphicon-th"></span>
@@ -70,6 +73,7 @@
 			type="number" 
 			step="0.01" 
 			name="valor_provisionado"
+			value="{{ initExpense.valor_provisionado }}" 
 			>
 		</div>
 	</div>
@@ -81,7 +85,7 @@
 			name="comentarios" 
 			id="comentarios" 
 			class="form-control"
-			maxlength="250"></textarea>
+			maxlength="250">{{initExpense.comentarios | raw}}</textarea>
 		</div>
 	</div>
 </div>
@@ -92,9 +96,9 @@
             <span class="fa fa-save fa-fw"></span>
             Guardar Registro
          </button>
-      <a href="{{rute_url}}pedido/presentar/{{order[0].nro_pedido}}" class="btn btn-sm btn-default">
+      <a href="{{rute_url}}pedido/presentar/{{order.nro_pedido}}" class="btn btn-sm btn-default">
             <span class="fa fa-arrow-left fa-fw"></span>
-            Regresar Pedido <b>({{order[0].nro_pedido}}) </b>
+            Regresar Pedido <b>({{order.nro_pedido}}) </b>
          </a>
       </div>
    </div>

@@ -87,6 +87,7 @@ class __TwigTemplate_9497fa7932e2b52985d20c254691f9011bbbf8b04e2f12cffdf34696254
         // line 41
         echo twig_escape_filter($this->env, $this->getAttribute(($context["initExpense"] ?? null), "concepto", array()), "html", null, true);
         echo "\" 
+\t\t\treadonly=\"true\" 
 \t\t\t>
 \t\t</div>
 \t</div>
@@ -102,7 +103,7 @@ class __TwigTemplate_9497fa7932e2b52985d20c254691f9011bbbf8b04e2f12cffdf34696254
                name=\"fecha\" 
                class=\"bootstrap-datepicker\" 
                value=\"";
-        // line 56
+        // line 57
         echo twig_escape_filter($this->env, $this->getAttribute(($context["initExpense"] ?? null), "fecha", array()), "html", null, true);
         echo "\" 
                >
@@ -115,7 +116,7 @@ class __TwigTemplate_9497fa7932e2b52985d20c254691f9011bbbf8b04e2f12cffdf34696254
 </div>
 
 <div class=\"row\">
-
+\t<div id=\"hasta\" style=\"display: none;\">\t</div>
 \t<div class=\"col-sm-2\">
 \t\t<div class=\"form-group\">
 \t\t\t<label>Provisión (USD)</label>
@@ -125,22 +126,23 @@ class __TwigTemplate_9497fa7932e2b52985d20c254691f9011bbbf8b04e2f12cffdf34696254
 \t\t\tstep=\"0.01\" 
 \t\t\tname=\"valor_provisionado\"
 \t\t\tvalue=\"";
-        // line 76
+        // line 77
         echo twig_escape_filter($this->env, $this->getAttribute(($context["initExpense"] ?? null), "valor_provisionado", array()), "html", null, true);
         echo "\" 
 \t\t\t>
 \t\t</div>
 \t</div>
 
-\t<div class=\"col-sm-4\">
+\t<div class=\"col-sm-8\">
 \t\t<div class=\"form-group\">
 \t\t\t<label>Comentarios</label>
 \t\t\t<textarea 
 \t\t\tname=\"comentarios\" 
+\t\t\trows=\"1\" 
 \t\t\tid=\"comentarios\" 
 \t\t\tclass=\"form-control\"
 \t\t\tmaxlength=\"250\">";
-        // line 88
+        // line 90
         echo $this->getAttribute(($context["initExpense"] ?? null), "comentarios", array());
         echo "</textarea>
 \t\t</div>
@@ -154,14 +156,14 @@ class __TwigTemplate_9497fa7932e2b52985d20c254691f9011bbbf8b04e2f12cffdf34696254
             Guardar Registro
          </button>
       <a href=\"";
-        // line 99
+        // line 101
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "pedido/presentar/";
         echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "nro_pedido", array()), "html", null, true);
         echo "\" class=\"btn btn-sm btn-default\">
             <span class=\"fa fa-arrow-left fa-fw\"></span>
             Regresar Pedido <b>(";
-        // line 101
+        // line 103
         echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "nro_pedido", array()), "html", null, true);
         echo ") </b>
          </a>
@@ -169,14 +171,44 @@ class __TwigTemplate_9497fa7932e2b52985d20c254691f9011bbbf8b04e2f12cffdf34696254
    </div>
 </form>
 <script type=\"text/javascript\">
-\t\$('#concepto').keyup(function(){
-\t\tthis.value = this.value.toUpperCase();
-\t});
+
+\tvar userExpenses = ";
+        // line 110
+        echo ($context["used_expenses"] ?? null);
+        echo " ;
 
 \t\$('#comentarios').keyup(function(){
 \t\tthis.value = this.value.toUpperCase();
 \t});
 \t
+\t\tvar newInput = `<div class=\"col-sm-2\" id=\"date_end\">
+\t\t<div class=\"form-group\">
+\t\t\t<label>Fecha (Hasta)</label>
+\t\t\t <div class=\"input-group date\" data-provide=\"datepicker\">
+            <input 
+               type=\"text\" 
+               class=\"form-control\" 
+               id=\"fecha_fin\" 
+               required=\"required\" 
+               name=\"fecha_fin\" 
+               class=\"bootstrap-datepicker\" 
+               value=\"";
+        // line 127
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "fecha_fin", array()), "html", null, true);
+        echo "\"
+               >
+            <div class=\"input-group-addon\">
+               <span class=\"glyphicon glyphicon-th\"></span>
+            </div>
+         </div>
+\t\t</div>
+\t</div>`;
+\t\t
+
+\t\tif ( \$('#concepto').val() === 'ALMACENAJE  INICIAL'){
+\t\t\t\$('#hasta').append(newInput).fadeIn('slow');
+\t\t}
+
 </script>
 ";
     }
@@ -193,7 +225,7 @@ class __TwigTemplate_9497fa7932e2b52985d20c254691f9011bbbf8b04e2f12cffdf34696254
 
     public function getDebugInfo()
     {
-        return array (  165 => 101,  158 => 99,  144 => 88,  129 => 76,  106 => 56,  88 => 41,  73 => 28,  62 => 26,  58 => 25,  52 => 24,  36 => 11,  24 => 2,  19 => 1,);
+        return array (  197 => 127,  177 => 110,  167 => 103,  160 => 101,  146 => 90,  130 => 77,  107 => 57,  88 => 41,  73 => 28,  62 => 26,  58 => 25,  52 => 24,  36 => 11,  24 => 2,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -247,6 +279,7 @@ class __TwigTemplate_9497fa7932e2b52985d20c254691f9011bbbf8b04e2f12cffdf34696254
 \t\t\tid=\"concepto\"
 \t\t\tmaxlength=\"45\"
 \t\t\tvalue=\"{{ initExpense.concepto }}\" 
+\t\t\treadonly=\"true\" 
 \t\t\t>
 \t\t</div>
 \t</div>
@@ -272,7 +305,7 @@ class __TwigTemplate_9497fa7932e2b52985d20c254691f9011bbbf8b04e2f12cffdf34696254
 </div>
 
 <div class=\"row\">
-
+\t<div id=\"hasta\" style=\"display: none;\">\t</div>
 \t<div class=\"col-sm-2\">
 \t\t<div class=\"form-group\">
 \t\t\t<label>Provisión (USD)</label>
@@ -286,11 +319,12 @@ class __TwigTemplate_9497fa7932e2b52985d20c254691f9011bbbf8b04e2f12cffdf34696254
 \t\t</div>
 \t</div>
 
-\t<div class=\"col-sm-4\">
+\t<div class=\"col-sm-8\">
 \t\t<div class=\"form-group\">
 \t\t\t<label>Comentarios</label>
 \t\t\t<textarea 
 \t\t\tname=\"comentarios\" 
+\t\t\trows=\"1\" 
 \t\t\tid=\"comentarios\" 
 \t\t\tclass=\"form-control\"
 \t\t\tmaxlength=\"250\">{{initExpense.comentarios | raw}}</textarea>
@@ -312,14 +346,38 @@ class __TwigTemplate_9497fa7932e2b52985d20c254691f9011bbbf8b04e2f12cffdf34696254
    </div>
 </form>
 <script type=\"text/javascript\">
-\t\$('#concepto').keyup(function(){
-\t\tthis.value = this.value.toUpperCase();
-\t});
+
+\tvar userExpenses = {{ used_expenses | raw }} ;
 
 \t\$('#comentarios').keyup(function(){
 \t\tthis.value = this.value.toUpperCase();
 \t});
 \t
+\t\tvar newInput = `<div class=\"col-sm-2\" id=\"date_end\">
+\t\t<div class=\"form-group\">
+\t\t\t<label>Fecha (Hasta)</label>
+\t\t\t <div class=\"input-group date\" data-provide=\"datepicker\">
+            <input 
+               type=\"text\" 
+               class=\"form-control\" 
+               id=\"fecha_fin\" 
+               required=\"required\" 
+               name=\"fecha_fin\" 
+               class=\"bootstrap-datepicker\" 
+               value=\"{{order.fecha_fin}}\"
+               >
+            <div class=\"input-group-addon\">
+               <span class=\"glyphicon glyphicon-th\"></span>
+            </div>
+         </div>
+\t\t</div>
+\t</div>`;
+\t\t
+
+\t\tif ( \$('#concepto').val() === 'ALMACENAJE  INICIAL'){
+\t\t\t\$('#hasta').append(newInput).fadeIn('slow');
+\t\t}
+
 </script>
 ", "forms/frm-gasto-inicial-edit.html.twig", "/var/www/html/app/src/views/forms/frm-gasto-inicial-edit.html.twig");
     }

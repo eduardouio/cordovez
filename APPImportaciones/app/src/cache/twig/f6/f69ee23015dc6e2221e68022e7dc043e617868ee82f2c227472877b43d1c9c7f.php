@@ -54,7 +54,7 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
         echo "            </select>
          </div>
       </div>
-            <div class=\"col-md-2\">
+            <div class=\"col-md-1\">
          <label>Cajas</label>
          <input 
          type=\"number\" 
@@ -65,7 +65,14 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
          step=\"1\" 
          >
       </div>
-
+      <div class=\"col-md-1\">
+         <label>Modificar</label>
+         <input 
+         type=\"checkbox\" 
+         class=\"form-control\"
+         id=\"chage_params\" 
+         >
+      </div>
       <div class=\"col-md-2\">
          <div class=\"form-group\">
             <label>Grado Alcoholico</label>
@@ -77,6 +84,7 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
             required=\"true\" 
             id=\"grado_alcoholico\" 
             maxlength=\"4\" 
+            readonly=\"true\" 
             >
          </div>
       </div>
@@ -91,6 +99,7 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
          id=\"costo_und\"
          required=\"true\" 
          step=\"0.01\" 
+         readonly=\"true\" 
          >
 
    </div>
@@ -103,7 +112,7 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
             Guardar Producto
          </button>
       <a href=\"";
-        // line 68
+        // line 77
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "pedidofactura/presentar/";
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["invoice"] ?? null), 0, array(), "array"), "id_pedido_factura", array()), "html", null, true);
@@ -117,7 +126,7 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
 
 <script type=\"text/javascript\">
    var products = ";
-        // line 77
+        // line 86
         echo ($context["productsarray"] ?? null);
         echo ";
 
@@ -135,6 +144,20 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
       
    });
 
+</script>
+
+
+<script type=\"text/javascript\">
+   \$('#chage_params').click(function(){
+      if( \$('#chage_params').is(':checked') ){
+         \$('#grado_alcoholico').removeAttr('readonly');
+         \$('#costo_und').removeAttr('readonly');
+         \$('#grado_alcoholico').focus();
+      }else{
+         \$('#grado_alcoholico').attr('readonly', true);
+         \$('#costo_und').attr('readonly', true);
+      }
+   });
 </script>";
     }
 
@@ -150,7 +173,7 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
 
     public function getDebugInfo()
     {
-        return array (  121 => 77,  107 => 68,  54 => 17,  43 => 15,  39 => 14,  24 => 2,  19 => 1,);
+        return array (  130 => 86,  116 => 77,  54 => 17,  43 => 15,  39 => 14,  24 => 2,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -182,7 +205,7 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
             </select>
          </div>
       </div>
-            <div class=\"col-md-2\">
+            <div class=\"col-md-1\">
          <label>Cajas</label>
          <input 
          type=\"number\" 
@@ -193,7 +216,14 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
          step=\"1\" 
          >
       </div>
-
+      <div class=\"col-md-1\">
+         <label>Modificar</label>
+         <input 
+         type=\"checkbox\" 
+         class=\"form-control\"
+         id=\"chage_params\" 
+         >
+      </div>
       <div class=\"col-md-2\">
          <div class=\"form-group\">
             <label>Grado Alcoholico</label>
@@ -205,6 +235,7 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
             required=\"true\" 
             id=\"grado_alcoholico\" 
             maxlength=\"4\" 
+            readonly=\"true\" 
             >
          </div>
       </div>
@@ -219,6 +250,7 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
          id=\"costo_und\"
          required=\"true\" 
          step=\"0.01\" 
+         readonly=\"true\" 
          >
 
    </div>
@@ -255,6 +287,20 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
       
    });
 
+</script>
+
+
+<script type=\"text/javascript\">
+   \$('#chage_params').click(function(){
+      if( \$('#chage_params').is(':checked') ){
+         \$('#grado_alcoholico').removeAttr('readonly');
+         \$('#costo_und').removeAttr('readonly');
+         \$('#grado_alcoholico').focus();
+      }else{
+         \$('#grado_alcoholico').attr('readonly', true);
+         \$('#costo_und').attr('readonly', true);
+      }
+   });
 </script>", "forms/frm-pedido-factura-detalle.html.twig", "/var/www/html/app/src/views/forms/frm-pedido-factura-detalle.html.twig");
     }
 }

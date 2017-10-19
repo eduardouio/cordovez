@@ -120,7 +120,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
                name = \"nro_refrendo\"
                placeholder=\"000-0000-00-000000\"
                class=\"form-control\" 
-               maxlength=\"17\" 
+               maxlength=\"20\" 
                value=\"";
         // line 73
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["order"] ?? null), 0, array(), "array"), "nro_refrendo", array()), "html", null, true);
@@ -323,7 +323,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
                name = \"nro_refrendo\"
                placeholder=\"000-0000-00-000000\"
                class=\"form-control\" 
-               maxlength=\"17\" 
+               maxlength=\"20\" 
                value=\"{{order[0].nro_refrendo}}\" 
                >
          </div>

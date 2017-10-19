@@ -31,32 +31,35 @@ class __TwigTemplate_4300deadf334952c73cef42b5ed5c89bb8b02a5345304865ca8333f4276
                             <!-- /input-group -->
                         </li>
                         <li>
+                            <a href=\"";
+        // line 16
+        echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
+        echo "pedido/listar/\"><i class=\"fa fa-cubes fa-fw\"></i> Pedidos</a>
+                        </li>
+
+                        <li>
                             <a href=\"index.html\"><i class=\"fa fa-dashboard fa-fw\"></i> Inicio</a>
                         </li>
                         <li>
                             <a href=\"";
-        // line 19
-        echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
-        echo "pedido/listar/\"><i class=\"fa fa-cubes fa-fw\"></i> Pedidos</a>
-                        </li>
-                        <li>
-                            <a href=\"";
-        // line 22
+        // line 23
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "proveedor/listar/\"><i class=\"fa fa-users fa-fw\"></i> Proveedores</a>
                         </li>
                         <li>
                             <a href=\"";
-        // line 25
+        // line 26
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "/nacionalizacion/listar/\"><i class=\"fa fa-list fa-fw\"></i>Nacionalizaciones</a>
                         </li>
                         <li>
                             <a href=\"";
-        // line 28
+        // line 29
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "/config\"><i class=\"fa fa-gears fa-fw\"></i>Opciones</a>
                         </li>
+
+
 
                     </ul>
                 </div>
@@ -79,7 +82,7 @@ class __TwigTemplate_4300deadf334952c73cef42b5ed5c89bb8b02a5345304865ca8333f4276
 
     public function getDebugInfo()
     {
-        return array (  57 => 28,  51 => 25,  45 => 22,  39 => 19,  19 => 1,);
+        return array (  58 => 29,  52 => 26,  46 => 23,  36 => 16,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -107,10 +110,11 @@ class __TwigTemplate_4300deadf334952c73cef42b5ed5c89bb8b02a5345304865ca8333f4276
                             <!-- /input-group -->
                         </li>
                         <li>
-                            <a href=\"index.html\"><i class=\"fa fa-dashboard fa-fw\"></i> Inicio</a>
-                        </li>
-                        <li>
                             <a href=\"{{rute_url}}pedido/listar/\"><i class=\"fa fa-cubes fa-fw\"></i> Pedidos</a>
+                        </li>
+
+                        <li>
+                            <a href=\"index.html\"><i class=\"fa fa-dashboard fa-fw\"></i> Inicio</a>
                         </li>
                         <li>
                             <a href=\"{{rute_url}}proveedor/listar/\"><i class=\"fa fa-users fa-fw\"></i> Proveedores</a>
@@ -121,6 +125,8 @@ class __TwigTemplate_4300deadf334952c73cef42b5ed5c89bb8b02a5345304865ca8333f4276
                         <li>
                             <a href=\"{{rute_url}}/config\"><i class=\"fa fa-gears fa-fw\"></i>Opciones</a>
                         </li>
+
+
 
                     </ul>
                 </div>

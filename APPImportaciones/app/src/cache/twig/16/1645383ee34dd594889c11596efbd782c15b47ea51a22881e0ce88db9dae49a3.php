@@ -43,7 +43,7 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
     class=\"form-control\"
     required = \"required\"
     > 
-    <option selected=\"\" disabled=\"\" >Seleccione...</option>
+    <option selected disabled >Seleccione...</option>
     ";
         // line 24
         $context['_parent'] = $context;
@@ -104,6 +104,7 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
         <label>Moneda</label>
         <select
         name=\"moneda\"
+        id=\"moneda\"
         required = \"required\"
         class=\"form-control\"
         >
@@ -123,6 +124,7 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
         id=\"tipo_cambio\"
         value=\"1\" 
         required=\"required\" 
+        readonly = \"true\"
         >
       </div>
     </div>
@@ -156,9 +158,11 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
       <div class=\"form-group\">
         <label>Total USD</label>
         <input 
-        disabled=\"\"      
+        disabled=\"\"   
+        class=\"form-control\"   
         id=\"total\" 
         value=\"0\" 
+        style=\"font-weight: bold; font-size: 14px; color:blue\" 
         >
       </div>
     </div>
@@ -172,14 +176,14 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
             Guardar Registro
          </button>
       <a href=\"";
-        // line 137
+        // line 141
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "pedido/presentar/";
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["order"] ?? null), 0, array(), "array"), "nro_pedido", array()), "html", null, true);
         echo "\" class=\"btn btn-sm btn-default\">
             <span class=\"fa fa-arrow-left fa-fw\"></span>
             Volver al Pedido <b>(";
-        // line 139
+        // line 143
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["order"] ?? null), 0, array(), "array"), "nro_pedido", array()), "html", null, true);
         echo ")</b>
          </a>
@@ -189,6 +193,15 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
 
 <script type=\"text/javascript\"> 
   
+  \$('#moneda').change(function(){
+    if(\$(this).val() === 'EUROS'){
+      \$('#tipo_cambio').removeAttr('readonly');
+    }else{
+      \$('#tipo_cambio').attr('readonly', true);
+      \$('#tipo_cambio').val(1);
+    }
+  });
+
   \$('#valor').keyup(function(){
     \$('#total').val(\$('#valor').val() * \$('#tipo_cambio').val());  
   })
@@ -208,7 +221,7 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
 
     public function getDebugInfo()
     {
-        return array (  183 => 139,  176 => 137,  64 => 27,  53 => 25,  49 => 24,  33 => 11,  19 => 1,);
+        return array (  187 => 143,  180 => 141,  64 => 27,  53 => 25,  49 => 24,  33 => 11,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -243,7 +256,7 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
     class=\"form-control\"
     required = \"required\"
     > 
-    <option selected=\"\" disabled=\"\" >Seleccione...</option>
+    <option selected disabled >Seleccione...</option>
     {% for supplier in suppliers %}
       <option value=\"{{supplier.identificacion_proveedor}}\"> {{supplier.nombre}} </option>
     {% endfor %}
@@ -290,6 +303,7 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
         <label>Moneda</label>
         <select
         name=\"moneda\"
+        id=\"moneda\"
         required = \"required\"
         class=\"form-control\"
         >
@@ -309,6 +323,7 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
         id=\"tipo_cambio\"
         value=\"1\" 
         required=\"required\" 
+        readonly = \"true\"
         >
       </div>
     </div>
@@ -342,9 +357,11 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
       <div class=\"form-group\">
         <label>Total USD</label>
         <input 
-        disabled=\"\"      
+        disabled=\"\"   
+        class=\"form-control\"   
         id=\"total\" 
         value=\"0\" 
+        style=\"font-weight: bold; font-size: 14px; color:blue\" 
         >
       </div>
     </div>
@@ -367,6 +384,15 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
 
 <script type=\"text/javascript\"> 
   
+  \$('#moneda').change(function(){
+    if(\$(this).val() === 'EUROS'){
+      \$('#tipo_cambio').removeAttr('readonly');
+    }else{
+      \$('#tipo_cambio').attr('readonly', true);
+      \$('#tipo_cambio').val(1);
+    }
+  });
+
   \$('#valor').keyup(function(){
     \$('#total').val(\$('#valor').val() * \$('#tipo_cambio').val());  
   })

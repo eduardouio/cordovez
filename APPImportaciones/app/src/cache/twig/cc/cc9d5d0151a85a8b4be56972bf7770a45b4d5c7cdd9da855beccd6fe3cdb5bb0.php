@@ -64,45 +64,60 @@ class __TwigTemplate_347138bf60a17230f60ba43585f2e1cf6d2dabe305b44d61e4b38c6e5ba
         echo twig_escape_filter($this->env, $this->getAttribute(($context["initExpense"] ?? null), "fecha", array()), "html", null, true);
         echo "</td>
           </tr>
+          ";
+        // line 34
+        if (($this->getAttribute(($context["initExpense"] ?? null), "concepto", array()) == "ALMACENAJE  INICIAL")) {
+            // line 35
+            echo "          <tr>
+            <td class=\"text-right\"> <b>Fecha Fin:</b></td>
+            <td>";
+            // line 37
+            echo twig_escape_filter($this->env, $this->getAttribute(($context["initExpense"] ?? null), "fecha_fin", array()), "html", null, true);
+            echo "</td>
+          </tr>
+          ";
+        }
+        // line 40
+        echo "          
           <tr>
             <td class=\"text-right\"> <b>Concepto:</b></td>
             <td> ";
-        // line 36
+        // line 43
         echo $this->getAttribute(($context["initExpense"] ?? null), "concepto", array());
         echo "</td>
           </tr>
           <tr>
             <td class=\"text-right\"> <b>Valor Provisionado:</b></td>
             <td> ";
-        // line 40
+        // line 47
         echo twig_escape_filter($this->env, $this->getAttribute(($context["initExpense"] ?? null), "valor_provisionado", array()), "html", null, true);
         echo " </td>
           </tr>
           <tr>
             <td class=\"text-right\"> <b>Comentarios:</b></td>
             <td> ";
-        // line 44
+        // line 51
         echo twig_escape_filter($this->env, $this->getAttribute(($context["initExpense"] ?? null), "comentarios", array()), "html", null, true);
         echo " </td>
           </tr>
           <tr>
             <td class=\"text-right\"> <b>Creado El:</b></td>
             <td> ";
-        // line 48
+        // line 55
         echo twig_escape_filter($this->env, $this->getAttribute(($context["initExpense"] ?? null), "date_create", array()), "html", null, true);
         echo " </td>
           </tr>
           <tr>
             <td class=\"text-right\"> <b>Ultima Actualización:</b></td>
             <td> ";
-        // line 52
+        // line 59
         echo twig_escape_filter($this->env, $this->getAttribute(($context["initExpense"] ?? null), "last_update", array()), "html", null, true);
         echo " </td>
           </tr>
           <tr>
             <td class=\"text-right\"> <b>Creado Por:</b></td>
             <td> ";
-        // line 56
+        // line 63
         echo twig_escape_filter($this->env, $this->getAttribute(($context["createBy"] ?? null), "nombres", array()), "html", null, true);
         echo " </td>
           </tr>
@@ -113,18 +128,18 @@ class __TwigTemplate_347138bf60a17230f60ba43585f2e1cf6d2dabe305b44d61e4b38c6e5ba
   <div class=\"row\">
     <div class=\"col-sm-6\">
       <a href=\"";
-        // line 64
+        // line 71
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "pedido/presentar/";
         echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "nro_pedido", array()), "html", null, true);
         echo "\" class=\"btn btn-default btn-sm\">
       <span class=\"fa fa-arrow-left fa-fw\"></span>  Volver al Pedido ";
-        // line 65
+        // line 72
         echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "nro_pedido", array()), "html", null, true);
         echo "
     </a>
       <a href=\"";
-        // line 67
+        // line 74
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "gstinicial/editar/";
         echo twig_escape_filter($this->env, $this->getAttribute(($context["initExpense"] ?? null), "id_gastos_iniciales", array()), "html", null, true);
@@ -149,7 +164,7 @@ class __TwigTemplate_347138bf60a17230f60ba43585f2e1cf6d2dabe305b44d61e4b38c6e5ba
 
     public function getDebugInfo()
     {
-        return array (  128 => 67,  123 => 65,  117 => 64,  106 => 56,  99 => 52,  92 => 48,  85 => 44,  78 => 40,  71 => 36,  64 => 32,  57 => 28,  50 => 24,  43 => 20,  36 => 16,  19 => 1,);
+        return array (  143 => 74,  138 => 72,  132 => 71,  121 => 63,  114 => 59,  107 => 55,  100 => 51,  93 => 47,  86 => 43,  81 => 40,  75 => 37,  71 => 35,  69 => 34,  64 => 32,  57 => 28,  50 => 24,  43 => 20,  36 => 16,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -195,6 +210,13 @@ class __TwigTemplate_347138bf60a17230f60ba43585f2e1cf6d2dabe305b44d61e4b38c6e5ba
             <td class=\"text-right\"> <b>Fecha:</b></td>
             <td>{{ initExpense.fecha }}</td>
           </tr>
+          {% if initExpense.concepto == 'ALMACENAJE  INICIAL' %}
+          <tr>
+            <td class=\"text-right\"> <b>Fecha Fin:</b></td>
+            <td>{{ initExpense.fecha_fin }}</td>
+          </tr>
+          {% endif %}
+          
           <tr>
             <td class=\"text-right\"> <b>Concepto:</b></td>
             <td> {{ initExpense.concepto | raw }}</td>

@@ -26,7 +26,7 @@ class __TwigTemplate_b3a0d33ef4e7f8f2e64e00dcdf7a51266a33042f627341c36ddc5aeba62
   <div class=\"row\">
     <div class=\"col-md-1\">
        <div class=\"form-group\">
-      <label>Nro Pedido</label>
+      <label>Pedido</label>
       <input 
       readonly=\"\" 
       type=\"text\" 
@@ -159,6 +159,7 @@ class __TwigTemplate_b3a0d33ef4e7f8f2e64e00dcdf7a51266a33042f627341c36ddc5aeba62
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["invoice"] ?? null), 0, array(), "array"), "tipo_cambio", array()), "html", null, true);
         echo "\" 
         required=\"required\" 
+        readonly='true'
         >
       </div>
     </div>
@@ -174,7 +175,7 @@ class __TwigTemplate_b3a0d33ef4e7f8f2e64e00dcdf7a51266a33042f627341c36ddc5aeba62
         maxlength=\"8\"
         required=\"required\" 
         value=\"";
-        // line 110
+        // line 111
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["invoice"] ?? null), 0, array(), "array"), "id_factura_proveedor", array()), "html", null, true);
         echo "\" 
         >
@@ -190,7 +191,7 @@ class __TwigTemplate_b3a0d33ef4e7f8f2e64e00dcdf7a51266a33042f627341c36ddc5aeba62
         id=\"valor\"
         step=\"0.01\" 
         value=\"";
-        // line 123
+        // line 124
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["invoice"] ?? null), 0, array(), "array"), "valor", array()), "html", null, true);
         echo "\" 
         >
@@ -216,14 +217,14 @@ class __TwigTemplate_b3a0d33ef4e7f8f2e64e00dcdf7a51266a33042f627341c36ddc5aeba62
             Guardar Registro
          </button>
       <a href=\"";
-        // line 146
+        // line 147
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "pedido/presentar/";
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["invoice"] ?? null), 0, array(), "array"), "nro_pedido", array()), "html", null, true);
         echo "\" class=\"btn btn-sm btn-default\">
             <span class=\"fa fa-arrow-left fa-fw\"></span>
             Volver al Pedido <b>(";
-        // line 148
+        // line 149
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["invoice"] ?? null), 0, array(), "array"), "nro_pedido", array()), "html", null, true);
         echo ")</b>
          </a>
@@ -232,12 +233,22 @@ class __TwigTemplate_b3a0d33ef4e7f8f2e64e00dcdf7a51266a33042f627341c36ddc5aeba62
 </form>
 
 <script type=\"text/javascript\">
+
+  \$('#moneda').change(function(){
+    if(\$(this).val() === 'EUROS'){
+      \$('#tipo_cambio').removeAttr('readonly');
+    }else{
+      \$('#tipo_cambio').attr('readonly', true);
+      \$('#tipo_cambio').val(1);
+    }
+  });
   
   \$('#valor').keyup(function(){
     \$('#total').val(\$('#valor').val() * \$('#tipo_cambio').val());  
   })
   
-</script>";
+</script>
+";
     }
 
     public function getTemplateName()
@@ -252,7 +263,7 @@ class __TwigTemplate_b3a0d33ef4e7f8f2e64e00dcdf7a51266a33042f627341c36ddc5aeba62
 
     public function getDebugInfo()
     {
-        return array (  227 => 148,  220 => 146,  194 => 123,  178 => 110,  159 => 94,  145 => 82,  141 => 80,  137 => 78,  135 => 77,  129 => 76,  110 => 60,  89 => 42,  73 => 28,  62 => 26,  58 => 25,  52 => 24,  37 => 12,  24 => 2,  19 => 1,);
+        return array (  228 => 149,  221 => 147,  195 => 124,  179 => 111,  159 => 94,  145 => 82,  141 => 80,  137 => 78,  135 => 77,  129 => 76,  110 => 60,  89 => 42,  73 => 28,  62 => 26,  58 => 25,  52 => 24,  37 => 12,  24 => 2,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -270,7 +281,7 @@ class __TwigTemplate_b3a0d33ef4e7f8f2e64e00dcdf7a51266a33042f627341c36ddc5aeba62
   <div class=\"row\">
     <div class=\"col-md-1\">
        <div class=\"form-group\">
-      <label>Nro Pedido</label>
+      <label>Pedido</label>
       <input 
       readonly=\"\" 
       type=\"text\" 
@@ -360,6 +371,7 @@ class __TwigTemplate_b3a0d33ef4e7f8f2e64e00dcdf7a51266a33042f627341c36ddc5aeba62
         id=\"tipo_cambio\"
         value=\"{{invoice[0].tipo_cambio}}\" 
         required=\"required\" 
+        readonly='true'
         >
       </div>
     </div>
@@ -419,11 +431,21 @@ class __TwigTemplate_b3a0d33ef4e7f8f2e64e00dcdf7a51266a33042f627341c36ddc5aeba62
 </form>
 
 <script type=\"text/javascript\">
+
+  \$('#moneda').change(function(){
+    if(\$(this).val() === 'EUROS'){
+      \$('#tipo_cambio').removeAttr('readonly');
+    }else{
+      \$('#tipo_cambio').attr('readonly', true);
+      \$('#tipo_cambio').val(1);
+    }
+  });
   
   \$('#valor').keyup(function(){
     \$('#total').val(\$('#valor').val() * \$('#tipo_cambio').val());  
   })
   
-</script>", "forms/frm-pedido-factura-edit.html.twig", "/var/www/html/app/src/views/forms/frm-pedido-factura-edit.html.twig");
+</script>
+", "forms/frm-pedido-factura-edit.html.twig", "/var/www/html/app/src/views/forms/frm-pedido-factura-edit.html.twig");
     }
 }

@@ -118,7 +118,7 @@
       <!-- /tabFacturas-->
       <div role="tabpanel" class="tab-pane" id="facturas">
          <div class="row">
-            <div class="col-sm-9">
+            <div class="col-sm-6">
                <a href="{{rute_url}}pedidofactura/nuevo/{{viewData.order.0.nro_pedido}}">
                <button class="btn btn-sm btn-default">
                <span class="fa fa-plus fa-fw"> </span>
@@ -126,23 +126,15 @@
                </button>
                </a>
             </div>
-            <div class="col-sm-3">
-               <form action="buscar.php" method="POST" class="form-inline" role="form">
-                  <input 
-                     class="form-control" 
-                     type="text" 
-                     name="query" 
-                     placeholder="Buscar Registro"
-                     >
-                  <input 
-                     type="hidden" 
-                     name="orderInvoices"
-                     >
-                  <button class="btn btn-sm btn-default" type="submit" class ="btn"> 
-                  <span class="fa fa-search fa-fw">  </span>
-                  </button>
-               </form>
-            </div>
+                <div class="col-sm-2">
+      <h5 class="text-primary"> <small>Unidades: </small> <span id="suma"> {{ unidades | number_format(0, '.', ',') }} </span></h5>
+    </div>
+    <div class="col-sm-2">
+      <h5 class="text-primary"> <small>Suma: </small> <span id="suma"> {{ simbolo | raw}} {{ suma | number_format(2, '.', ',')}}</span></h5>
+    </div>
+    <div class="col-sm-2">
+      <h5 class="text-danger"> <small>Diferencia: </small> <span id="suma"> {{ simbolo | raw}} {{ diferencia | number_format(2, '.', ',') }} </span></h5>
+    </div>
          </div>
          <br>
          <div class="row">
@@ -227,31 +219,37 @@
       <!-- Gastos iniciales -->
       <div role="tabpanel" class="tab-pane" id="gastos">
          <div class="row">
-            <div class="col-sm-9">
+            <div class="col-sm-6">
+               {% if viewData.order.0.regimen == 70 %}
                <a href="{{rute_url}}gstinicial/nuevo/{{viewData.order.0.nro_pedido}}">
                <button class="btn btn-sm btn-default">
                <span class="fa fa-plus fa-fw"> </span>
                Agregar Gasto Inicial <span class="label label-warning">provisionado</span>
                </button>
                </a>
+               {% else %}
+                  <h5 class="text-primary">GASTOS INICIALES RÉGIMEN 10</h5>
+               {% endif %}
             </div>
-            <div class="col-sm-3">
-               <form action="buscar.php" method="POST" class="form-inline" role="form">
-                  <input 
-                     class="form-control" 
-                     type="text" 
-                     name="query" 
-                     placeholder="Buscar Registro"
-                     >
-                  <input 
-                     type="hidden" 
-                     name="gasto_inicial"
-                     >
-                  <button class="btn btn-sm btn-default" type="submit" class ="btn"> 
-                  <span class="fa fa-search fa-fw">  </span>
-                  </button>
-               </form>
-            </div>
+
+            {% set cantidad = 0 %}
+            {% set provisionado = 0.0 %}
+            {% set convalidado = 0.00 %}
+
+            {% for initialExpense in viewData.initialExpenses %}
+               {% set cantidad = cantidad + 1 %}
+               {% set provisionado = provisionado + initialExpense.valor_provisionado %}
+            {% endfor %}
+
+    <div class="col-sm-2">
+      <h5 class="text-primary"> <small>Cantidad: </small> <span id="suma"> {{ cantidad | number_format(0, '.', ',') }} </span></h5>
+    </div>
+    <div class="col-sm-2">
+      <h5 class="text-primary"> <small>Provisionado: </small> <span id="suma"> $ {{ provisionado | number_format(2, '.', ',')}}</span></h5>
+    </div>
+    <div class="col-sm-2">
+      <h5 class="text-danger"> <small>Convalidado: </small> <span id="suma"> $ {{ Convalidado | number_format(2, '.', ',') }} </span></h5>
+    </div>
          </div>
          <br>
          <div class="row">

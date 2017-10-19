@@ -39,6 +39,7 @@
 			id="concepto"
 			maxlength="45"
 			value="{{ initExpense.concepto }}" 
+			readonly="true" 
 			>
 		</div>
 	</div>
@@ -64,7 +65,7 @@
 </div>
 
 <div class="row">
-
+	<div id="hasta" style="display: none;">	</div>
 	<div class="col-sm-2">
 		<div class="form-group">
 			<label>Provisión (USD)</label>
@@ -78,11 +79,12 @@
 		</div>
 	</div>
 
-	<div class="col-sm-4">
+	<div class="col-sm-8">
 		<div class="form-group">
 			<label>Comentarios</label>
 			<textarea 
 			name="comentarios" 
+			rows="1" 
 			id="comentarios" 
 			class="form-control"
 			maxlength="250">{{initExpense.comentarios | raw}}</textarea>
@@ -104,12 +106,34 @@
    </div>
 </form>
 <script type="text/javascript">
-	$('#concepto').keyup(function(){
-		this.value = this.value.toUpperCase();
-	});
 
 	$('#comentarios').keyup(function(){
 		this.value = this.value.toUpperCase();
 	});
 	
+		var newInput = `<div class="col-sm-2" id="date_end">
+		<div class="form-group">
+			<label>Fecha (Hasta)</label>
+			 <div class="input-group date" data-provide="datepicker">
+            <input 
+               type="text" 
+               class="form-control" 
+               id="fecha_fin" 
+               required="required" 
+               name="fecha_fin" 
+               class="bootstrap-datepicker" 
+               value="{{order.fecha_fin}}"
+               >
+            <div class="input-group-addon">
+               <span class="glyphicon glyphicon-th"></span>
+            </div>
+         </div>
+		</div>
+	</div>`;
+		
+
+		if ( $('#concepto').val() === 'ALMACENAJE  INICIAL'){
+			$('#hasta').append(newInput).fadeIn('slow');
+		}
+
 </script>

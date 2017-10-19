@@ -20,7 +20,7 @@
 			name = "identificacion_proveedor"
 			class = "form-control"
 			>
-				<option selected="" disabled="">Seleccione</option>
+				<option selected="" disabled="">Seleccione...</option>
 				{% for supplier in suppliers %}
 					<option value = "{{ supplier.identificacion_proveedor }}"> {{supplier.nombre}}</option>
 				{% endfor %}
@@ -31,18 +31,32 @@
 	<div class="col-sm-4">
 		<div class="form-group">
 			<label>Concepto</label>
-			<input 
+			<select
 			type="text" 
 			class="form-control" 
-			name="concepto"
 			id="concepto"
-			maxlength="45" 
+			name="concepto"
 			>
+			<option disabled="" selected="">Seleccione...</option>
+			<option value="FLETE">FLETE</option>
+			<option value="GASTO ORIGEN">GASTO ORIGEN</option>
+			<option value="ISD">ISD</option>
+			<option value="OTROS GASTOS NAVIEROS">OTROS GASTOS NAVIEROS</option>
+			<option value="ALMACENAJE  INICIAL">ALMACENAJE  INICIAL</option>
+			<option value="CUSTODIA">CUSTODIA</option>
+			<option value="TRANSPORTE INTERNO ">TRANSPORTE INTERNO </option>
+			<option value="AGENTE ">AGENTE </option>
+			<option value="DESCARGA">DESCARGA</option>
+			<option value="TASA DE CONTROL AEROPORTUARIA">TASA DE CONTROL AEROPORTUARIA</option>
+			<option value="CANDADO SATELITAL">CANDADO SATELITAL</option>
+			<option value="DEMORAJE">DEMORAJE</option>
+			<option value="OTROS">OTROS</option>
+		</select>
 		</div>
 	</div>
 <div class="col-sm-2">
 		<div class="form-group">
-			<label>Fecha</label>
+			<label>Fecha (Desde)</label>
 			         <div class="input-group date" data-provide="datepicker">
             <input 
                type="text" 
@@ -62,6 +76,10 @@
 
 <div class="row">
 
+	<div id="hasta" style="display: none;">
+		
+	</div>
+
 	<div class="col-sm-2">
 		<div class="form-group">
 			<label>Provisión (USD)</label>
@@ -74,13 +92,14 @@
 		</div>
 	</div>
 
-	<div class="col-sm-4">
+	<div class="col-sm-8">
 		<div class="form-group">
 			<label>Comentarios</label>
 			<textarea 
 			name="comentarios" 
 			id="comentarios" 
 			class="form-control"
+			rows="1" 
 			maxlength="250"></textarea>
 		</div>
 	</div>
@@ -100,12 +119,44 @@
    </div>
 </form>
 <script type="text/javascript">
-	$('#concepto').keyup(function(){
-		this.value = this.value.toUpperCase();
-	});
 
 	$('#comentarios').keyup(function(){
 		this.value = this.value.toUpperCase();
 	});
+
+	var newInput = `<div class="col-sm-2" id="date_end">
+		<div class="form-group">
+			<label>Fecha (Hasta)</label>
+			 <div class="input-group date" data-provide="datepicker">
+            <input 
+               type="text" 
+               class="form-control" 
+               id="fecha_fin" 
+               required="required" 
+               name="fecha_fin" 
+               class="bootstrap-datepicker" 
+               >
+            <div class="input-group-addon">
+               <span class="glyphicon glyphicon-th"></span>
+            </div>
+         </div>
+		</div>
+	</div>`
 	
+		var usedExpenses = {{ used_expenses | raw }} ;		
+
+		$.each(usedExpenses, function(key, value){
+			if($("#concepto option[value='" + value.concepto + "'").val() != 'ALMACENAJE  INICIAL'){
+				$("#concepto option[value='" + value.concepto + "'").remove();
+			}
+		});
+
+	$('#concepto').change(function(){
+		if ( $(this).val() === 'ALMACENAJE  INICIAL'){
+			$('#hasta').append(newInput).fadeIn('slow');
+		}else{
+			$('#date_end').remove().fadeIn('slow');
+		}	});
+
 </script>
+

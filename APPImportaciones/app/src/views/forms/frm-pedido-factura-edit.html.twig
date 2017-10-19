@@ -93,6 +93,7 @@
         id="tipo_cambio"
         value="{{invoice[0].tipo_cambio}}" 
         required="required" 
+        readonly='true'
         >
       </div>
     </div>
@@ -152,6 +153,15 @@
 </form>
 
 <script type="text/javascript">
+
+  $('#moneda').change(function(){
+    if($(this).val() === 'EUROS'){
+      $('#tipo_cambio').removeAttr('readonly');
+    }else{
+      $('#tipo_cambio').attr('readonly', true);
+      $('#tipo_cambio').val(1);
+    }
+  });
   
   $('#valor').keyup(function(){
     $('#total').val($('#valor').val() * $('#tipo_cambio').val());  

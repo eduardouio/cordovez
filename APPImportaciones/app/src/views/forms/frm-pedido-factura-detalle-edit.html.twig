@@ -17,7 +17,7 @@
             >  
          </div>
       </div>
-            <div class="col-md-2">
+            <div class="col-md-1">
          <label>Cajas</label>
          <input 
          type="number" 
@@ -29,7 +29,14 @@
          value="{{ detail[0].nro_cajas }}" 
          >
       </div>
-
+      <div class="col-md-1">
+         <label>Modificar</label>
+         <input 
+         type="checkbox" 
+         class="form-control"
+         id="chage_params" 
+         >
+      </div>
       <div class="col-md-2">
          <div class="form-group">
             <label>Grado Alcoholico</label>
@@ -41,6 +48,7 @@
             required="true" 
             id="grado_alcoholico" 
             maxlength="4" 
+            readonly="true" 
             value="{{ detail[0].grado_alcoholico }}" 
             >
          </div>
@@ -55,7 +63,8 @@
          name="costo_und"
          id="costo_und"
          required="true" 
-         step="0.01" 
+         readonly="true" 
+         step="0.001" 
          value="{{ detail[0].costo_und }}" 
          >
 
@@ -75,3 +84,15 @@
       </div>
    </div>
 </form>
+<script type="text/javascript">
+   $('#chage_params').click(function(){
+      if( $('#chage_params').is(':checked') ){
+         $('#grado_alcoholico').removeAttr('readonly');
+         $('#costo_und').removeAttr('readonly');
+         $('#grado_alcoholico').focus();
+      }else{
+         $('#grado_alcoholico').attr('readonly', true);
+         $('#costo_und').attr('readonly', true);
+      }
+   });
+</script>

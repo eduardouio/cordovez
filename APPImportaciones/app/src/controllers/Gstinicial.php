@@ -88,10 +88,17 @@ class Gstinicial extends MY_Controller {
 			$order = $resultDb->result_array();
 			$resultDb = $this->db->get('proveedor');
 			$suppliers = $resultDb->result_array();
+
+			$this->db->select('concepto');
+			$this->db->where('nro_pedido', $order[0]['nro_pedido']);
+			$resultDb = $this->db->get($this->controller);
+		
+			$config['used_expenses'] = json_encode($resultDb->result_array());
 			$config['create'] = true;
 			$config['order'] = $order;
 			$config['suppliers'] = $suppliers;
-			$config['titleContent'] = 'Registro De Gasto Inicial Pedido:' . $nroOrder;
+			$config['titleContent'] = 'Registro De Gasto Inicial Provisión ' . 
+																												'[ Pedido ' . $nroOrder . ']';
 			$this->responseHttp($config);
 	}
 
@@ -116,6 +123,8 @@ class Gstinicial extends MY_Controller {
 		$resultDb = $this->db->get('pedido');
 		$order = $resultDb->result_array();
 
+		
+			
 		$config = array(
 						'order' => $order[0],
 						'initExpense' => $initExpense[0],
@@ -126,6 +135,10 @@ class Gstinicial extends MY_Controller {
 																					$order[0]['nro_pedido'] ,
 						'edit' => true,
 		);
+
+
+
+
 		$this->responseHttp($config);
 	}
 
@@ -137,6 +150,7 @@ class Gstinicial extends MY_Controller {
 		$initExpense = $this->input->post();
 		$initExpense['id_user'] = $this->session->userdata('id_user');
 		$initExpense['fecha'] = date('Y-m-d' , strtotime($initExpense['fecha']));
+		$initExpense['fecha_fin'] = date('Y-m-d' , strtotime($initExpense['fecha_fin']));
 
 			if(!isset($initExpense['id_gastos_iniciales'])){
 				$this->db->where('nro_pedido', $initExpense['nro_pedido']);
@@ -172,7 +186,6 @@ class Gstinicial extends MY_Controller {
 			$config['message'] = 'La información de uno de los campos es incorrecta!';
 			$config['data'] = $status['columns'];
 			$this->responseHttp($config);
-			print(var_dump($status['columns']));
 			return true;
 		}	
 

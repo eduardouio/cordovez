@@ -82,9 +82,9 @@ class Pedido extends MY_Controller {
 		$config['viewData'] = $data;
 		$config['list_active'] = 'class="active"';
 		$config['createBy'] = $this->getUserDataDb($data['order'][0]['id_user']);
-		$config['titleContent'] = 'Detalle De Pedido &nbsp; &nbsp; &nbsp; <b> ' . 
-																							$data['order'][0]['nro_pedido'] . 
-																							'</b>' ;
+		$config['titleContent'] = 'Detalle De Pedido <b> [ ' . 
+																								$data['order'][0]['nro_pedido'] . 
+																								'</b> 	]' ;
 		$this->responseHttp($config);
 	}
 	

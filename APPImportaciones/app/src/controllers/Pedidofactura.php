@@ -40,9 +40,11 @@ class Pedidofactura extends MY_Controller {
 																				$invoice[0]['identificacion_proveedor'], 
 																																	'proveedor');		
 		$config['invoiceDetail'] = $this->getDetailInvoice($idInvoice);
+		$config['titleContent'] = 'Detalle Factura [ # ' . 
+															$invoice[0]['id_factura_proveedor'] . 
+															' ] Pedido [ ' . $invoice[0]['nro_pedido'] . ' ]';
 		$this->responseHttp($config);
 	}
-
 
 
 	/**
@@ -89,13 +91,13 @@ class Pedidofactura extends MY_Controller {
 			$config['order'] = $order[0]['nro_pedido'];
 			$config['viewMessage'] = true;
 			$config['deleted'] = true;
-			$config['message'] = 'La factura fue eliminada Exitosamente!';
+			$config['message'] = 'Factura Eliminada Exitosamente!';
 			$this->responseHttp($config);
 		}else{
 			$config['order'] = $order[0]['nro_pedido'];
 			$config['viewMessage'] = true;
-			$config['message'] = 'El pedido no puede ser Eliminado, 
-																												 tiene dependencias!';
+			$config['message'] = 'El Pedido No Puede Ser Eliminado, 
+																												 Tiene Dependencias!';
 			$this->responseHttp($config);
 		}
 	}
@@ -120,11 +122,14 @@ class Pedidofactura extends MY_Controller {
 				$this->db->where('identificacion_proveedor',
 																		$orderInvoice['identificacion_proveedor']);
 				$resultDb = $this->db->get($this->controller);
+				$order = $resultDb->result_array();
+
 
 				if($resultDb->num_rows() == 1 ){		
-					$config['orderInvoice'] = $resultDb->result_array();
+					$order = $order[0];
+					$config['order'] = $order['nro_pedido'];
 					$config['viewMessage'] = true;
-					$config['message'] = 'La factura ya existe!';
+					$config['message'] = 'Error: La factura ya se encuentra resgistrada!';
 					$this->responseHttp($config);
 					return true;
 				}	
@@ -175,20 +180,24 @@ class Pedidofactura extends MY_Controller {
 		$details = $resultDb->result_array();
 
 		$products = array();
+		
 		foreach ($details as $key => $value) {
 			$this->db->where('cod_contable', $value['cod_contable']);
 			$resultDb = $this->db->get('producto');
 			$product = $resultDb->result_array();
+
 			$value['nombre'] = $product[0]['nombre'];
-			$value['unidades'] = 
-								(int)($product[0]['cantidad_x_caja']) * (int)($value['nro_cajas']);
-			$value['costo_total'] = 
-								(float)($value['unidades']) * (float)($value['costo_und']);
+			$value['unidades'] = ((int)($product[0]['cantidad_x_caja']) * 
+																										(int)($value['nro_cajas']));
+			$value['costo_caja'] = ((float)($product[0]['cantidad_x_caja']) * 
+																									(float)($value['costo_und']));
+			$value['costo_total'] = ((float)($value['unidades']) * 
+																									(float)($value['costo_und']));
+			$value['cantidad_x_caja'] = $product[0]['cantidad_x_caja'];
 			$products[$key] = $value;
 		}
 
 		return $products;
-
 	}
 
 	/**
@@ -221,7 +230,6 @@ class Pedidofactura extends MY_Controller {
 			$config['controller'] = $this->controller;
 			$config['iconTitle'] = 'fa-cubes';
 			$config['content'] = 'home';
-			$config['titleContent'] = 'FACTURA PEDIDOS';
 			return $this->twig->display($this->template, $config);
 		}
 

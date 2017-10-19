@@ -48,6 +48,14 @@ class Detallepedido extends MY_Controller {
 		$resultDb = $this->db->get('detalle_pedido_factura');
 		$productsInvoice = $resultDb->result_array();
 
+		foreach ($products as $key => $item) {
+			foreach ($productsInvoice as $k => $va) {
+				if($item['cod_contable'] == $va['cod_contable']){
+					unset($products[$key]);
+				}
+			}
+		}
+
 		$config['create'] = true;		
 		$config['products'] = $products;
 		$config['productsarray'] = json_encode($products);

@@ -1,3 +1,4 @@
+
 </div>
 <!-- /.panel-body -->
 {% if pagination == true %}
@@ -10,13 +11,12 @@
 		{% else %}
   		<li><a href="{{ pagination_url }}{{page}}">{{ item }}</a></li>		
   	{% endif %}  	
-  	{% set page = page + 10 %}
+  	{% set page = page + perPage %}
   {% endfor %}
   <li><a href="{{pagination_url}}{{ last_page }}">Última</a></li>
 </ul>
 </div>
 {% endif %}
-
 </div>
 <!-- /.panel -->
 </div>

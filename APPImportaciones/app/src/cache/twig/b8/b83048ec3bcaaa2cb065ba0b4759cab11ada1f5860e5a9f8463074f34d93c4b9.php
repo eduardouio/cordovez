@@ -26,7 +26,7 @@ class __TwigTemplate_c567af96d1755642dbed9379a072dff62e28d08ca1e45199f1e9fa84080
         echo "pedido/nuevo/\">
         <button class=\"btn btn-sm btn-default\">
           <span class=\"fa fa-plus fa-fw\"></span>
-          Nuevo pedido
+          Nuevo Pedido
         </button>
       </a>
     </div>
@@ -242,7 +242,7 @@ class __TwigTemplate_c567af96d1755642dbed9379a072dff62e28d08ca1e45199f1e9fa84080
       <a href=\"{{ rute_url }}pedido/nuevo/\">
         <button class=\"btn btn-sm btn-default\">
           <span class=\"fa fa-plus fa-fw\"></span>
-          Nuevo pedido
+          Nuevo Pedido
         </button>
       </a>
     </div>

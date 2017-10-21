@@ -3,7 +3,49 @@
 {% include 'base/navbarleft.html.twig' %}
 {% include 'base/content.html.twig' %}
 
-{% include 'base/sections/mostrar-producto.html.twig' %}	
+{% if show == true %}
+	{% include 'base/sections/mostrar-producto.html.twig' %}	
+{% endif %}
+
+{% if list == true %}
+	{% include 'base/sections/listar-producto.html.twig' %}	
+{% endif %}
+
+{% if create == true %}
+	{% include 'forms/frm_producto.html.twig' %}	
+{% endif %}
+
+
+{% if viewMessage == true %}
+	<div class="well">
+		<h3 class="text-primary">	{{message}} </h3>
+		<br><br>
+		
+			<pre>
+				{{ dump(data) }}
+			</pre>
+		
+		<p>
+			{% if deleted == true %} 
+						<a href="{{rute_url}}producto/presentar/{{orderDetail}}"> 
+				<button>
+					<span class="fa fa-list"></span>
+					Ver
+				</button>
+				</a>
+			{% else %}  
+				<a href="{{rute_url}}producto/presentar/{{orderDetail}}">
+		<button>
+			<span class="fa fa-eye"></span>
+			Ver
+		</button>
+		</a>
+			{% endif %}
+		
+		</p>
+	</div>
+{% endif %}
+
 
 {% include 'base/content_close.html.twig' %}
 {% include 'base/signaturefoot.html.twig' %}

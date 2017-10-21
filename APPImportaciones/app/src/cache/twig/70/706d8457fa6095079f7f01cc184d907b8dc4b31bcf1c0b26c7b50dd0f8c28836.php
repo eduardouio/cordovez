@@ -27,16 +27,105 @@ class __TwigTemplate_c2e9aad1f61351504b8b2316b10984e708cbcbc750694f924d9ed351442
         echo "
 ";
         // line 6
-        $this->loadTemplate("base/sections/mostrar-producto.html.twig", "/pages/pageProducto.html.twig", 6)->display($context);
-        echo "\t
+        if ((($context["show"] ?? null) == true)) {
+            // line 7
+            echo "\t";
+            $this->loadTemplate("base/sections/mostrar-producto.html.twig", "/pages/pageProducto.html.twig", 7)->display($context);
+            echo "\t
+";
+        }
+        // line 9
+        echo "
+";
+        // line 10
+        if ((($context["list"] ?? null) == true)) {
+            // line 11
+            echo "\t";
+            $this->loadTemplate("base/sections/listar-producto.html.twig", "/pages/pageProducto.html.twig", 11)->display($context);
+            echo "\t
+";
+        }
+        // line 13
+        echo "
+";
+        // line 14
+        if ((($context["create"] ?? null) == true)) {
+            // line 15
+            echo "\t";
+            $this->loadTemplate("forms/frm_producto.html.twig", "/pages/pageProducto.html.twig", 15)->display($context);
+            echo "\t
+";
+        }
+        // line 17
+        echo "
 
 ";
-        // line 8
-        $this->loadTemplate("base/content_close.html.twig", "/pages/pageProducto.html.twig", 8)->display($context);
-        // line 9
-        $this->loadTemplate("base/signaturefoot.html.twig", "/pages/pageProducto.html.twig", 9)->display($context);
-        // line 10
-        $this->loadTemplate("base/footer.html.twig", "/pages/pageProducto.html.twig", 10)->display($context);
+        // line 19
+        if ((($context["viewMessage"] ?? null) == true)) {
+            // line 20
+            echo "\t<div class=\"well\">
+\t\t<h3 class=\"text-primary\">\t";
+            // line 21
+            echo twig_escape_filter($this->env, ($context["message"] ?? null), "html", null, true);
+            echo " </h3>
+\t\t<br><br>
+\t\t
+\t\t\t<pre>
+\t\t\t\t";
+            // line 25
+            echo twig_escape_filter($this->env, twig_var_dump($this->env, $context, ($context["data"] ?? null)), "html", null, true);
+            echo "
+\t\t\t</pre>
+\t\t
+\t\t<p>
+\t\t\t";
+            // line 29
+            if ((($context["deleted"] ?? null) == true)) {
+                echo " 
+\t\t\t\t\t\t<a href=\"";
+                // line 30
+                echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
+                echo "producto/presentar/";
+                echo twig_escape_filter($this->env, ($context["orderDetail"] ?? null), "html", null, true);
+                echo "\"> 
+\t\t\t\t<button>
+\t\t\t\t\t<span class=\"fa fa-list\"></span>
+\t\t\t\t\tVer
+\t\t\t\t</button>
+\t\t\t\t</a>
+\t\t\t";
+            } else {
+                // line 36
+                echo "  
+\t\t\t\t<a href=\"";
+                // line 37
+                echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
+                echo "producto/presentar/";
+                echo twig_escape_filter($this->env, ($context["orderDetail"] ?? null), "html", null, true);
+                echo "\">
+\t\t<button>
+\t\t\t<span class=\"fa fa-eye\"></span>
+\t\t\tVer
+\t\t</button>
+\t\t</a>
+\t\t\t";
+            }
+            // line 44
+            echo "\t\t
+\t\t</p>
+\t</div>
+";
+        }
+        // line 48
+        echo "
+
+";
+        // line 50
+        $this->loadTemplate("base/content_close.html.twig", "/pages/pageProducto.html.twig", 50)->display($context);
+        // line 51
+        $this->loadTemplate("base/signaturefoot.html.twig", "/pages/pageProducto.html.twig", 51)->display($context);
+        // line 52
+        $this->loadTemplate("base/footer.html.twig", "/pages/pageProducto.html.twig", 52)->display($context);
     }
 
     public function getTemplateName()
@@ -51,7 +140,7 @@ class __TwigTemplate_c2e9aad1f61351504b8b2316b10984e708cbcbc750694f924d9ed351442
 
     public function getDebugInfo()
     {
-        return array (  39 => 10,  37 => 9,  35 => 8,  30 => 6,  27 => 5,  25 => 4,  23 => 3,  21 => 2,  19 => 1,);
+        return array (  128 => 52,  126 => 51,  124 => 50,  120 => 48,  114 => 44,  102 => 37,  99 => 36,  87 => 30,  83 => 29,  76 => 25,  69 => 21,  66 => 20,  64 => 19,  60 => 17,  54 => 15,  52 => 14,  49 => 13,  43 => 11,  41 => 10,  38 => 9,  32 => 7,  30 => 6,  27 => 5,  25 => 4,  23 => 3,  21 => 2,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -69,7 +158,49 @@ class __TwigTemplate_c2e9aad1f61351504b8b2316b10984e708cbcbc750694f924d9ed351442
 {% include 'base/navbarleft.html.twig' %}
 {% include 'base/content.html.twig' %}
 
-{% include 'base/sections/mostrar-producto.html.twig' %}\t
+{% if show == true %}
+\t{% include 'base/sections/mostrar-producto.html.twig' %}\t
+{% endif %}
+
+{% if list == true %}
+\t{% include 'base/sections/listar-producto.html.twig' %}\t
+{% endif %}
+
+{% if create == true %}
+\t{% include 'forms/frm_producto.html.twig' %}\t
+{% endif %}
+
+
+{% if viewMessage == true %}
+\t<div class=\"well\">
+\t\t<h3 class=\"text-primary\">\t{{message}} </h3>
+\t\t<br><br>
+\t\t
+\t\t\t<pre>
+\t\t\t\t{{ dump(data) }}
+\t\t\t</pre>
+\t\t
+\t\t<p>
+\t\t\t{% if deleted == true %} 
+\t\t\t\t\t\t<a href=\"{{rute_url}}producto/presentar/{{orderDetail}}\"> 
+\t\t\t\t<button>
+\t\t\t\t\t<span class=\"fa fa-list\"></span>
+\t\t\t\t\tVer
+\t\t\t\t</button>
+\t\t\t\t</a>
+\t\t\t{% else %}  
+\t\t\t\t<a href=\"{{rute_url}}producto/presentar/{{orderDetail}}\">
+\t\t<button>
+\t\t\t<span class=\"fa fa-eye\"></span>
+\t\t\tVer
+\t\t</button>
+\t\t</a>
+\t\t\t{% endif %}
+\t\t
+\t\t</p>
+\t</div>
+{% endif %}
+
 
 {% include 'base/content_close.html.twig' %}
 {% include 'base/signaturefoot.html.twig' %}

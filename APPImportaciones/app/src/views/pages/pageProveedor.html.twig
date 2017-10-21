@@ -3,8 +3,47 @@
 {% include 'base/navbarleft.html.twig' %}
 {% include 'base/content.html.twig' %}
 
-{% include 'base/sections/mostrar-proveedor.html.twig' %}	
+{% if show == true %}
+	{% include 'base/sections/mostrar-proveedor.html.twig' %}	
+{% endif %}
 
+{% if list == true %}
+	{% include 'base/sections/listar-proveedor.html.twig' %}	
+{% endif %}
+
+{% if create == true %}
+	{% include 'forms/frm_proveedor.html.twig' %}	
+{% endif %}
+
+{% if edit == true %}
+	{% include 'forms/frm_proveedor_edit.html.twig' %}	
+{% endif %}
+
+
+{% if viewMessage == true %}
+	<div class="well">
+		<h3 class="text-primary">	{{message}} </h3>
+		<br><br>
+		<p>
+			{% if deleted == true %} 
+						<a href="{{rute_url}}proveedor/listar/"> 
+				<button>
+					<span class="fa fa-list"></span>
+					Ver
+				</button>
+				</a>
+			{% else %}  
+				<a href="{{rute_url}}proveedor/presentar/{{id_supplier}}">
+		<button>
+			<span class="fa fa-eye"></span>
+			Ver
+		</button>
+		</a>
+			{% endif %}
+		
+		</p>
+	</div>
+{% endif %}
 {% include 'base/content_close.html.twig' %}
 {% include 'base/signaturefoot.html.twig' %}
 {% include 'base/footer.html.twig' %}

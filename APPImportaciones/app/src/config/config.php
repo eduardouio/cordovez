@@ -24,9 +24,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 #$config['base_url'] = 'http://192.168.0.99/app';
-$config['base_url'] = 'http://192.168.0.11/app';
+#$config['base_url'] = 'http://192.168.0.11/app';
 #$config['base_url'] = 'http://192.168.0.82/app';
-#$config['base_url'] = 'http://localhost/app/';
+$config['base_url'] = 'http://localhost/app/';
 
 /*
 |--------------------------------------------------------------------------

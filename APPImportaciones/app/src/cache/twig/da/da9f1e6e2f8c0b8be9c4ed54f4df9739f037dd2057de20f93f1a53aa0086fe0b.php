@@ -96,6 +96,33 @@ class __TwigTemplate_1009cdf17b674ae1874c8ef92bf81b1ea9307ec4a6b42418133c44b5ed5
       </table>
     </div>
   </div>
+    <div class=\"row\">
+    <div class=\"col-sm-6\">
+      <a href=\"";
+        // line 56
+        echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
+        echo "proveedor/listar\" class=\"btn btn-default btn-sm\">
+      <span class=\"fa fa-arrow-left fa-fw\"></span>  Listar Proveedores
+    </a>
+      <a href=\"";
+        // line 59
+        echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
+        echo "proveedor/editar/";
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["supplier"] ?? null), "id_proveedor", array()), "html", null, true);
+        echo "\" class=\"btn btn-default btn-sm\">
+      <span class=\"fa fa-pencil fa-fw\"></span>  Editar Proveedor
+    </a>
+
+    <a href=\"";
+        // line 63
+        echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
+        echo "proveedor/eliminar/";
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["supplier"] ?? null), "id_proveedor", array()), "html", null, true);
+        echo "\" class=\"btn btn-danger btn-sm\">
+      <span class=\"fa fa-trash fa-fw\"></span> Eliminar Proveedor
+    </a>
+    </div>
+  </div>
 </div>
 <!--tabPedido-->";
     }
@@ -112,7 +139,7 @@ class __TwigTemplate_1009cdf17b674ae1874c8ef92bf81b1ea9307ec4a6b42418133c44b5ed5
 
     public function getDebugInfo()
     {
-        return array (  92 => 48,  85 => 44,  78 => 40,  71 => 36,  64 => 32,  57 => 28,  50 => 24,  43 => 20,  36 => 16,  19 => 1,);
+        return array (  118 => 63,  109 => 59,  103 => 56,  92 => 48,  85 => 44,  78 => 40,  71 => 36,  64 => 32,  57 => 28,  50 => 24,  43 => 20,  36 => 16,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -176,6 +203,20 @@ class __TwigTemplate_1009cdf17b674ae1874c8ef92bf81b1ea9307ec4a6b42418133c44b5ed5
           </tr>
         </tbody>
       </table>
+    </div>
+  </div>
+    <div class=\"row\">
+    <div class=\"col-sm-6\">
+      <a href=\"{{rute_url}}proveedor/listar\" class=\"btn btn-default btn-sm\">
+      <span class=\"fa fa-arrow-left fa-fw\"></span>  Listar Proveedores
+    </a>
+      <a href=\"{{rute_url}}proveedor/editar/{{supplier.id_proveedor}}\" class=\"btn btn-default btn-sm\">
+      <span class=\"fa fa-pencil fa-fw\"></span>  Editar Proveedor
+    </a>
+
+    <a href=\"{{rute_url}}proveedor/eliminar/{{supplier.id_proveedor}}\" class=\"btn btn-danger btn-sm\">
+      <span class=\"fa fa-trash fa-fw\"></span> Eliminar Proveedor
+    </a>
     </div>
   </div>
 </div>

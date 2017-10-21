@@ -20,6 +20,7 @@ class __TwigTemplate_b9d741fab152e6650f62af1c934e27fe5f8f03a6454c5ad940859d43090
 <div class=\"producto\">
   <br>
   <div class=\"row\">
+<div class=\"col-sm-12\">
     <div class=\"table-responsive\">
       <table class=\"table table-hover table-bordered table-striped\">
         <thead>
@@ -32,126 +33,127 @@ class __TwigTemplate_b9d741fab152e6650f62af1c934e27fe5f8f03a6454c5ad940859d43090
           <tr>
             <td class=\"text-right\"> <b>ID:</b></td>
             <td>";
-        // line 16
+        // line 17
         echo twig_escape_filter($this->env, $this->getAttribute(($context["product"] ?? null), "id_producto", array()), "html", null, true);
         echo "</td>
           </tr>
           <tr>
             <td class=\"text-right\"><b>Código Contable:</b></td>
             <td>";
-        // line 20
+        // line 21
         echo twig_escape_filter($this->env, $this->getAttribute(($context["product"] ?? null), "cod_contable", array()), "html", null, true);
         echo "</td>
           </tr>
           <tr>
             <td class=\"text-right\"> <b>Código ICE:</b></td>
             <td> ";
-        // line 24
+        // line 25
         echo twig_escape_filter($this->env, $this->getAttribute(($context["product"] ?? null), "cod_ice", array()), "html", null, true);
         echo " </td>
           </tr>
           <tr>           
             <td class=\"text-right\"><b>Nombre:</b></td>
             <td>";
-        // line 28
+        // line 29
         echo twig_escape_filter($this->env, $this->getAttribute(($context["product"] ?? null), "nombre", array()), "html", null, true);
         echo "</td>
           </tr>
           <tr>
             <td class=\"text-right\"> <b>Proveedor:</b></td>
             <td>";
-        // line 32
+        // line 33
         echo twig_escape_filter($this->env, $this->getAttribute(($context["supplier"] ?? null), "nombre", array()), "html", null, true);
         echo "</td>
           </tr>
           <tr>
             <td class=\"text-right\"> <b>Capacidad ML:</b></td>
             <td> ";
-        // line 36
+        // line 37
         echo twig_escape_filter($this->env, twig_number_format_filter($this->env, $this->getAttribute(($context["product"] ?? null), "capacidad", array()), 2, ".", ","), "html", null, true);
         echo " ml</td>
           </tr>
           <tr>
             <td class=\"text-right\"> <b>Grado Alcohólico:</b></td>
             <td> ";
-        // line 40
+        // line 41
         echo twig_escape_filter($this->env, $this->getAttribute(($context["product"] ?? null), "grado_alcoholico", array()), "html", null, true);
         echo " </td>
           </tr>
           <tr>
             <td class=\"text-right\"> <b>Cantidad por Caja:</b></td>
             <td> ";
-        // line 44
+        // line 45
         echo twig_escape_filter($this->env, $this->getAttribute(($context["product"] ?? null), "cantidad_x_caja", array()), "html", null, true);
         echo " </td>
           </tr>
           <tr>
             <td class=\"text-right\"> <b>Costo Unidad:</b></td>
             <td> ";
-        // line 48
+        // line 49
         echo twig_escape_filter($this->env, $this->getAttribute(($context["product"] ?? null), "costo_unidad", array()), "html", null, true);
         echo " </td>
           </tr>
           <tr>
             <td class=\"text-right\"> <b>Estado:</b></td>
             ";
-        // line 52
+        // line 53
         if (($this->getAttribute(($context["product"] ?? null), "estado", array()) == 1)) {
-            // line 53
+            // line 54
             echo "              <td> <span class=\"label label-success\">Activo</span> </td>
               ";
         } else {
-            // line 55
-            echo "                <td> <span class=\"label label-success\">No se Importa</span> </td>
+            // line 56
+            echo "                <td> <span class=\"label label-warning\">
+                  <span class=\"fa fa-warning fa-fw\"></span>
+                No se Importa</span> </td>
             ";
         }
-        // line 57
-        echo "            <td> ";
-        echo twig_escape_filter($this->env, $this->getAttribute(($context["product"] ?? null), "estado", array()), "html", null, true);
-        echo " </td>
+        // line 60
+        echo "            
           </tr>
           <tr>
             <td class=\"text-right\"> <b>Custodia Doble:</b></td>
             ";
-        // line 61
+        // line 64
         if (($this->getAttribute(($context["product"] ?? null), "custodia_doble", array()) == 1)) {
-            // line 62
-            echo "              <td> <span class=\"label label-warning\">Si Tiene</span> </td>
+            // line 65
+            echo "              <td> <span class=\"label label-warning\"> <span class=\"fa fa-warning fa-fw\"></span>
+               Tiene Doble Custodia</span> </td>
               ";
         } else {
-            // line 64
+            // line 68
             echo "                <td> <span class=\"label label-success\">No Tiene</span> </td>
             ";
         }
-        // line 66
+        // line 70
         echo "            
             
           </tr>
           <tr>
             <td class=\"text-right\"> <b>Comentarios:</b></td>
             <td> ";
-        // line 71
+        // line 75
         echo twig_escape_filter($this->env, $this->getAttribute(($context["product"] ?? null), "comentarios", array()), "html", null, true);
         echo " </td>
           </tr>
           <tr>
             <td class=\"text-right\"> <b>Creado El:</b></td>
             <td> ";
-        // line 75
+        // line 79
         echo twig_escape_filter($this->env, $this->getAttribute(($context["product"] ?? null), "date_create", array()), "html", null, true);
         echo " </td>
           </tr>
           <tr>
             <td class=\"text-right\"> <b>Ultima Actualización:</b></td>
             <td> ";
-        // line 79
+        // line 83
         echo twig_escape_filter($this->env, $this->getAttribute(($context["product"] ?? null), "last_update", array()), "html", null, true);
         echo " </td>
           </tr>
           <tr>
             <td class=\"text-right\"> <b>Creado Por:</b></td>
             <td> ";
-        // line 83
+        // line 87
         echo twig_escape_filter($this->env, $this->getAttribute(($context["createBy"] ?? null), "nombres", array()), "html", null, true);
         echo " </td>
           </tr>
@@ -159,6 +161,16 @@ class __TwigTemplate_b9d741fab152e6650f62af1c934e27fe5f8f03a6454c5ad940859d43090
       </table>
     </div>
   </div>
+</div>
+<br>
+<hr>
+<a href=\"";
+        // line 96
+        echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
+        echo "producto/listar/\" class=\"btn btn-default btn-sm\">
+  <span class=\"fa fa-arrow-left fa-fw\"></span>
+  Listar Todos
+</a>
 </div>
 <!--tabPedido-->";
     }
@@ -175,7 +187,7 @@ class __TwigTemplate_b9d741fab152e6650f62af1c934e27fe5f8f03a6454c5ad940859d43090
 
     public function getDebugInfo()
     {
-        return array (  155 => 83,  148 => 79,  141 => 75,  134 => 71,  127 => 66,  123 => 64,  119 => 62,  117 => 61,  109 => 57,  105 => 55,  101 => 53,  99 => 52,  92 => 48,  85 => 44,  78 => 40,  71 => 36,  64 => 32,  57 => 28,  50 => 24,  43 => 20,  36 => 16,  19 => 1,);
+        return array (  169 => 96,  157 => 87,  150 => 83,  143 => 79,  136 => 75,  129 => 70,  125 => 68,  120 => 65,  118 => 64,  112 => 60,  106 => 56,  102 => 54,  100 => 53,  93 => 49,  86 => 45,  79 => 41,  72 => 37,  65 => 33,  58 => 29,  51 => 25,  44 => 21,  37 => 17,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -192,6 +204,7 @@ class __TwigTemplate_b9d741fab152e6650f62af1c934e27fe5f8f03a6454c5ad940859d43090
 <div class=\"producto\">
   <br>
   <div class=\"row\">
+<div class=\"col-sm-12\">
     <div class=\"table-responsive\">
       <table class=\"table table-hover table-bordered table-striped\">
         <thead>
@@ -242,14 +255,17 @@ class __TwigTemplate_b9d741fab152e6650f62af1c934e27fe5f8f03a6454c5ad940859d43090
             {% if product.estado == 1 %}
               <td> <span class=\"label label-success\">Activo</span> </td>
               {% else %}
-                <td> <span class=\"label label-success\">No se Importa</span> </td>
+                <td> <span class=\"label label-warning\">
+                  <span class=\"fa fa-warning fa-fw\"></span>
+                No se Importa</span> </td>
             {% endif %}
-            <td> {{ product.estado}} </td>
+            
           </tr>
           <tr>
             <td class=\"text-right\"> <b>Custodia Doble:</b></td>
             {% if product.custodia_doble == 1 %}
-              <td> <span class=\"label label-warning\">Si Tiene</span> </td>
+              <td> <span class=\"label label-warning\"> <span class=\"fa fa-warning fa-fw\"></span>
+               Tiene Doble Custodia</span> </td>
               {% else %}
                 <td> <span class=\"label label-success\">No Tiene</span> </td>
             {% endif %}
@@ -276,6 +292,13 @@ class __TwigTemplate_b9d741fab152e6650f62af1c934e27fe5f8f03a6454c5ad940859d43090
       </table>
     </div>
   </div>
+</div>
+<br>
+<hr>
+<a href=\"{{ rute_url }}producto/listar/\" class=\"btn btn-default btn-sm\">
+  <span class=\"fa fa-arrow-left fa-fw\"></span>
+  Listar Todos
+</a>
 </div>
 <!--tabPedido-->", "base/sections/mostrar-producto.html.twig", "/var/www/html/app/src/views/base/sections/mostrar-producto.html.twig");
     }

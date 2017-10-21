@@ -16,27 +16,28 @@ class __TwigTemplate_857cc01edededcca774babc6b7460d7c485da37b9000e7edac034c3c191
     protected function doDisplay(array $context, array $blocks = array())
     {
         // line 1
-        echo "</div>
+        echo "
+</div>
 <!-- /.panel-body -->
 ";
-        // line 3
+        // line 4
         if ((($context["pagination"] ?? null) == true)) {
-            // line 4
+            // line 5
             echo "<div class=\"panel-footer text-right\">
 <ul class=\"pagination\">
 \t<li><a href=\"";
-            // line 6
+            // line 7
             echo twig_escape_filter($this->env, ($context["pagination_url"] ?? null), "html", null, true);
             echo "\">Primera</a></li>
   ";
-            // line 7
+            // line 8
             $context['_parent'] = $context;
             $context['_seq'] = twig_ensure_traversable(range(1, ($context["pagination_pages"] ?? null)));
             foreach ($context['_seq'] as $context["_key"] => $context["item"]) {
-                // line 8
+                // line 9
                 echo "  \t";
                 if ((($context["current_page"] ?? null) == $context["item"])) {
-                    // line 9
+                    // line 10
                     echo "  \t\t<li class=\"active\"><a href=\"";
                     echo twig_escape_filter($this->env, ($context["pagination_url"] ?? null), "html", null, true);
                     echo twig_escape_filter($this->env, ($context["page"] ?? null), "html", null, true);
@@ -45,7 +46,7 @@ class __TwigTemplate_857cc01edededcca774babc6b7460d7c485da37b9000e7edac034c3c191
                     echo "</a></li>
 \t\t";
                 } else {
-                    // line 11
+                    // line 12
                     echo "  \t\t<li><a href=\"";
                     echo twig_escape_filter($this->env, ($context["pagination_url"] ?? null), "html", null, true);
                     echo twig_escape_filter($this->env, ($context["page"] ?? null), "html", null, true);
@@ -54,18 +55,18 @@ class __TwigTemplate_857cc01edededcca774babc6b7460d7c485da37b9000e7edac034c3c191
                     echo "</a></li>\t\t
   \t";
                 }
-                // line 12
+                // line 13
                 echo "  \t
   \t";
-                // line 13
-                $context["page"] = (($context["page"] ?? null) + 10);
                 // line 14
+                $context["page"] = (($context["page"] ?? null) + ($context["perPage"] ?? null));
+                // line 15
                 echo "  ";
             }
             $_parent = $context['_parent'];
             unset($context['_seq'], $context['_iterated'], $context['_key'], $context['item'], $context['_parent'], $context['loop']);
             $context = array_intersect_key($context, $_parent) + $_parent;
-            // line 15
+            // line 16
             echo "  <li><a href=\"";
             echo twig_escape_filter($this->env, ($context["pagination_url"] ?? null), "html", null, true);
             echo twig_escape_filter($this->env, ($context["last_page"] ?? null), "html", null, true);
@@ -74,9 +75,8 @@ class __TwigTemplate_857cc01edededcca774babc6b7460d7c485da37b9000e7edac034c3c191
 </div>
 ";
         }
-        // line 19
-        echo "
-</div>
+        // line 20
+        echo "</div>
 <!-- /.panel -->
 </div>
 <!-- /.col-lg-12 -->
@@ -96,7 +96,7 @@ class __TwigTemplate_857cc01edededcca774babc6b7460d7c485da37b9000e7edac034c3c191
 
     public function getDebugInfo()
     {
-        return array (  78 => 19,  69 => 15,  63 => 14,  61 => 13,  58 => 12,  49 => 11,  40 => 9,  37 => 8,  33 => 7,  29 => 6,  25 => 4,  23 => 3,  19 => 1,);
+        return array (  79 => 20,  70 => 16,  64 => 15,  62 => 14,  59 => 13,  50 => 12,  41 => 10,  38 => 9,  34 => 8,  30 => 7,  26 => 5,  24 => 4,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -109,7 +109,8 @@ class __TwigTemplate_857cc01edededcca774babc6b7460d7c485da37b9000e7edac034c3c191
 
     public function getSourceContext()
     {
-        return new Twig_Source("</div>
+        return new Twig_Source("
+</div>
 <!-- /.panel-body -->
 {% if pagination == true %}
 <div class=\"panel-footer text-right\">
@@ -121,13 +122,12 @@ class __TwigTemplate_857cc01edededcca774babc6b7460d7c485da37b9000e7edac034c3c191
 \t\t{% else %}
   \t\t<li><a href=\"{{ pagination_url }}{{page}}\">{{ item }}</a></li>\t\t
   \t{% endif %}  \t
-  \t{% set page = page + 10 %}
+  \t{% set page = page + perPage %}
   {% endfor %}
   <li><a href=\"{{pagination_url}}{{ last_page }}\">Última</a></li>
 </ul>
 </div>
 {% endif %}
-
 </div>
 <!-- /.panel -->
 </div>

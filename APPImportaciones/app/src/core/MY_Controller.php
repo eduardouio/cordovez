@@ -71,7 +71,7 @@ class MY_Controller extends CI_Controller{
     */
     public function _redirectOrdersPage(){
     	header('Status: 301 Moved Permanently', false, 301);
-        header('Location: ' . base_url() . 'index.php/pedido/listar');
+        header('Location: ' . base_url() . 'index.php/home/');
     }
 		
 		/**

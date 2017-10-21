@@ -98,7 +98,7 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
          name=\"costo_und\"
          id=\"costo_und\"
          required=\"true\" 
-         step=\"0.01\" 
+         step=\"0.001\" 
          readonly=\"true\" 
          >
 
@@ -249,7 +249,7 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
          name=\"costo_und\"
          id=\"costo_und\"
          required=\"true\" 
-         step=\"0.01\" 
+         step=\"0.001\" 
          readonly=\"true\" 
          >
 

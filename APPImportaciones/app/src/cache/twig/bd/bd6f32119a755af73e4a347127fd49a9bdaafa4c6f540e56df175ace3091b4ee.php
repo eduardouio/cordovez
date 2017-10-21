@@ -103,7 +103,7 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
                name = \"nro_refrendo\"
                placeholder=\"000-0000-00-000000\"
                class=\"form-control\" 
-               maxlength=\"17\" 
+               maxlength=\"20\" 
                >
          </div>
       </div>
@@ -300,7 +300,7 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
                name = \"nro_refrendo\"
                placeholder=\"000-0000-00-000000\"
                class=\"form-control\" 
-               maxlength=\"17\" 
+               maxlength=\"20\" 
                >
          </div>
       </div>

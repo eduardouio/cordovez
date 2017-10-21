@@ -2,6 +2,7 @@
 <div class="producto">
   <br>
   <div class="row">
+<div class="col-sm-12">
     <div class="table-responsive">
       <table class="table table-hover table-bordered table-striped">
         <thead>
@@ -52,14 +53,17 @@
             {% if product.estado == 1 %}
               <td> <span class="label label-success">Activo</span> </td>
               {% else %}
-                <td> <span class="label label-success">No se Importa</span> </td>
+                <td> <span class="label label-warning">
+                  <span class="fa fa-warning fa-fw"></span>
+                No se Importa</span> </td>
             {% endif %}
-            <td> {{ product.estado}} </td>
+            
           </tr>
           <tr>
             <td class="text-right"> <b>Custodia Doble:</b></td>
             {% if product.custodia_doble == 1 %}
-              <td> <span class="label label-warning">Si Tiene</span> </td>
+              <td> <span class="label label-warning"> <span class="fa fa-warning fa-fw"></span>
+               Tiene Doble Custodia</span> </td>
               {% else %}
                 <td> <span class="label label-success">No Tiene</span> </td>
             {% endif %}
@@ -86,5 +90,12 @@
       </table>
     </div>
   </div>
+</div>
+<br>
+<hr>
+<a href="{{ rute_url }}producto/listar/" class="btn btn-default btn-sm">
+  <span class="fa fa-arrow-left fa-fw"></span>
+  Listar Todos
+</a>
 </div>
 <!--tabPedido-->

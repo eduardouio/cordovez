@@ -30,15 +30,18 @@ class __TwigTemplate_4300deadf334952c73cef42b5ed5c89bb8b02a5345304865ca8333f4276
                             </div>
                             <!-- /input-group -->
                         </li>
-                        <li>
-                            <a href=\"";
-        // line 16
-        echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
-        echo "pedido/listar/\"><i class=\"fa fa-cubes fa-fw\"></i> Pedidos</a>
-                        </li>
 
                         <li>
-                            <a href=\"index.html\"><i class=\"fa fa-dashboard fa-fw\"></i> Inicio</a>
+                            <a href=\"";
+        // line 17
+        echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
+        echo "home/\"><i class=\"fa fa-dashboard fa-fw\"></i> Inicio</a>
+                        </li>
+                        <li>
+                            <a href=\"";
+        // line 20
+        echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
+        echo "pedido/listar/\"><i class=\"fa fa-cubes fa-fw\"></i> Pedidos</a>
                         </li>
                         <li>
                             <a href=\"";
@@ -50,13 +53,13 @@ class __TwigTemplate_4300deadf334952c73cef42b5ed5c89bb8b02a5345304865ca8333f4276
                             <a href=\"";
         // line 26
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
-        echo "/nacionalizacion/listar/\"><i class=\"fa fa-list fa-fw\"></i>Nacionalizaciones</a>
+        echo "nacionalizacion/listar/\"><i class=\"fa fa-list fa-fw\"></i>Nacionalizaciones</a>
                         </li>
                         <li>
                             <a href=\"";
         // line 29
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
-        echo "/config\"><i class=\"fa fa-gears fa-fw\"></i>Opciones</a>
+        echo "/producto\"><i class=\"fa fa-cube fa-fw\"></i>Productos</a>
                         </li>
 
 
@@ -82,7 +85,7 @@ class __TwigTemplate_4300deadf334952c73cef42b5ed5c89bb8b02a5345304865ca8333f4276
 
     public function getDebugInfo()
     {
-        return array (  58 => 29,  52 => 26,  46 => 23,  36 => 16,  19 => 1,);
+        return array (  61 => 29,  55 => 26,  49 => 23,  43 => 20,  37 => 17,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -109,21 +112,21 @@ class __TwigTemplate_4300deadf334952c73cef42b5ed5c89bb8b02a5345304865ca8333f4276
                             </div>
                             <!-- /input-group -->
                         </li>
-                        <li>
-                            <a href=\"{{rute_url}}pedido/listar/\"><i class=\"fa fa-cubes fa-fw\"></i> Pedidos</a>
-                        </li>
 
                         <li>
-                            <a href=\"index.html\"><i class=\"fa fa-dashboard fa-fw\"></i> Inicio</a>
+                            <a href=\"{{rute_url}}home/\"><i class=\"fa fa-dashboard fa-fw\"></i> Inicio</a>
+                        </li>
+                        <li>
+                            <a href=\"{{rute_url}}pedido/listar/\"><i class=\"fa fa-cubes fa-fw\"></i> Pedidos</a>
                         </li>
                         <li>
                             <a href=\"{{rute_url}}proveedor/listar/\"><i class=\"fa fa-users fa-fw\"></i> Proveedores</a>
                         </li>
                         <li>
-                            <a href=\"{{rute_url}}/nacionalizacion/listar/\"><i class=\"fa fa-list fa-fw\"></i>Nacionalizaciones</a>
+                            <a href=\"{{rute_url}}nacionalizacion/listar/\"><i class=\"fa fa-list fa-fw\"></i>Nacionalizaciones</a>
                         </li>
                         <li>
-                            <a href=\"{{rute_url}}/config\"><i class=\"fa fa-gears fa-fw\"></i>Opciones</a>
+                            <a href=\"{{rute_url}}/producto\"><i class=\"fa fa-cube fa-fw\"></i>Productos</a>
                         </li>
 
 

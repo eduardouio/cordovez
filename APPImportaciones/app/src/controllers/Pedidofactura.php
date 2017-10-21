@@ -73,9 +73,13 @@ class Pedidofactura extends MY_Controller {
 		$this->db->where('identificacion_proveedor' , 
 																			$invoice[0]['identificacion_proveedor']);
 		$resultDb = $this->db->get('proveedor');
-		$config['edit_invoice'] = true;
-		$config['invoice'] = $invoice;
-		$config['supplier'] = $resultDb->result_array();
+		$config = array(
+							'titleContent' => 'Editando Pedido Factura',
+							'edit_invoice' => true,
+							'invoice' => $invoice,
+							'supplier' => $resultDb->result_array(),
+								);
+
 		$this->responseHttp($config);
 	}
 

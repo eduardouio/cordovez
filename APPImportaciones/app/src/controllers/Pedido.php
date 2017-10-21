@@ -13,6 +13,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Pedido extends MY_Controller {
 	private $controller = 'pedido';
+	private $listPerPage = 10;
 	private $template = '/pages/pagePedido.html';
 	public $config = array();
 
@@ -35,10 +36,11 @@ class Pedido extends MY_Controller {
 	 */
 	public function listar($offset = 0){
 		$this->db->order_by('date_create', 'DESC');
-		$this->db->limit('10',$offset);
+		$this->db->limit($this->listPerPage, $offset);
 		$resultDb = $this->db->get($this->controller);
 
-		$pages_links = ($this->db->count_all_results($this->controller) /10);
+		$pages_links = ($this->db->count_all_results($this->controller) /
+																								$this->listPerPage);
 
 		if (gettype($pages_links) == 'double') {
 			(int)$pages_links = (int)$pages_links + 1;
@@ -53,6 +55,7 @@ class Pedido extends MY_Controller {
 									'titleContent' => 'Lista de Pedidos',
 									'userData' => $this->session->userdata(),
 									'pagination' => true,
+									'perPage' => $this->listPerPage,
 									'pagination_pages' => $pages_links,
 									'current_page' => (int)(($offset)/10) + 1,
 									'last_page' => (int)(($pages_links - 1) * 10),

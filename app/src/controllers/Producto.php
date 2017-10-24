@@ -85,17 +85,15 @@ class Producto extends MY_Controller {
 			$this->listar();
 			return true;
 		}
-
-		$product = $this->input->post();		
+		$product = $this->input->post();
 		$product['id_user'] = $this->session->userdata('id_user');
 
 		if(!isset($product['id_producto'])){
 				$this->db->where('cod_contable', 
 																				$product['cod_contable']);
-				$resultDb = $this->db->get($this->controller);
-
+				$resultDb = $this->db->get($this->controller);				
 				if($resultDb->num_rows() == 1 ){		
-					$config['supplier'] = $product['identificacion_proveedor'];
+					$config['idProduct'] = $product['cod_contable'];
 					$config['viewMessage'] = true;
 					$config['message'] = 'El Producto Ya Está Registrado!';
 					$this->responseHttp($config);

@@ -107,10 +107,7 @@ class __TwigTemplate_9a207cac836ba146c69fd3d247eb1db4784c708f73715e802c98885da62
                                 </div>
                             </div>
                         </div>
-                        <a href=\"";
-        // line 83
-        echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
-        echo "incoterms/listar/\">
+                        <a href=\"#\">
                             <div class=\"panel-footer\">
                                 <span class=\"pull-left\">Listar Provisiones</span>
                                 <span class=\"pull-right\"><i class=\"fa fa-arrow-circle-right\"></i></span>
@@ -134,7 +131,7 @@ class __TwigTemplate_9a207cac836ba146c69fd3d247eb1db4784c708f73715e802c98885da62
 
     public function getDebugInfo()
     {
-        return array (  112 => 83,  87 => 61,  61 => 38,  35 => 15,  19 => 1,);
+        return array (  87 => 61,  61 => 38,  35 => 15,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -229,7 +226,7 @@ class __TwigTemplate_9a207cac836ba146c69fd3d247eb1db4784c708f73715e802c98885da62
                                 </div>
                             </div>
                         </div>
-                        <a href=\"{{rute_url}}incoterms/listar/\">
+                        <a href=\"#\">
                             <div class=\"panel-footer\">
                                 <span class=\"pull-left\">Listar Provisiones</span>
                                 <span class=\"pull-right\"><i class=\"fa fa-arrow-circle-right\"></i></span>

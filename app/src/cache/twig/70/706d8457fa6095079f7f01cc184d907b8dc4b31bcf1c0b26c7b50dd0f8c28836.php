@@ -69,24 +69,16 @@ class __TwigTemplate_c2e9aad1f61351504b8b2316b10984e708cbcbc750694f924d9ed351442
             echo twig_escape_filter($this->env, ($context["message"] ?? null), "html", null, true);
             echo " </h3>
 \t\t<br><br>
-\t\t
-\t\t\t<pre>
-\t\t\t\t";
-            // line 25
-            echo twig_escape_filter($this->env, twig_var_dump($this->env, $context, ($context["data"] ?? null)), "html", null, true);
-            echo "
-\t\t\t</pre>
-\t\t
 \t\t<p>
 \t\t\t";
-            // line 29
+            // line 24
             if ((($context["deleted"] ?? null) == true)) {
                 echo " 
 \t\t\t\t\t\t<a href=\"";
-                // line 30
+                // line 25
                 echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
                 echo "producto/presentar/";
-                echo twig_escape_filter($this->env, ($context["orderDetail"] ?? null), "html", null, true);
+                echo twig_escape_filter($this->env, ($context["idProduct"] ?? null), "html", null, true);
                 echo "\"> 
 \t\t\t\t<button>
 \t\t\t\t\t<span class=\"fa fa-list\"></span>
@@ -95,13 +87,13 @@ class __TwigTemplate_c2e9aad1f61351504b8b2316b10984e708cbcbc750694f924d9ed351442
 \t\t\t\t</a>
 \t\t\t";
             } else {
-                // line 36
+                // line 31
                 echo "  
 \t\t\t\t<a href=\"";
-                // line 37
+                // line 32
                 echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
                 echo "producto/presentar/";
-                echo twig_escape_filter($this->env, ($context["orderDetail"] ?? null), "html", null, true);
+                echo twig_escape_filter($this->env, ($context["idProduct"] ?? null), "html", null, true);
                 echo "\">
 \t\t<button>
 \t\t\t<span class=\"fa fa-eye\"></span>
@@ -110,22 +102,22 @@ class __TwigTemplate_c2e9aad1f61351504b8b2316b10984e708cbcbc750694f924d9ed351442
 \t\t</a>
 \t\t\t";
             }
-            // line 44
+            // line 39
             echo "\t\t
 \t\t</p>
 \t</div>
 ";
         }
-        // line 48
+        // line 43
         echo "
 
 ";
-        // line 50
-        $this->loadTemplate("base/content_close.html.twig", "/pages/pageProducto.html.twig", 50)->display($context);
-        // line 51
-        $this->loadTemplate("base/signaturefoot.html.twig", "/pages/pageProducto.html.twig", 51)->display($context);
-        // line 52
-        $this->loadTemplate("base/footer.html.twig", "/pages/pageProducto.html.twig", 52)->display($context);
+        // line 45
+        $this->loadTemplate("base/content_close.html.twig", "/pages/pageProducto.html.twig", 45)->display($context);
+        // line 46
+        $this->loadTemplate("base/signaturefoot.html.twig", "/pages/pageProducto.html.twig", 46)->display($context);
+        // line 47
+        $this->loadTemplate("base/footer.html.twig", "/pages/pageProducto.html.twig", 47)->display($context);
     }
 
     public function getTemplateName()
@@ -140,7 +132,7 @@ class __TwigTemplate_c2e9aad1f61351504b8b2316b10984e708cbcbc750694f924d9ed351442
 
     public function getDebugInfo()
     {
-        return array (  128 => 52,  126 => 51,  124 => 50,  120 => 48,  114 => 44,  102 => 37,  99 => 36,  87 => 30,  83 => 29,  76 => 25,  69 => 21,  66 => 20,  64 => 19,  60 => 17,  54 => 15,  52 => 14,  49 => 13,  43 => 11,  41 => 10,  38 => 9,  32 => 7,  30 => 6,  27 => 5,  25 => 4,  23 => 3,  21 => 2,  19 => 1,);
+        return array (  120 => 47,  118 => 46,  116 => 45,  112 => 43,  106 => 39,  94 => 32,  91 => 31,  79 => 25,  75 => 24,  69 => 21,  66 => 20,  64 => 19,  60 => 17,  54 => 15,  52 => 14,  49 => 13,  43 => 11,  41 => 10,  38 => 9,  32 => 7,  30 => 6,  27 => 5,  25 => 4,  23 => 3,  21 => 2,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -175,21 +167,16 @@ class __TwigTemplate_c2e9aad1f61351504b8b2316b10984e708cbcbc750694f924d9ed351442
 \t<div class=\"well\">
 \t\t<h3 class=\"text-primary\">\t{{message}} </h3>
 \t\t<br><br>
-\t\t
-\t\t\t<pre>
-\t\t\t\t{{ dump(data) }}
-\t\t\t</pre>
-\t\t
 \t\t<p>
 \t\t\t{% if deleted == true %} 
-\t\t\t\t\t\t<a href=\"{{rute_url}}producto/presentar/{{orderDetail}}\"> 
+\t\t\t\t\t\t<a href=\"{{rute_url}}producto/presentar/{{idProduct}}\"> 
 \t\t\t\t<button>
 \t\t\t\t\t<span class=\"fa fa-list\"></span>
 \t\t\t\t\tVer
 \t\t\t\t</button>
 \t\t\t\t</a>
 \t\t\t{% else %}  
-\t\t\t\t<a href=\"{{rute_url}}producto/presentar/{{orderDetail}}\">
+\t\t\t\t<a href=\"{{rute_url}}producto/presentar/{{idProduct}}\">
 \t\t<button>
 \t\t\t<span class=\"fa fa-eye\"></span>
 \t\t\tVer

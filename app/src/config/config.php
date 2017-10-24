@@ -23,10 +23,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-#$config['base_url'] = 'http://192.168.0.99/app';
-#$config['base_url'] = 'http://192.168.0.11/app';
+$config['base_url'] = 'http://192.168.0.99/app';
+#$config['base_url'] = 'http://192.168.0.9/app';
 #$config['base_url'] = 'http://192.168.0.82/app';
-$config['base_url'] = 'http://localhost/app/';
+#$config['base_url'] = 'http://localhost/app/';
 
 /*
 |--------------------------------------------------------------------------

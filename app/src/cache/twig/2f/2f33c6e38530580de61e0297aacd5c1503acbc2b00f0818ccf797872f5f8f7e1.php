@@ -115,7 +115,6 @@ class __TwigTemplate_4c8bd25b829d96cd5d9d1bfc23c52f57055fe73b4332e0f2da3d8f7e2c8
                class=\"form-control\"
                required=\"true\"
                type=\"number\"
-               step=\"1\"
                name=\"capacidad_ml\"
                >
          </div>
@@ -188,7 +187,7 @@ class __TwigTemplate_4c8bd25b829d96cd5d9d1bfc23c52f57055fe73b4332e0f2da3d8f7e2c8
          <span class=\"fa fa-save fa-fw\"></span>
          Guardar Registro</button>
          <a href=\"";
-        // line 155
+        // line 154
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "producto/listar\" class=\"btn btn-default btn-sm\"> 
                <span class=\"fa fa-arrow-left fa-fw\"></span>
@@ -221,7 +220,7 @@ class __TwigTemplate_4c8bd25b829d96cd5d9d1bfc23c52f57055fe73b4332e0f2da3d8f7e2c8
 
     public function getDebugInfo()
     {
-        return array (  192 => 155,  96 => 61,  87 => 58,  82 => 57,  78 => 56,  19 => 1,);
+        return array (  191 => 154,  96 => 61,  87 => 58,  82 => 57,  78 => 56,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -316,7 +315,6 @@ class __TwigTemplate_4c8bd25b829d96cd5d9d1bfc23c52f57055fe73b4332e0f2da3d8f7e2c8
                class=\"form-control\"
                required=\"true\"
                type=\"number\"
-               step=\"1\"
                name=\"capacidad_ml\"
                >
          </div>

@@ -20,21 +20,16 @@
 	<div class="well">
 		<h3 class="text-primary">	{{message}} </h3>
 		<br><br>
-		
-			<pre>
-				{{ dump(data) }}
-			</pre>
-		
 		<p>
 			{% if deleted == true %} 
-						<a href="{{rute_url}}producto/presentar/{{orderDetail}}"> 
+						<a href="{{rute_url}}producto/presentar/{{idProduct}}"> 
 				<button>
 					<span class="fa fa-list"></span>
 					Ver
 				</button>
 				</a>
 			{% else %}  
-				<a href="{{rute_url}}producto/presentar/{{orderDetail}}">
+				<a href="{{rute_url}}producto/presentar/{{idProduct}}">
 		<button>
 			<span class="fa fa-eye"></span>
 			Ver

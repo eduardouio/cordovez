@@ -128,16 +128,14 @@ public function nuevo(){
 				$proveedor['categoria'] .= $value . ';';
 				unset($proveedor[$key]);
 			}
-
 		}
+
 		$proveedor['id_user'] = $this->session->userdata('id_user');
-
-
 		if(!isset($proveedor['id_proveedor'])){
 				$this->db->where('identificacion_proveedor', 
 																				$proveedor['identificacion_proveedor']);
 				$resultDb = $this->db->get($this->controller);
-
+				
 				if($resultDb->num_rows() == 1 ){		
 					$config['supplier'] = $proveedor['identificacion_proveedor'];
 					$config['viewMessage'] = true;
@@ -151,10 +149,9 @@ public function nuevo(){
 			if ($status['status']){
 				if (!isset($proveedor['id_proveedor'])){
 					$this->db->insert($this->controller, $proveedor);			
-					print var_dump($proveedor);
-					exit();
-
 					$id_proveedor = $this->mymodel->lastInfo();
+
+					print var_dump($id_proveedor);
 	    		header('Status: 301 Moved Permanently', false, 301);
   	      header('Location: ' . base_url() . 'index.php/proveedor/presentar/' . 
   	    																$id_proveedor['lastInsertId']);		

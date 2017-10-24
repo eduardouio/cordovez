@@ -13,7 +13,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Factinformativa extends MY_Controller {
 	private $controller = "factura_informativa";
-	private $template = '/pages/pageProveedor.html';	
+	private $template = '/pages/pageFacInformativa.html';	
 
 	/**
 	 * Constructor de la funcion
@@ -24,9 +24,10 @@ class Factinformativa extends MY_Controller {
 
 
 	/**
-	* Presenta el formulario para una nueva factuar Informativa
+	* nueva factura informativa
 	*/
-	public function nueva(){
+	public function nueva()
+	:boolean{
 		
 	}
 

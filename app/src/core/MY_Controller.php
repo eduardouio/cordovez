@@ -36,27 +36,27 @@ class MY_Controller extends CI_Controller{
 		 * controla las columnas y la longitud de sus valores
 		 * @return (array)
 		 */
-    public function _checkColumnsData($columnsLen, $tableDb){
-			$validation["status"] = true;
+    public function _checkColumnsData($paramsData, $data){    	
+    	$validationResult = [
+    		'status' => true,
+    		'columns' => [],
+    		'len' => [],
+    	];
 
-			foreach ($columnsLen as $key => $value) {
-				if(!isset($tableDb[$key])){
-					$validation["status"] = false;
-					$validation["columns"][$key] = $key;
-				}
-			}
-			
-			if($validation["status"]){
-				foreach ($columnsLen as $key => $value) {					
-					if(!(strlen($tableDb[$key]) >= $value)){
-						$validation["status"] = false;
-						$validation["len"][$key] = $value;
-					}
-				}
-			}
-
-			return $validation;
+    foreach ($paramsData as $param => $value) {
+    	if(isset($data[$param])){
+    		if(strlen($data[$param]) < ($value - 1 ) ){
+    		array_push($validationResult['len'], $param);
+    		$validationResult['status'] = false;	
+    		}
+    	}else{
+    		array_push($validationResult['columns'], $param);	
+    		$validationResult['status'] = false;
+    	}
     }
+			return $validationResult;
+    }
+
 
     /**
     * Redireccion a Login 
@@ -130,5 +130,7 @@ class MY_Controller extends CI_Controller{
 		if(!$resultDb->num_rows() > 0){return false;}
 		return $resultDb->result_array();
 	}
+
+	
 
  	}

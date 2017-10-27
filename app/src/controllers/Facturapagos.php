@@ -13,8 +13,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Facturapagos extends MY_Controller {
 	private $resultDb;
-	private $controllerSPA = "factura_pagos";
-	private $responseHTTP = array("status" => "success");
+	private $controller = "factura_pagos";
+	private $template = "/pages/pageFacturas.html";
 
 	/**
 	 * Constructor de la funcion
@@ -23,170 +23,197 @@ class Facturapagos extends MY_Controller {
 		parent::__construct();
 	}
 
-
-	/**	
-	* Presenta una factura pedido desde el id que lo indentifica
+	/**
+	* Muestra la factura pagos pedido para un 
 	*/
- 	public function presentar($idFacPagos){
-		if(!isset($idFacPagos)){
-			$this->_notAuthorized();
-		}
+	public function index(){
+		$invoiceParams = [
+			'table' => $this->controller,
+		];
 
-		$thi->db->where('id_factura_pagos', $idFacPagos);
-		$this->resultDb = $this->db->get($this->controllerSPA);
+		$config =	[
+			'titleContent' => 'Listado de Facturas Por Pedidos',
+			'list' => true,
+			'invoices' => $this->getDb($invoiceParams),
+			];
 
-		if( $this->resultDb->num_rows > 0 ){
-			$this->responseHTTP["data"] = $this->resultDb->result_array();
-			$this->responseHTTP["message"] = "registro encontrado'.
-															 'correctamente";
-			$this->responseHTTP["appst"] = 1100;
-		}else{
-			$this->responseHTTP["data"] = $this->resultDb->result_array();
-			$this->responseHTTP["message"] = "El registro no existe";
-			$this->responseHTTP["appst"] = 2500;
-		}
-
-
- 	}
-
-
-	/**
-	 * Lista los registros de acuerdo a tres criterio
-	 * Por proveedor $idPedido = 0
-	 * Por pedido $idFacPagos = 0
-	 * Todas los regostros $idProveedor = 0 & $idPedido = 0
-	 * @return array JSON
-	 */
-	public function listar( $nroFactura = 0 , $idProveedor = 0 ){
-		#Lista por uno de las tres opcuones
-			if( $nroFactura != 0 && $idProveedor == 0 ) {
-				$this->db->where('nro_factura', $nroFactura);
-				$this->resultDb = $this->db->get($this->controllerSPA);
-			}elseif($nroFactura == 0 && $idProveedor != 0){
-				$this->db->where('identificacion_proveedor', $idProveedor);				
-				$this->resultDb = $this->db->get($this->controllerSPA);
-			}else{
-				$this->resultDb = $this->db->get($this->controllerSPA);
-			}
-
-			if($this->resultDb->num_rows() > 0){
-			$this->responseHTTP["data"] = $this->resultDb->result_array();
-			$this->responseHTTP["infoTable"] =
-								 $this->mymodel->getInfo($this->controllerSPA);
-			$this->responseHTTP["message"] = "Se encontraron " .
-							$this->resultDb->num_rows() . " registros";
-			$this->responseHTTP["appst"] = 1100;
-		}else{
-			$this->responseHTTP["data"] = $this->resultDb->result_array();
-			$this->responseHTTP["message"] = "No existen registros almacenados";
-			$this->responseHTTP["appst"] = 2100;
-		}
-			$this->__responseHttp($this->responseHTTP, 200);
+		$this->responseHttp($config);
 	}
 
 	/**
-	 *  Valida los datos recibidos por post antes de crear o actualizar el
-	 * registro, solo aceptan datos por post
-	 * @return array JSON
-	 */
-	public function validar(){
+	* registra una nueva factura en el sistema
+	*/
+	public function nuevo(){
+		$this->db->order_by('nombre');
+		$resultDb = $this->db->get('proveedor');
+
+		$config =	[
+			'titleContent' => 'Registro de una Neva Factura',
+			'suppliers' => $resultDb->result_array(),
+			'create' => true,
+			];
+
+	$this->responseHttp($config);
+	}
+
+
+	public function validar() {
 		if($this->rest->_getRequestMethod()!= 'POST'){
-			$this->_notAuthorized();
+			$this->index();
+			return true;
 		}
 
-		$request = json_decode(file_get_contents('php://input'), true);
-		$facPgPedido = $request['factura_pagos'];
-		#verificamos que el registro existe
-		$this->db->where('nro_factura', $facPgPedido['nro_factura']);
-		$this->db->where('identificacion_proveedor', 
-									 $facPgPedido['identificacion_proveedor']);
+		$invoice = $this->input->post();
+		$invoice['fecha_emision'] = date('Y-m-d', 
+																				strtotime($invoice['fecha_emision']));
+		$invoice['id_user'] = $this->session->userdata('id_user');
+		$validData = $this->_validData($invoice);
 
-		$this->resultDb = $this->db->get($this->controllerSPA);
-		if($this->resultDb->num_rows() != null && 
-											   $request['accion'] == 'create'){
-			$this->responseHTTP['message'] = 'Ya existe un registro'.
-												  'con el mismo identificador';
-			$this->responseHTTP["appst"] = 2300;
-			$this->responseHTTP['data'] = $this->resultDb->result_array();
-			$this->responseHTTP['lastInfo'] = $this->mymodel->lastInfo();
-			$this->__responseHttp($this->responseHTTP, 400);
-		}else{
-		#validamos la informacion
-			$status = $this->_validData( $facPgPedido );
-			if ($status['status']){
-
-				#anulamos las fechas en blanco se las pasa como null
-				$facPgPedido['fecha_emision'] = 
-								(empty($facPgPedido['fecha_emision'])) ? null : 
-											   	$facPgPedido['fecha_emision'] ;
-
-				if ($request['accion'] == 'create'){
-					$this->db->insert($this->controllerSPA, $facPgPedido);
-					$this->responseHTTP['message'] = 'Registro creado'.
-															  'existosamente';
-					$this->responseHTTP["appst"] = 1200;
-					$this->responseHTTP['lastInfo'] = 
-													$this->mymodel->lastInfo();
-					$this->__responseHttp($this->responseHTTP, 201);
-				}else{
-					$facPgPedido['last_update'] = date('Y-m-d H:i:s');
-					$this->db->where('id_factura_pagos',
-												 $request['id_factura_pagos']);
-					$this->db->update($this->controllerSPA, $facPgPedido);
-					$this->responseHTTP['message'] = 'Registro actualizado';
-					$this->responseHTTP["appst"] = 1300;
-					$this->__responseHttp($this->responseHTTP, 201);
-				}
-			}else{
-				$this->responseHTTP['message'] = 'Uno de los registros'.
-				 				'ingresados es incorrecto, vuelva a intentar';
-				$this->responseHTTP["appst"] = 1400;
-				$this->responseHTTP['data'] = $status;
-				$this->__responseHttp($this->responseHTTP, 400);
-			}
+		if (!$validData['status']){
+			$this->db->select('nombre');
+			$this->db->where('identificacion_proveedor', 
+																				$invoice['identificacion_proveedor']);
+			$resultDb = $this->db->get('proveedor');
+			$supplierName = $resultDb->result_array();
+			$config = [
+				'fail' => true,
+				'message' => 'Uno de los valores ingresados no es correcto, revise los'.
+																												' siguientes  campos',
+				'fields_error' => $validData['len'],
+				'invoice' => $this->input->post(),
+				'update' => isset($invoice['id_factura_pagos']),
+				'create' => !isset($invoice['id_factura_pagos']),
+				'supplierName' => $supplierName[0]['nombre'],
+			];
+			$this->responseHttp($config);			
+			return true;
 		}
+		isset($invoice['id_factura_pagos']) ? $this->update($invoice) : 
+																											$this->create($invoice);
 
 	}
 
 	/**
-	 * Elimina un registro de la tabla
-	 * dependencias
-	 * @return array JSONPedidos
-	 */
-	public function eliminar($idFacPagos){
-		if(!isset($idFacPagos)){
-			$this->_notAuthorized();
+	* Actualiza un registro en la base
+	*/
+	private function update(array $invoice) {
+		$invoice['last_update'] = date('Y-m-d H:i:s');
+		$this->db->where('id_factura_pagos', $invoice['id_factura_pagos']);
+		if ($this->db->update($this->controller, $invoice)){
+			$this->redirectShoInvoice($invoice['id_factura_pagos']);
+			return true;
 		}
-		
-		#comprobamos que no tenga dependencias
-		$this->db->where('id_factura_pagos', $idFacPagos);
-		$this->resultDb = $this->db->get('factura_pagos_pedido');
-		print(var_dump($this->resultDb->num_rows()));
+		print 'Error al Actualizar el Registro ... ';
+		return false;
+	}
 
-		if  (!$this->resultDb->num_rows() > 0){
 
-			$this->db->where('id_factura_pagos', $idFacPagos);
-			$this->resultDb = $this->db->get($this->controllerSPA);
+	/**
+	* Crea un nuevo regisrtro en la base de datos
+	*/
+	private function create(array $invoice) {
+		$this->db->where('identificacion_proveedor', 
+																					$invoice['identificacion_proveedor']);
+		$this->db->where('nro_factura', $invoice['nro_factura']);
+		$resultDb = $this->db->get($this->controller);
 
-			if  ($this->resultDb->num_rows() > 0){
-				$this->db->where('id_factura_pagos',  $idFacPagos);
-				$this->db->delete($this->controllerSPA);
-				$this->responseHTTP['message'] = 'Regitro eliminado'.
-															  'correctamente';
-				$this->responseHTTP["appst"] = 1500;
-			}else{
-				$this->responseHTTP['message'] = 'El registro que intenta'.
-														 'eliminar no existe';
-				$this->responseHTTP["appst"] = 2500;
-			}
-
-		}else{
-			$this->responseHTTP['message'] = 'El registro no se puede'.
-			 									'eliminar tiene dependencias';
-			$this->responseHTTP["appst"] = 2400;
+		if ($resultDb->num_rows() == 1) {
+			$invoice = $resultDb->result_array();
+			$config = [
+				'viewMessage' => true,
+				'message' => 'El registro ya existe',
+				'idRow' => $invoice[0]['id_factura_pagos'],
+				'titleContent' => 'La Factura Ya Se Encuentra Registrada.',
+			];
+				$this->responseHttp($config);
+				return false;
 		}
 
-		$this->__responseHttp($this->responseHTTP, 200);
+		if($this->db->insert($this->controller, $invoice)){
+			$lastInfo = $this->mymodel->lastInfo();
+			$this->redirectShoInvoice($lastInfo['lastInsertId']);
+			return true;
+		}
+			print 'Error al Guardar el Registro...';
+			return false;
+	}
+
+
+	/**
+	* Redirecciona a la factura luego de guardar 
+	*/
+	public function redirectShoInvoice($idInvoice){
+		header('Status: 301 Moved Permanently', false, 301);
+  	      header('Location: ' . base_url() . 
+  	      									'index.php/facturapagos/presentar/' . $idInvoice);		
+	}
+
+
+	/**
+	* Presenta una factura con todos su items
+	*/
+	public function presentar($idInvoice){
+		if(!isset($idInvoice)){
+			print 'Falta el parametro';
+			return false;
+		}
+
+		$paramsInvoice = [
+			'table' => $this->controller,
+			'condition' => 'id_factura_pagos',
+			'value' => $idInvoice
+		];
+		$invoice = $this->getDb($paramsInvoice);
+
+		if(!$invoice) {
+			print 'La factura no existe';
+			return false;
+		}
+
+
+		$paramsSupplier = [
+			'table' => 'proveedor',
+			'condition' => 'identificacion_proveedor',
+			'value' => $invoice[0]['identificacion_proveedor'],
+		];
+		$supplier = $this->getDb($paramsSupplier);
+
+		$paramDetailInvoice = [
+			'table' => 'factura_pagos_pedido',
+			'condition' => 'id_factura_pagos',
+			'value' => $invoice[0]['id_factura_pagos'],
+		];
+		$detailsInvoice = $this->getDb($paramDetailInvoice);
+
+		$userParams = [
+				'table' => 'usuario',
+				'condition' => 'id_user',
+				'value' => $invoice[0]['id_user'],
+					];
+		$userdata = $this->getDb($userParams);
+
+		$config = [
+			'titleContent' => 'Detalle de Factura # [ ' . $invoice[0]['nro_factura'] . ' ]',
+			'invoice' => $invoice[0],
+			'supplier' => $supplier[0],
+			'userdata' => $userdata[0],
+			'detailsInvoice' => $detailsInvoice,
+			'show' => true,
+		];	
+		$this->responseHttp($config);			
+	}
+
+
+	private function getDb($params){
+		if (isset($params['condition'])){
+			$this->db->where($params['condition'],$params['value']);
+		}
+
+		$resultDb = $this->db->get($params['table']);
+		if ($resultDb->num_rows() > 0) {
+			return $resultDb->result_array();
+		}
+		return false;
 	}
 
 	/**
@@ -194,15 +221,27 @@ class Facturapagos extends MY_Controller {
 	 * @return [array] | [bolean]
 	 */
 	private function _validData($data){
-		$columnsLen = array(
+		$paramsData = [
 								'identificacion_proveedor' => 5,
 								'nro_factura' => 1,
-								'fecha_emision' => 0,
-								'valor' => 1,
-								'saldo' => 1,
-								'comentarios' => 0,
+								'fecha_emision' => 10,
+								'valor' => 2,
 								'id_user' => 1,
-		);
-		return $this->_checkColumnsData($columnsLen, $data);
+									];
+		return $this->_checkColumnsData($paramsData, $data);
 	}
+
+
+			/* *
+		* Envia la respuestas html al navegador
+		*/
+		public function responseHttp($config){
+			$config['title'] = 'Pedidos';
+			$config['base_url'] = base_url();
+			$config['rute_url'] = base_url() . 'index.php/';
+			$config['controller'] = $this->controller;
+			$config['iconTitle'] = 'fa-file-text';
+			$config['content'] = 'home';
+			return $this->twig->display($this->template, $config);
+		}
 }

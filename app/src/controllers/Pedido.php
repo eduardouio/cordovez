@@ -48,7 +48,7 @@ class Pedido extends MY_Controller {
 
 		$data = $this->dateDiff($resultDb->result_array(), 'fecha_arribo' ,		
 																										date_create(date('Y-m-d')));
-		$config = array(
+		$config = [
 									'list_orders' => true,
 									'list_active' => 'class="active"',
 									'orders' => $data,
@@ -60,7 +60,7 @@ class Pedido extends MY_Controller {
 									'current_page' => (int)(($offset)/10) + 1,
 									'last_page' => (int)(($pages_links - 1) * 10),
 									'pagination_url' => base_url() . 'index.php/pedido/listar/',
-									);
+									];
 
 		$this->responseHttp($config);
 	}
@@ -85,9 +85,9 @@ class Pedido extends MY_Controller {
 		$config['viewData'] = $data;
 		$config['list_active'] = 'class="active"';
 		$config['createBy'] = $this->getUserDataDb($data['order'][0]['id_user']);
-		$config['titleContent'] = 'Detalle De Pedido <b> [ ' . 
+		$config['titleContent'] = 'Detalle De Pedido [ ' . 
 																								$data['order'][0]['nro_pedido'] . 
-																								'</b> 	]' ;
+																								']' ;
 		$this->responseHttp($config);
 	}
 	
@@ -114,7 +114,8 @@ class Pedido extends MY_Controller {
 		$config['order'] = $resultDb->result_array();
 		$config['incoterms'] = json_encode($this->_getDb('1','1', 
 																												'incoterm_provision'));
-		$config['titleContent'] = 'Se Encuentra Editando El Pedido &nbsp &nbsp <b>' . $nroOrder . '</b>' ;
+		$config['titleContent'] = 'Se Encuentra Editando El Pedido &nbsp &nbsp <b>'. 
+																														$nroOrder . '</b>' ;
 		$this->responseHttp($config);
 	}
 
@@ -144,7 +145,7 @@ class Pedido extends MY_Controller {
 	 */
 	public function validar(){
 		if($this->rest->_getRequestMethod()!= 'POST'){
-			$this->_notAuthorized();
+			$this->listar();
 		}
 
 		$pedido = $this->input->post();

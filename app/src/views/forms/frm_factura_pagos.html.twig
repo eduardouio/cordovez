@@ -1,0 +1,93 @@
+<form method="post" action="{{rute_url}}facturapagos/validar">
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>Proveedor</label>
+        <select 
+        name="identificacion_proveedor"
+        required="true" 
+        class="form-control">
+        {% if fail == true %}
+        <option selected="true" value="{{invoice.identificacion_proveedor}}">
+        {{supplierName}} </option>
+        {% else %}
+        <option disabled="" selected="" >Seleccione... </option>
+        {% endif %}
+        {% for supplier in suppliers %}
+          <option value="{{supplier.identificacion_proveedor}}"> {{supplier.nombre}} </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="form-group">
+      <label>Nro Documento</label>
+        <input 
+        type="text" 
+        class="form-control" 
+        maxlength="10" 
+        name="nro_factura"
+        required="true" 
+        value="{{ invoice.nro_factura }}" 
+        >
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="form-group">
+        <label>Fecha Emisi&oacute;n</label>
+         <div class="input-group date" data-provide="datepicker">
+            <input 
+               type="text" 
+               class="form-control" 
+               id="fecha_emision" 
+               required="required" 
+               name="fecha_emision" 
+               class="bootstrap-datepicker" 
+               value="{{ invoice.fecha_emision }}" 
+               >
+            <div class="input-group-addon">
+               <span class="glyphicon glyphicon-th"></span>
+            </div>
+         </div>
+      </div>
+      </div>
+      <div class="col-sm-2">
+        <div class="form-group">
+          <label>Valor <span class="label label-warning" >Sin IVA</span></label>
+          <input 
+          type="number" 
+          class="form-control" 
+          step="0.01" 
+          maxlength="8" 
+          name="valor"
+          value="{{ invoice.valor }}" 
+          >
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label>Comentarios</label>
+          <textarea 
+          name="comentarios" 
+          maxlength="250" 
+          class="form-control"
+          >{{invoice.comentarios}}</textarea>
+        </div>
+      </div>
+    </div>
+       <div class="row">
+      <div class="col-md-12">
+         <hr>
+         <button type="submit" class="btn btn-sm btn-default" >
+            <span class="fa fa-save fa-fw"></span>
+            Guardar Registro
+         </button>
+      <a href="{{rute_url}}facturapagos/" class="btn btn-sm btn-default">
+            <span class="fa fa-arrow-left fa-fw"></span>
+            Regresar Lista
+         </a>
+      </div>
+   </div>
+</form>

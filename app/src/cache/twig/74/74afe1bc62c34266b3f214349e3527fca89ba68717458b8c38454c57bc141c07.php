@@ -47,17 +47,23 @@ class __TwigTemplate_4300deadf334952c73cef42b5ed5c89bb8b02a5345304865ca8333f4276
                             <a href=\"";
         // line 23
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
-        echo "proveedor/listar/\"><i class=\"fa fa-users fa-fw\"></i> Proveedores</a>
+        echo "facturapagos/\"><i class=\"fa fa-file-text-o fa-fw\"></i>Facturas</a>
                         </li>
                         <li>
                             <a href=\"";
         // line 26
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
-        echo "nacionalizacion/listar/\"><i class=\"fa fa-list fa-fw\"></i>Nacionalizaciones</a>
+        echo "proveedor/listar/\"><i class=\"fa fa-users fa-fw\"></i> Proveedores</a>
                         </li>
                         <li>
                             <a href=\"";
         // line 29
+        echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
+        echo "nacionalizacion/listar/\"><i class=\"fa fa-list fa-fw\"></i>Nacionalizaciones</a>
+                        </li>
+                        <li>
+                            <a href=\"";
+        // line 32
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "/producto\"><i class=\"fa fa-cube fa-fw\"></i>Productos</a>
                         </li>
@@ -85,7 +91,7 @@ class __TwigTemplate_4300deadf334952c73cef42b5ed5c89bb8b02a5345304865ca8333f4276
 
     public function getDebugInfo()
     {
-        return array (  61 => 29,  55 => 26,  49 => 23,  43 => 20,  37 => 17,  19 => 1,);
+        return array (  67 => 32,  61 => 29,  55 => 26,  49 => 23,  43 => 20,  37 => 17,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -118,6 +124,9 @@ class __TwigTemplate_4300deadf334952c73cef42b5ed5c89bb8b02a5345304865ca8333f4276
                         </li>
                         <li>
                             <a href=\"{{rute_url}}pedido/listar/\"><i class=\"fa fa-cubes fa-fw\"></i> Pedidos</a>
+                        </li>
+                        <li>
+                            <a href=\"{{rute_url}}facturapagos/\"><i class=\"fa fa-file-text-o fa-fw\"></i>Facturas</a>
                         </li>
                         <li>
                             <a href=\"{{rute_url}}proveedor/listar/\"><i class=\"fa fa-users fa-fw\"></i> Proveedores</a>

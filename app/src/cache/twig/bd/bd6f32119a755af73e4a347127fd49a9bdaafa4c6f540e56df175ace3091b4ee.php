@@ -25,7 +25,7 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
             <label>Nro</label>
             <input 
                class=\"form-control\" 
-               type=\"text\"
+               type=\"number\"
                required=\"true\"
                name=\"n_pedido\"
                placeholder=\"000\" 
@@ -222,7 +222,7 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
             <label>Nro</label>
             <input 
                class=\"form-control\" 
-               type=\"text\"
+               type=\"number\"
                required=\"true\"
                name=\"n_pedido\"
                placeholder=\"000\" 

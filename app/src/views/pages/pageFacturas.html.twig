@@ -1,0 +1,62 @@
+{% include 'base/header.html.twig' %}
+{% include 'base/navbarheader.html.twig' %}
+{% include 'base/navbarleft.html.twig' %}
+{% include 'base/content.html.twig' %}
+
+{% if show == true %}
+	{% include 'base/sections/mostrar-factura-gasto.html.twig' %}
+{% endif %}
+
+{% if list == true %}
+	{% include 'base/sections/listar-factura-pago.html.twig' %}
+{% endif %}
+
+
+{% if fail == true %}
+<div class="alert alert-danger">
+	<strong>	{{message | upper }} </strong>
+	<ul>
+	{% for field in fields_error %}
+		<li> {{field}} </li>		
+	{% endfor %}
+	</ul>
+</div>
+{% endif %}
+
+{% if create == true %}
+{% include 'forms/frm_factura_pagos.html.twig' %}
+{% endif %}
+
+{% if  update == true %}
+{% include 'forms/frm_factura_pagos_edit.html.twig' %}
+{% endif %}
+
+
+{% if viewMessage == true %}
+	<div class="well">
+		<h3 class="text-primary">	{{message}} </h3>
+		<br><br>
+		<p>
+			{% if deleted == true %} 
+						<a href="{{rute_url}}facturapagos/listar/">
+				<button>
+					<span class="fa fa-list"></span>
+					Ver
+				</button>
+				</a>
+			{% else %}  
+				<a href="{{rute_url}}facturapagos/presentar/{{idRow}}">
+		<button>
+			<span class="fa fa-eye"></span>
+			Ver
+		</button>
+		</a>
+			{% endif %}
+		
+		</p>
+	</div>
+{% endif %}
+
+{% include 'base/content_close.html.twig' %}
+{% include 'base/signaturefoot.html.twig' %}
+{% include 'base/footer.html.twig' %}

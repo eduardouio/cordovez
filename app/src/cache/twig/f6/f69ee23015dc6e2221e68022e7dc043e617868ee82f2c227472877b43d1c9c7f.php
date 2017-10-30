@@ -104,6 +104,14 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
 
    </div>
 </div>   
+<div class=\"row\">
+   <div class=\"col-sm-10\">
+      &nbsp;
+   </div>   
+   <div class=\"col-sm-2\">
+      <span id=\"costo_caja\"></span>
+   </div>
+</div>
    <div class=\"row\">
       <div class=\"col-md-12\">
          <hr>
@@ -112,7 +120,7 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
             Guardar Producto
          </button>
       <a href=\"";
-        // line 77
+        // line 85
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "pedidofactura/presentar/";
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["invoice"] ?? null), 0, array(), "array"), "id_pedido_factura", array()), "html", null, true);
@@ -126,7 +134,7 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
 
 <script type=\"text/javascript\">
    var products = ";
-        // line 86
+        // line 94
         echo ($context["productsarray"] ?? null);
         echo ";
 
@@ -145,7 +153,6 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
    });
 
 </script>
-
 
 <script type=\"text/javascript\">
    \$('#chage_params').click(function(){
@@ -173,7 +180,7 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
 
     public function getDebugInfo()
     {
-        return array (  130 => 86,  116 => 77,  54 => 17,  43 => 15,  39 => 14,  24 => 2,  19 => 1,);
+        return array (  138 => 94,  124 => 85,  54 => 17,  43 => 15,  39 => 14,  24 => 2,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -255,6 +262,14 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
 
    </div>
 </div>   
+<div class=\"row\">
+   <div class=\"col-sm-10\">
+      &nbsp;
+   </div>   
+   <div class=\"col-sm-2\">
+      <span id=\"costo_caja\"></span>
+   </div>
+</div>
    <div class=\"row\">
       <div class=\"col-md-12\">
          <hr>
@@ -288,7 +303,6 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
    });
 
 </script>
-
 
 <script type=\"text/javascript\">
    \$('#chage_params').click(function(){

@@ -30,7 +30,7 @@ class __TwigTemplate_78932d951d81322ff22d6025ef6b2ed790c9fdf0a809946e074f0cfdd21
         if ((($context["show"] ?? null) == true)) {
             // line 7
             echo "\t";
-            $this->loadTemplate("base/sections/mostrar-factura-gasto.html.twig", "/pages/pageFacturas.html.twig", 7)->display($context);
+            $this->loadTemplate("sections/mostrar-factura-gasto.html.twig", "/pages/pageFacturas.html.twig", 7)->display($context);
         }
         // line 9
         echo "
@@ -39,76 +39,45 @@ class __TwigTemplate_78932d951d81322ff22d6025ef6b2ed790c9fdf0a809946e074f0cfdd21
         if ((($context["list"] ?? null) == true)) {
             // line 11
             echo "\t";
-            $this->loadTemplate("base/sections/listar-factura-pago.html.twig", "/pages/pageFacturas.html.twig", 11)->display($context);
+            $this->loadTemplate("sections/listar-factura-pago.html.twig", "/pages/pageFacturas.html.twig", 11)->display($context);
         }
         // line 13
         echo "
 
 ";
         // line 15
-        if ((($context["fail"] ?? null) == true)) {
-            // line 16
-            echo "<div class=\"alert alert-danger\">
-\t<strong>\t";
-            // line 17
-            echo twig_escape_filter($this->env, twig_upper_filter($this->env, ($context["message"] ?? null)), "html", null, true);
-            echo " </strong>
-\t<ul>
-\t";
-            // line 19
-            $context['_parent'] = $context;
-            $context['_seq'] = twig_ensure_traversable(($context["fields_error"] ?? null));
-            foreach ($context['_seq'] as $context["_key"] => $context["field"]) {
-                // line 20
-                echo "\t\t<li> ";
-                echo twig_escape_filter($this->env, $context["field"], "html", null, true);
-                echo " </li>\t\t
-\t";
-            }
-            $_parent = $context['_parent'];
-            unset($context['_seq'], $context['_iterated'], $context['_key'], $context['field'], $context['_parent'], $context['loop']);
-            $context = array_intersect_key($context, $_parent) + $_parent;
-            // line 22
-            echo "\t</ul>
-</div>
-";
-        }
-        // line 25
-        echo "
-";
-        // line 26
         if ((($context["create"] ?? null) == true)) {
-            // line 27
-            $this->loadTemplate("forms/frm_factura_pagos.html.twig", "/pages/pageFacturas.html.twig", 27)->display($context);
+            // line 16
+            $this->loadTemplate("forms/frm_factura_pagos.html.twig", "/pages/pageFacturas.html.twig", 16)->display($context);
         }
-        // line 29
+        // line 18
         echo "
 ";
-        // line 30
+        // line 19
         if ((($context["update"] ?? null) == true)) {
-            // line 31
-            $this->loadTemplate("forms/frm_factura_pagos_edit.html.twig", "/pages/pageFacturas.html.twig", 31)->display($context);
+            // line 20
+            $this->loadTemplate("forms/frm_factura_pagos_edit.html.twig", "/pages/pageFacturas.html.twig", 20)->display($context);
         }
-        // line 33
+        // line 22
         echo "
 
 ";
-        // line 35
+        // line 24
         if ((($context["viewMessage"] ?? null) == true)) {
-            // line 36
+            // line 25
             echo "\t<div class=\"well\">
 \t\t<h3 class=\"text-primary\">\t";
-            // line 37
+            // line 26
             echo twig_escape_filter($this->env, ($context["message"] ?? null), "html", null, true);
             echo " </h3>
 \t\t<br><br>
 \t\t<p>
 \t\t\t";
-            // line 40
+            // line 29
             if ((($context["deleted"] ?? null) == true)) {
                 echo " 
 \t\t\t\t\t\t<a href=\"";
-                // line 41
+                // line 30
                 echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
                 echo "facturapagos/listar/\">
 \t\t\t\t<button>
@@ -118,10 +87,10 @@ class __TwigTemplate_78932d951d81322ff22d6025ef6b2ed790c9fdf0a809946e074f0cfdd21
 \t\t\t\t</a>
 \t\t\t";
             } else {
-                // line 47
+                // line 36
                 echo "  
 \t\t\t\t<a href=\"";
-                // line 48
+                // line 37
                 echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
                 echo "facturapagos/presentar/";
                 echo twig_escape_filter($this->env, ($context["idRow"] ?? null), "html", null, true);
@@ -133,21 +102,21 @@ class __TwigTemplate_78932d951d81322ff22d6025ef6b2ed790c9fdf0a809946e074f0cfdd21
 \t\t</a>
 \t\t\t";
             }
-            // line 55
+            // line 44
             echo "\t\t
 \t\t</p>
 \t</div>
 ";
         }
-        // line 59
+        // line 48
         echo "
 ";
-        // line 60
-        $this->loadTemplate("base/content_close.html.twig", "/pages/pageFacturas.html.twig", 60)->display($context);
-        // line 61
-        $this->loadTemplate("base/signaturefoot.html.twig", "/pages/pageFacturas.html.twig", 61)->display($context);
-        // line 62
-        $this->loadTemplate("base/footer.html.twig", "/pages/pageFacturas.html.twig", 62)->display($context);
+        // line 49
+        $this->loadTemplate("base/content_close.html.twig", "/pages/pageFacturas.html.twig", 49)->display($context);
+        // line 50
+        $this->loadTemplate("base/signaturefoot.html.twig", "/pages/pageFacturas.html.twig", 50)->display($context);
+        // line 51
+        $this->loadTemplate("base/footer.html.twig", "/pages/pageFacturas.html.twig", 51)->display($context);
     }
 
     public function getTemplateName()
@@ -162,7 +131,7 @@ class __TwigTemplate_78932d951d81322ff22d6025ef6b2ed790c9fdf0a809946e074f0cfdd21
 
     public function getDebugInfo()
     {
-        return array (  150 => 62,  148 => 61,  146 => 60,  143 => 59,  137 => 55,  125 => 48,  122 => 47,  112 => 41,  108 => 40,  102 => 37,  99 => 36,  97 => 35,  93 => 33,  90 => 31,  88 => 30,  85 => 29,  82 => 27,  80 => 26,  77 => 25,  72 => 22,  63 => 20,  59 => 19,  54 => 17,  51 => 16,  49 => 15,  45 => 13,  41 => 11,  39 => 10,  36 => 9,  32 => 7,  30 => 6,  27 => 5,  25 => 4,  23 => 3,  21 => 2,  19 => 1,);
+        return array (  119 => 51,  117 => 50,  115 => 49,  112 => 48,  106 => 44,  94 => 37,  91 => 36,  81 => 30,  77 => 29,  71 => 26,  68 => 25,  66 => 24,  62 => 22,  59 => 20,  57 => 19,  54 => 18,  51 => 16,  49 => 15,  45 => 13,  41 => 11,  39 => 10,  36 => 9,  32 => 7,  30 => 6,  27 => 5,  25 => 4,  23 => 3,  21 => 2,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -181,24 +150,13 @@ class __TwigTemplate_78932d951d81322ff22d6025ef6b2ed790c9fdf0a809946e074f0cfdd21
 {% include 'base/content.html.twig' %}
 
 {% if show == true %}
-\t{% include 'base/sections/mostrar-factura-gasto.html.twig' %}
+\t{% include 'sections/mostrar-factura-gasto.html.twig' %}
 {% endif %}
 
 {% if list == true %}
-\t{% include 'base/sections/listar-factura-pago.html.twig' %}
+\t{% include 'sections/listar-factura-pago.html.twig' %}
 {% endif %}
 
-
-{% if fail == true %}
-<div class=\"alert alert-danger\">
-\t<strong>\t{{message | upper }} </strong>
-\t<ul>
-\t{% for field in fields_error %}
-\t\t<li> {{field}} </li>\t\t
-\t{% endfor %}
-\t</ul>
-</div>
-{% endif %}
 
 {% if create == true %}
 {% include 'forms/frm_factura_pagos.html.twig' %}

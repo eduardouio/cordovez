@@ -22,7 +22,7 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
 </body>
 
 <script type=\"text/javascript\">
-  setTimeout(function(){ reloadPage() }, 200000);
+  setTimeout(function(){ reloadPage() }, 150000);
 
 \tfunction reloadPage(argument) {
 \t\tlocation.reload();
@@ -39,7 +39,7 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
 <script src=\"";
         // line 18
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "dist/js/sb-admin-2.js\"></script>
+        echo "js/sb-admin-2.js\"></script>
 <script src=\"";
         // line 19
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
@@ -84,7 +84,7 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
 </body>
 
 <script type=\"text/javascript\">
-  setTimeout(function(){ reloadPage() }, 200000);
+  setTimeout(function(){ reloadPage() }, 150000);
 
 \tfunction reloadPage(argument) {
 \t\tlocation.reload();
@@ -95,7 +95,7 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
 <!-- Metis Menu Plugin JavaScript -->
 <script src=\"{{base_url}}vendor/metisMenu/metisMenu.min.js\"></script>
 <!-- Custom Theme JavaScript -->
-<script src=\"{{base_url}}dist/js/sb-admin-2.js\"></script>
+<script src=\"{{base_url}}js/sb-admin-2.js\"></script>
 <script src=\"{{base_url}}vendor/datepicker/js/bootstrap-datepicker.min.js\"></script>
 <!-- Bootstrap Core JavaScript -->
 <script src=\"{{base_url}}vendor/bootstrap/js/bootstrap.min.js\">

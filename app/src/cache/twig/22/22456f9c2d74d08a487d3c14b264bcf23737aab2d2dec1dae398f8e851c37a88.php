@@ -30,7 +30,7 @@ class __TwigTemplate_303f03313615935b06d329fa806cb2801ece898f646a742ebab8f525d2e
         if ((($context["show"] ?? null) == true)) {
             // line 7
             echo "\t";
-            $this->loadTemplate("base/sections/mostrar-proveedor.html.twig", "/pages/pageProveedor.html.twig", 7)->display($context);
+            $this->loadTemplate("sections/mostrar-proveedor.html.twig", "/pages/pageProveedor.html.twig", 7)->display($context);
             echo "\t
 ";
         }
@@ -41,7 +41,7 @@ class __TwigTemplate_303f03313615935b06d329fa806cb2801ece898f646a742ebab8f525d2e
         if ((($context["list"] ?? null) == true)) {
             // line 11
             echo "\t";
-            $this->loadTemplate("base/sections/listar-proveedor.html.twig", "/pages/pageProveedor.html.twig", 11)->display($context);
+            $this->loadTemplate("sections/listar-proveedor.html.twig", "/pages/pageProveedor.html.twig", 11)->display($context);
             echo "\t
 ";
         }
@@ -156,11 +156,11 @@ class __TwigTemplate_303f03313615935b06d329fa806cb2801ece898f646a742ebab8f525d2e
 {% include 'base/content.html.twig' %}
 
 {% if show == true %}
-\t{% include 'base/sections/mostrar-proveedor.html.twig' %}\t
+\t{% include 'sections/mostrar-proveedor.html.twig' %}\t
 {% endif %}
 
 {% if list == true %}
-\t{% include 'base/sections/listar-proveedor.html.twig' %}\t
+\t{% include 'sections/listar-proveedor.html.twig' %}\t
 {% endif %}
 
 {% if create == true %}

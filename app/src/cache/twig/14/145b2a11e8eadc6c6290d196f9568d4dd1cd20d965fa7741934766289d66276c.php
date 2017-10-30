@@ -21,7 +21,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
         echo "pedido/validar\">
    <input type=\"hidden\" name=\"id_pedido\" value=\"";
         // line 2
-        echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["order"] ?? null), 0, array(), "array"), "id_pedido", array()), "html", null, true);
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "id_pedido", array()), "html", null, true);
         echo "\">
    <div class=\"row\">
       <div class=\"col-md-2\">
@@ -33,7 +33,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
                class=\"form-control\" 
                value=\"";
         // line 11
-        echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["order"] ?? null), 0, array(), "array"), "nro_pedido", array()), "html", null, true);
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "nro_pedido", array()), "html", null, true);
         echo "\" 
                >
          </div>
@@ -48,13 +48,13 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
                >
                <option value=\"";
         // line 23
-        echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["order"] ?? null), 0, array(), "array"), "regimen", array()), "html", null, true);
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "regimen", array()), "html", null, true);
         echo "\">";
-        echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["order"] ?? null), 0, array(), "array"), "regimen", array()), "html", null, true);
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "regimen", array()), "html", null, true);
         echo "</option>
                ";
         // line 24
-        if (($this->getAttribute($this->getAttribute(($context["order"] ?? null), 0, array(), "array"), "regimen", array()) == "70")) {
+        if (($this->getAttribute(($context["order"] ?? null), "regimen", array()) == "70")) {
             // line 25
             echo "                  <option value=\"10\">10</option>   
                ";
@@ -76,9 +76,9 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
             >
             <option value=\"";
         // line 39
-        echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["order"] ?? null), 0, array(), "array"), "pais_origen", array()), "html", null, true);
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "pais_origen", array()), "html", null, true);
         echo "\" >";
-        echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["order"] ?? null), 0, array(), "array"), "pais_origen", array()), "html", null, true);
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "pais_origen", array()), "html", null, true);
         echo "</option>
          </select>
       </div>
@@ -92,9 +92,9 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
                >
                <option value=\"";
         // line 50
-        echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["order"] ?? null), 0, array(), "array"), "ciudad_origen", array()), "html", null, true);
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "ciudad_origen", array()), "html", null, true);
         echo "\">";
-        echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["order"] ?? null), 0, array(), "array"), "ciudad_origen", array()), "html", null, true);
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "ciudad_origen", array()), "html", null, true);
         echo "</option>
             </select>
          </div>
@@ -108,7 +108,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
             >
             <option>";
         // line 61
-        echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["order"] ?? null), 0, array(), "array"), "incoterm", array()), "html", null, true);
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "incoterm", array()), "html", null, true);
         echo "<option>
          </select>
       </div>
@@ -123,7 +123,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
                maxlength=\"20\" 
                value=\"";
         // line 73
-        echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["order"] ?? null), 0, array(), "array"), "nro_refrendo", array()), "html", null, true);
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "nro_refrendo", array()), "html", null, true);
         echo "\" 
                >
          </div>
@@ -142,7 +142,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
                name=\"seguro_aduana\"
                value=\"";
         // line 89
-        echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["order"] ?? null), 0, array(), "array"), "seguro_aduana", array()), "html", null, true);
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "seguro_aduana", array()), "html", null, true);
         echo "\" 
                >
          </div>
@@ -158,7 +158,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
                name=\"flete_aduana\"
                value=\"";
         // line 102
-        echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["order"] ?? null), 0, array(), "array"), "flete_aduana", array()), "html", null, true);
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "flete_aduana", array()), "html", null, true);
         echo "\" 
                >
          </div>
@@ -175,7 +175,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
                class=\"bootstrap-datepicker\" 
                value=\"";
         // line 116
-        echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["order"] ?? null), 0, array(), "array"), "fecha_arribo", array()), "html", null, true);
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "fecha_arribo", array()), "html", null, true);
         echo "\" 
                >
             <div class=\"input-group-addon\">
@@ -194,7 +194,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
                name=\"comentarios\"
                >";
         // line 132
-        echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["order"] ?? null), 0, array(), "array"), "comentarios", array()), "html", null, true);
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "comentarios", array()), "html", null, true);
         echo "</textarea>
          </div>
       </div>
@@ -210,7 +210,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
         // line 143
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "pedido/presentar/";
-        echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["order"] ?? null), 0, array(), "array"), "nro_pedido", array()), "html", null, true);
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "nro_pedido", array()), "html", null, true);
         echo "\" class=\"btn btn-sm btn-default\">
             <span class=\"fa fa-arrow-left fa-fw\"></span>
             Volver
@@ -253,7 +253,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
     public function getSourceContext()
     {
         return new Twig_Source("<form method=\"post\" action=\"{{rute_url}}pedido/validar\">
-   <input type=\"hidden\" name=\"id_pedido\" value=\"{{order[0].id_pedido}}\">
+   <input type=\"hidden\" name=\"id_pedido\" value=\"{{order.id_pedido}}\">
    <div class=\"row\">
       <div class=\"col-md-2\">
          <div class=\"form-group\">
@@ -262,7 +262,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
                readonly=\"\" 
                name=\"nro_pedido\" 
                class=\"form-control\" 
-               value=\"{{order[0].nro_pedido}}\" 
+               value=\"{{order.nro_pedido}}\" 
                >
          </div>
       </div>
@@ -274,8 +274,8 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
                required=\"true\" 
                name=\"regimen\"
                >
-               <option value=\"{{order[0].regimen}}\">{{order[0].regimen}}</option>
-               {% if order[0].regimen == '70' %}
+               <option value=\"{{order.regimen}}\">{{order.regimen}}</option>
+               {% if order.regimen == '70' %}
                   <option value=\"10\">10</option>   
                {% else %}
                   <option value=\"70\">70</option>
@@ -290,7 +290,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
             name = \"pais_origen\"
             class=\"form-control\"
             >
-            <option value=\"{{order[0].pais_origen}}\" >{{order[0].pais_origen}}</option>
+            <option value=\"{{order.pais_origen}}\" >{{order.pais_origen}}</option>
          </select>
       </div>
       <div class=\"col-md-2\">
@@ -301,7 +301,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
                id=\"ciudad_origen\"
                name=\"ciudad_origen\"
                >
-               <option value=\"{{order[0].ciudad_origen}}\">{{order[0].ciudad_origen}}</option>
+               <option value=\"{{order.ciudad_origen}}\">{{order.ciudad_origen}}</option>
             </select>
          </div>
       </div>
@@ -312,7 +312,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
             name =\"incoterm\"
             id =\"incoterm\"
             >
-            <option>{{order[0].incoterm}}<option>
+            <option>{{order.incoterm}}<option>
          </select>
       </div>
       <div class=\"col-md-2\">
@@ -324,7 +324,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
                placeholder=\"000-0000-00-000000\"
                class=\"form-control\" 
                maxlength=\"20\" 
-               value=\"{{order[0].nro_refrendo}}\" 
+               value=\"{{order.nro_refrendo}}\" 
                >
          </div>
       </div>
@@ -340,7 +340,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
                placeholder=\"0.00\" 
                required=\"true\"
                name=\"seguro_aduana\"
-               value=\"{{order[0].seguro_aduana}}\" 
+               value=\"{{order.seguro_aduana}}\" 
                >
          </div>
       </div>      <div class=\"col-md-2\">
@@ -353,7 +353,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
                step=\"0.01\" 
                placeholder=\"0.00\" 
                name=\"flete_aduana\"
-               value=\"{{order[0].flete_aduana}}\" 
+               value=\"{{order.flete_aduana}}\" 
                >
          </div>
       </div>
@@ -367,7 +367,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
                required=\"required\" 
                name=\"fecha_arribo\" 
                class=\"bootstrap-datepicker\" 
-               value=\"{{order[0].fecha_arribo}}\" 
+               value=\"{{order.fecha_arribo}}\" 
                >
             <div class=\"input-group-addon\">
                <span class=\"glyphicon glyphicon-th\"></span>
@@ -383,7 +383,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
                class=\"form-control\"
                id=\"comentarios\"
                name=\"comentarios\"
-               >{{order[0].comentarios}}</textarea>
+               >{{order.comentarios}}</textarea>
          </div>
       </div>
    </div>
@@ -394,7 +394,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
             <span class=\"fa fa-save fa-fw\"></span>
             Guardar Registro
          </button>
-      <a href=\"{{rute_url}}pedido/presentar/{{order[0].nro_pedido}}\" class=\"btn btn-sm btn-default\">
+      <a href=\"{{rute_url}}pedido/presentar/{{order.nro_pedido}}\" class=\"btn btn-sm btn-default\">
             <span class=\"fa fa-arrow-left fa-fw\"></span>
             Volver
          </a>

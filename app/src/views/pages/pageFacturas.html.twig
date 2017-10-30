@@ -4,24 +4,13 @@
 {% include 'base/content.html.twig' %}
 
 {% if show == true %}
-	{% include 'base/sections/mostrar-factura-gasto.html.twig' %}
+	{% include 'sections/mostrar-factura-gasto.html.twig' %}
 {% endif %}
 
 {% if list == true %}
-	{% include 'base/sections/listar-factura-pago.html.twig' %}
+	{% include 'sections/listar-factura-pago.html.twig' %}
 {% endif %}
 
-
-{% if fail == true %}
-<div class="alert alert-danger">
-	<strong>	{{message | upper }} </strong>
-	<ul>
-	{% for field in fields_error %}
-		<li> {{field}} </li>		
-	{% endfor %}
-	</ul>
-</div>
-{% endif %}
 
 {% if create == true %}
 {% include 'forms/frm_factura_pagos.html.twig' %}

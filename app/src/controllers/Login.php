@@ -12,15 +12,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @since    Version 1.0.0
  * @filesource
  */
-class Login extends MY_Controller {
+class Login extends CI_Controller {
 	private $controller = "usuario";
 	private $template = '/pages/pageLogin.html';
 	private $cryptKey  = 'qJB0rGtIn5UB1xG03efyCp';
-
-
-	function __construct(){
-		parent::__construct();
-	}
 
 
 	/**	
@@ -31,18 +26,19 @@ class Login extends MY_Controller {
 		$this->responseHttp($config);
 	}
 
-
-		/* *
+	/* *
 	* Envia la respuestas html al navegador
 	*/
 	public function responseHttp($config){
-		$config['base_url'] = base_url();
-		$config['rute_url'] = base_url() . 'index.php/';
-		$config['actionFrm'] = base_url() . 'index.php/login/validar';
-		$config['controller'] = $this->controller;
-		$config['iconTitle'] = 'fa-users';
-		$config['content'] = 'home';
-		return $this->twig->display($this->template, $config);
+		$init =[
+			'base_url' => base_url(),
+			'rute_url' => base_url() . 'index.php/',
+			'actionFrm' => base_url() . 'index.php/login/validar',
+			'controller' => $this->controller,
+			'iconTitle' => 'fa-users',
+			'content' => 'home',
+		];
+		return $this->twig->display($this->template, array_merge($config, $init));
 	}
 
 
@@ -50,30 +46,34 @@ class Login extends MY_Controller {
 	 * Formulario de inicio de sesion
 	 */
 	public function validar(){
-		if(!$_POST){$this->_notAuthorized();}
+		if(!$_POST){ $this->redirectPage('loginForm');}
 
 		$user = $_POST;
-		$this->db->where('username' , $user['username']);
-		$resultDb = $this->db->get($this->controller);
-		$userDb = $resultDb->result_array();
+		$params = [
+						'select' => ['*',],
+						'table' => $this->controller,
+						'where' => ['username' => $user['username'],],
+						];
 
+		$resultDb = $this->mymodel->get_table($params);
 
-		if(!$resultDb->num_rows() == 1 ){
-			$config = array(
-				'message' => 'Usuario y/o Contraseña Incorrectos.'
-			);
+		if($resultDb == false){
+			$config = [
+				'message' => 'Usuario y/o Contraseña Incorrectos',
+			];
 			$this->responseHttp($config);
 			return true;
 		}
-		
-		$userDb = $userDb[0];	
-		
-		if($userDb['username'] == $user['username'] &&
-			 						$userDb['password'] == $this->_encryptIt($user['password'])
-			){
+
+		$userDb = $resultDb[0];	
+		if(($userDb['username'] == $user['username']) &&
+			 ($userDb['password'] == $this->_encryptIt($user['password'])))
+			 {
 			
-			#actualizamos el ultimo login
-			$lastlogin = array('last_login' => date('Y-m-d H:i:s'));			
+			$lastlogin = [
+							'last_login' => date('Y-m-d H:i:s'),
+									];			
+
 			$this->db->where('username', $userDb['username']);
 			$this->db->update($this->controller, $lastlogin);
 
@@ -83,29 +83,22 @@ class Login extends MY_Controller {
 			$userData['last_login'] = $lastlogin;
 			unset($userData['password']);
 			$this->session->set_userdata($userData);
-			$this->_redirectOrdersPage();
+			$this->redirectPage('ordersList');
 		}else{
-			$config = array(
-				'message' => 'Usuario y/o Contraseña Incorrectos.'
-			);
+			$config = [
+				'message' => 'Usuario y/o Contraseña Incorrectos.',
+						];
 			$this->responseHttp($config);
 			return true;
 		}
-
-		$config = array(
-				'message' => 'Usuario y/o Contraseña Incorrectos.'
-			);
-			$this->responseHttp($config);
-			return true;
 	}
-
 
 	/**
 	*	Cierra la sesion del usuario en linea
 	*/
 	public function cerrarSesion(){
 		$this->session->sess_destroy();
-		$this->index();
+		$this->redirectPage('loginForm');
 	}
 
 
@@ -132,4 +125,28 @@ class Login extends MY_Controller {
 	    																						md5($this->cryptKey))),"\0");
 	    return( $qDecoded );
 	}
+
+   /**
+    * Redirecciona a cualquier pagina del sitio
+    * htttp://ip/index.php/controller/method/params/
+    * 
+    * @param $page => pagename
+    * @param $id => identificator Row
+    *
+    * @return void | bool
+    */
+    public function redirectPage(string $page, $id = false){
+    	$target = [
+    		'loginForm' => base_url(), 
+    		'ordersList' => base_url() . 'index.php/pedido/listar/', 
+    	];
+
+    	header('Status: 301 Moved Permanently', false, 301);
+    	if ($id){
+    			header('Location: ' . $target[$page]  . '/' . $id);	
+    		return true;
+    	}    	
+    	header('Location: ' . $target[$page]  );
+    }
+
 }

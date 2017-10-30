@@ -12,7 +12,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @filesource
  */
 class Gstinicial extends MY_Controller {	
-	private $controller = "gastos_iniciales_r70";
+	private $controller = "gastos_nacionalizacion";
 	private $template = '/pages/pageGasto-inicial.html';
 	
 	/**
@@ -22,16 +22,15 @@ class Gstinicial extends MY_Controller {
 		parent::__construct();
 	}
 
-
 	/**
 	* Elimina un pedido 
 	*/
 	public function eliminar($idInitExpense){
-		$this->db->where('id_gastos_iniciales', $idInitExpense);
+		$this->db->where('id_gastos_nacionalizacion', $idInitExpense);
 		$resultDb = $this->db->get($this->controller);
 		$detail = $resultDb->result_array();
 
-		$this->db->where('id_gastos_iniciales', $idInitExpense);
+		$this->db->where('id_gastos_nacionalizacion', $idInitExpense);
 		if ($this->db->delete($this->controller)){
 			$config['order'] = $detail[0]['nro_pedido'];
 			$config['viewMessage'] = true;
@@ -45,28 +44,38 @@ class Gstinicial extends MY_Controller {
 			$config['message'] = 'El pedido no puede ser Eliminado, 
 																												 tiene dependencias!';
 			$this->responseHttp($config);
-			$this->db->where('id_gastos_iniciales', $idInitExpense);
+			$this->db->where('id_gastos_nacionalizacion', $idInitExpense);
 		}
 	}
 
 	/**
-	* Presenta un gasto inicial
+	* Pesenta la informacion completa del rgistro de gasto inicial
+	* @param (int) $idInitExpense
+	* @return array
 	*/
 	public function presentar($idInitExpense){
-		$this->db->where('id_gastos_iniciales', $idInitExpense);
-		$resultDb = $this->db->get($this->controller);
-		$initExpense = $resultDb->result_array();
-
-		$this->db->where('identificacion_proveedor', 
-																	$initExpense[0]['identificacion_proveedor']);
-		$resultDb = $this->db->get('proveedor');
-		$supplier = $resultDb->result_array();
-
-		$this->db->where('nro_pedido', $initExpense[0]['nro_pedido']);
-		$resultDb = $this->db->get('pedido');
-		$order = $resultDb->result_array();
-
-		$config = array(
+		$initExpense = $this->mymodel->get_table([
+								'table' => $this->controller,
+								'where' => [
+													'id_gastos_nacionalizacion' => $idInitExpense ,
+														],
+									]);
+		$supplier = $this->mymodel->get_table([
+																	'table' => 'proveedor',
+																	'where' => [
+																		'identificacion_proveedor' => 
+																		$initExpense[0]['identificacion_proveedor'],
+																						],
+																		]);
+		
+		$order = $this->mymodel->get_table([
+																			'table' => 'pedido',
+																			'where' => [
+																								'nro_pedido' => 
+																								$initExpense[0]['nro_pedido'],
+																									],
+																			]);
+		$config = [
 						'order' => $order[0],
 						'initExpense' => $initExpense[0],
 						'supplier' => $supplier[0],
@@ -74,7 +83,7 @@ class Gstinicial extends MY_Controller {
 						'titleContent' => 'Descripción De Gasto Incial Pedido:' . 
 																					$order[0]['nro_pedido'] ,
 						'show' => true,
-		);
+						];
 
 		$this->responseHttp($config);
 	}
@@ -107,7 +116,8 @@ class Gstinicial extends MY_Controller {
 	* Edita un gasto inicial
 	*/
 	public function editar($idInitExpense){
-		$this->db->where('id_gastos_iniciales', $idInitExpense);
+
+		$this->db->where('id_gastos_nacionalizacion', $idInitExpense);
 		$resultDb = $this->db->get($this->controller);
 		$initExpense = $resultDb->result_array();
 
@@ -136,9 +146,6 @@ class Gstinicial extends MY_Controller {
 						'edit' => true,
 		);
 
-
-
-
 		$this->responseHttp($config);
 	}
 
@@ -150,18 +157,20 @@ class Gstinicial extends MY_Controller {
 		$initExpense = $this->input->post();
 		$initExpense['id_user'] = $this->session->userdata('id_user');
 		$initExpense['fecha'] = date('Y-m-d' , strtotime($initExpense['fecha']));
-		$initExpense['fecha_fin'] = date('Y-m-d' , strtotime($initExpense['fecha_fin']));
+		if(isset($initExpense['fecha_fin'])){
+			$initExpense['fecha_fin'] = date('Y-m-d' , 
+																				strtotime($initExpense['fecha_fin']));
+		}
 
-			if(!isset($initExpense['id_gastos_iniciales'])){
+			if(!isset($initExpense['id_gastos_nacionalizacion'])){
 				$this->db->where('nro_pedido', $initExpense['nro_pedido']);
 				$this->db->where('concepto', $initExpense['concepto']);
-				
 				$resultDb = $this->db->get($this->controller);
 
 				if($resultDb->num_rows() == 1 ){		
 					$config['orderInvoice'] = $resultDb->result_array();
 					$config['viewMessage'] = true;
-					$config['message'] = 'Este producto ya esta en la factura!';
+					$config['message'] = 'Este Gasto Inicial Ya Está Registrado!';
 					$this->responseHttp($config);
 					return true;
 				}	
@@ -170,13 +179,13 @@ class Gstinicial extends MY_Controller {
 		$status = $this->_validData($initExpense);
 
 			if ($status['status']){
-				if (!isset($initExpense['id_gastos_iniciales'])){
+				if (!isset($initExpense['id_gastos_nacionalizacion'])){
 					$this->db->insert($this->controller, $initExpense);
 					$this->presentarPedido($initExpense['nro_pedido']);
 					return true;
 				}else{					
 					$initExpense['last_update'] = date('Y-m-d H:i:s');
-					$this->db->where('id_gastos_iniciales', $initExpense['id_gastos_iniciales']);
+					$this->db->where('id_gastos_nacionalizacion', $initExpense['id_gastos_nacionalizacion']);
 					$this->db->update($this->controller, $initExpense);
 					$this->presentarPedido($initExpense['nro_pedido']);
 					return true;

@@ -30,7 +30,7 @@ class __TwigTemplate_4331bd37c575bedc4524c0d3c6949b50e0214f28f0a234220c220f6e7f1
         if ((($context["show_invoices"] ?? null) == true)) {
             // line 7
             echo "\t";
-            $this->loadTemplate("base/sections/show-pedido-factura.html.twig", "/pages/pagePedidoFactura.html.twig", 7)->display($context);
+            $this->loadTemplate("sections/show-pedido-factura.html.twig", "/pages/pagePedidoFactura.html.twig", 7)->display($context);
         }
         // line 9
         echo "
@@ -148,7 +148,7 @@ class __TwigTemplate_4331bd37c575bedc4524c0d3c6949b50e0214f28f0a234220c220f6e7f1
 {% include 'base/content.html.twig' %}
 
 {% if show_invoices == true %}
-\t{% include 'base/sections/show-pedido-factura.html.twig' %}
+\t{% include 'sections/show-pedido-factura.html.twig' %}
 {% endif %}
 
 {% if create_invoice == true %}

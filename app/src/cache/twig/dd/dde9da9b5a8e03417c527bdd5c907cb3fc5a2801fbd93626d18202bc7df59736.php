@@ -46,7 +46,7 @@ class __TwigTemplate_45d44c1cb2b4a7962c1f6c29bfb45318cde76a9459f5a6f72d0dea3a58c
     <link href=\"";
         // line 19
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "dist/css/sb-admin-2.css\" rel=\"stylesheet\">
+        echo "css/sb-admin-2.css\" rel=\"stylesheet\">
     <!-- Custom Fonts -->
     <link href=\"";
         // line 21
@@ -56,27 +56,27 @@ class __TwigTemplate_45d44c1cb2b4a7962c1f6c29bfb45318cde76a9459f5a6f72d0dea3a58c
     <link href=\"";
         // line 23
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "vendor/styles/cordovez.css\" rel=\"stylesheet\" type=\"text/css\">
-
-    <link href=\"";
-        // line 25
-        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "vendor/jquery/jqueryui-min.css\"rel=\"stylesheet\" type=\"text/css\">
+        echo "css/cordovez.css\" rel=\"stylesheet\" type=\"text/css\">
     <!-- jQuery -->
     <script src=\"";
-        // line 27
+        // line 25
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/jquery/jquery.min.js\"></script>
     <script src=\"";
-        // line 28
+        // line 26
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/jquery/jqueryui.min.js\"></script>
-
+    <link rel=\"stylesheet\" type=\"text/css\" href=\"";
+        // line 27
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "vendor/jquery/jqueryui-min.css\"> 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-        <script src=\"https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js\"></script>
-        <script src=\"https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js\"></script>
+        <script src=\"https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js\">
+        </script>
+        <script src=\"https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js\">
+        </script>
         <![endif]-->
 </head>";
     }
@@ -93,7 +93,7 @@ class __TwigTemplate_45d44c1cb2b4a7962c1f6c29bfb45318cde76a9459f5a6f72d0dea3a58c
 
     public function getDebugInfo()
     {
-        return array (  72 => 28,  68 => 27,  63 => 25,  58 => 23,  53 => 21,  48 => 19,  43 => 17,  37 => 14,  30 => 10,  19 => 1,);
+        return array (  71 => 27,  67 => 26,  63 => 25,  58 => 23,  53 => 21,  48 => 19,  43 => 17,  37 => 14,  30 => 10,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -124,22 +124,22 @@ class __TwigTemplate_45d44c1cb2b4a7962c1f6c29bfb45318cde76a9459f5a6f72d0dea3a58c
     <!-- MetisMenu CSS -->
     <link href=\"{{base_url}}vendor/metisMenu/metisMenu.min.css\" rel=\"stylesheet\">
     <!-- Custom CSS -->
-    <link href=\"{{base_url}}dist/css/sb-admin-2.css\" rel=\"stylesheet\">
+    <link href=\"{{base_url}}css/sb-admin-2.css\" rel=\"stylesheet\">
     <!-- Custom Fonts -->
     <link href=\"{{base_url}}vendor/font-awesome/css/font-awesome.min.css\" rel=\"stylesheet\" type=\"text/css\">
     <!-- Custom Styles -->
-    <link href=\"{{base_url}}vendor/styles/cordovez.css\" rel=\"stylesheet\" type=\"text/css\">
-
-    <link href=\"{{base_url}}vendor/jquery/jqueryui-min.css\"rel=\"stylesheet\" type=\"text/css\">
+    <link href=\"{{base_url}}css/cordovez.css\" rel=\"stylesheet\" type=\"text/css\">
     <!-- jQuery -->
     <script src=\"{{base_url}}vendor/jquery/jquery.min.js\"></script>
     <script src=\"{{base_url}}vendor/jquery/jqueryui.min.js\"></script>
-
+    <link rel=\"stylesheet\" type=\"text/css\" href=\"{{base_url}}vendor/jquery/jqueryui-min.css\"> 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-        <script src=\"https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js\"></script>
-        <script src=\"https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js\"></script>
+        <script src=\"https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js\">
+        </script>
+        <script src=\"https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js\">
+        </script>
         <![endif]-->
 </head>", "base/header.html.twig", "/var/www/html/app/src/views/base/header.html.twig");
     }

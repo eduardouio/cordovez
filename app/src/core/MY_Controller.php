@@ -27,14 +27,23 @@ class MY_Controller extends CI_Controller{
 		public function _checkSession(){
 			if (!$this->session->has_userdata('username')){
 				if(current_url() != base_url() . 'index.php'){
-					$this->_redirectLoginPage();
+					$this->redirectPage('loginForm');
 				}
 			}
 		}
 
 		/**
 		 * controla las columnas y la longitud de sus valores
+		 * @param (array) $paramsdata => Parametros minimos
+		 * @param (array) $data => info Formulario
+		 *
 		 * @return (array)
+		 *
+		 * 	$validationResult = [
+     *	'status' => true | false
+     *	'columns' => (array) columnas que no existen
+     *	'len' => (array) longitudes que no se cumplen,
+     * ];
 		 */
     public function _checkColumnsData($paramsData, $data){    	
     	$validationResult = [
@@ -59,29 +68,29 @@ class MY_Controller extends CI_Controller{
 
 
     /**
-    * Redireccion a Login 
+    * Redirecciona a cualquier pagina del sitio
+    * htttp://ip/index.php/controller/method/params/
+    * 
+    * @param $page => pagename
+    * @param $id => identificator Row
+    *
+    * @return void | bool
     */
-    protected function _redirectLoginPage(){
-        header('Status: 301 Moved Permanently', false, 301);
-        header('Location: ' . base_url());
+    public function redirectPage(string $page, $id = false){
+    	$target = [
+    		'loginForm' => base_url(), 
+    		'ordersList' => base_url() . 'index.php/pedido/listar', 
+    		'presetOrder' => base_url() . 'index.php/pedido/presentar', 
+    	];
+
+    	header('Status: 301 Moved Permanently', false, 301);
+    	if ($id){
+    			header('Location: ' . $target[$page]  . '/' . $id);	
+    		return true;
+    	}    	
+    	header('Location: ' . $target[$page]  );
     }
 
-    /**
-    * Redirecciona a la pagina de inicio
-    */
-    public function _redirectOrdersPage(){
-    	header('Status: 301 Moved Permanently', false, 301);
-        header('Location: ' . base_url() . 'index.php/home/');
-    }
-		
-		/**
-		* Vista de entrada no autorizada
-		*/
-    public function _notAuthorized(){
-        print('Entrada No autorizada');
-        $this->_redirectLoginPage();
-        exit();
-    }   
 
     /**
     * Recibe un arreglo, calcula la diferencia entre dos fechas,
@@ -100,7 +109,6 @@ class MY_Controller extends CI_Controller{
 				$value['dias'] =  $interval->days;
 				$result[$key] = $value;
 			}
-
 			return $result;
 		}
 
@@ -113,24 +121,5 @@ class MY_Controller extends CI_Controller{
 			$this->db->where('id_user', $userId);
 			$resultDb = $this->db->get('usuario');
 			return $resultDb->result_array();
-
 		}
-
-			/**	
-	* Obtiene registros a partir de condiciones
-	* @param (str) $col nombre de la columna
-	* @param  (str) $value valor para esa columna
-	* @param  (str) $table nombre de la tabla a consultat
-	* @return (array) result array
-	*
-	*/
-	public function _getDb($col, $value, $table = 'pedido'){
-		$this->db->where($col , $value);
-		$resultDb = $this->db->get($table);
-		if(!$resultDb->num_rows() > 0){return false;}
-		return $resultDb->result_array();
-	}
-
-	
-
- 	}
+}

@@ -1,5 +1,5 @@
 <form method="post" action="{{rute_url}}pedido/validar">
-   <input type="hidden" name="id_pedido" value="{{order[0].id_pedido}}">
+   <input type="hidden" name="id_pedido" value="{{order.id_pedido}}">
    <div class="row">
       <div class="col-md-2">
          <div class="form-group">
@@ -8,7 +8,7 @@
                readonly="" 
                name="nro_pedido" 
                class="form-control" 
-               value="{{order[0].nro_pedido}}" 
+               value="{{order.nro_pedido}}" 
                >
          </div>
       </div>
@@ -20,8 +20,8 @@
                required="true" 
                name="regimen"
                >
-               <option value="{{order[0].regimen}}">{{order[0].regimen}}</option>
-               {% if order[0].regimen == '70' %}
+               <option value="{{order.regimen}}">{{order.regimen}}</option>
+               {% if order.regimen == '70' %}
                   <option value="10">10</option>   
                {% else %}
                   <option value="70">70</option>
@@ -36,7 +36,7 @@
             name = "pais_origen"
             class="form-control"
             >
-            <option value="{{order[0].pais_origen}}" >{{order[0].pais_origen}}</option>
+            <option value="{{order.pais_origen}}" >{{order.pais_origen}}</option>
          </select>
       </div>
       <div class="col-md-2">
@@ -47,7 +47,7 @@
                id="ciudad_origen"
                name="ciudad_origen"
                >
-               <option value="{{order[0].ciudad_origen}}">{{order[0].ciudad_origen}}</option>
+               <option value="{{order.ciudad_origen}}">{{order.ciudad_origen}}</option>
             </select>
          </div>
       </div>
@@ -58,7 +58,7 @@
             name ="incoterm"
             id ="incoterm"
             >
-            <option>{{order[0].incoterm}}<option>
+            <option>{{order.incoterm}}<option>
          </select>
       </div>
       <div class="col-md-2">
@@ -70,7 +70,7 @@
                placeholder="000-0000-00-000000"
                class="form-control" 
                maxlength="20" 
-               value="{{order[0].nro_refrendo}}" 
+               value="{{order.nro_refrendo}}" 
                >
          </div>
       </div>
@@ -86,7 +86,7 @@
                placeholder="0.00" 
                required="true"
                name="seguro_aduana"
-               value="{{order[0].seguro_aduana}}" 
+               value="{{order.seguro_aduana}}" 
                >
          </div>
       </div>      <div class="col-md-2">
@@ -99,7 +99,7 @@
                step="0.01" 
                placeholder="0.00" 
                name="flete_aduana"
-               value="{{order[0].flete_aduana}}" 
+               value="{{order.flete_aduana}}" 
                >
          </div>
       </div>
@@ -113,7 +113,7 @@
                required="required" 
                name="fecha_arribo" 
                class="bootstrap-datepicker" 
-               value="{{order[0].fecha_arribo}}" 
+               value="{{order.fecha_arribo}}" 
                >
             <div class="input-group-addon">
                <span class="glyphicon glyphicon-th"></span>
@@ -129,7 +129,7 @@
                class="form-control"
                id="comentarios"
                name="comentarios"
-               >{{order[0].comentarios}}</textarea>
+               >{{order.comentarios}}</textarea>
          </div>
       </div>
    </div>
@@ -140,7 +140,7 @@
             <span class="fa fa-save fa-fw"></span>
             Guardar Registro
          </button>
-      <a href="{{rute_url}}pedido/presentar/{{order[0].nro_pedido}}" class="btn btn-sm btn-default">
+      <a href="{{rute_url}}pedido/presentar/{{order.nro_pedido}}" class="btn btn-sm btn-default">
             <span class="fa fa-arrow-left fa-fw"></span>
             Volver
          </a>

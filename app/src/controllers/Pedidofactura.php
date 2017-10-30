@@ -36,9 +36,12 @@ class Pedidofactura extends MY_Controller {
 		$config['show_invoices'] = true;
 		$config['user'] = $userdata[0];
 		$config['invoice'] = $invoice;
-		$config['supplier'] = $this->_getDb('identificacion_proveedor', 
-																				$invoice[0]['identificacion_proveedor'], 
-																																	'proveedor');		
+		$config['supplier'] = $this->mymodel->get_table([
+											'table' => 'proveedor',
+											'where' => [
+														'indentificacion_proveedor' => 
+															$invoice[0]['identificacion_proveedor']
+																],																		]);
 		$config['invoiceDetail'] = $this->getDetailInvoice($idInvoice);
 		$config['titleContent'] = 'Detalle Factura [ # ' . 
 															$invoice[0]['id_factura_proveedor'] . 

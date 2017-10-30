@@ -52,7 +52,36 @@ class __TwigTemplate_0441768f18b4b85298f268ae9e67e6cac61b9bba8a36e9eeaf18b2a3138
 <div class=\"row\">
 <div class=\"col-lg-12\">
 <div class=\"panel panel-default\">
-<div class=\"panel-body\">";
+<div class=\"panel-body\">
+   ";
+        // line 29
+        if ((($context["fail"] ?? null) == true)) {
+            // line 30
+            echo "<div class=\"alert alert-danger\">
+   <strong> ";
+            // line 31
+            echo twig_escape_filter($this->env, twig_upper_filter($this->env, ($context["message"] ?? null)), "html", null, true);
+            echo " </strong>
+   <ul>
+   ";
+            // line 33
+            $context['_parent'] = $context;
+            $context['_seq'] = twig_ensure_traversable(($context["fields_error"] ?? null));
+            foreach ($context['_seq'] as $context["_key"] => $context["field"]) {
+                // line 34
+                echo "      <li> ";
+                echo twig_escape_filter($this->env, $context["field"], "html", null, true);
+                echo " </li>    
+   ";
+            }
+            $_parent = $context['_parent'];
+            unset($context['_seq'], $context['_iterated'], $context['_key'], $context['field'], $context['_parent'], $context['loop']);
+            $context = array_intersect_key($context, $_parent) + $_parent;
+            // line 36
+            echo "   </ul>
+</div>
+";
+        }
     }
 
     public function getTemplateName()
@@ -67,7 +96,7 @@ class __TwigTemplate_0441768f18b4b85298f268ae9e67e6cac61b9bba8a36e9eeaf18b2a3138
 
     public function getDebugInfo()
     {
-        return array (  43 => 17,  39 => 16,  26 => 6,  19 => 1,);
+        return array (  81 => 36,  72 => 34,  68 => 33,  63 => 31,  60 => 30,  58 => 29,  43 => 17,  39 => 16,  26 => 6,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -107,6 +136,16 @@ class __TwigTemplate_0441768f18b4b85298f268ae9e67e6cac61b9bba8a36e9eeaf18b2a3138
 <div class=\"row\">
 <div class=\"col-lg-12\">
 <div class=\"panel panel-default\">
-<div class=\"panel-body\">", "base/content.html.twig", "/var/www/html/app/src/views/base/content.html.twig");
+<div class=\"panel-body\">
+   {% if fail == true %}
+<div class=\"alert alert-danger\">
+   <strong> {{message | upper }} </strong>
+   <ul>
+   {% for field in fields_error %}
+      <li> {{field}} </li>    
+   {% endfor %}
+   </ul>
+</div>
+{% endif %}", "base/content.html.twig", "/var/www/html/app/src/views/base/content.html.twig");
     }
 }

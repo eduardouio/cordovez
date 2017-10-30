@@ -19,9 +19,9 @@ class __TwigTemplate_9497fa7932e2b52985d20c254691f9011bbbf8b04e2f12cffdf34696254
         echo "<form action=\"";
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "gstinicial/validar\" method=\"post\">
-\t<input type=\"hidden\" name=\"id_gastos_iniciales\" value=\"";
+\t<input type=\"hidden\" name=\"id_gastos_nacionalizacion\" value=\"";
         // line 2
-        echo twig_escape_filter($this->env, $this->getAttribute(($context["initExpense"] ?? null), "id_gastos_iniciales", array()), "html", null, true);
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["initExpense"] ?? null), "id_gastos_nacionalizacion", array()), "html", null, true);
         echo "\">
 <div class=\"row\">
 \t<div class=\"col-sm-1\">
@@ -172,11 +172,6 @@ class __TwigTemplate_9497fa7932e2b52985d20c254691f9011bbbf8b04e2f12cffdf34696254
 </form>
 <script type=\"text/javascript\">
 
-\tvar userExpenses = ";
-        // line 110
-        echo ($context["used_expenses"] ?? null);
-        echo " ;
-
 \t\$('#comentarios').keyup(function(){
 \t\tthis.value = this.value.toUpperCase();
 \t});
@@ -193,7 +188,7 @@ class __TwigTemplate_9497fa7932e2b52985d20c254691f9011bbbf8b04e2f12cffdf34696254
                name=\"fecha_fin\" 
                class=\"bootstrap-datepicker\" 
                value=\"";
-        // line 127
+        // line 125
         echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "fecha_fin", array()), "html", null, true);
         echo "\"
                >
@@ -225,7 +220,7 @@ class __TwigTemplate_9497fa7932e2b52985d20c254691f9011bbbf8b04e2f12cffdf34696254
 
     public function getDebugInfo()
     {
-        return array (  197 => 127,  177 => 110,  167 => 103,  160 => 101,  146 => 90,  130 => 77,  107 => 57,  88 => 41,  73 => 28,  62 => 26,  58 => 25,  52 => 24,  36 => 11,  24 => 2,  19 => 1,);
+        return array (  192 => 125,  167 => 103,  160 => 101,  146 => 90,  130 => 77,  107 => 57,  88 => 41,  73 => 28,  62 => 26,  58 => 25,  52 => 24,  36 => 11,  24 => 2,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -239,7 +234,7 @@ class __TwigTemplate_9497fa7932e2b52985d20c254691f9011bbbf8b04e2f12cffdf34696254
     public function getSourceContext()
     {
         return new Twig_Source("<form action=\"{{rute_url}}gstinicial/validar\" method=\"post\">
-\t<input type=\"hidden\" name=\"id_gastos_iniciales\" value=\"{{initExpense.id_gastos_iniciales}}\">
+\t<input type=\"hidden\" name=\"id_gastos_nacionalizacion\" value=\"{{initExpense.id_gastos_nacionalizacion}}\">
 <div class=\"row\">
 \t<div class=\"col-sm-1\">
 \t\t<div class=\"form-group\">
@@ -346,8 +341,6 @@ class __TwigTemplate_9497fa7932e2b52985d20c254691f9011bbbf8b04e2f12cffdf34696254
    </div>
 </form>
 <script type=\"text/javascript\">
-
-\tvar userExpenses = {{ used_expenses | raw }} ;
 
 \t\$('#comentarios').keyup(function(){
 \t\tthis.value = this.value.toUpperCase();

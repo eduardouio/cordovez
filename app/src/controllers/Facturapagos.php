@@ -13,7 +13,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Facturapagos extends MY_Controller {
 	private $resultDb;
-	private $controller = "factura_pagos";
+	private $controller = "justificacion_gasto_nacionalizacion";
 	private $template = "/pages/pageFacturas.html";
 
 	/**

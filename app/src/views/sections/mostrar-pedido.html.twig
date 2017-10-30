@@ -1,0 +1,552 @@
+{%  set fob = viewData.valuesSums.valInvoices + (viewData.valuesSums.initExpenses * viewData.valuesSums.mutiple ) %}
+{% set saldo =  fob - viewData.valuesSums.infoInvoices %}
+<div class="well well-sm">
+   <div class="row">
+      <div class="col-sm-3">
+         <strong>Valor FOB Total:</strong> 
+         <span class="fa fa-usd">/</span>
+         <strong>
+         {{fob | number_format(2, '.', ',') }}      
+         </strong>  
+      </div>
+      <div class="col-sm-3">
+         <strong>
+         FOB Nacionalizado:</strong> 
+         <span class="fa fa-usd">/</span>
+         <span class="text-primary">
+         <strong>
+         {% if valuesSums.regimen10 == true %}
+         {{fob | number_format(2, '.', ',') }}      
+         {% else %}
+         0.00
+         {% endif %}
+         </strong>
+         </span>
+      </div>
+      <div class="col-sm-3">
+         <strong>
+         Valor FOB Saldo:</strong> 
+         <span class="fa fa-usd">/</span>
+         <span class="text-primary">
+         <strong>
+         {% if valuesSums.regimen10 == true %}
+         0.00
+         {% else %}
+         {{fob | number_format(2, '.', ',') }}      
+         {% endif %}
+         </strong>
+         </span>
+      </div>
+      <div class="col-sm-3">
+         <strong>
+         Fecha Registro:</strong> {{ viewData.order.date_create }}
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-sm-3">
+         <strong>Tiempo Bodega:</strong> 
+         {% set meses = (viewData.order.dias / 30) %}
+         {% set anos = (viewData.order.dias / 365)  %}
+         {% if viewData.order.dias < 30 %}
+         {{viewData.order.dias | number_format(1, '.', ',') }} <small>días</small>  
+         {% elseif (viewData.order.dias > 29) and (viewData.order.dias < 300) %}
+         {{meses | number_format(2, '.', ',')}} <small><b>Meses</b></small>  
+         {% elseif viewData.order.dias > 300 %}
+         {{ anos | number_format(3, '.', ',')}} <small>años</small>
+         {% endif %}
+         </label>
+      </div>
+      <div class="col-sm-2">
+         <strong>Provisiones:</strong> 
+         <span class="text-warning">
+         {{ viewData.provisions | number_format(0, '.', ',') }}
+         </span>
+      </div>
+      <div class="col-sm-2">
+         <strong>Consolidado:</strong> 
+         <span class="text-primary">
+         {{ viewData.consolided | number_format(0, '.', ',') }}
+         </span>
+      </div>
+      <div class="col-sm-2">
+         <strong>Saldo:</strong> 
+         <span class="text-primary">
+         {% set saldo = (viewData.provisions - viewData.consolided) %}
+         {{ saldo | number_format(0, '.', ',') }}
+         </span>
+      </div>
+      <div class="col-sm-3">
+         <strong>Creado Por:</strong> <span>{{createBy[0]['nombres']}}</span>
+      </div>
+   </div>
+</div>
+<!-- Tabs -->
+<div>
+   <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active"><a href="#pedido" role="tab" data-toggle="tab" aria-controls="pedido">Detalle Pedido &nbsp;
+         {% if viewData.order.estado == 'ABIERTO' %}
+         <span class="label label-success">Abierto</span>
+         {% else %}
+         <span class="label label-died">Cerrado</span>
+         {% endif %}
+         </a>
+      </li>
+      <li role="presentation"><a href="#facturas" role="tab" data-toggle="tab" aria-controls="facturas">Facturas Productos</a></li>
+      <li role="presentation"><a href="#gastos" role="tab" data-toggle="tab" aria-controls="gastos">Gastos Iniciales</a></li>
+      <li role="presentation"><a href="#nacionalizaciones" role="tab" data-toggle="tab" aria-controls="nacionalizaciones">Nacionalizaciones</a></li>
+      <li role="presentation"><a href="#impuestos" role="tab" data-toggle="tab" aria-controls="impuestos">Impuestos</a></li>
+      <li role="presentation"><a href="#facturasServicios" role="tab" data-toggle="tab" aria-controls="facturasfacturasServicios">Facturas Servicios</a></li>
+   </ul>
+   <br>
+   <br>
+   <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="pedido">
+         <div class="row">
+            <div class="col-md-2">
+               <div class="input-group">
+                  <span class="input-group-addon" >PEDIDO</span>
+                  <span class="form-control">{{viewData.order.nro_pedido}} </span>
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="input-group">
+                  <span class="input-group-addon">RÉGIMEN</span>
+                  <span class="form-control">{{viewData.order.regimen }}</span>
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="input-group">
+                  <span class="input-group-addon">INCOTERM</span>
+                  <span class="form-control">{{viewData.order.incoterm}} </span>
+               </div>
+            </div>
+            <div class="col-md-3">
+               <div class="input-group">
+                  <span class="input-group-addon">PAIS</span>
+                  <span class="form-control"> {{viewData.order.pais_origen}}</span>
+               </div>
+            </div>
+            <div class="col-md-3">
+               <div class="input-group">
+                  <span class="input-group-addon">CIUDAD</span>
+                  <span class="form-control">{{viewData.order.ciudad_origen}}</span>
+               </div>
+            </div>
+         </div>
+         <br>
+         <div class="row">
+            <div class="col-md-3">
+               <div class="input-group">
+                  <span class="input-group-addon">SEGURO SENAE</span>
+                  <span class="form-control"> {{viewData.order.seguro_aduana }}</span>
+               </div>
+            </div>
+            <div class="col-md-3">
+               <div class="input-group">
+                  <span class="input-group-addon">FLETE SENAE</span>
+                  <span class="form-control" > {{viewData.order.flete_aduana  }}</span>
+               </div>
+            </div>
+            <div class="col-md-3">
+               <div class="input-group">
+                  <span class="input-group-addon">ARRIBO</span>
+                  <span class="form-control" > {{viewData.order.fecha_arribo}}  </span>
+               </div>
+            </div>
+         </div>
+         <br>
+         <div class="row">
+            <div class="col-md-12">
+               <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon3">COMENTARIOS</span>
+                  <span type="text" class="form-control">{{viewData.order.comentarios}} </span>
+               </div>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-md-6">
+               <hr>
+               <a href="{{rute_url}}/pedido/editar/{{viewData.order.nro_pedido}}" class="text-primary">
+               <button class="btn btn-sm btn-default"><span class="fa fa-pencil fa-fw"></span>Ediar</button></a>
+               <a href="{{rute_url}}/pedido/eliminar/{{viewData.order.nro_pedido}}">
+               <button class="btn btn-sm btn-default"> <span class="fa fa-trash fa-fw"></span>Elimnar</button></a>
+            </div>
+         </div>
+         <!-- /tabPedido-->
+      </div>
+      <!-- /tabFacturas-->
+      <div role="tabpanel" class="tab-pane" id="facturas">
+         <div class="row">
+            <div class="col-sm-6">
+               <a href="{{rute_url}}pedidofactura/nuevo/{{viewData.order.nro_pedido}}">
+               <button class="btn btn-sm btn-default">
+               <span class="fa fa-plus fa-fw"> </span>
+               Agregar Factura Productos
+               </button>
+               </a>
+            </div>
+            <div class="col-sm-2">
+               <h4 class="text-primary"> <small>Cajas Pedido: </small> <span id="suma"> 
+                  {{ viewData.boxesOrder.boxesImported | number_format(0, '.', ',') }} 
+                  </span>
+               </h4>
+            </div>
+            <div class="col-sm-2">
+               <h4 class="text-primary"> <small>Cajas Nacionalizadas: </small> 
+                  <span id="suma"> {{ simbolo | raw}} 
+                  {{ viewData.boxesOrder.boxesNationalized  | number_format(0, '.', ',')}}</span>
+               </h4>
+            </div>
+            <div class="col-sm-2">
+               <h4 class="text-danger"> <small>Cajas Stock: </small> 
+                  <span id="suma">
+                  {% set stock = viewData.boxesOrder.boxesImported - viewData.boxesOrder.boxesNationalized %}
+                  {{ stock }}
+                  </span>
+               </h4>
+            </div>
+         </div>
+         <br>
+         <div class="row">
+            <div class="col-sm-12">
+               <table class="table table-hover table-bordered table-striped">
+                  <thead>
+                     <tr style="background-color: #c1c1c1;">
+                        <th>#</th>
+                        <th>Nro Factura</th>
+                        <th>Proveedor</th>
+                        <th>F Emision</th>
+                        <th>F Vencimiento</th>
+                        <th>Moneda</th>
+                        <th>Valor</th>
+                        <th>Retirado</th>
+                        <th>Saldo</th>
+                        <th>Acciones</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     {% for orderInvoice in viewData.orderInvoices %}
+                     <tr>
+                        <td>{{loop.index}}</td>
+                        <td>
+                           <a href="{{rute_url}}pedidofactura/presentar/{{orderInvoice.id_pedido_factura}}">
+                           {{orderInvoice.id_factura_proveedor}}
+                           </a>
+                        </td>
+                        <td>
+                           <a href="{{rute_url}}proveedor/presentar/{{orderInvoice.id_proveedor}}">
+                           {{orderInvoice.nombre}}                     
+                           </a>
+                        </td>
+                        <td>{{orderInvoice.fecha_emision}}</td>
+                        <td>{{orderInvoice.vencimiento_pago}}</td>
+                        <td>{{orderInvoice.moneda}}</td>
+                        <td>{{orderInvoice.valor}}</td>
+                        <td>{{orderInvoice.valor}}</td>
+                        <td>{{orderInvoice.valor}}</td>
+                        <td>
+                           <div class="dropdown">
+                              <button class="btn btn-sm btn-default" id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              Acciones <span class="fa fa-list fa-fw" ></span>
+                              <span class="caret"></span>
+                              </button>
+                              <ul class="dropdown-menu" aria-labelledby="dLabel">
+                                 <li> 
+                                    <a href="{{rute_url}}pedidofactura/presentar/{{orderInvoice.id_pedido_factura}}">
+                                    <span class="fa fa-eye fa-fw"></span>
+                                    Ver Productos
+                                    </a> 
+                                 </li>
+                                 <li> 
+                                    <a href="{{rute_url}}pedidofactura/editar/{{orderInvoice.id_pedido_factura}}">
+                                    <span class="fa fa-pencil fa-fw"></span>
+                                    Editar Factura 
+                                    <span class="label label-success"> {{orderInvoice.id_factura_proveedor}}</span></a> 
+                                 </li>
+                                 <li>
+                                    <a href="{{rute_url}}pedidofactura/eliminar/{{orderInvoice.id_pedido_factura}}">
+                                    <span class="text-danger fa fa-trash fa-fw"></span>
+                                    Elminar Factura 
+                                    <span class="label label-danger">
+                                    {{orderInvoice.id_factura_proveedor}}
+                                    </span>
+                                    </a> 
+                                 </li>
+                              </ul>
+                           </div>
+                        </td>
+                     </tr>
+                     {% endfor %}
+                  </tbody>
+               </table>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-sm-3">
+               <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">
+               <span class="fa fa-gear"></span>
+               Generar Gastos Iniciales
+               </button>
+            </div>
+         </div>
+         <!-- table -- >
+            <!-- /table -- >
+            </div>
+            <!-- /Tab Facturas-->
+      </div>
+      <!-- Gastos iniciales -->
+      <div role="tabpanel" class="tab-pane" id="gastos">
+         <div class="row">
+            <div class="col-sm-6">
+               {% if viewData.order.regimen == 70 %}
+               <a href="{{rute_url}}gstinicial/nuevo/{{viewData.order.nro_pedido}}">
+               <button class="btn btn-sm btn-default">
+               <span class="fa fa-plus fa-fw"> </span>
+               Agregar Gasto Nacional <span class="label label-warning">provisionado</span>
+               </button>
+               </a>
+               {% else %}
+               <h5 class="text-primary">GASTOS INICIALES RÉGIMEN 10</h5>
+               {% endif %}
+            </div>
+            {% set cantidad = 0 %}
+            {% set provisionado = 0.0 %}
+            {% set convalidado = 0.00 %}
+            {% for initialExpense in viewData.initialExpenses %}
+            {% set cantidad = cantidad + 1 %}
+            {% set provisionado = provisionado + initialExpense.valor_provisionado %}
+            {% endfor %}
+            <div class="col-sm-2">
+               <h5 class="text-primary"> <small>Cantidad: </small> <span id="suma"> {{ cantidad | number_format(0, '.', ',') }} </span></h5>
+            </div>
+            <div class="col-sm-2">
+               <h5 class="text-primary"> <small>Provisionado: </small> <span id="suma"> $ {{ provisionado | number_format(2, '.', ',')}}</span></h5>
+            </div>
+            <div class="col-sm-2">
+               <h5 class="text-danger"> <small>Convalidado: </small> <span id="suma"> $ {{ Convalidado | number_format(2, '.', ',') }} </span></h5>
+            </div>
+         </div>
+         <br>
+         <div class="row">
+            <div class="col-sm-12">
+               <table class="table table-hover table-bordered table-striped">
+                  <thead>
+                     <tr style="background-color: #c1c1c1;">
+                        <th>#</th>
+                        <th>Concepto</th>
+                        <th>Proveedor</th>
+                        <th>Comentarios</th>
+                        <th>Fecha</th>
+                        <th>Valor</th>
+                        <th>Acciones</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     {% for initialExpense in viewData.initialExpenses %}
+                     <tr>
+                        <td>{{loop.index}}</td>
+                        <td>
+                           <a href="{{rute_url}}gstinicial/presentar/{{initialExpense.id_gastos_nacionalizacion}}">
+                           {{initialExpense.concepto}}
+                           </a>
+                        </td>
+                        <td>
+                           <a href="{{rute_url}}proveedor/presentar/{{initialExpense.id_proveedor}}">
+                           {{initialExpense.nombre}}
+                           </a>
+                        </td>
+                        <td>{{initialExpense.comentarios |raw }}</td>
+                        <td>{{initialExpense.fecha | date("m/d/Y") }}</td>
+                        <td>{{initialExpense.valor_provisionado | number_format(2, '.', ',')}}</td>
+                        <td>
+                           <div class="dropdown">
+                              <button class="btn btn-sm btn-default" id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              Acciones <span class="fa fa-list fa-fw" ></span>
+                              <span class="caret"></span>
+                              </button>
+                              <ul class="dropdown-menu" aria-labelledby="dLabel">
+                                 <li> 
+                                    <a href="{{rute_url}}gstinicial/presentar/{{initialExpense.id_gastos_nacionalizacion}}">
+                                    <span class="fa fa-eye fa-fw"></span>
+                                    Detalle Gasto Inicial
+                                    </a> 
+                                 </li>
+                                 <li> 
+                                    <a href="{{rute_url}}gstinicial/editar/{{initialExpense.id_gastos_nacionalizacion}}">
+                                    <span class="fa fa-pencil fa-fw"></span>
+                                    Editar Gasto Inicial
+                                    <span class="label label-success"> {{initialExpense.id_gastos_nacionalizacion}}</span></a> 
+                                 </li>
+                                 <li>
+                                    <a href="{{rute_url}}gstinicial/eliminar/{{initialExpense.id_gastos_nacionalizacion}}">
+                                    <span class="text-danger fa fa-trash fa-fw"></span>
+                                    Elminar Gasto Inicial
+                                    <span class="label label-danger">
+                                    {{initialExpense.id_gastos_nacionalizacion}}
+                                    </span>
+                                    </a>   
+                                 </li>
+                              </ul>
+                           </div>
+                        </td>
+                     </tr>
+                     {% endfor %}
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </div>
+      <!-- /Gastos iniciales -->
+      <!-- factura Nacionalizaciones -->
+      <div role="tabpanel" class="tab-pane" id="nacionalizaciones">
+         <div class="row">
+            <div class="col-sm-6">
+               {% if viewData.order.regimen == 70 %}
+               <a href="{{rute_url}}gstinicial/nuevo/{{viewData.order.nro_pedido}}">
+               <button class="btn btn-sm btn-default">
+               <span class="fa fa-plus fa-fw"> </span>
+               Agregar Factura Informativa <span class="label label-primary">
+               Parcial</span>
+               </button>
+               </a>
+               {% endif %}
+            </div>
+            
+            <div class="col-sm-2">
+               <h5 class="text-primary"> <small>Parciales: </small>
+                <span id="suma"> {{ 0 | number_format(0, '.', ',') }} </span></h5>
+            </div>
+            <div class="col-sm-2">
+               <h5 class="text-primary"> <small>Sumas: </small> <span id="suma"> 
+                        $ {{ 0 | number_format(2, '.', ',')}}</span></h5>
+            </div>
+            <div class="col-sm-2">
+               <h5 class="text-danger"> <small>Saldo:</small> 
+                  <span id="suma"> $ {{ saldo | number_format(2, '.', ',') }} 
+                  </span></h5>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-sm-12">
+               <table class="table table-hover table-bordered table-striped">
+                  <thead>
+                     <tr style="background-color: #c1c1c1;">
+                        <th>#</th>
+                        <th>Nro Fact</th>
+                        <th>Proveedor</th>
+                        <th>Fecha</th>
+                        <th>Valor</th>
+                        <th>Acciones</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     {% for nationalization in viewData.nationalizations %}
+                     <tr>
+                        <td>{{loop.index}}</td>
+                        <td>
+                           {{nationalization.nro_factura_informativa}}
+                        </td>
+                        <td>
+                           <a href="{{rute_url}}proveedor/presentar/{{initialExpense.identificacion_proveedor}}">
+                           {{nationalization.identificacion_proveedor}}
+                           </a>
+                        </td>
+                        <td>{{initialExpense.fecha | date("m/d/Y") }}</td>
+                        <td>{{initialExpense.valor | number_format(2, '.', ',')}}</td>
+                        <td>
+                           <div class="dropdown">
+                              <button class="btn btn-sm btn-default" id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              Acciones <span class="fa fa-list fa-fw" ></span>
+                              <span class="caret"></span>
+                              </button>
+                              <ul class="dropdown-menu" aria-labelledby="dLabel">
+                                 <li> 
+                                    <a href="{{rute_url}}pedidofactura/presentar/{{initialExpense.id_pedido_factura}}">
+                                    <span class="fa fa-eye fa-fw"></span>
+                                    Ver Productos
+                                    </a> 
+                                 </li>
+                                 <li> 
+                                    <a href="{{rute_url}}pedidofactura/nuevo/{{initialExpense.id_pedido_factura}}">
+                                    <span class="fa fa-plus fa-fw"></span>
+                                    Agregar Producto
+                                    </a> 
+                                 </li>
+                                 <li> 
+                                    <a href="{{rute_url}}pedidofactura/editar/{{initialExpense.id_pedido_factura}}">
+                                    <span class="fa fa-pencil fa-fw"></span>
+                                    Editar Factura 
+                                    <span class="label label-success"> {{initialExpense.id_factura_proveedor}}</span></a> 
+                                 </li>
+                                 <li>
+                                    <a href="{{rute_url}}pedidofactura/eliminar/{{initialExpense.id_pedido_factura}}">
+                                    <span class="text-danger fa fa-trash fa-fw"></span>
+                                    Elminar Factura 
+                                    <span class="label label-danger">
+                                    {{initialExpense.id_factura_proveedor}}
+                                    </span>
+                                    </a>   
+                                 </li>
+                              </ul>
+                           </div>
+                        </td>
+                     </tr>
+                     {% endfor %}
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </div>
+      <!-- /factura Nacionalizaciones -->
+      <div role="tabpanel" class="tab-pane" id="impuestos">
+         Proximamente
+      </div>
+      <div role="tabpanel" class="tab-pane" id="facturasServicios">
+         Proximamente
+      </div>
+   </div>
+</div>
+<!--/tabs-->
+<!-- Modal -->
+<div class="modal fade bs-example-modal-sm" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+   <div class="modal-dialog" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">
+               Generador Gastos Iniciales Pedido: 
+               <span class="text-danger">{{ viewData.order.nro_pedido }}</span>
+            </h4>
+         </div>
+         <div class="modal-body">
+            <p>
+               Esta acción Generará los gastos iniciales del pedido, recuerde que si hace cambios en los valores de las facturas del pedido
+               {{ viewData.order.nro_pedido }} se deben volver a generar los gastos inciales, debido a que el cálculo de algunos rubros dependen de los valores de las facturas.
+            </p>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
+            <a 
+            href="{{rute_url}}pedido/calcularGI/{{viewData.order.nro_pedido}}">
+            <button type="button" class="btn btn-primary btn-sm">
+            <span class="fa fa-warning"></span>
+            Generar Gastos Iniciales 
+            </button>
+            </a>
+         </div>
+      </div>
+   </div>
+</div>
+<script type="text/javascript">
+// Javascript to enable link to tab
+var hash = document.location.hash;
+var prefix = "tab_";
+if (hash) {
+    $('.nav-tabs a[href="'+hash.replace(prefix,"")+'"]').tab('show');
+} 
+
+// Change hash for page-reload
+$('.nav-tabs a').on('shown', function (e) {
+    window.location.hash = e.target.hash.replace("#", "#" + prefix);
+});
+</script>

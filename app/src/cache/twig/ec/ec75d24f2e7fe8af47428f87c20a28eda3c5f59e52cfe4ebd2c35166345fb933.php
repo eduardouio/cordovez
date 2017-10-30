@@ -27,7 +27,7 @@ class __TwigTemplate_cf8c7b0e5d37b2e7add3482be8af7c8f92666cb1eacfb8ea8dd88fbe14b
         echo "
 ";
         // line 6
-        $this->loadTemplate("base/sections/dashboard.html.twig", "/pages/pageHome.html.twig", 6)->display($context);
+        $this->loadTemplate("sections/dashboard.html.twig", "/pages/pageHome.html.twig", 6)->display($context);
         echo "\t
 
 ";
@@ -69,7 +69,7 @@ class __TwigTemplate_cf8c7b0e5d37b2e7add3482be8af7c8f92666cb1eacfb8ea8dd88fbe14b
 {% include 'base/navbarleft.html.twig' %}
 {% include 'base/content.html.twig' %}
 
-{% include 'base/sections/dashboard.html.twig' %}\t
+{% include 'sections/dashboard.html.twig' %}\t
 
 {% include 'base/content_close.html.twig' %}
 {% include 'base/signaturefoot.html.twig' %}

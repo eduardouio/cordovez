@@ -30,7 +30,7 @@ class __TwigTemplate_c2e9aad1f61351504b8b2316b10984e708cbcbc750694f924d9ed351442
         if ((($context["show"] ?? null) == true)) {
             // line 7
             echo "\t";
-            $this->loadTemplate("base/sections/mostrar-producto.html.twig", "/pages/pageProducto.html.twig", 7)->display($context);
+            $this->loadTemplate("sections/mostrar-producto.html.twig", "/pages/pageProducto.html.twig", 7)->display($context);
             echo "\t
 ";
         }
@@ -41,7 +41,7 @@ class __TwigTemplate_c2e9aad1f61351504b8b2316b10984e708cbcbc750694f924d9ed351442
         if ((($context["list"] ?? null) == true)) {
             // line 11
             echo "\t";
-            $this->loadTemplate("base/sections/listar-producto.html.twig", "/pages/pageProducto.html.twig", 11)->display($context);
+            $this->loadTemplate("sections/listar-producto.html.twig", "/pages/pageProducto.html.twig", 11)->display($context);
             echo "\t
 ";
         }
@@ -151,11 +151,11 @@ class __TwigTemplate_c2e9aad1f61351504b8b2316b10984e708cbcbc750694f924d9ed351442
 {% include 'base/content.html.twig' %}
 
 {% if show == true %}
-\t{% include 'base/sections/mostrar-producto.html.twig' %}\t
+\t{% include 'sections/mostrar-producto.html.twig' %}\t
 {% endif %}
 
 {% if list == true %}
-\t{% include 'base/sections/listar-producto.html.twig' %}\t
+\t{% include 'sections/listar-producto.html.twig' %}\t
 {% endif %}
 
 {% if create == true %}

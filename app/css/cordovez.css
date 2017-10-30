@@ -30,8 +30,7 @@ background-color: #0097a7 !important;
 color: #fff;
 }
 
-
-.title-factura_pagos{
+.title-justificacion_gasto_nacionalizacion{
 background-color: #0000a7 !important;
 color: #fff;
 }
@@ -43,7 +42,7 @@ color: #fff;
 }
 
 
-.title-gastos_iniciales_r70{
+.title-gastos_nacionalizacion{
 background-color: #7b1fa2 !important;
 color: #fff;
 }
@@ -224,4 +223,13 @@ body{
     background-color: #eee;
     padding: 3px 10px 3px;
 
+}
+
+.label-died{
+    background-color: #444;
+}
+
+.modal-dialog {
+    width: 550px;
+    margin: 30px auto;
 }

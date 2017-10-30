@@ -30,7 +30,7 @@ class __TwigTemplate_c8b22148e41078505aa17dcdbfd1e65266fb56ad2d090bc0ddb68fa6957
         if ((($context["show"] ?? null) == true)) {
             // line 7
             echo "\t";
-            $this->loadTemplate("base/sections/mostrar-gasto-inicial.html.twig", "/pages/pageGasto-inicial.html.twig", 7)->display($context);
+            $this->loadTemplate("sections/mostrar-gasto-inicial.html.twig", "/pages/pageGasto-inicial.html.twig", 7)->display($context);
         }
         // line 9
         echo "
@@ -149,7 +149,7 @@ class __TwigTemplate_c8b22148e41078505aa17dcdbfd1e65266fb56ad2d090bc0ddb68fa6957
 {% include 'base/content.html.twig' %}
 
 {% if show == true %}
-\t{% include 'base/sections/mostrar-gasto-inicial.html.twig' %}
+\t{% include 'sections/mostrar-gasto-inicial.html.twig' %}
 {% endif %}
 
 

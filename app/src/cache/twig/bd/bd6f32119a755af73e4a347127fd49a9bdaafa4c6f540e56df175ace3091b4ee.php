@@ -31,6 +31,7 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
                placeholder=\"000\" 
                maxlength=\"3\" 
                minlength=\"1\" 
+               autofocus=\"\" 
                >
          </div>
       </div>
@@ -45,7 +46,7 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
                <option value=\"17\">2017</option>
                <option value=\"16\">2016</option>
                <option value=\"15\">2015</option>
-               <option value=\"15\">2014</option>
+               <option value=\"14\">2014</option>
             </select>
          </div>
       </div>
@@ -69,6 +70,7 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
             id = \"pais_origen\"
             name = \"pais_origen\"
             class=\"form-control\"
+
             >
             <option disabled selected=\"\">Seleccione...</option>
          </select>
@@ -142,7 +144,6 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
                type=\"text\" 
                class=\"form-control\" 
                id=\"fecha_arribo\" 
-               required=\"required\" 
                name=\"fecha_arribo\" 
                class=\"bootstrap-datepicker\" 
                >
@@ -172,7 +173,7 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
             Guardar Registro
          </button>
       <a href=\"";
-        // line 154
+        // line 155
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "pedido/listar/\" class=\"btn btn-sm btn-default\">
             <span class=\"fa fa-arrow-left fa-fw\"></span>
@@ -184,9 +185,12 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
 
    <script type=\"text/javascript\">
       var incotermsDb = ";
-        // line 163
+        // line 164
         echo ($context["incoterms"] ?? null);
         echo " ;
+      \$('#is_arrived').click(function(){
+         console.dir(this);
+      })
    </script>";
     }
 
@@ -202,7 +206,7 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
 
     public function getDebugInfo()
     {
-        return array (  188 => 163,  176 => 154,  19 => 1,);
+        return array (  189 => 164,  177 => 155,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -228,6 +232,7 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
                placeholder=\"000\" 
                maxlength=\"3\" 
                minlength=\"1\" 
+               autofocus=\"\" 
                >
          </div>
       </div>
@@ -242,7 +247,7 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
                <option value=\"17\">2017</option>
                <option value=\"16\">2016</option>
                <option value=\"15\">2015</option>
-               <option value=\"15\">2014</option>
+               <option value=\"14\">2014</option>
             </select>
          </div>
       </div>
@@ -266,6 +271,7 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
             id = \"pais_origen\"
             name = \"pais_origen\"
             class=\"form-control\"
+
             >
             <option disabled selected=\"\">Seleccione...</option>
          </select>
@@ -339,7 +345,6 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
                type=\"text\" 
                class=\"form-control\" 
                id=\"fecha_arribo\" 
-               required=\"required\" 
                name=\"fecha_arribo\" 
                class=\"bootstrap-datepicker\" 
                >
@@ -378,6 +383,9 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
 
    <script type=\"text/javascript\">
       var incotermsDb = {{ incoterms | raw }} ;
+      \$('#is_arrived').click(function(){
+         console.dir(this);
+      })
    </script>", "forms/frm-pedido.html.twig", "/var/www/html/app/src/views/forms/frm-pedido.html.twig");
     }
 }

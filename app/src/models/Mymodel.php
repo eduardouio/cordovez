@@ -22,6 +22,22 @@ class Mymodel extends CI_Model {
         parent::__construct();
     }
 
+
+    /**
+    * Guarda en la base de dato un registro si lo hace retorna 
+    * @param (array) $data 
+    *   
+    * @return true | false
+    */
+    public function saveDb(string $table, array $data){
+        if( $this->db->insert($table, $data) ){
+            return true;
+        }
+
+        return false;
+    }
+
+
     /**
      * get records from any table, example
      * SELECT [col1, col2, coln] from [mytable] where [a=b] limit [1,3];
@@ -90,4 +106,84 @@ class Mymodel extends CI_Model {
         return $lastData;
    }
 
+
+   /**
+    * Recupera los registros de una tabla si no existen 
+    * retorna un boleano falso
+    *
+    * @param (array) [table, condition => [n condition], orderby, ]
+    * $paramsQuery = [
+    *               'select' => [
+    *                                       'col1 [AS alias]',
+    *                                       'col2 [AS alias]',
+    *                                       'coln [AS alias]',
+    *                           ],
+    *
+    *           'table' => 'tableName',
+    *
+    *           'where' => [
+    *                               'col' => 'condition1',
+    *                               'col' => 'condition1',
+    *                               'coln' => 'conditionn',
+    *                           ],
+    *
+    *           'orderby' => [
+    *                               'col1' => 'ASC | DESC',
+    *                               'col2' => 'ASC | DESC',
+    *                               'coln' => 'ASC | DESC',
+    *                           ],
+    *       ];
+    *
+    * @return (array) | (boolean)
+    */
+    public function get_table(array $paramsQuery){
+        $sql = 'SELECT ';
+
+        if (isset($paramsQuery['select'])) {
+            if (count($paramsQuery['select']) == 1){
+                $sql .= implode('', $paramsQuery['select']);
+            }else{
+                $sql .= implode(', ', $paramsQuery['select']);
+            }
+        }else{
+            $sql .= ' * ';
+        }
+
+
+        $sql .= ' FROM ' . $paramsQuery['table'] . ' ';
+
+        if (isset($paramsQuery['where'])) {
+            $sql .= 'WHERE ' ;
+            $position = 0;
+            $count = (count($paramsQuery['where']))-1;
+            
+            foreach ($paramsQuery['where'] as $key => $val) {
+            $sql .= $key . " = '" . $val  . "' ";
+            if (($position > -1) && ( $position < $count )){
+                $sql .= ' AND ';
+            }
+                $position ++;
+            }    
+        }        
+
+        if (isset($paramsQuery['orderby'])){
+            $sql .= ' ORDER BY ';
+            $position = 0;
+            $count = (@count($paramsQuery['orderby'])) -1;
+            foreach ($paramsQuery['orderby'] as $key => $val) {
+                $sql .= $key . ' ' . $val . ' ';
+                if (($position > -1) && ( $position < $count )){
+                    $sql .= ' , ';
+                }   
+                $position ++;
+            }
+        }
+
+        $resultDb = $this->db->query($sql);
+        if (gettype($resultDb) ==  'boolean'){
+            return false;
+        }
+
+        return $resultDb->result_array();  
+    }
 }

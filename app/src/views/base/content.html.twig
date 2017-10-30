@@ -26,3 +26,13 @@
 <div class="col-lg-12">
 <div class="panel panel-default">
 <div class="panel-body">
+   {% if fail == true %}
+<div class="alert alert-danger">
+   <strong> {{message | upper }} </strong>
+   <ul>
+   {% for field in fields_error %}
+      <li> {{field}} </li>    
+   {% endfor %}
+   </ul>
+</div>
+{% endif %}

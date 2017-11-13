@@ -34,3 +34,21 @@ AS
   LEFT JOIN producto as pr USING(cod_contable);
   
   
+ALTER VIEW `detallePedidosView` 
+AS 
+select 
+`dpf`.`detalle_pedido_factura` AS `detalle_pedido_factura`,
+`dpf`.`id_pedido_factura` AS `id_pedido_factura`,
+`dpf`.`cod_contable` AS `cod_contable`,
+`dpf`.`grado_alcoholico` AS `grado_alcoholico`,
+`dpf`.`nro_cajas` AS `nro_cajas`,
+`dpf`.`costo_caja` AS `costo_cajas`,
+`dpf`.`date_create` AS `date_create`,
+`dpf`.`last_update` AS `last_update`,
+`dpf`.`id_user` AS `id_user`,`pf`.
+`nro_pedido` AS `nro_pedido`,
+`pf`.`id_factura_proveedor` AS `id_factura_proveedor`,
+`pr`.`nombre` AS `nombre`,
+`pr`.`grado_alcoholico` AS `grado_alcoholico_original`,
+`pr`.`custodia_doble` AS `custodia_doble` from 
+((`detalle_pedido_factura` `dpf` join `pedido_factura` `pf` on((`dpf`.`id_pedido_factura` = `pf`.`id_pedido_factura`))) join `producto` `pr` on((`dpf`.`cod_contable` = `pr`.`cod_contable`)))

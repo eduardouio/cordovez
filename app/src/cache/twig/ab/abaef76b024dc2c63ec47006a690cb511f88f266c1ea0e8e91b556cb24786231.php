@@ -49,23 +49,24 @@ class __TwigTemplate_ecc12a13c6ebcb786980518060a95a878e283480d98479bb155ef752d78
         // line 14
         echo "
 
+
 ";
-        // line 16
+        // line 17
         if ((($context["viewMessage"] ?? null) == true)) {
-            // line 17
+            // line 18
             echo "\t<div class=\"well\">
 \t\t<h3 class=\"text-primary\">\t";
-            // line 18
+            // line 19
             echo twig_escape_filter($this->env, ($context["message"] ?? null), "html", null, true);
             echo " </h3>
 \t\t<br><br>
 \t\t<p>
 \t\t\t";
-            // line 21
+            // line 22
             if ((($context["deleted"] ?? null) == true)) {
                 echo " 
 \t\t\t\t\t\t<a href=\"";
-                // line 22
+                // line 23
                 echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
                 echo "pedidofactura/presentar/";
                 echo twig_escape_filter($this->env, ($context["orderDetail"] ?? null), "html", null, true);
@@ -77,10 +78,10 @@ class __TwigTemplate_ecc12a13c6ebcb786980518060a95a878e283480d98479bb155ef752d78
 \t\t\t\t</a>
 \t\t\t";
             } else {
-                // line 28
+                // line 29
                 echo "  
 \t\t\t\t<a href=\"";
-                // line 29
+                // line 30
                 echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
                 echo "pedidofactura/presentar/";
                 echo twig_escape_filter($this->env, ($context["orderDetail"] ?? null), "html", null, true);
@@ -92,21 +93,21 @@ class __TwigTemplate_ecc12a13c6ebcb786980518060a95a878e283480d98479bb155ef752d78
 \t\t</a>
 \t\t\t";
             }
-            // line 36
+            // line 37
             echo "\t\t
 \t\t</p>
 \t</div>
 ";
         }
-        // line 40
+        // line 41
         echo "
 ";
-        // line 41
-        $this->loadTemplate("base/content_close.html.twig", "/pages/pagePedidoFacturaDetalle.html.twig", 41)->display($context);
         // line 42
-        $this->loadTemplate("base/signaturefoot.html.twig", "/pages/pagePedidoFacturaDetalle.html.twig", 42)->display($context);
+        $this->loadTemplate("base/content_close.html.twig", "/pages/pagePedidoFacturaDetalle.html.twig", 42)->display($context);
         // line 43
-        $this->loadTemplate("base/footer.html.twig", "/pages/pagePedidoFacturaDetalle.html.twig", 43)->display($context);
+        $this->loadTemplate("base/signaturefoot.html.twig", "/pages/pagePedidoFacturaDetalle.html.twig", 43)->display($context);
+        // line 44
+        $this->loadTemplate("base/footer.html.twig", "/pages/pagePedidoFacturaDetalle.html.twig", 44)->display($context);
     }
 
     public function getTemplateName()
@@ -121,7 +122,7 @@ class __TwigTemplate_ecc12a13c6ebcb786980518060a95a878e283480d98479bb155ef752d78
 
     public function getDebugInfo()
     {
-        return array (  109 => 43,  107 => 42,  105 => 41,  102 => 40,  96 => 36,  84 => 29,  81 => 28,  69 => 22,  65 => 21,  59 => 18,  56 => 17,  54 => 16,  50 => 14,  44 => 12,  42 => 11,  39 => 10,  33 => 8,  31 => 7,  27 => 5,  25 => 4,  23 => 3,  21 => 2,  19 => 1,);
+        return array (  110 => 44,  108 => 43,  106 => 42,  103 => 41,  97 => 37,  85 => 30,  82 => 29,  70 => 23,  66 => 22,  60 => 19,  57 => 18,  55 => 17,  50 => 14,  44 => 12,  42 => 11,  39 => 10,  33 => 8,  31 => 7,  27 => 5,  25 => 4,  23 => 3,  21 => 2,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -147,6 +148,7 @@ class __TwigTemplate_ecc12a13c6ebcb786980518060a95a878e283480d98479bb155ef752d78
 {% if edit == true %}
 \t{% include 'forms/frm-pedido-factura-detalle-edit.html.twig' %}    
 {% endif %}
+
 
 
 {% if viewMessage == true %}

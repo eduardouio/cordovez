@@ -5,7 +5,7 @@
  * @author    Eduardo Villota <eduardouio7@gmail.com>
  * @copyright    Copyright (c) 2014,  Agencias y Representaciones Cordovez S.A.
  * @license    Todos los derechos reservados Agencias y Representaciones Cordovez S.A.
- * @link    https://github.com/eduardouio/APPImportaciones
+ * @link    https://gitlab.com/eduardo/APPImportaciones
  * @since    Version 1.0.0
  * @filesource
  */
@@ -17,8 +17,13 @@
 .title-proveedor{
 background-color: #21610B !important;
 color: #fff;
-
 }
+
+.title-factura_informativa{
+background-color: #333 !important;
+color: #333;
+}
+
 
 .title-detalle_pedido_factura{
     background-color: #0097a7 !important;
@@ -232,4 +237,9 @@ body{
 .modal-dialog {
     width: 550px;
     margin: 30px auto;
+}
+
+
+.table>tbody>tr.total-row>td, .table>tbody>tr.total-row>th, .table>tbody>tr>td.total-row, .table>tbody>tr>th.total-row, .table>tfoot>tr.total-row>td, .table>tfoot>tr.total-row>th, .table>tfoot>tr>td.total-row, .table>tfoot>tr>th.total-row, .table>thead>tr.total-row>td, .table>thead>tr.total-row>th, .table>thead>tr>td.total-row, .table>thead>tr>th.total-row {
+    background-color: #fff;
 }

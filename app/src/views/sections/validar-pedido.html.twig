@@ -1,0 +1,777 @@
+<div class="well well-sm">
+   <div class="row">
+      <div class="col-sm-3">
+         <strong>Valor FOB Total:</strong> 
+         <span class="fa fa-usd">/</span>
+         <strong class="text-primary">
+         {{fob | number_format(2, '.', ',') }}      
+         </strong>  
+      </div>
+      <div class="col-sm-3">
+         <strong>
+         Nro Pedido:</strong> 
+         <span class="text-primary">
+         {{ order.nro_pedido }}
+         </span>
+      </div>
+      <div class="col-sm-3">
+         <strong>
+         Regimen:</strong> 
+         <span class="text-primary">
+         <strong class="text-primary">
+         {{ order.regimen  }}
+         </strong>   
+         </span>
+      </div>
+      <div class="col-sm-3">
+         <strong>
+         Fecha Registro:</strong> 
+         <span class="text-primary">
+         {{ order.date_create }}            
+         </span>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-sm-3">
+         <strong>Tiempo Bodega:</strong> 
+      </div>
+      <div class="col-sm-2">
+         <strong>P. Origen:</strong> 
+         <span class="text-primary">
+         {{ order.pais_origen }}
+         </span>
+      </div>
+      <div class="col-sm-2">
+         <strong>C Origen:</strong> 
+         <span class="text-primary">
+         {{ order.ciudad_origen  }}            
+         </span>
+      </div>
+      <div class="col-sm-2">
+         <strong>Incoterm:</strong> 
+         <span class="text-primary">
+         {{order.incoterm}}
+         </span>         
+      </div>
+      <div class="col-sm-2">
+         <strong>Creado Por:</strong> 
+         <span>{{createBy[0]['nombres']}}
+         </span>
+      </div>
+   </div>
+</div>
+<div class="row">
+   <div class="col-md-2">&nbsp;</div>
+   <div class="col-md-8">
+      {% set invoicesStatus = true %}
+      <table  class="table table-hover table-condensed table-striped table-bordered">
+         <thead>
+            <tr style="background-color: #333; color: #fff;">
+               <th colspan="3" class="text-center">
+                  RESUMEN DE ESTADO GASTOS INICIALES PEDIDO 
+                  [{{order.nro_pedido}}]
+               </th>
+            </tr>
+         </thead>
+         <tbody>
+            <tr style="background-color: #fff;">
+               <th class="text-center">CONCEPTO</th>
+               <th class="text-center">VALOR</th>
+               <th class="text-center">ESTADO</th>
+            </tr>
+            <tr>
+               <td>Gastos Origen</td>
+               {% if minimal.have_gasto_origen == true %}
+               {% if minimal.gasto_origen == false %}
+               <td>No Registrado</td>
+               <td class="danger">
+                  <a href="{{rute_url}}gstinicial/nuevo/{{order.nro_pedido}}">
+                  Registrar                        
+                  </a>
+               </td>
+               {% else %}
+               <td>{{minimal.gasto_origen | number_format(2,',','.')}}</td>
+               <td class="success" >OK</td>
+               {% endif %}               
+               </td>   
+               {% else %}
+               <td class="success" >No requerido</td>
+               <td class="success" >OK</td>
+               {% endif %}
+            </tr>
+            <tr>
+               <td>Felte Internacional</td>
+               {% if minimal.have_flete == true %}
+               {% if minimal.flete == false %}
+               <td>No Registrado</td>
+               <td class="danger">
+                  <a href="{{rute_url}}gstinicial/nuevo/{{order.nro_pedido}}">
+                  Registrar                        
+                  </a>
+               </td>
+               {% else %}
+               <td>{{ minimal.flete | number_format(2,',','.') }}</td>
+               <td class="success"> OK </td>
+               {% endif %}
+               {% else %}
+               <td>No requerido</td>
+               <td class="success" >OK</td>
+               {% endif %}
+            </tr>
+            <tr>
+               <td>Facturas Producto  <strong>{{order.nro_pedido}}</strong> Proveedor Internacional</td>
+               {% if invoicesOrder == false %}
+               <td>No Registrado</td>
+               <td class="danger">
+                  <a href="{{rute_url}}pedidofactura/nuevo/{{order.nro_pedido}}/">
+                  Registrar 
+                  </a>
+               </td>
+               {% else %}
+               {% if minimal.total_pedido == false %}
+               <td>Inconsistencias</td>   
+               <td class="danger">
+                  <a href="{{rute_url}}pedido/presentar/{{order.nro_pedido}}">
+                     Validar                     
+                  </a>
+                  </td>
+               {% else %}
+               <td>{{ minimal.total_pedido | number_format(2,',','.') }}</td>   
+               <td class="success">OK</td>
+               {% endif %}
+               {% endif %}
+            </tr>
+            <tr>
+               <td>Fecha Arribo</td>
+               {% if minimal.fecha_arribo == false %}
+               <td>No Registrado</td>
+               <td class="danger">
+                  <a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}">
+                     Registrar                     
+                  </a>
+                  </td>
+               {% else %}
+               <td>
+               {{minimal.fecha_arribo}}
+            </td>
+               <td class="success">OK</td>
+               {% endif %}
+            </tr>
+            <tr>
+               <td>Días Libres Demoraje </td>
+               {% if minimal.dias_libres == false %}
+               <td>No Registrado</td>
+               <td class="danger">
+                  <a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}">
+                     Registrar                     
+                  </a>
+                  </td>
+               {% else %}
+               <td> {{minimal.dias_libres | raw}}</td>
+               <td class="success">OK</td>
+               {% endif %}
+            </tr>
+            <tr>
+               <td>Almacenaje Inicial</td>
+               {% if minimal.almacenaje_inicial == false %}
+                  <td>No Registrado</td>
+                  <td class="danger"> Registrar</td>
+               {% else %}
+                  <td>{{ minimal.almacenaje_inicial }}</td>
+                  <td class="success">OK</td>
+               {% endif %}
+            </tr>
+            <tr>
+               <td>Agente Inicial</td>
+                  {% if minimal.agente_inicial == false %}
+                     <td>No Registrado</td>
+                     <td class="danger"> Registrar</td>
+                  {% else %}
+                     <td>{{minimal.agente_inicial}}</td>
+                     <td class="success">OK</td>
+                  {% endif %}
+
+            </tr>
+             <tr>
+               <td>Almacenaje Inicial</td>
+               {% if minimal.almacenaje_inicial == false %}
+               <td>No Registrado</td>
+               <td class="danger"> Registrar</td>
+               {% else %}
+               <td>{{minimal.almacenaje_inicial}}</td>
+               <td class="success">OK</td>
+               {% endif %}
+            </tr>
+         <tr>
+            <td>Candado Satelital</td>
+            {% if minimal.candado_satelital == false %}
+            <td>No Registrado</td>
+            <td class="danger">Registdar</td>
+            {% else %}
+               <td>{{ minimal.candado_satelital }}</td>
+               <td class="success"> OK </td>
+            {% endif %}
+         </tr>
+         <tr>
+            <td>Demoraje</td>
+            {% if condition %}
+            <td>No Registrado</td>
+            <td class="danger">Registrar</td>
+            {% else %}
+            <td> {{minimal.demoraje}}</td>
+            <td class="success"> OK </td>
+            {% endif %}
+         </tr>
+         <tr>
+               <td>Custodia Armada</td>
+               {% if  minimal.custodia_armada == false %}
+                  <td>No Registrado</td>
+                   <td class="danger"> Registrar</td>
+               {% else %}
+                  <td>{{minimal.custodia_armada}}</td>
+                  <td class="success">OK</td>
+               {% endif %}
+            </tr>
+            <tr>
+               <td>Gastos Locales</td>
+               {% if minimal.gastos_locales == false %}
+               <td>No Registrado</td>
+               <td class="danger"> Registrar</td>
+               {% else %}
+               <td>{{minimal.gastos_locales}}</td>
+               <td class="success">OK</td>
+               {% endif %}
+            </tr>
+         <tr>
+               <td>Descarga</td>
+               {% if minimal.descarga == false %}
+               <td>No Registrado</td>
+               <td class="danger"> Registrar</td>
+               {% else %}
+               <td>{{minimal.descarga}}</td>
+               <td class="success">OK</td>
+               {% endif %}
+            </tr>
+            <tr>
+               <td>ISD</td>
+               {% if minimal.isd == false %}
+                  <td>No Registrado</td>
+                  <td class="danger">Registrar</td>   
+               {% else %}
+                  <td>{{ minimal.isd }}</td>
+                  <td class="success">OK</td>
+               {% endif %}
+            </tr>
+                        <tr>
+               <td>Mano de Obra</td>
+               {% if minimal.mano_obra == false %}
+                  <td>No Registrado</td>
+                  <td class="danger">Registrar</td>   
+               {% else %}
+                  <td>{{ minimal.mano_obra }}</td>
+                  <td class="success">OK</td>
+               {% endif %}
+            </tr>
+            <tr>
+               <td>Seguro</td>
+               {% if minimal.seguro ==false %}
+               <td>No Registrado</td>
+               <td class="danger">Registrar</td>   
+               {% else %}
+               <td>{{minimal.seguro}}</td>
+               <td class="success">Ok</td>
+               {% endif %}
+            </tr>
+            <tr>
+               <td>Transporte Interno</td>
+               {% if minimal.transporte_interno == false%}
+               <td>No Registrado</td>
+               <td class="danger"> Registrar</td>
+               {% else %}
+                  <td>{{minimal.transporte_interno}}</td>
+                  <td class="success">OK</td>
+               {% endif %}
+            </tr>
+            <tr>
+               <td>THC</td>
+               {% if minimal.thc == false %}
+               <td>No Registrado</td>
+               <td class="danger">Registrar</td>
+               {% else %}
+                  <td>{{ minimal.thc }}</td>
+                  <td class="success">OK</td>
+               {% endif %}
+               
+            </tr>
+         <tr>
+            <td>Tasa Aduanera</td>
+            {% if minimal.tasa_aduanera == false %}
+            <td> No Registrado</td>
+            <td class="danger">Registrar</td>
+            {% else %}
+            <td>{{ minimal. tasa_aduanera}}</td>
+            <td class="success">OK</td>
+            {% endif %}
+         </tr>
+         </tbody>
+      </table>
+     
+   </div>
+   <div class="col-md-2">
+&nbsp;
+   </div>
+</div>
+{% if minimal.complete == true %}
+
+<div class="row">
+   <div class="col-md-2">&nbsp;</div>
+   <div class="col-md-8">
+      <a href="{{rute_url}}factinformativa/nuevo/{{order.nro_pedido}}" class=" btn btn-sm btn-primary" style="width: 100%;">
+        <span class="fa fa-file fa-fw"></span>  Nueva factura Informativa
+      </a>
+   </div>
+   <div class="col-md-2">&nbsp;</div>
+</div>
+<br>
+{% endif %}
+<div id="detalles">
+   <div class="row">
+      <div class="col-md-12">
+         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+               <div class="panel-heading" role="tab" id="headingne">
+                  <h4 class="panel-title">
+                     <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                     Gastos Iniciales Registrados
+                     </a>
+                  </h4>
+               </div>
+               <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                  <div class="panel-body">
+                     {% if order.bg_haveExpenses == 0 %}
+                     {% if initExpenses == false %}
+                     <div class="text-danger">
+                        Debe Registrar Al Menos Estas Proviciones
+                        <ul>
+                           <li>Flete</li>
+                           <li>Gastos En Origen</li>
+                        </ul>
+                        <br>
+                        Para realizar el registro vaya a la sección (última sección)
+                        <strong>
+                        Tarifas Que Pueden ser aplicadas a este Pedido
+                        </strong>
+                     </div>
+                     <div class="panel-body">
+                        {% else %}
+                        <div class="panel-heading">
+                           <b>Provisiones Iniciales Registradas </b>
+                        </div>
+                        <div class="panel-body">
+                           {% endif %} 
+                           <table class="table table-hover table-condensed table-striped">
+                              <thead>
+                                 <tr>
+                                    <th>#</th>
+                                    <th>Concepto</th>
+                                    <th>Proveedor</th>
+                                    <th>Comentarios</th>
+                                    <th>Fecha</th>
+                                    <th>Valor</th>
+                                 </tr>
+                              </thead>
+                              <tbody>
+                                 {% set sumInitialExpenses = 0.0 %}
+                                 {% for initExpense in initExpenses %}            
+                                 {% set sumInitialExpenses = (sumInitialExpenses +  initExpense.valor_provisionado  ) %}
+                                 <tr>
+                                    <td>{{loop.index}}</td>
+                                    <td>
+                                       <a href="{{rute_url}}gstinicial/presentar/{{initExpense.id_gastos_nacionalizacion}}">
+                                       {{ initExpense.concepto }}
+                                       </a>
+                                    </td>
+                                    <td>{{ initExpense.nombre }}</td>
+                                    <td>{{ initExpense.comentarios }}</td>
+                                    <td>{{ initExpense.fecha }}</td>
+                                    <td class="text-right">$ {{ initExpense.valor_provisionado  |number_format(2, '.', ',')  }}</td>
+                                 </tr>
+                                 {% endfor %}
+                                 <tr class="total-row">
+                                    <td colspan="4">
+                                       <strong>
+                                       Total Provisiones Gastos Iniciales:
+                                       </strong>
+                                    </td>
+                                    <td colspan="2" class="text-center">
+                                       <strong> $ 
+                                       {{ sumInitialExpenses |number_format(2, '.', ',') }}
+                                       </strong>
+                                    </td>
+                                 </tr>
+                              </tbody>
+                           </table>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               
+                  
+               
+               <div class="panel panel-default">
+                  <div class="panel-heading" role="tab" id="headingTwo">
+                     <h4 class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        Ordenes De Compra Registradas
+                        <small>Facturas Proveedor(es) Extranjero(s)</small>
+                        </a>
+                     </h4>
+                  </div>
+                  <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                     {% if invoicesOrder == false %}
+                     <div class="panel-body">
+                        <div>
+                           <p class="text-danger">
+                              Debe Al Menos Registrar Una Factura De Produtos
+                           </p>
+                           <br>
+                           <p>
+                              <br>
+                              <a href="{{rute_url}}pedidofactura/nuevo/{{order.nro_pedido}}">
+                              <button class="btn btn-sm btn-default">
+                              <span class="fa fa-plus fa-fw"> </span>
+                              Agregar Factura Productos
+                              </button>
+                        </div>
+                        </a>
+                        </p>
+                     </div>
+                     {% endif %}
+                     <div class="panel-body">
+                        <hr>
+                        <small class="text-primary">
+                        FACTURAS EN DÓLARES
+                        </small>
+                        <table class="table table-hover table-condensed table-striped">
+                           <thead>
+                              <tr>
+                                 <th>#</th>
+                                 <th>Proveedor</th>
+                                 <th>Fecha</th>
+                                 <th>Cajas</th>
+                                 <th>Valor Reg</th>
+                                 <th>Valor Fac</th>
+                                 <th>Estado</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              {% set sumOrderExpenses = 0 %}
+                              {% set sumOrderExpensesSum = 0 %}
+                              {% set totalboxes = 0 %}
+                              {% for invoice in invoicesOrder %}
+                              {% if invoice.moneda != 'EUROS' %}
+                              {% set sumOrderExpenses = sumOrderExpenses +  invoice.valor %}
+                              <tr>
+                                 <td>{{loop.index}}</td>
+                                 <td>
+                                    <a href="{{rute_url}}pedidofactura/presentar/{{invoice.id_pedido_factura}}">
+                                    {{invoice.supplier.nombre}}
+                                    </a>
+                                 </td>
+                                 <td>{{invoice.fecha_emision}}</td>
+
+                                 <td>{{invoice.detailInvoice.sums.countBoxesProduct | number_format(0,',','.') }}</td>
+
+                                 {% set totalboxes = totalboxes +  invoice.detailInvoice.sums.countBoxesProduct %}
+                                 {% set valRegister = invoice.detailInvoice.sums.valueItems %}
+                                 
+                                 <td class="text-right">$ {{invoice.detailInvoice.sums.valueItems | number_format(2,',','.') }}</td>
+                                 <td class="text-right" >$ {{invoice.valor  | number_format(2,',','.') }}</td>
+                                 {% if valRegister ==  invoice.valor%}
+                                    <td class="success text-right"> 
+                                       Completa
+                                    </td>
+                                    {% else %}
+                                       <td class="danger text-right"> 
+                                          <a href="{{rute_url}}pedidofactura/presentar/{{invoice.id_pedido_factura}}">
+                                       Revisar
+                                          </a>
+                                    </td>
+                                 {% endif %}
+                              </tr>
+                              {% endif %}
+                              {% endfor %}
+                              <tr class="total-row">
+                                 <td colspan="3">
+                                    <strong>
+                                    Total Facturas Producto CAJAS/(DOLARES):
+                                    </strong>
+                                 </td>
+                                 <td>
+                                    <strong>
+                                    {{ totalboxes | number_format(0,',','.')}}
+                                    </strong>
+                                 </td>
+                                 <td class="text-right">
+                                    &nbsp;
+                                 </td>
+                                 <td  class="text-right">
+                                    <strong> $ 
+                                    {{ sumOrderExpenses | number_format(2, '.', ',') }}
+                                    </strong>
+                                 </td>
+                                 <td>
+                                    &nbsp;
+                                 </td>
+                              </tr>
+                           </tbody>
+                        </table>
+                        <hr>
+                        <small class="text-primary">
+                        FACTURAS EN EUROS
+                        </small>
+                         <table class="table table-hover table-condensed table-striped">
+                           <thead>
+                              <tr>
+                                 <th>#</th>
+                                 <th>Proveedor</th>
+                                 <th>Fecha</th>
+                                 <th>Cajas</th>
+                                 <th>Valor Reg</th>
+                                 <th>Valor Fac</th>
+                                 <th>Estado</th>
+                              </tr>
+                           </thead>
+                          <tbody>
+                              {% set sumOrderExpenses = 0 %}
+                              {% set sumOrderExpensesSum = 0 %}
+                              {% set totalboxes = 0 %}
+                              {% for invoice in invoicesOrder %}
+                              {% if invoice.moneda == 'EUROS' %}
+                              {% set sumOrderExpenses = sumOrderExpenses +  invoice.valor %}
+                              <tr>
+                                 <td>{{loop.index}}</td>
+                                 <td>
+                                    <a href="{{rute_url}}pedidofactura/presentar/{{invoice.id_pedido_factura}}">
+                                    {{invoice.supplier.nombre}}
+                                    </a>
+                                 </td>
+                                 <td>{{invoice.fecha_emision}}</td>
+
+                                 <td>{{invoice.detailInvoice.sums.countBoxesProduct | number_format(0,',','.') }}</td>
+
+                                 {% set totalboxes = totalboxes +  invoice.detailInvoice.sums.countBoxesProduct %}
+                                 {% set valRegister = invoice.detailInvoice.sums.valueItems %}
+                                 
+                                 <td class="text-right">&euro; {{invoice.detailInvoice.sums.valueItems | number_format(2,',','.') }}</td>
+                                 <td class="text-right" >&euro; {{invoice.valor  | number_format(2,',','.') }}</td>
+                                 {% if valRegister ==  invoice.valor%}
+                                    <td class="success text-right"> 
+                                       Completa
+                                    </td>
+                                    {% else %}
+                                       <td class="danger text-right"> 
+                                          <a href="{{rute_url}}pedidofactura/presentar/{{invoice.id_pedido_factura}}">
+                                       Revisar
+                                          </a>
+                                    </td>
+                                 {% endif %}
+                              </tr>
+                              {% endif %}
+                              {% endfor %}
+                              <tr class="total-row">
+                                 <td colspan="3">
+                                    <strong>
+                                    Total Facturas Producto CAJAS/(EUROS):
+                                    </strong>
+                                 </td>
+                                 <td>
+                                    <strong>
+                                    {{ totalboxes | number_format(0,',','.')}}
+                                    </strong>
+                                 </td>
+                                 <td class="text-right">
+                                    &nbsp;
+                                 </td>
+                                 <td  class="text-right">
+                                    <strong> &euro; 
+                                    {{ sumOrderExpenses | number_format(2, '.', ',') }}
+                                    </strong>
+                                 </td>
+                                 <td>
+                                    &nbsp;
+                                 </td>
+                              </tr>
+                           </tbody>
+                        </table>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingThree">
+               <h4 class="panel-title">
+                  <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                  Tarifas Que Pueden ser aplicadas a este Pedido
+                  </a>
+               </h4>
+            </div>
+            <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+               <div class="panel-body">
+                  <div class="panel panel-default">
+                     <div class="panel-heading" style="background-color: #efefef;">
+                        Incoterms Aplicables
+                     </div>
+                     <div class="panel-body">
+                        <table class="table table-hover table-condensed table-striped">
+                           <thead>
+                              <tr>
+                                 <th>#</th>
+                                 <th>Incoterm</th>
+                                 <th>Pais Origen</th>
+                                 <th>Ciudad Origen</th>
+                                 <th>Concepto</th>
+                                 <th>Comentarios</th>
+                                 <th>Valor</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              {% for incoterm in incoterms %}
+                              <tr>
+                                 <td>{{loop.index}}</td>
+                                 <td>{{incoterm.incoterms}}</td>
+                                 <td>{{incoterm.pais}}</td>
+                                 <td>{{incoterm.ciudad}}</td>
+                                 <td>{{incoterm.tipo}}</td>
+                                 <td>{{incoterm.comentarios}}</td>
+                                 <td class="text-right">$ {{incoterm.tarifa}}</td>
+                              </tr>
+                              {% endfor %}
+                           </tbody>
+                        </table>
+                        <br>
+                        <div class="row">
+                           <div class="col-sm-3">
+                              <a href="{{rute_url}}gstinicial/replaceIncoterms/{{order.nro_pedido}}" class="btn btn-default btn-sm">
+                              <span class="fa fa-warning fa-fw text-danger"> </span>
+                              Aplicar Provisiones Incoterms
+                              </a>           
+                           </div>
+                           <div class="col-sm-8">
+                              <span class="text-danger"> 
+                              <span class="fa fa-warning fa-fw"> </span>
+                              Los valores correspondientes al <strong>FLETE</strong> y <strong>GASTOS EN ORIGEN</strong> serán actualizados acordes a los valores mostrados
+                              en la presente tabla, de existir valores anteriores, serán reemplazados.
+                              </span>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="panel panel-default">
+                     <div class="panel-heading" style="background-color: #efefef;">
+                        Gastos Iniciales Aplicables
+                     </div>
+                     <div class="panel-body">
+                        <form action="{{rute_url}}gstinicial/putInitialExpenses/" method="post">
+                           <input type="hidden" name="nro_pedido" value="{{order.nro_pedido}}">
+                        <table class="table  table-hover table-condensed table-striped">
+                           <thead>
+                              <tr>
+                                 <th>#</th>
+                                 <th>Concepto</th>
+                                 <th>Proveedor</th>
+                                 <th>Valor</th>
+                                 <th>Prcentaje</th>
+                                 <th>Seleccionar</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              {% for rateExpense in rateExpenses %}
+                              {% if (rateExpense.concepto != 'ISD') %}
+                              {% if (rateExpense.concepto != 'SEGURO') %}
+                              
+                              <tr>
+                                 <td>{{loop.index}}</td>
+                                 <td>{{rateExpense.concepto}}</td>
+                                 <td>{{rateExpense.nombre}}</td>
+                                 <td>{{rateExpense.valor}}</td>
+                                 <td>{{rateExpense.porcentaje}}</td>
+                                 <td class="text-center">
+                                    <input
+                                    type="radio" 
+                                    name="{{ rateExpense.concepto | replace({' ':''})}}" 
+                                    value="{{rateExpense.id_tarifa_gastos}}"
+                                    class="form-control" 
+                                    >
+                                    
+                                 </td>
+                              </tr>
+                                    {% endif %}
+                                    {% endif %}
+                              {% endfor %}
+                           </tbody>
+                        </table>
+                        <div class="row">
+                           <div class="col-md-4">
+                              <span class="fa fa-warnign fa-fw"></span>
+                              <button
+                                    type= "submit"
+                                    class="btn btn-default btn-sm"
+                                    >
+                                    <span class="fa fa-warning fa-fw"></span>
+                                    Aplicar Gastos Iniciales
+                                    </button>
+                              </a>
+                           </div>
+                           <div class="col-sm-8">
+              &nbsp;
+                           </div>
+                        </div>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+</div>
+{% else %}
+<div class="row">
+   <div class="col-sm-1">&nbsp;</div>
+   <div class="col-sm-3">
+      <span class="fa fa-warning fa-fw fa-5x"></span>    
+   </div>
+   <div class="col-sm-8">
+      <p class="text-success">
+         <b>NO SE PUEDE REALIZAR CAMBIOS</b>
+         <br>
+         ESTE PEDIDO TIENE LAS PROVICIONES INICIALES FINALIZADAS Y CERRADAS.
+      </p>
+      <p>
+         <small>
+         En Caso de requerir realizar cambios en este registro por favor comuníquese con el departamento de sistemas 
+         <br>
+         <strong>
+         Tipo Solicitud:
+         </strong>
+         Gastos Iniciales  <strong>Código:</strong> 
+         <span class="text-primary">bg_haveExpenses</span>
+         </small>
+      </p>
+   </div>
+</div>
+{% endif %}
+<div class="row">
+   <div class="col-sm-12">
+      <br>
+      <p>
+         <a href="{{rute_url}}pedido/presentar/{{order.nro_pedido}}" class="btn btn-default btn-sm">
+         <span class="fa fa-arrow-left fa-fw"></span>
+         Volver Al Pedido [{{order.nro_pedido}}]
+         </a>
+      </p>
+   </div>
+</div>

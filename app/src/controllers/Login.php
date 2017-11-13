@@ -8,7 +8,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @author    Eduardo Villota <eduardouio7@gmail.com>
  * @copyright    Copyright (c) 2014,  Agencias y Representaciones Cordovez S.A.
  * @license    Todos los derechos reservados Agencias y Representaciones Cordovez S.A.
- * @link    https://github.com/eduardouio/APPImportaciones
+ * @link    https://gitlab.com/eduardo/APPImportaciones
  * @since    Version 1.0.0
  * @filesource
  */
@@ -17,6 +17,9 @@ class Login extends CI_Controller {
 	private $template = '/pages/pageLogin.html';
 	private $cryptKey  = 'qJB0rGtIn5UB1xG03efyCp';
 
+	function __construct(){
+		parent::__construct();
+	}
 
 	/**	
 	* Muestra el formulario de inicio de sesion
@@ -55,9 +58,9 @@ class Login extends CI_Controller {
 						'where' => ['username' => $user['username'],],
 						];
 
-		$resultDb = $this->mymodel->get_table($params);
+		$userDb = $this->modelbase->get_table($params);
 
-		if($resultDb == false){
+		if($userDb == false){
 			$config = [
 				'message' => 'Usuario y/o Contraseña Incorrectos',
 			];
@@ -65,7 +68,8 @@ class Login extends CI_Controller {
 			return true;
 		}
 
-		$userDb = $resultDb[0];	
+		$userDb = $userDb[0];
+
 		if(($userDb['username'] == $user['username']) &&
 			 ($userDb['password'] == $this->_encryptIt($user['password'])))
 			 {

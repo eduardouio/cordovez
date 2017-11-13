@@ -25,56 +25,68 @@ class __TwigTemplate_c8b22148e41078505aa17dcdbfd1e65266fb56ad2d090bc0ddb68fa6957
         $this->loadTemplate("base/content.html.twig", "/pages/pageGasto-inicial.html.twig", 4)->display($context);
         // line 5
         echo "
+
+
+
 ";
-        // line 6
-        if ((($context["show"] ?? null) == true)) {
-            // line 7
-            echo "\t";
-            $this->loadTemplate("sections/mostrar-gasto-inicial.html.twig", "/pages/pageGasto-inicial.html.twig", 7)->display($context);
-        }
         // line 9
+        if ((($context["validateExpenses"] ?? null) == true)) {
+            // line 10
+            echo "\t";
+            $this->loadTemplate("sections/validar-pedido.html.twig", "/pages/pageGasto-inicial.html.twig", 10)->display($context);
+        }
+        // line 12
+        echo "
+";
+        // line 13
+        if ((($context["show"] ?? null) == true)) {
+            // line 14
+            echo "\t";
+            $this->loadTemplate("sections/mostrar-gasto-inicial.html.twig", "/pages/pageGasto-inicial.html.twig", 14)->display($context);
+        }
+        // line 16
         echo "
 
 ";
-        // line 11
-        if ((($context["create"] ?? null) == true)) {
-            // line 12
-            echo "\t";
-            $this->loadTemplate("forms/frm-gasto-inicial.html.twig", "/pages/pageGasto-inicial.html.twig", 12)->display($context);
-            echo "    
-";
-        }
-        // line 14
-        echo "
-";
-        // line 15
-        if ((($context["edit"] ?? null) == true)) {
-            // line 16
-            echo "\t";
-            $this->loadTemplate("forms/frm-gasto-inicial-edit.html.twig", "/pages/pageGasto-inicial.html.twig", 16)->display($context);
-            echo "    
-";
-        }
         // line 18
+        if ((($context["create"] ?? null) == true)) {
+            // line 19
+            echo "\t";
+            $this->loadTemplate("forms/frm-gasto-inicial.html.twig", "/pages/pageGasto-inicial.html.twig", 19)->display($context);
+            echo "    
+";
+        }
+        // line 21
+        echo "
+";
+        // line 22
+        if ((($context["edit"] ?? null) == true)) {
+            // line 23
+            echo "\t";
+            $this->loadTemplate("forms/frm-gasto-inicial-edit.html.twig", "/pages/pageGasto-inicial.html.twig", 23)->display($context);
+            echo "    
+";
+        }
+        // line 25
         echo "
 
 ";
-        // line 20
+        // line 27
         if ((($context["viewMessage"] ?? null) == true)) {
-            // line 21
+            // line 28
             echo "\t<div class=\"well\">
 \t\t<h3 class=\"text-primary\">\t";
-            // line 22
+            // line 29
             echo twig_escape_filter($this->env, ($context["message"] ?? null), "html", null, true);
             echo " </h3>
 \t\t<br><br>
 \t\t<p>
 \t\t\t";
-            // line 25
+            // line 32
             if ((($context["deleted"] ?? null) == true)) {
                 echo " 
 \t\t\t\t\t\t<a href=\"";
-                // line 26
+                // line 33
                 echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
                 echo "pedido/presentar/";
                 echo twig_escape_filter($this->env, ($context["order"] ?? null), "html", null, true);
@@ -86,10 +98,10 @@ class __TwigTemplate_c8b22148e41078505aa17dcdbfd1e65266fb56ad2d090bc0ddb68fa6957
 \t\t\t\t</a>
 \t\t\t";
             } else {
-                // line 32
+                // line 39
                 echo "  
 \t\t\t\t<a href=\"";
-                // line 33
+                // line 40
                 echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
                 echo "pedido/presentar/";
                 echo twig_escape_filter($this->env, ($context["order"] ?? null), "html", null, true);
@@ -101,21 +113,21 @@ class __TwigTemplate_c8b22148e41078505aa17dcdbfd1e65266fb56ad2d090bc0ddb68fa6957
 \t\t</a>
 \t\t\t";
             }
-            // line 40
+            // line 47
             echo "\t\t
 \t\t</p>
 \t</div>
 ";
         }
-        // line 44
+        // line 51
         echo "
 ";
-        // line 45
-        $this->loadTemplate("base/content_close.html.twig", "/pages/pageGasto-inicial.html.twig", 45)->display($context);
-        // line 46
-        $this->loadTemplate("base/signaturefoot.html.twig", "/pages/pageGasto-inicial.html.twig", 46)->display($context);
-        // line 47
-        $this->loadTemplate("base/footer.html.twig", "/pages/pageGasto-inicial.html.twig", 47)->display($context);
+        // line 52
+        $this->loadTemplate("base/content_close.html.twig", "/pages/pageGasto-inicial.html.twig", 52)->display($context);
+        // line 53
+        $this->loadTemplate("base/signaturefoot.html.twig", "/pages/pageGasto-inicial.html.twig", 53)->display($context);
+        // line 54
+        $this->loadTemplate("base/footer.html.twig", "/pages/pageGasto-inicial.html.twig", 54)->display($context);
     }
 
     public function getTemplateName()
@@ -130,7 +142,7 @@ class __TwigTemplate_c8b22148e41078505aa17dcdbfd1e65266fb56ad2d090bc0ddb68fa6957
 
     public function getDebugInfo()
     {
-        return array (  118 => 47,  116 => 46,  114 => 45,  111 => 44,  105 => 40,  93 => 33,  90 => 32,  78 => 26,  74 => 25,  68 => 22,  65 => 21,  63 => 20,  59 => 18,  53 => 16,  51 => 15,  48 => 14,  42 => 12,  40 => 11,  36 => 9,  32 => 7,  30 => 6,  27 => 5,  25 => 4,  23 => 3,  21 => 2,  19 => 1,);
+        return array (  130 => 54,  128 => 53,  126 => 52,  123 => 51,  117 => 47,  105 => 40,  102 => 39,  90 => 33,  86 => 32,  80 => 29,  77 => 28,  75 => 27,  71 => 25,  65 => 23,  63 => 22,  60 => 21,  54 => 19,  52 => 18,  48 => 16,  44 => 14,  42 => 13,  39 => 12,  35 => 10,  33 => 9,  27 => 5,  25 => 4,  23 => 3,  21 => 2,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -147,6 +159,13 @@ class __TwigTemplate_c8b22148e41078505aa17dcdbfd1e65266fb56ad2d090bc0ddb68fa6957
 {% include 'base/navbarheader.html.twig' %}
 {% include 'base/navbarleft.html.twig' %}
 {% include 'base/content.html.twig' %}
+
+
+
+
+{% if validateExpenses == true %}
+\t{% include 'sections/validar-pedido.html.twig' %}
+{% endif %}
 
 {% if show == true %}
 \t{% include 'sections/mostrar-gasto-inicial.html.twig' %}

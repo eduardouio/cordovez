@@ -7,7 +7,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @author    Eduardo Villota <eduardouio7@gmail.com>
  * @copyright    Copyright (c) 2014,  Agencias y Representaciones Cordovez S.A.
  * @license    Derechos reservados Agencias y Representaciones Cordovez S.A.
- * @link    https://github.com/eduardouio/APPImportaciones
+ * @link    https://gitlab.com/eduardo/APPImportaciones
  * @since    Version 1.0.0
  * @filesource
  */
@@ -30,7 +30,13 @@ class Proveedor extends MY_Controller {
 	/**
 	* Muestra toda la informacion de un proveedor
 	*/
-	public function presentar($idSupplier){	
+	public function presentar($idSupplier = false ){	
+		
+		if (!$idSupplier) {
+			$this->redirectPage('suppliersList');
+			return false;
+		}
+
 		$this->db->where('id_proveedor', $idSupplier);
 		$resultDb = $this->db->get($this->controller);
 		$supplier = $resultDb->result_array();
@@ -166,7 +172,7 @@ public function nuevo(){
 					return true;
 				}
 		}else{
-			$config['order'] = $proveedor['nro_pedido'];
+			$config['order'] = $proveedor['id_proveedor'];
 			$config['viewMessage'] = true;
 			$config['message'] = 'La información de uno de los campos es incorrecta!';
 			$config['data'] = $status['columns'];

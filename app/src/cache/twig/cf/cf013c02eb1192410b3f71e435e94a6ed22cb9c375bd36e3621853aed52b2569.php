@@ -22,7 +22,7 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
 </body>
 
 <script type=\"text/javascript\">
-  setTimeout(function(){ reloadPage() }, 150000);
+  setTimeout(function(){ reloadPage() }, 15000000);
 
 \tfunction reloadPage(argument) {
 \t\tlocation.reload();
@@ -84,7 +84,7 @@ class __TwigTemplate_7f6d024a128335cb1f8c72fb9b05cbacd8fccca4f248098f26604ab56fc
 </body>
 
 <script type=\"text/javascript\">
-  setTimeout(function(){ reloadPage() }, 150000);
+  setTimeout(function(){ reloadPage() }, 15000000);
 
 \tfunction reloadPage(argument) {
 \t\tlocation.reload();

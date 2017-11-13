@@ -163,18 +163,17 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
                >
          </div>
       </div>
-      <div class=\"col-md-3\">
+      <div class=\"col-md-2\">
          <label>Fecha Arribo <span class=\"label label-info\">BODEGA</span></label>
          <div class=\"input-group date\" data-provide=\"datepicker\">
             <input 
                type=\"text\" 
                class=\"form-control\" 
                id=\"fecha_arribo\" 
-               required=\"required\" 
                name=\"fecha_arribo\" 
                class=\"bootstrap-datepicker\" 
                value=\"";
-        // line 116
+        // line 115
         echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "fecha_arribo", array()), "html", null, true);
         echo "\" 
                >
@@ -183,7 +182,22 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
             </div>
          </div>
       </div>
-      <div class=\"col-md-5\">
+          <div class=\"col-md-2\">
+         <div class=\"form-group\">
+            <label>Días Libres <span class=\"label label-info \">DEMORAJE</span></label>
+            <input 
+            class=\"form-control\" 
+            type=\"number\" 
+            step=\"1\" 
+            name=\"dias_libres\"
+              value=\"";
+        // line 130
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "dias_libres", array()), "html", null, true);
+        echo "\" 
+            >
+         </div>
+      </div>
+      <div class=\"col-md-4\">
          <div class=\"form-group\">
             <label>Comentarios</label>
             <textarea 
@@ -193,7 +207,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
                id=\"comentarios\"
                name=\"comentarios\"
                >";
-        // line 132
+        // line 143
         echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "comentarios", array()), "html", null, true);
         echo "</textarea>
          </div>
@@ -207,7 +221,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
             Guardar Registro
          </button>
       <a href=\"";
-        // line 143
+        // line 154
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "pedido/presentar/";
         echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "nro_pedido", array()), "html", null, true);
@@ -220,7 +234,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
    </div>
    <script type=\"text/javascript\">
       var incotermsDb = ";
-        // line 151
+        // line 162
         echo ($context["incoterms"] ?? null);
         echo " ;
    </script>
@@ -239,7 +253,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
 
     public function getDebugInfo()
     {
-        return array (  224 => 151,  211 => 143,  197 => 132,  178 => 116,  161 => 102,  145 => 89,  126 => 73,  111 => 61,  95 => 50,  79 => 39,  67 => 29,  63 => 27,  59 => 25,  57 => 24,  51 => 23,  36 => 11,  24 => 2,  19 => 1,);
+        return array (  238 => 162,  225 => 154,  211 => 143,  195 => 130,  177 => 115,  161 => 102,  145 => 89,  126 => 73,  111 => 61,  95 => 50,  79 => 39,  67 => 29,  63 => 27,  59 => 25,  57 => 24,  51 => 23,  36 => 11,  24 => 2,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -357,14 +371,13 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
                >
          </div>
       </div>
-      <div class=\"col-md-3\">
+      <div class=\"col-md-2\">
          <label>Fecha Arribo <span class=\"label label-info\">BODEGA</span></label>
          <div class=\"input-group date\" data-provide=\"datepicker\">
             <input 
                type=\"text\" 
                class=\"form-control\" 
                id=\"fecha_arribo\" 
-               required=\"required\" 
                name=\"fecha_arribo\" 
                class=\"bootstrap-datepicker\" 
                value=\"{{order.fecha_arribo}}\" 
@@ -374,7 +387,19 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
             </div>
          </div>
       </div>
-      <div class=\"col-md-5\">
+          <div class=\"col-md-2\">
+         <div class=\"form-group\">
+            <label>Días Libres <span class=\"label label-info \">DEMORAJE</span></label>
+            <input 
+            class=\"form-control\" 
+            type=\"number\" 
+            step=\"1\" 
+            name=\"dias_libres\"
+              value=\"{{order.dias_libres}}\" 
+            >
+         </div>
+      </div>
+      <div class=\"col-md-4\">
          <div class=\"form-group\">
             <label>Comentarios</label>
             <textarea 

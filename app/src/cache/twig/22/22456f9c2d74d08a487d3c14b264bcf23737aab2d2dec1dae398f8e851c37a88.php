@@ -106,7 +106,7 @@ class __TwigTemplate_303f03313615935b06d329fa806cb2801ece898f646a742ebab8f525d2e
                 echo "\">
 \t\t<button>
 \t\t\t<span class=\"fa fa-eye\"></span>
-\t\t\tVer
+\t\t\tVolver A la lista
 \t\t</button>
 \t\t</a>
 \t\t\t";
@@ -188,7 +188,7 @@ class __TwigTemplate_303f03313615935b06d329fa806cb2801ece898f646a742ebab8f525d2e
 \t\t\t\t<a href=\"{{rute_url}}proveedor/presentar/{{id_supplier}}\">
 \t\t<button>
 \t\t\t<span class=\"fa fa-eye\"></span>
-\t\t\tVer
+\t\t\tVolver A la lista
 \t\t</button>
 \t\t</a>
 \t\t\t{% endif %}

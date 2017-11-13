@@ -95,8 +95,38 @@ class __TwigTemplate_f3a7745afc95eeba514c8a21cc6a8fc09a7d49feb466a506d75062c0398
                   <div class=\"control_indicator\"></div>
                </label>
                <label class=\"control control-checkbox\">
+                  ESTIBAJE
+                  <input type=\"checkbox\"  value=\"ESTIBAJE\" name=\"categoria_9\">             
+                  <div class=\"control_indicator\"></div>
+               </label>
+               <label class=\"control control-checkbox\">
+                  ESPACIO ETIQUETADO
+                  <input type=\"checkbox\"  value=\"ESPACIO ETIQUETADO\" name=\"categoria_16\">             
+                  <div class=\"control_indicator\"></div>
+               </label>
+               <label class=\"control control-checkbox\">
+                  THC
+                  <input type=\"checkbox\"  value=\"THC\" name=\"categoria_17\">
+                  <div class=\"control_indicator\"></div>
+               </label>
+               <label class=\"control control-checkbox\">
+                  FORMULARIOS
+                  <input type=\"checkbox\"  value=\"FORMULARIOS\" name=\"categoria_11\">             
+                  <div class=\"control_indicator\"></div>
+               </label>
+               <label class=\"control control-checkbox\">
+                  GASTOS LOCALES
+                  <input type=\"checkbox\"  value=\"GASTOS LOCALES\" name=\"categoria_12\">             
+                  <div class=\"control_indicator\"></div>
+               </label>
+               <label class=\"control control-checkbox\">
+                  HORAS EXTRAS
+                  <input type=\"checkbox\"  value=\"HORAS EXTRAS\" name=\"categoria_13\">             
+                  <div class=\"control_indicator\"></div>
+               </label>
+               <label class=\"control control-checkbox\">
                   PROVEEDOR DE LICORES
-                  <input type=\"checkbox\"  value=\"PROVEEDOR DE LICORES\" name=\"categoria_7\">             
+                  <input type=\"checkbox\"  value=\"PROVEEDOR DE LICORES\" name=\"categoria_14\">             
                   <div class=\"control_indicator\"></div>
                </label>
                <label class=\"control control-checkbox\">
@@ -106,7 +136,7 @@ class __TwigTemplate_f3a7745afc95eeba514c8a21cc6a8fc09a7d49feb466a506d75062c0398
                </label>
                <label class=\"control control-checkbox\">
                   TRANSPORTE INTERNO (NACIONAL)
-                  <input type=\"checkbox\"  value=\"TRANSPORTE INTERNO\" name=\"categoria_9\">             
+                  <input type=\"checkbox\"  value=\"TRANSPORTE INTERNO\" name=\"categoria_15\">             
                   <div class=\"control_indicator\"></div>
                </label>
                <label class=\"control control-checkbox\">
@@ -136,7 +166,7 @@ class __TwigTemplate_f3a7745afc95eeba514c8a21cc6a8fc09a7d49feb466a506d75062c0398
          <span class=\"fa fa-save fa-fw\"></span>
          Guardar Registro</button>
          <a href=\"";
-        // line 118
+        // line 148
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "proveedor/listar/\" class=\"btn btn-default btn-sm\"> 
          <span class=\"fa fa-arrow-left fa-fw\"></span>
@@ -168,7 +198,7 @@ class __TwigTemplate_f3a7745afc95eeba514c8a21cc6a8fc09a7d49feb466a506d75062c0398
 
     public function getDebugInfo()
     {
-        return array (  140 => 118,  19 => 1,);
+        return array (  170 => 148,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -258,8 +288,38 @@ class __TwigTemplate_f3a7745afc95eeba514c8a21cc6a8fc09a7d49feb466a506d75062c0398
                   <div class=\"control_indicator\"></div>
                </label>
                <label class=\"control control-checkbox\">
+                  ESTIBAJE
+                  <input type=\"checkbox\"  value=\"ESTIBAJE\" name=\"categoria_9\">             
+                  <div class=\"control_indicator\"></div>
+               </label>
+               <label class=\"control control-checkbox\">
+                  ESPACIO ETIQUETADO
+                  <input type=\"checkbox\"  value=\"ESPACIO ETIQUETADO\" name=\"categoria_16\">             
+                  <div class=\"control_indicator\"></div>
+               </label>
+               <label class=\"control control-checkbox\">
+                  THC
+                  <input type=\"checkbox\"  value=\"THC\" name=\"categoria_17\">
+                  <div class=\"control_indicator\"></div>
+               </label>
+               <label class=\"control control-checkbox\">
+                  FORMULARIOS
+                  <input type=\"checkbox\"  value=\"FORMULARIOS\" name=\"categoria_11\">             
+                  <div class=\"control_indicator\"></div>
+               </label>
+               <label class=\"control control-checkbox\">
+                  GASTOS LOCALES
+                  <input type=\"checkbox\"  value=\"GASTOS LOCALES\" name=\"categoria_12\">             
+                  <div class=\"control_indicator\"></div>
+               </label>
+               <label class=\"control control-checkbox\">
+                  HORAS EXTRAS
+                  <input type=\"checkbox\"  value=\"HORAS EXTRAS\" name=\"categoria_13\">             
+                  <div class=\"control_indicator\"></div>
+               </label>
+               <label class=\"control control-checkbox\">
                   PROVEEDOR DE LICORES
-                  <input type=\"checkbox\"  value=\"PROVEEDOR DE LICORES\" name=\"categoria_7\">             
+                  <input type=\"checkbox\"  value=\"PROVEEDOR DE LICORES\" name=\"categoria_14\">             
                   <div class=\"control_indicator\"></div>
                </label>
                <label class=\"control control-checkbox\">
@@ -269,7 +329,7 @@ class __TwigTemplate_f3a7745afc95eeba514c8a21cc6a8fc09a7d49feb466a506d75062c0398
                </label>
                <label class=\"control control-checkbox\">
                   TRANSPORTE INTERNO (NACIONAL)
-                  <input type=\"checkbox\"  value=\"TRANSPORTE INTERNO\" name=\"categoria_9\">             
+                  <input type=\"checkbox\"  value=\"TRANSPORTE INTERNO\" name=\"categoria_15\">             
                   <div class=\"control_indicator\"></div>
                </label>
                <label class=\"control control-checkbox\">

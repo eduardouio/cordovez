@@ -94,18 +94,18 @@ class __TwigTemplate_8973728669aeba582e7989c648072f53846e9ca33613cfbd6193509a989
 
 
       <div class=\"col-md-2\">
-         <label>Costo Unidad</label>
+         <label>Costo Caja</label>
          <input 
          type=\"number\" 
          class=\"form-control\" 
-         name=\"costo_und\"
-         id=\"costo_und\"
+         name=\"costo_caja\"
+         id=\"costo_caja\"
          required=\"true\" 
          readonly=\"true\" 
          step=\"0.001\" 
          value=\"";
         // line 68
-        echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["detail"] ?? null), 0, array(), "array"), "costo_und", array()), "html", null, true);
+        echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["detail"] ?? null), 0, array(), "array"), "costo_caja", array()), "html", null, true);
         echo "\" 
          >
 
@@ -134,11 +134,11 @@ class __TwigTemplate_8973728669aeba582e7989c648072f53846e9ca33613cfbd6193509a989
    \$('#chage_params').click(function(){
       if( \$('#chage_params').is(':checked') ){
          \$('#grado_alcoholico').removeAttr('readonly');
-         \$('#costo_und').removeAttr('readonly');
+         \$('#costo_caja').removeAttr('readonly');
          \$('#grado_alcoholico').focus();
       }else{
          \$('#grado_alcoholico').attr('readonly', true);
-         \$('#costo_und').attr('readonly', true);
+         \$('#costo_caja').attr('readonly', true);
       }
    });
 </script>";
@@ -227,16 +227,16 @@ class __TwigTemplate_8973728669aeba582e7989c648072f53846e9ca33613cfbd6193509a989
 
 
       <div class=\"col-md-2\">
-         <label>Costo Unidad</label>
+         <label>Costo Caja</label>
          <input 
          type=\"number\" 
          class=\"form-control\" 
-         name=\"costo_und\"
-         id=\"costo_und\"
+         name=\"costo_caja\"
+         id=\"costo_caja\"
          required=\"true\" 
          readonly=\"true\" 
          step=\"0.001\" 
-         value=\"{{ detail[0].costo_und }}\" 
+         value=\"{{ detail[0].costo_caja }}\" 
          >
 
    </div>
@@ -259,11 +259,11 @@ class __TwigTemplate_8973728669aeba582e7989c648072f53846e9ca33613cfbd6193509a989
    \$('#chage_params').click(function(){
       if( \$('#chage_params').is(':checked') ){
          \$('#grado_alcoholico').removeAttr('readonly');
-         \$('#costo_und').removeAttr('readonly');
+         \$('#costo_caja').removeAttr('readonly');
          \$('#grado_alcoholico').focus();
       }else{
          \$('#grado_alcoholico').attr('readonly', true);
-         \$('#costo_und').attr('readonly', true);
+         \$('#costo_caja').attr('readonly', true);
       }
    });
 </script>", "forms/frm-pedido-factura-detalle-edit.html.twig", "/var/www/html/app/src/views/forms/frm-pedido-factura-detalle-edit.html.twig");

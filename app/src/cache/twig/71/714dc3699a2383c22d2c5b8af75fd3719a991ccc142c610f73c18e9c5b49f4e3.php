@@ -108,7 +108,6 @@ class __TwigTemplate_6282222de192f3936fe1d27131914bcfd6979edebebc8d64b51a91273d5
   </div>
   <br>
   <div class=\"row\">
-    <div class=\"table-responsive\">
       <table class=\"table table-hover table-bordered table-striped\">
         <thead>
           <tr style=\"background-color: #c1c1c1;\">
@@ -125,7 +124,7 @@ class __TwigTemplate_6282222de192f3936fe1d27131914bcfd6979edebebc8d64b51a91273d5
         </thead>
         <tbody>
           ";
-        // line 73
+        // line 72
         $context['_parent'] = $context;
         $context['_seq'] = twig_ensure_traversable(($context["suppliers"] ?? null));
         $context['loop'] = array(
@@ -142,50 +141,50 @@ class __TwigTemplate_6282222de192f3936fe1d27131914bcfd6979edebebc8d64b51a91273d5
             $context['loop']['last'] = 1 === $length;
         }
         foreach ($context['_seq'] as $context["_key"] => $context["supplier"]) {
-            // line 74
+            // line 73
             echo "          <tr>
             <td>";
-            // line 75
+            // line 74
             echo twig_escape_filter($this->env, $this->getAttribute($context["loop"], "index", array()), "html", null, true);
             echo "</td>
             <td>";
-            // line 76
+            // line 75
             echo twig_escape_filter($this->env, $this->getAttribute($context["supplier"], "identificacion_proveedor", array()), "html", null, true);
             echo "</td>
             <td>
                <a href=\"";
-            // line 78
+            // line 77
             echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
             echo "proveedor/presentar/";
             echo twig_escape_filter($this->env, $this->getAttribute($context["supplier"], "id_proveedor", array()), "html", null, true);
             echo "\">
             ";
-            // line 79
+            // line 78
             echo twig_escape_filter($this->env, $this->getAttribute($context["supplier"], "nombre", array()), "html", null, true);
             echo "
           </a>
         </td>
             <td>";
-            // line 82
+            // line 81
             echo twig_escape_filter($this->env, $this->getAttribute($context["supplier"], "tipo_provedor", array()), "html", null, true);
             echo "</td>
             <td>";
-            // line 83
+            // line 82
             echo twig_escape_filter($this->env, $this->getAttribute($context["supplier"], "categoria", array()), "html", null, true);
             echo "</td>
             <td>";
-            // line 84
+            // line 83
             echo twig_escape_filter($this->env, $this->getAttribute($context["supplier"], "date_create", array()), "html", null, true);
             echo " 
             <td>";
-            // line 85
+            // line 84
             echo twig_escape_filter($this->env, $this->getAttribute($context["supplier"], "last_update", array()), "html", null, true);
             echo " 
               
             </td>
             
             <td class=\"text-right\">";
-            // line 89
+            // line 88
             echo twig_escape_filter($this->env, twig_number_format_filter($this->env, 0, 0, ".", ","), "html", null, true);
             echo "</td>
             <td>
@@ -196,7 +195,7 @@ class __TwigTemplate_6282222de192f3936fe1d27131914bcfd6979edebebc8d64b51a91273d5
                 </button>
                 <ul class=\"dropdown-menu\" aria-labelledby=\"dLabel\">
                   <li> <a href=\"";
-            // line 97
+            // line 96
             echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
             echo "proveedor/presentar/";
             echo twig_escape_filter($this->env, $this->getAttribute($context["supplier"], "id_proveedor", array()), "html", null, true);
@@ -204,7 +203,7 @@ class __TwigTemplate_6282222de192f3936fe1d27131914bcfd6979edebebc8d64b51a91273d5
                     Ver Proveedor </a>  
                   </li>
                   <li> <a href=\"";
-            // line 100
+            // line 99
             echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
             echo "proveedor/editar/";
             echo twig_escape_filter($this->env, $this->getAttribute($context["supplier"], "id_proveedor", array()), "html", null, true);
@@ -213,7 +212,7 @@ class __TwigTemplate_6282222de192f3936fe1d27131914bcfd6979edebebc8d64b51a91273d5
                     Editar Proveedor</a> 
                   </li>
                   <li> <a href=\"";
-            // line 104
+            // line 103
             echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
             echo "proveedor/eliminar/";
             echo twig_escape_filter($this->env, $this->getAttribute($context["supplier"], "id_proveedor", array()), "html", null, true);
@@ -238,10 +237,9 @@ class __TwigTemplate_6282222de192f3936fe1d27131914bcfd6979edebebc8d64b51a91273d5
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_iterated'], $context['_key'], $context['supplier'], $context['_parent'], $context['loop']);
         $context = array_intersect_key($context, $_parent) + $_parent;
-        // line 113
+        // line 112
         echo "        </tbody>
       </table>
-    </div>
   </div>
 </div>
 <!--tabPedido-->";
@@ -259,7 +257,7 @@ class __TwigTemplate_6282222de192f3936fe1d27131914bcfd6979edebebc8d64b51a91273d5
 
     public function getDebugInfo()
     {
-        return array (  242 => 113,  217 => 104,  208 => 100,  200 => 97,  189 => 89,  182 => 85,  178 => 84,  174 => 83,  170 => 82,  164 => 79,  158 => 78,  153 => 76,  149 => 75,  146 => 74,  129 => 73,  86 => 33,  80 => 30,  74 => 27,  68 => 24,  56 => 15,  50 => 11,  48 => 10,  45 => 9,  39 => 8,  36 => 7,  33 => 6,  30 => 5,  26 => 4,  23 => 3,  21 => 2,  19 => 1,);
+        return array (  241 => 112,  216 => 103,  207 => 99,  199 => 96,  188 => 88,  181 => 84,  177 => 83,  173 => 82,  169 => 81,  163 => 78,  157 => 77,  152 => 75,  148 => 74,  145 => 73,  128 => 72,  86 => 33,  80 => 30,  74 => 27,  68 => 24,  56 => 15,  50 => 11,  48 => 10,  45 => 9,  39 => 8,  36 => 7,  33 => 6,  30 => 5,  26 => 4,  23 => 3,  21 => 2,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -328,7 +326,6 @@ class __TwigTemplate_6282222de192f3936fe1d27131914bcfd6979edebebc8d64b51a91273d5
   </div>
   <br>
   <div class=\"row\">
-    <div class=\"table-responsive\">
       <table class=\"table table-hover table-bordered table-striped\">
         <thead>
           <tr style=\"background-color: #c1c1c1;\">
@@ -386,7 +383,6 @@ class __TwigTemplate_6282222de192f3936fe1d27131914bcfd6979edebebc8d64b51a91273d5
           {% endfor %}
         </tbody>
       </table>
-    </div>
   </div>
 </div>
 <!--tabPedido-->", "sections/listar-proveedor.html.twig", "/var/www/html/app/src/views/sections/listar-proveedor.html.twig");

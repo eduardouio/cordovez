@@ -137,7 +137,7 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
                >
          </div>
       </div>
-      <div class=\"col-md-3\">
+      <div class=\"col-md-2\">
          <label>Fecha Arribo <span class=\"label label-info\">BODEGA</span></label>
          <div class=\"input-group date\" data-provide=\"datepicker\">
             <input 
@@ -152,7 +152,18 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
             </div>
          </div>
       </div>
-      <div class=\"col-md-5\">
+      <div class=\"col-md-2\">
+         <div class=\"form-group\">
+            <label>Días Libres <span class=\"label label-info \">DEMORAJE</span></label>
+            <input 
+            class=\"form-control\" 
+            type=\"number\" 
+            step=\"1\" 
+            name=\"dias_libres\"
+            >
+         </div>
+      </div>
+      <div class=\"col-md-4\">
          <div class=\"form-group\">
             <label>Comentarios</label>
             <textarea 
@@ -173,7 +184,7 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
             Guardar Registro
          </button>
       <a href=\"";
-        // line 155
+        // line 166
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "pedido/listar/\" class=\"btn btn-sm btn-default\">
             <span class=\"fa fa-arrow-left fa-fw\"></span>
@@ -185,7 +196,7 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
 
    <script type=\"text/javascript\">
       var incotermsDb = ";
-        // line 164
+        // line 175
         echo ($context["incoterms"] ?? null);
         echo " ;
       \$('#is_arrived').click(function(){
@@ -206,7 +217,7 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
 
     public function getDebugInfo()
     {
-        return array (  189 => 164,  177 => 155,  19 => 1,);
+        return array (  200 => 175,  188 => 166,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -338,7 +349,7 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
                >
          </div>
       </div>
-      <div class=\"col-md-3\">
+      <div class=\"col-md-2\">
          <label>Fecha Arribo <span class=\"label label-info\">BODEGA</span></label>
          <div class=\"input-group date\" data-provide=\"datepicker\">
             <input 
@@ -353,7 +364,18 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
             </div>
          </div>
       </div>
-      <div class=\"col-md-5\">
+      <div class=\"col-md-2\">
+         <div class=\"form-group\">
+            <label>Días Libres <span class=\"label label-info \">DEMORAJE</span></label>
+            <input 
+            class=\"form-control\" 
+            type=\"number\" 
+            step=\"1\" 
+            name=\"dias_libres\"
+            >
+         </div>
+      </div>
+      <div class=\"col-md-4\">
          <div class=\"form-group\">
             <label>Comentarios</label>
             <textarea 

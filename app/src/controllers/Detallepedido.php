@@ -9,7 +9,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @author    Eduardo Villota <eduardouio7@gmail.com>
  * @copyright    Copyright (c) 2014,  Agencias y Representaciones Cordovez S.A.
  * @license    Derechos reservados Agencias y Representaciones Cordovez S.A.
- * @link    https://github.com/eduardouio/APPImportaciones
+ * @link    https://gitlab.com/eduardo/APPImportaciones
  * @since    Version 1.0.0
  * @filesource
  */
@@ -132,6 +132,7 @@ class Detallepedido extends MY_Controller {
 				if($resultDb->num_rows() == 1 ){		
 					$config['orderInvoice'] = $resultDb->result_array();
 					$config['viewMessage'] = true;
+					$config['fail'] = true;
 					$config['orderDetail'] = $detail['id_pedido_factura'];
 					$config['message'] = 'Este producto ya esta en la factura!';
 					$this->responseHttp($config);
@@ -144,13 +145,13 @@ class Detallepedido extends MY_Controller {
 			if ($status['status']){
 				if (!isset($detail['detalle_pedido_factura'])){
 					$this->db->insert($this->controller, $detail);
-					$this->presentarFactura($detail['id_pedido_factura']);
+					$this->redirectPage('presentInvoiceOrder',$detail['id_pedido_factura']);
 					return true;
 				}else{
 					$detail['last_update'] = date('Y-m-d H:i:s');
 					$this->db->where('detalle_pedido_factura', $detail['detalle_pedido_factura']);
 					$this->db->update($this->controller, $detail);
-					$this->presentarFactura($detail['id_pedido_factura']);
+					$this->redirectPage('presentInvoiceOrder',$detail['id_pedido_factura']);
 					return true;
 				}
 		}else{
@@ -164,13 +165,6 @@ class Detallepedido extends MY_Controller {
 	}
 
 
-	/**
-	* Presenta una factura cos sus productos
-	*/
-	public function presentarFactura($idIvoice){
-		header('Location: ' . base_url() . 'index.php/pedidofactura/presentar/' . 
-																																	$idIvoice);
-	}
 
 	/**
 	 * se validan los datos que deben estar para que la consulta no falle
@@ -181,7 +175,7 @@ class Detallepedido extends MY_Controller {
 			'id_pedido_factura' => 1,
 			'cod_contable' =>  20,
 			'nro_cajas' => 1,
-			'costo_und' => 1,
+			'costo_caja' => 1,
 			'id_user' => 1
 		);
 		return $this->_checkColumnsData($columnsLen, $data);

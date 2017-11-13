@@ -26,7 +26,12 @@ class Pedidofactura extends MY_Controller {
 	/**
 	* Presenta una factura pedido a detalle
 	*/
-	public function presentar($idInvoice){		
+	public function presentar($idInvoice){	
+		if (!isset($idInvoice)){
+			$this->redirectPage('ordersList');
+			return false;
+		}
+
 		$this->db->where('id_pedido_factura', $idInvoice);
 		$resultDb = $this->db->get('pedido_factura');
 		$invoice = $resultDb->result_array();
@@ -35,14 +40,25 @@ class Pedidofactura extends MY_Controller {
 		$userdata = $resultDb->result_array();
 		$config['show_invoices'] = true;
 		$config['user'] = $userdata[0];
-		$config['invoice'] = $invoice;
-		$config['supplier'] = $this->mymodel->get_table([
+		$config['invoice'] = $invoice[0];
+		$config['supplier'] = $this->modelbase->get_table([
 											'table' => 'proveedor',
 											'where' => [
-														'indentificacion_proveedor' => 
+														'identificacion_proveedor' => 
 															$invoice[0]['identificacion_proveedor']
-																],																		]);
-		$config['invoiceDetail'] = $this->getDetailInvoice($idInvoice);
+																],																		
+															]);
+		$invoiceDetail = $this->modelorder->getInvoiceDetail($invoice[0]
+																												['id_pedido_factura']);
+		if ($invoiceDetail == false){
+			$config['sums'] = false;
+			$config['invoiceDetail'] = $invoiceDetail;
+		}else{
+			$config['sums'] = $invoiceDetail['sums'];
+			unset($invoiceDetail['sums']);
+			$config['invoiceDetail'] = $invoiceDetail;
+		}
+
 		$config['titleContent'] = 'Detalle Factura [ # ' . 
 															$invoice[0]['id_factura_proveedor'] . 
 															' ] Pedido [ ' . $invoice[0]['nro_pedido'] . ' ]';
@@ -54,13 +70,22 @@ class Pedidofactura extends MY_Controller {
 	* Muestra el formulario para crear una factura
 	*/
 	public function nuevo($nroOrder){
-		$this->db->where('nro_pedido', $nroOrder);
-		$order = $this->db->get('pedido');
-		$this->db->where('tipo_provedor', 'INTERNACIONAL');
-		$supplier = $this->db->get('proveedor');
-		$config['create_invoice'] = true;
-		$config['order'] = $order->result_array();
-		$config['suppliers'] = $supplier->result_array();
+		$order = $this->modelorder->get($nroOrder);
+
+		$suppliers = $this->modelbase->get_table([
+																				'table' => 'proveedor',
+																				'where' => [
+																						'tipo_provedor' =>  'INTERNACIONAL',
+																									],
+																						]);
+
+		$config = [
+					'create_invoice' => true,
+					'order' => $order[0],
+					'suppliers' => $suppliers,
+					'titleContent' => 'Ingreso de Factura Pedido: [' . $nroOrder . ']',
+							];
+
 		$this->responseHttp($config);
 	}
 
@@ -115,8 +140,8 @@ class Pedidofactura extends MY_Controller {
 	 * @return JSON (response)
 	 */
 	public function validar(){
-		if($this->rest->_getRequestMethod()!= 'POST'){
-			$this->_notAuthorized();
+		if(!$_POST){
+			$this->redirectPage('ordersList');
 		}
 
 		$orderInvoice = $this->input->post();
@@ -177,35 +202,6 @@ class Pedidofactura extends MY_Controller {
 		header('Location: ' . base_url() . 'index.php/pedido/presentar/' . $nroOrder);
 	}
 
-
-	/**
-	* Obtiene los detalles de la factura de pedido
-	*/
-	private function getDetailInvoice($idInvoice){
-		$this->db->where('id_pedido_factura', $idInvoice);
-		$resultDb = $this->db->get('detalle_pedido_factura');
-		$details = $resultDb->result_array();
-
-		$products = array();
-		
-		foreach ($details as $key => $value) {
-			$this->db->where('cod_contable', $value['cod_contable']);
-			$resultDb = $this->db->get('producto');
-			$product = $resultDb->result_array();
-
-			$value['nombre'] = $product[0]['nombre'];
-			$value['unidades'] = ((int)($product[0]['cantidad_x_caja']) * 
-																										(int)($value['nro_cajas']));
-			$value['costo_caja'] = ((float)($product[0]['cantidad_x_caja']) * 
-																									(float)($value['costo_und']));
-			$value['costo_total'] = ((float)($value['unidades']) * 
-																									(float)($value['costo_und']));
-			$value['cantidad_x_caja'] = $product[0]['cantidad_x_caja'];
-			$products[$key] = $value;
-		}
-
-		return $products;
-	}
 
 	/**
 	 * se validan los datos que deben estar para que la consulta no falle

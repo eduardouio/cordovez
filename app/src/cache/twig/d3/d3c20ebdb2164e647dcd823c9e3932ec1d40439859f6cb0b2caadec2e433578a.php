@@ -121,27 +121,28 @@ class __TwigTemplate_b3a0d33ef4e7f8f2e64e00dcdf7a51266a33042f627341c36ddc5aeba62
         <label>Moneda</label>
         <select
         name=\"moneda\"
+        id=\"moneda\"
         required = \"required\"
         class=\"form-control\"
         > 
           <option value=\"";
-        // line 76
+        // line 77
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["invoice"] ?? null), 0, array(), "array"), "moneda", array()), "html", null, true);
         echo "\">";
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["invoice"] ?? null), 0, array(), "array"), "moneda", array()), "html", null, true);
         echo "</option>
           ";
-        // line 77
+        // line 78
         if (($this->getAttribute($this->getAttribute(($context["invoice"] ?? null), 0, array(), "array"), "moneda", array()) == "DOLARES")) {
-            // line 78
+            // line 79
             echo "            <option value=\"EUROS\">EUROS</option>
           ";
         } else {
-            // line 80
+            // line 81
             echo "            <option value=\"DOLARES\">DOLARES</option>
           ";
         }
-        // line 82
+        // line 83
         echo "        </select>
       </div>
     </div>
@@ -155,7 +156,7 @@ class __TwigTemplate_b3a0d33ef4e7f8f2e64e00dcdf7a51266a33042f627341c36ddc5aeba62
         name=\"tipo_cambio\"
         id=\"tipo_cambio\"
         value=\"";
-        // line 94
+        // line 95
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["invoice"] ?? null), 0, array(), "array"), "tipo_cambio", array()), "html", null, true);
         echo "\" 
         required=\"required\" 
@@ -175,7 +176,7 @@ class __TwigTemplate_b3a0d33ef4e7f8f2e64e00dcdf7a51266a33042f627341c36ddc5aeba62
         maxlength=\"8\"
         required=\"required\" 
         value=\"";
-        // line 111
+        // line 112
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["invoice"] ?? null), 0, array(), "array"), "id_factura_proveedor", array()), "html", null, true);
         echo "\" 
         >
@@ -186,12 +187,13 @@ class __TwigTemplate_b3a0d33ef4e7f8f2e64e00dcdf7a51266a33042f627341c36ddc5aeba62
         <label>Valor</label>
         <input 
         class=\"form-control\" 
+        required=\"required\" 
         type=\"number\" 
         name=\"valor\"
         id=\"valor\"
         step=\"0.01\" 
         value=\"";
-        // line 124
+        // line 126
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["invoice"] ?? null), 0, array(), "array"), "valor", array()), "html", null, true);
         echo "\" 
         >
@@ -217,14 +219,14 @@ class __TwigTemplate_b3a0d33ef4e7f8f2e64e00dcdf7a51266a33042f627341c36ddc5aeba62
             Guardar Registro
          </button>
       <a href=\"";
-        // line 147
+        // line 149
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "pedido/presentar/";
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["invoice"] ?? null), 0, array(), "array"), "nro_pedido", array()), "html", null, true);
         echo "\" class=\"btn btn-sm btn-default\">
             <span class=\"fa fa-arrow-left fa-fw\"></span>
             Volver al Pedido <b>(";
-        // line 149
+        // line 151
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["invoice"] ?? null), 0, array(), "array"), "nro_pedido", array()), "html", null, true);
         echo ")</b>
          </a>
@@ -263,7 +265,7 @@ class __TwigTemplate_b3a0d33ef4e7f8f2e64e00dcdf7a51266a33042f627341c36ddc5aeba62
 
     public function getDebugInfo()
     {
-        return array (  228 => 149,  221 => 147,  195 => 124,  179 => 111,  159 => 94,  145 => 82,  141 => 80,  137 => 78,  135 => 77,  129 => 76,  110 => 60,  89 => 42,  73 => 28,  62 => 26,  58 => 25,  52 => 24,  37 => 12,  24 => 2,  19 => 1,);
+        return array (  230 => 151,  223 => 149,  197 => 126,  180 => 112,  160 => 95,  146 => 83,  142 => 81,  138 => 79,  136 => 78,  130 => 77,  110 => 60,  89 => 42,  73 => 28,  62 => 26,  58 => 25,  52 => 24,  37 => 12,  24 => 2,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -348,6 +350,7 @@ class __TwigTemplate_b3a0d33ef4e7f8f2e64e00dcdf7a51266a33042f627341c36ddc5aeba62
         <label>Moneda</label>
         <select
         name=\"moneda\"
+        id=\"moneda\"
         required = \"required\"
         class=\"form-control\"
         > 
@@ -395,6 +398,7 @@ class __TwigTemplate_b3a0d33ef4e7f8f2e64e00dcdf7a51266a33042f627341c36ddc5aeba62
         <label>Valor</label>
         <input 
         class=\"form-control\" 
+        required=\"required\" 
         type=\"number\" 
         name=\"valor\"
         id=\"valor\"

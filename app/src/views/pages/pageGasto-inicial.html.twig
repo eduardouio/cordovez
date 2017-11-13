@@ -3,6 +3,13 @@
 {% include 'base/navbarleft.html.twig' %}
 {% include 'base/content.html.twig' %}
 
+
+
+
+{% if validateExpenses == true %}
+	{% include 'sections/validar-pedido.html.twig' %}
+{% endif %}
+
 {% if show == true %}
 	{% include 'sections/mostrar-gasto-inicial.html.twig' %}
 {% endif %}

@@ -75,19 +75,13 @@ class __TwigTemplate_81df2b0625591481da16a2966e825c9ae4d163d5a11291f993ce1141f39
 \t\t\tname=\"concepto\"
 \t\t\t>
 \t\t\t<option disabled=\"\" selected=\"\">Seleccione...</option>
-\t\t\t<option value=\"FLETE\">FLETE</option>
-\t\t\t<option value=\"GASTO ORIGEN\">GASTO ORIGEN</option>
-\t\t\t<option value=\"ISD\">ISD</option>
-\t\t\t<option value=\"OTROS GASTOS NAVIEROS\">OTROS GASTOS NAVIEROS</option>
+\t\t\t<option value=\"AGENTE INICIAL DOCUMENTAL\">AGENTE INICIAL DOCUMENTAL</option>
+\t\t\t<option value=\"AGESTE INICIAL FISICO\">AGESTE INICIAL FISICO</option>
 \t\t\t<option value=\"ALMACENAJE  INICIAL\">ALMACENAJE  INICIAL</option>
-\t\t\t<option value=\"CUSTODIA\">CUSTODIA</option>
-\t\t\t<option value=\"TRANSPORTE INTERNO \">TRANSPORTE INTERNO </option>
-\t\t\t<option value=\"AGENTE \">AGENTE </option>
-\t\t\t<option value=\"DESCARGA\">DESCARGA</option>
-\t\t\t<option value=\"TASA DE CONTROL AEROPORTUARIA\">TASA DE CONTROL AEROPORTUARIA</option>
 \t\t\t<option value=\"CANDADO SATELITAL\">CANDADO SATELITAL</option>
+\t\t\t<option value=\"CUSTODIA ARMADA\">CUSTODIA ARMADA</option>
 \t\t\t<option value=\"DEMORAJE\">DEMORAJE</option>
-\t\t\t<option value=\"OTROS\">OTROS</option>
+
 \t\t</select>
 \t\t</div>
 \t</div>
@@ -149,14 +143,14 @@ class __TwigTemplate_81df2b0625591481da16a2966e825c9ae4d163d5a11291f993ce1141f39
             Guardar Registro
          </button>
       <a href=\"";
-        // line 114
+        // line 108
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "pedido/presentar/";
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["order"] ?? null), 0, array(), "array"), "nro_pedido", array()), "html", null, true);
         echo "\" class=\"btn btn-sm btn-default\">
             <span class=\"fa fa-arrow-left fa-fw\"></span>
             Regresar Pedido <b>(";
-        // line 116
+        // line 110
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["order"] ?? null), 0, array(), "array"), "nro_pedido", array()), "html", null, true);
         echo ") </b>
          </a>
@@ -189,7 +183,7 @@ class __TwigTemplate_81df2b0625591481da16a2966e825c9ae4d163d5a11291f993ce1141f39
 \t</div>`
 \t
 \t\tvar usedExpenses = ";
-        // line 146
+        // line 140
         echo ($context["used_expenses"] ?? null);
         echo " ;\t\t
 
@@ -223,7 +217,7 @@ class __TwigTemplate_81df2b0625591481da16a2966e825c9ae4d163d5a11291f993ce1141f39
 
     public function getDebugInfo()
     {
-        return array (  193 => 146,  160 => 116,  153 => 114,  64 => 27,  53 => 25,  49 => 24,  32 => 10,  19 => 1,);
+        return array (  187 => 140,  154 => 110,  147 => 108,  64 => 27,  53 => 25,  49 => 24,  32 => 10,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -276,19 +270,13 @@ class __TwigTemplate_81df2b0625591481da16a2966e825c9ae4d163d5a11291f993ce1141f39
 \t\t\tname=\"concepto\"
 \t\t\t>
 \t\t\t<option disabled=\"\" selected=\"\">Seleccione...</option>
-\t\t\t<option value=\"FLETE\">FLETE</option>
-\t\t\t<option value=\"GASTO ORIGEN\">GASTO ORIGEN</option>
-\t\t\t<option value=\"ISD\">ISD</option>
-\t\t\t<option value=\"OTROS GASTOS NAVIEROS\">OTROS GASTOS NAVIEROS</option>
+\t\t\t<option value=\"AGENTE INICIAL DOCUMENTAL\">AGENTE INICIAL DOCUMENTAL</option>
+\t\t\t<option value=\"AGESTE INICIAL FISICO\">AGESTE INICIAL FISICO</option>
 \t\t\t<option value=\"ALMACENAJE  INICIAL\">ALMACENAJE  INICIAL</option>
-\t\t\t<option value=\"CUSTODIA\">CUSTODIA</option>
-\t\t\t<option value=\"TRANSPORTE INTERNO \">TRANSPORTE INTERNO </option>
-\t\t\t<option value=\"AGENTE \">AGENTE </option>
-\t\t\t<option value=\"DESCARGA\">DESCARGA</option>
-\t\t\t<option value=\"TASA DE CONTROL AEROPORTUARIA\">TASA DE CONTROL AEROPORTUARIA</option>
 \t\t\t<option value=\"CANDADO SATELITAL\">CANDADO SATELITAL</option>
+\t\t\t<option value=\"CUSTODIA ARMADA\">CUSTODIA ARMADA</option>
 \t\t\t<option value=\"DEMORAJE\">DEMORAJE</option>
-\t\t\t<option value=\"OTROS\">OTROS</option>
+
 \t\t</select>
 \t\t</div>
 \t</div>

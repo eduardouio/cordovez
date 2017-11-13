@@ -8,7 +8,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @author    Eduardo Villota <eduardouio7@gmail.com>
  * @copyright    Copyright (c) 2014,  Agencias y Representaciones Cordovez S.A.
  * @license    Todos los derechos reservados Agencias y Representaciones Cordovez S.A.
- * @link    https://github.com/eduardouio/APPImportaciones
+ * @link    https://gitlab.com/eduardo/APPImportaciones
  * @since    Version 1.0.0
  * @filesource
  */
@@ -17,20 +17,22 @@ class MY_Controller extends CI_Controller{
 
 	public function __construct() {
        parent::__construct();
-			 $this->load->library('session');
 			 $this->_checkSession();
     }
-
-		/**
-		 * Valida la sesion al inicio de cada controller
-		 */
-		public function _checkSession(){
-			if (!$this->session->has_userdata('username')){
-				if(current_url() != base_url() . 'index.php'){
-					$this->redirectPage('loginForm');
-				}
-			}
-		}
+	/**
+	 * Verofica la sesion del usuario, si la sesion no existe 
+     * redirecciona al formulario de autenticacion
+	 */
+	public function _checkSession(){
+        if(!($this->session->userdata('id_user'))){
+            $this->session->sess_destroy();
+            if(current_url() != base_url() . 'index.php'){
+                    $this->redirectPage('loginForm');
+                }
+        }else{
+            return true;
+        }
+    }
 
 		/**
 		 * controla las columnas y la longitud de sus valores
@@ -78,9 +80,16 @@ class MY_Controller extends CI_Controller{
     */
     public function redirectPage(string $page, $id = false){
     	$target = [
-    		'loginForm' => base_url(), 
-    		'ordersList' => base_url() . 'index.php/pedido/listar', 
-    		'presetOrder' => base_url() . 'index.php/pedido/presentar', 
+    		'loginForm' => base_url() . 'index.php/login/', 
+            'ordersList' => base_url() . 'index.php/pedido/listar', 
+    		'suppliersList' => base_url() . 'index.php/proveedor/listar', 
+            'presentOrder' => base_url() . 'index.php/pedido/presentar', 
+    		'replaceIncoterms' => base_url() . 
+                                    'index.php/gstinicial/replaceIncoterms', 
+            'putIncoterms' => base_url() .
+                                    'index.php/gstinicial/putIncoterms', 
+            'presentInvoiceOrder' => base_url() . 
+                                            'index.php/pedidofactura/presentar', 
     	];
 
     	header('Status: 301 Moved Permanently', false, 301);

@@ -30,7 +30,7 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
       class=\"form-control\" 
       value=\"";
         // line 11
-        echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["order"] ?? null), 0, array(), "array"), "nro_pedido", array()), "html", null, true);
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "nro_pedido", array()), "html", null, true);
         echo "\" 
       >
     </div>
@@ -151,6 +151,7 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
         name=\"valor\"
         id=\"valor\"
         step=\"0.01\" 
+        required=\"required\" 
         >
       </div>
     </div>
@@ -176,23 +177,22 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
             Guardar Registro
          </button>
       <a href=\"";
-        // line 141
+        // line 142
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "pedido/presentar/";
-        echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["order"] ?? null), 0, array(), "array"), "nro_pedido", array()), "html", null, true);
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "nro_pedido", array()), "html", null, true);
         echo "\" class=\"btn btn-sm btn-default\">
             <span class=\"fa fa-arrow-left fa-fw\"></span>
             Volver al Pedido <b>(";
-        // line 143
-        echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["order"] ?? null), 0, array(), "array"), "nro_pedido", array()), "html", null, true);
+        // line 144
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "nro_pedido", array()), "html", null, true);
         echo ")</b>
          </a>
       </div>
    </div>
 </form>
 
-<script type=\"text/javascript\"> 
-  
+<script type=\"text/javascript\">   
   \$('#moneda').change(function(){
     if(\$(this).val() === 'EUROS'){
       \$('#tipo_cambio').removeAttr('readonly');
@@ -205,7 +205,6 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
   \$('#valor').keyup(function(){
     \$('#total').val(\$('#valor').val() * \$('#tipo_cambio').val());  
   })
-  
 </script>";
     }
 
@@ -221,7 +220,7 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
 
     public function getDebugInfo()
     {
-        return array (  187 => 143,  180 => 141,  64 => 27,  53 => 25,  49 => 24,  33 => 11,  19 => 1,);
+        return array (  188 => 144,  181 => 142,  64 => 27,  53 => 25,  49 => 24,  33 => 11,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -244,7 +243,7 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
       type=\"text\" 
       name=\"nro_pedido\"
       class=\"form-control\" 
-      value=\"{{order[0].nro_pedido}}\" 
+      value=\"{{order.nro_pedido}}\" 
       >
     </div>
     </div>
@@ -350,6 +349,7 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
         name=\"valor\"
         id=\"valor\"
         step=\"0.01\" 
+        required=\"required\" 
         >
       </div>
     </div>
@@ -374,16 +374,15 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
             <span class=\"fa fa-save fa-fw\"></span>
             Guardar Registro
          </button>
-      <a href=\"{{rute_url}}pedido/presentar/{{order[0].nro_pedido}}\" class=\"btn btn-sm btn-default\">
+      <a href=\"{{rute_url}}pedido/presentar/{{order.nro_pedido}}\" class=\"btn btn-sm btn-default\">
             <span class=\"fa fa-arrow-left fa-fw\"></span>
-            Volver al Pedido <b>({{order[0].nro_pedido}})</b>
+            Volver al Pedido <b>({{order.nro_pedido}})</b>
          </a>
       </div>
    </div>
 </form>
 
-<script type=\"text/javascript\"> 
-  
+<script type=\"text/javascript\">   
   \$('#moneda').change(function(){
     if(\$(this).val() === 'EUROS'){
       \$('#tipo_cambio').removeAttr('readonly');
@@ -396,7 +395,6 @@ class __TwigTemplate_8e4cad823133fdd54827617a7ba4433534a8c81cb3bf2824c72c98d3815
   \$('#valor').keyup(function(){
     \$('#total').val(\$('#valor').val() * \$('#tipo_cambio').val());  
   })
-  
 </script>", "forms/frm-pedido-factura.html.twig", "/var/www/html/app/src/views/forms/frm-pedido-factura.html.twig");
     }
 }

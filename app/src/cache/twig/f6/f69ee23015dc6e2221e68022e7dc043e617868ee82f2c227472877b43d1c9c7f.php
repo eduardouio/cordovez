@@ -91,12 +91,12 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
 
 
       <div class=\"col-md-2\">
-         <label>Costo Unidad</label>
+         <label>Costo Caja</label>
          <input 
          type=\"number\" 
          class=\"form-control\" 
-         name=\"costo_und\"
-         id=\"costo_und\"
+         name=\"costo_caja\"
+         id=\"costo_caja\"
          required=\"true\" 
          step=\"0.001\" 
          readonly=\"true\" 
@@ -143,13 +143,11 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
       \$.each(products, function(key, value){
          if(e === value.cod_contable){
             \$('#grado_alcoholico').val('');
-            \$('#costo_und').val('');
+            \$('#costo_caja').val('');
             \$('#grado_alcoholico').val(value.grado_alcoholico);
-            \$('#costo_und').val(value.costo_unidad);
+            \$('#costo_caja').val(value.costo_unidad);
          }
-      });
-
-      
+      });      
    });
 
 </script>
@@ -158,11 +156,11 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
    \$('#chage_params').click(function(){
       if( \$('#chage_params').is(':checked') ){
          \$('#grado_alcoholico').removeAttr('readonly');
-         \$('#costo_und').removeAttr('readonly');
+         \$('#costo_caja').removeAttr('readonly');
          \$('#grado_alcoholico').focus();
       }else{
          \$('#grado_alcoholico').attr('readonly', true);
-         \$('#costo_und').attr('readonly', true);
+         \$('#costo_caja').attr('readonly', true);
       }
    });
 </script>";
@@ -249,12 +247,12 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
 
 
       <div class=\"col-md-2\">
-         <label>Costo Unidad</label>
+         <label>Costo Caja</label>
          <input 
          type=\"number\" 
          class=\"form-control\" 
-         name=\"costo_und\"
-         id=\"costo_und\"
+         name=\"costo_caja\"
+         id=\"costo_caja\"
          required=\"true\" 
          step=\"0.001\" 
          readonly=\"true\" 
@@ -293,13 +291,11 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
       \$.each(products, function(key, value){
          if(e === value.cod_contable){
             \$('#grado_alcoholico').val('');
-            \$('#costo_und').val('');
+            \$('#costo_caja').val('');
             \$('#grado_alcoholico').val(value.grado_alcoholico);
-            \$('#costo_und').val(value.costo_unidad);
+            \$('#costo_caja').val(value.costo_unidad);
          }
-      });
-
-      
+      });      
    });
 
 </script>
@@ -308,11 +304,11 @@ class __TwigTemplate_bc0df0c074ebb0174e541b7c91e74d67e9ce071082478eefec87666848b
    \$('#chage_params').click(function(){
       if( \$('#chage_params').is(':checked') ){
          \$('#grado_alcoholico').removeAttr('readonly');
-         \$('#costo_und').removeAttr('readonly');
+         \$('#costo_caja').removeAttr('readonly');
          \$('#grado_alcoholico').focus();
       }else{
          \$('#grado_alcoholico').attr('readonly', true);
-         \$('#costo_und').attr('readonly', true);
+         \$('#costo_caja').attr('readonly', true);
       }
    });
 </script>", "forms/frm-pedido-factura-detalle.html.twig", "/var/www/html/app/src/views/forms/frm-pedido-factura-detalle.html.twig");

@@ -84,7 +84,7 @@
 <div>
    <ul class="nav nav-tabs" role="tablist">
       <li role="presentation" class="active"><a href="#pedido" role="tab" data-toggle="tab" aria-controls="pedido">Detalle Pedido &nbsp;
-         {% if viewData.order.estado == 'ABIERTO' %}
+         {% if viewData.order.bg_isclosed == '0' %}
          <span class="label label-success">Abierto</span>
          {% else %}
          <span class="label label-died">Cerrado</span>
@@ -153,6 +153,12 @@
                   <span class="form-control" > {{viewData.order.fecha_arribo}}  </span>
                </div>
             </div>
+            <div class="col-md-3">
+               <div class="input-group">
+                  <span class="input-group-addon">DIAS LIBRES</span>
+                  <span class="form-control" > {{viewData.order.dias_libres}}  </span>
+               </div>
+            </div>
          </div>
          <br>
          <div class="row">
@@ -164,12 +170,31 @@
             </div>
          </div>
          <div class="row">
-            <div class="col-md-6">
                <hr>
+            <div class="col-md-6">
                <a href="{{rute_url}}/pedido/editar/{{viewData.order.nro_pedido}}" class="text-primary">
-               <button class="btn btn-sm btn-default"><span class="fa fa-pencil fa-fw"></span>Ediar</button></a>
+               <button class="btn btn-sm btn-default"><span class="fa fa-pencil fa-fw"></span>Ediar Pedido 
+               </button></a>
+               &nbsp;&nbsp;&nbsp;
                <a href="{{rute_url}}/pedido/eliminar/{{viewData.order.nro_pedido}}">
-               <button class="btn btn-sm btn-default"> <span class="fa fa-trash fa-fw"></span>Elimnar</button></a>
+               <button class="btn btn-sm btn-default"> <span class="fa fa-trash fa-fw"></span>Elimnar Pedido 
+               </button></a>
+            </div>
+            <div class="col-sm-3">
+               <a href="{{rute_url}}gstinicial/validOrder/{{viewData.order.nro_pedido}}">
+               <button type="button" class="btn btn-primary btn-sm" style="width: 100%">
+               <span class="fa fa-gear"></span>
+               Generar Gastos Iniciales
+               </button>
+               </a>
+            </div>
+            <div class="col-sm-3">
+               <a href="{{rute_url}}nacionalizacion/validOrder/{{viewData.order.nro_pedido}}">
+               <button type="button" class="btn btn-primary btn-sm" style="width: 100%">
+               <span class="fa fa-gear"></span>
+               Nacionalizar Total/Parcial
+               </button>
+               </a>
             </div>
          </div>
          <!-- /tabPedido-->
@@ -241,9 +266,9 @@
                         <td>{{orderInvoice.fecha_emision}}</td>
                         <td>{{orderInvoice.vencimiento_pago}}</td>
                         <td>{{orderInvoice.moneda}}</td>
-                        <td>{{orderInvoice.valor}}</td>
-                        <td>{{orderInvoice.valor}}</td>
-                        <td>{{orderInvoice.valor}}</td>
+                        <td>{{orderInvoice.valor | number_format(2, '.', ',') }}</td>
+                        <td>{{orderInvoice.valor | number_format(2, '.', ',') }}</td>
+                        <td>{{orderInvoice.valor | number_format(2, '.', ',') }}</td>
                         <td>
                            <div class="dropdown">
                               <button class="btn btn-sm btn-default" id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -281,14 +306,6 @@
                </table>
             </div>
          </div>
-         <div class="row">
-            <div class="col-sm-3">
-               <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">
-               <span class="fa fa-gear"></span>
-               Generar Gastos Iniciales
-               </button>
-            </div>
-         </div>
          <!-- table -- >
             <!-- /table -- >
             </div>
@@ -298,16 +315,12 @@
       <div role="tabpanel" class="tab-pane" id="gastos">
          <div class="row">
             <div class="col-sm-6">
-               {% if viewData.order.regimen == 70 %}
                <a href="{{rute_url}}gstinicial/nuevo/{{viewData.order.nro_pedido}}">
                <button class="btn btn-sm btn-default">
                <span class="fa fa-plus fa-fw"> </span>
                Agregar Gasto Nacional <span class="label label-warning">provisionado</span>
                </button>
                </a>
-               {% else %}
-               <h5 class="text-primary">GASTOS INICIALES RÉGIMEN 10</h5>
-               {% endif %}
             </div>
             {% set cantidad = 0 %}
             {% set provisionado = 0.0 %}
@@ -396,6 +409,7 @@
             </div>
          </div>
       </div>
+
       <!-- /Gastos iniciales -->
       <!-- factura Nacionalizaciones -->
       <div role="tabpanel" class="tab-pane" id="nacionalizaciones">
@@ -507,36 +521,7 @@
    </div>
 </div>
 <!--/tabs-->
-<!-- Modal -->
-<div class="modal fade bs-example-modal-sm" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-   <div class="modal-dialog" role="document">
-      <div class="modal-content">
-         <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">
-               Generador Gastos Iniciales Pedido: 
-               <span class="text-danger">{{ viewData.order.nro_pedido }}</span>
-            </h4>
-         </div>
-         <div class="modal-body">
-            <p>
-               Esta acción Generará los gastos iniciales del pedido, recuerde que si hace cambios en los valores de las facturas del pedido
-               {{ viewData.order.nro_pedido }} se deben volver a generar los gastos inciales, debido a que el cálculo de algunos rubros dependen de los valores de las facturas.
-            </p>
-         </div>
-         <div class="modal-footer">
-            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
-            <a 
-            href="{{rute_url}}pedido/calcularGI/{{viewData.order.nro_pedido}}">
-            <button type="button" class="btn btn-primary btn-sm">
-            <span class="fa fa-warning"></span>
-            Generar Gastos Iniciales 
-            </button>
-            </a>
-         </div>
-      </div>
-   </div>
-</div>
+
 <script type="text/javascript">
 // Javascript to enable link to tab
 var hash = document.location.hash;

@@ -11,21 +11,31 @@
             </div>
             <div class="col-sm-2">
                <h4 class="text-primary"> <small>Pedidos Activos: </small> <span id="suma"> 
-                  {{ 0| number_format(0, '.', ',') }} 
+                  {{ infoBase.activeOrders | number_format(0, '.', ',') }} 
                   </span>
                </h4>
             </div>
             <div class="col-sm-2">
                <h4 class="text-primary"> <small>Pedidos Cerrados: </small> 
                   <span id="suma"> {{ simbolo | raw}} 
-                  {{  0 | number_format(0, '.', ',')}}</span>
+                    {% set colsedOrders = infoBase.totalOrders -infoBase.activeOrders %}
+                  {{  colsedOrders | number_format(0, '.', ',')}}</span>
                </h4>
             </div>
             <div class="col-sm-3">
-               <h4 class="text-danger"> <small>Por Regimen 10/70: </small> 
-                  <span id="suma">
-                  {{ 0  | number_format(0, '.', ',')}} / {{ 0  | number_format(0, '.', ',')}}
-                  </span>
+               <h4 class="text-danger"> 
+                <small>Por Regimen 
+                <span class="text-danger">10</span> 
+                <span class="text-default"> / </span>
+                <span class="text-primary">70</span>: 
+              </small> 
+              <span class="text-danger">
+                  {{ infoBase.consumeOrders  | number_format(0, '.', ',')}}
+              </span>
+                   <span class="text-default"> / </span>
+              <span class="text-primary">
+              {{ infoBase.partialsOrders  | number_format(0, '.', ',')}}
+                </span>
                </h4>
             </div>
          </div>

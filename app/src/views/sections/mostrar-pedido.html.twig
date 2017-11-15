@@ -48,7 +48,8 @@
          {% set meses = (viewData.order.dias / 30) %}
          {% set anos = (viewData.order.dias / 365)  %}
          {% if viewData.order.dias < 30 %}
-         {{viewData.order.dias | number_format(1, '.', ',') }} <small>días</small>  
+         {{viewData.order.dias | number_format(1, '.', ',') }} 
+         <small>días</small>  
          {% elseif (viewData.order.dias > 29) and (viewData.order.dias < 300) %}
          {{meses | number_format(2, '.', ',')}} <small><b>Meses</b></small>  
          {% elseif viewData.order.dias > 300 %}

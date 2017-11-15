@@ -36,7 +36,9 @@ class Pedido extends MY_Controller {
 	}
 
 	/**
-	 * Presenta una lista de todos los pedidos
+	 * Presenta una lista de todos los pedidos paginados de acuerdo al limite
+	 * @param $offset inicio del rango
+	 * @return void
 	 */
 	public function listar(int $offset = 0){
 		$this->db->where('nro_pedido !=', '000-00');
@@ -64,6 +66,7 @@ class Pedido extends MY_Controller {
 									'orders' => $resumData,
 									'titleContent' => 'Lista de Pedidos',
 									'userData' => $this->session->userdata(),
+									'infoBase' => $this->getStatisticsInfo(),
 									'pagination' => true,
 									'perPage' => $this->listPerPage,
 									'pagination_pages' => $pages_links,
@@ -72,6 +75,39 @@ class Pedido extends MY_Controller {
 									'pagination_url' => base_url() . 'index.php/pedido/listar/',
 									];
 		$this->responseHttp($config);
+	}
+
+
+	/**
+	* retorna las estadisticas de los pedidos
+	* @return (array)
+	*/
+	private function getStatisticsInfo(){
+		$orders = $this->modelorder->getAll();		
+		$info = [
+					'totalOrders' => count($orders),
+					'consumeOrders' => 0,
+					'partialsOrders' => 0,
+					'activeOrders' => 0,
+						];
+
+		foreach ($orders as $key => $order) {
+			if ($order['regimen'] == '70') {
+					$info['partialsOrders']++;
+			}elseif(($order['regimen'] == '10')){
+					$info['consumeOrders']++;
+			}
+			if ($order['bg_islocked'] == '0') {
+				$info['activeOrders']++;
+			}
+		}
+			
+		#se quita por el pedido cero
+		$info['consumeOrders']--;
+		$info['totalOrders']--;
+		$info['activeOrders']--;
+
+		return $info;
 	}
 
 	/**

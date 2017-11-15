@@ -7,9 +7,16 @@
 	<li><a href="{{pagination_url}}">Primera</a></li>
   {% for item in 1 .. pagination_pages  %}
   	{% if current_page == item %}
-  		<li class="active"><a href="{{ pagination_url }}{{page}}">{{ item }}</a></li>
+  		<li class="active">
+        <a href="{{ pagination_url }}{{page}}">
+        {{ item }}
+      </a>
+      </li>
 		{% else %}
-  		<li><a href="{{ pagination_url }}{{page}}">{{ item }}</a></li>		
+  		<li>
+        <a href="{{ pagination_url }}{{page}}">{{ item }}
+        </a>
+      </li>		
   	{% endif %}  	
   	{% set page = page + perPage %}
   {% endfor %}

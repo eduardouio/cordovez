@@ -269,9 +269,7 @@ class Pedido extends MY_Controller {
 				'incoterm' => 1,
 				'pais_origen' => 1,
 				'ciudad_origen' => 1,			
-				'flete_aduana' => 1,
 				'nro_refrendo' => 1,
-				'seguro_aduana' => 1,
 				'id_user' => 1,
 			);
 			return $this->_checkColumnsData($columnsLen, $pedido);

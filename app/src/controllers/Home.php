@@ -32,22 +32,42 @@ class Home extends MY_Controller {
 		$this->responseHttp($config);
 	}
 
-
-		/* *
-	* Envia la respuestas html al navegador
+	/* *
+	* Envia la respuestas html al navegador 
+	* @param $config => arreglo con la informacion de la plantilla
+	* @return void 
 	*/
 	public function responseHttp($config){
-		$config['base_url'] = base_url();
-		$config['rute_url'] = base_url() . 'index.php/';
-		$config['actionFrm'] = base_url() . 'index.php/login/validar';
-		$config['controller'] = 'inicio';
-		$config['iconTitle'] = 'fa-ship';
-		$config['content'] = 'home';
-		$config['titleContent'] = 'Sistema de Importaciones &nbsp;&nbsp;&nbsp;'.
-															' <small> Lista de Módulos Disponibles </small>';
+		$config = [
+				'base_url' => base_url(),
+				'rute_url' => base_url() . 'index.php/',
+				'actionFrm' => base_url() . 'index.php/login/validar',
+				'controller' => 'inicio',
+				'iconTitle' => 'fa-ship',
+				'infoBase' => $this->getAllInfo(),
+				'content' => 'home',
+				'titleContent' => 'Sistema de Importaciones &nbsp;&nbsp;&nbsp;
+												<small> Lista de Módulos Disponibles </small>',
+							];
+
 		return $this->twig->display($this->template, $config);
 	}
 
 
+	/**
+	* Obtiene toda la informacion que se muestra en la pantalla del resumen
+	* información de cada uno de los módulos
+	*/
+	private function getAllInfo(){
+		return ([
+					'orders' => $this->db->count_all('pedido'),
+					'suppliers' => $this->db->count_all('proveedor'),
+					'products' => $this->db->count_all('producto'),
+					'incoterms' => $this->db->count_all('tarifa_incoterm'),
+		]);
+
+		 
+
+	}
 
 }

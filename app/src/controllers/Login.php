@@ -19,6 +19,7 @@ class Login extends CI_Controller {
 
 	function __construct(){
 		parent::__construct();
+		$this->checkSession();
 	}
 
 	/**	
@@ -26,8 +27,29 @@ class Login extends CI_Controller {
 	*/
 	public function index(){
 		$config['title'] = 'Inicio de Sesión';
+
 		$this->responseHttp($config);
 	}
+
+
+	/**
+	 * Verofica la sesion del usuario, si la sesion no existe 
+   * redirecciona al formulario de autenticacion
+	 */
+	private function checkSession(){
+		if($this->session->userdata('id_user') != NULL){
+			$this->redirectPage('ordersList');
+		}else{
+			return false;
+		}
+		
+   }
+
+
+	/**
+	* Comprueba la sesion de un us
+	*
+	*/
 
 	/* *
 	* Envia la respuestas html al navegador
@@ -139,7 +161,7 @@ class Login extends CI_Controller {
     *
     * @return void | bool
     */
-    public function redirectPage(string $page, $id = false){
+    public function redirectPage(string $page){
     	$target = [
     		'loginForm' => base_url(), 
     		'ordersList' => base_url() . 'index.php/pedido/listar/', 
@@ -152,5 +174,4 @@ class Login extends CI_Controller {
     	}    	
     	header('Location: ' . $target[$page]  );
     }
-
 }

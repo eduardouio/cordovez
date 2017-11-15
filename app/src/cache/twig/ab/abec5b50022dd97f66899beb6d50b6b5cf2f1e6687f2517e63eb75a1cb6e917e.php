@@ -38,35 +38,45 @@ class __TwigTemplate_857cc01edededcca774babc6b7460d7c485da37b9000e7edac034c3c191
                 echo "  \t";
                 if ((($context["current_page"] ?? null) == $context["item"])) {
                     // line 10
-                    echo "  \t\t<li class=\"active\"><a href=\"";
+                    echo "  \t\t<li class=\"active\">
+        <a href=\"";
+                    // line 11
                     echo twig_escape_filter($this->env, ($context["pagination_url"] ?? null), "html", null, true);
                     echo twig_escape_filter($this->env, ($context["page"] ?? null), "html", null, true);
-                    echo "\">";
+                    echo "\">
+        ";
+                    // line 12
                     echo twig_escape_filter($this->env, $context["item"], "html", null, true);
-                    echo "</a></li>
+                    echo "
+      </a>
+      </li>
 \t\t";
                 } else {
-                    // line 12
-                    echo "  \t\t<li><a href=\"";
+                    // line 16
+                    echo "  \t\t<li>
+        <a href=\"";
+                    // line 17
                     echo twig_escape_filter($this->env, ($context["pagination_url"] ?? null), "html", null, true);
                     echo twig_escape_filter($this->env, ($context["page"] ?? null), "html", null, true);
                     echo "\">";
                     echo twig_escape_filter($this->env, $context["item"], "html", null, true);
-                    echo "</a></li>\t\t
+                    echo "
+        </a>
+      </li>\t\t
   \t";
                 }
-                // line 13
+                // line 20
                 echo "  \t
   \t";
-                // line 14
+                // line 21
                 $context["page"] = (($context["page"] ?? null) + ($context["perPage"] ?? null));
-                // line 15
+                // line 22
                 echo "  ";
             }
             $_parent = $context['_parent'];
             unset($context['_seq'], $context['_iterated'], $context['_key'], $context['item'], $context['_parent'], $context['loop']);
             $context = array_intersect_key($context, $_parent) + $_parent;
-            // line 16
+            // line 23
             echo "  <li><a href=\"";
             echo twig_escape_filter($this->env, ($context["pagination_url"] ?? null), "html", null, true);
             echo twig_escape_filter($this->env, ($context["last_page"] ?? null), "html", null, true);
@@ -75,7 +85,7 @@ class __TwigTemplate_857cc01edededcca774babc6b7460d7c485da37b9000e7edac034c3c191
 </div>
 ";
         }
-        // line 20
+        // line 27
         echo "</div>
 <!-- /.panel -->
 </div>
@@ -96,7 +106,7 @@ class __TwigTemplate_857cc01edededcca774babc6b7460d7c485da37b9000e7edac034c3c191
 
     public function getDebugInfo()
     {
-        return array (  79 => 20,  70 => 16,  64 => 15,  62 => 14,  59 => 13,  50 => 12,  41 => 10,  38 => 9,  34 => 8,  30 => 7,  26 => 5,  24 => 4,  19 => 1,);
+        return array (  89 => 27,  80 => 23,  74 => 22,  72 => 21,  69 => 20,  59 => 17,  56 => 16,  49 => 12,  44 => 11,  41 => 10,  38 => 9,  34 => 8,  30 => 7,  26 => 5,  24 => 4,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -118,9 +128,16 @@ class __TwigTemplate_857cc01edededcca774babc6b7460d7c485da37b9000e7edac034c3c191
 \t<li><a href=\"{{pagination_url}}\">Primera</a></li>
   {% for item in 1 .. pagination_pages  %}
   \t{% if current_page == item %}
-  \t\t<li class=\"active\"><a href=\"{{ pagination_url }}{{page}}\">{{ item }}</a></li>
+  \t\t<li class=\"active\">
+        <a href=\"{{ pagination_url }}{{page}}\">
+        {{ item }}
+      </a>
+      </li>
 \t\t{% else %}
-  \t\t<li><a href=\"{{ pagination_url }}{{page}}\">{{ item }}</a></li>\t\t
+  \t\t<li>
+        <a href=\"{{ pagination_url }}{{page}}\">{{ item }}
+        </a>
+      </li>\t\t
   \t{% endif %}  \t
   \t{% set page = page + perPage %}
   {% endfor %}

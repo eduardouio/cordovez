@@ -34,7 +34,7 @@ class __TwigTemplate_b4211397c398a1e1eb4fa6953e6af5c3f3e4863e392e36cab8325019217
                <h4 class=\"text-primary\"> <small>Pedidos Activos: </small> <span id=\"suma\"> 
                   ";
         // line 14
-        echo twig_escape_filter($this->env, twig_number_format_filter($this->env, 0, 0, ".", ","), "html", null, true);
+        echo twig_escape_filter($this->env, twig_number_format_filter($this->env, $this->getAttribute(($context["infoBase"] ?? null), "activeOrders", array()), 0, ".", ","), "html", null, true);
         echo " 
                   </span>
                </h4>
@@ -45,22 +45,35 @@ class __TwigTemplate_b4211397c398a1e1eb4fa6953e6af5c3f3e4863e392e36cab8325019217
         // line 20
         echo ($context["simbolo"] ?? null);
         echo " 
-                  ";
+                    ";
         // line 21
-        echo twig_escape_filter($this->env, twig_number_format_filter($this->env, 0, 0, ".", ","), "html", null, true);
+        $context["colsedOrders"] = ($this->getAttribute(($context["infoBase"] ?? null), "totalOrders", array()) - $this->getAttribute(($context["infoBase"] ?? null), "activeOrders", array()));
+        // line 22
+        echo "                  ";
+        echo twig_escape_filter($this->env, twig_number_format_filter($this->env, ($context["colsedOrders"] ?? null), 0, ".", ","), "html", null, true);
         echo "</span>
                </h4>
             </div>
             <div class=\"col-sm-3\">
-               <h4 class=\"text-danger\"> <small>Por Regimen 10/70: </small> 
-                  <span id=\"suma\">
+               <h4 class=\"text-danger\"> 
+                <small>Por Regimen 
+                <span class=\"text-danger\">10</span> 
+                <span class=\"text-default\"> / </span>
+                <span class=\"text-primary\">70</span>: 
+              </small> 
+              <span class=\"text-danger\">
                   ";
-        // line 27
-        echo twig_escape_filter($this->env, twig_number_format_filter($this->env, 0, 0, ".", ","), "html", null, true);
-        echo " / ";
-        echo twig_escape_filter($this->env, twig_number_format_filter($this->env, 0, 0, ".", ","), "html", null, true);
+        // line 33
+        echo twig_escape_filter($this->env, twig_number_format_filter($this->env, $this->getAttribute(($context["infoBase"] ?? null), "consumeOrders", array()), 0, ".", ","), "html", null, true);
         echo "
-                  </span>
+              </span>
+                   <span class=\"text-default\"> / </span>
+              <span class=\"text-primary\">
+              ";
+        // line 37
+        echo twig_escape_filter($this->env, twig_number_format_filter($this->env, $this->getAttribute(($context["infoBase"] ?? null), "partialsOrders", array()), 0, ".", ","), "html", null, true);
+        echo "
+                </span>
                </h4>
             </div>
          </div>
@@ -83,12 +96,12 @@ class __TwigTemplate_b4211397c398a1e1eb4fa6953e6af5c3f3e4863e392e36cab8325019217
         </thead>
         <tbody>
           ";
-        // line 50
+        // line 60
         $context["init"] = ((($context["current_page"] ?? null) * ($context["perPage"] ?? null)) - ($context["perPage"] ?? null));
-        // line 51
+        // line 61
         echo "          ";
         $context["item"] = (($context["init"] ?? null) + 1);
-        // line 52
+        // line 62
         echo "          ";
         $context['_parent'] = $context;
         $context['_seq'] = twig_ensure_traversable(($context["orders"] ?? null));
@@ -96,11 +109,11 @@ class __TwigTemplate_b4211397c398a1e1eb4fa6953e6af5c3f3e4863e392e36cab8325019217
             echo "         
           <tr>
             <td>";
-            // line 54
+            // line 64
             echo twig_escape_filter($this->env, ($context["item"] ?? null), "html", null, true);
             echo "</td>
             <td> <a href=\"";
-            // line 55
+            // line 65
             echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
             echo "pedido/presentar/";
             echo twig_escape_filter($this->env, $this->getAttribute($context["order"], "nro_pedido", array()), "html", null, true);
@@ -108,198 +121,198 @@ class __TwigTemplate_b4211397c398a1e1eb4fa6953e6af5c3f3e4863e392e36cab8325019217
             echo twig_escape_filter($this->env, $this->getAttribute($context["order"], "nro_pedido", array()), "html", null, true);
             echo "</a>
               ";
-            // line 56
+            // line 66
             if (($this->getAttribute($context["order"], "bg_islocked", array()) == "0")) {
-                // line 57
+                // line 67
                 echo "                <span class=\"label label-success pull-right\">
                   Activo
                  </span>
               ";
             } else {
-                // line 61
+                // line 71
                 echo "                <span class=\"label label-died pull-right\">
                   Cerrado
                  </span>
               ";
             }
-            // line 65
+            // line 75
             echo "            </td>
             <td class=\"text-right\">";
-            // line 66
+            // line 76
             echo twig_escape_filter($this->env, $this->getAttribute($context["order"], "regimen", array()), "html", null, true);
             echo "</td>
             <td>";
-            // line 67
+            // line 77
             echo twig_escape_filter($this->env, $this->getAttribute($context["order"], "incoterm", array()), "html", null, true);
             echo "</td>
             <td>";
-            // line 68
+            // line 78
             echo twig_escape_filter($this->env, $this->getAttribute($context["order"], "pais_origen", array()), "html", null, true);
             echo "</td>
             <td>
               ";
-            // line 70
+            // line 80
             if (($this->getAttribute($context["order"], "fecha_arribo", array()) == null)) {
-                // line 71
+                // line 81
                 echo "                <strong>
                 Arribo Pendiente
                 </strong>
               ";
             } else {
-                // line 75
+                // line 85
                 echo "              ";
                 echo twig_escape_filter($this->env, $this->getAttribute($context["order"], "fecha_arribo", array()), "html", null, true);
                 echo " 
               ";
-                // line 76
+                // line 86
                 $context["meses"] = ($this->getAttribute($context["order"], "dias", array()) / 30);
-                // line 77
+                // line 87
                 echo "              ";
                 $context["anos"] = ($this->getAttribute($context["order"], "dias", array()) / 365);
-                // line 78
+                // line 88
                 echo "              ";
                 if (($this->getAttribute($context["order"], "dias", array()) < 30)) {
-                    // line 79
+                    // line 89
                     echo "              <label class=\"label label-info pull-right\">
                 ";
-                    // line 80
+                    // line 90
                     echo twig_escape_filter($this->env, twig_number_format_filter($this->env, $this->getAttribute($context["order"], "dias", array()), 1, ".", ","), "html", null, true);
                     echo " <small>días</small>  
               ";
-                } elseif ((($this->getAttribute(                // line 81
+                } elseif ((($this->getAttribute(                // line 91
 $context["order"], "dias", array()) > 29) && ($this->getAttribute($context["order"], "dias", array()) < 300))) {
-                    // line 82
+                    // line 92
                     echo "              <label class=\"label label-warning pull-right\">
                 ";
-                    // line 83
+                    // line 93
                     echo twig_escape_filter($this->env, twig_number_format_filter($this->env, ($context["meses"] ?? null), 2, ".", ","), "html", null, true);
                     echo " <small>Meses</small>  
               </label>
               ";
-                } elseif ((($this->getAttribute(                // line 85
+                } elseif ((($this->getAttribute(                // line 95
 $context["order"], "dias", array()) > 300) && ($this->getAttribute($context["order"], "dias", array()) < 364))) {
-                    // line 86
+                    // line 96
                     echo "              <label class=\"label label-danger pull-right\">
                   ";
-                    // line 87
+                    // line 97
                     echo twig_escape_filter($this->env, twig_number_format_filter($this->env, ($context["anos"] ?? null), 2, ".", ","), "html", null, true);
                     echo " <small>años</small>
               </label>
               ";
-                } elseif (($this->getAttribute(                // line 89
+                } elseif (($this->getAttribute(                // line 99
 $context["order"], "dias", array()) > 365)) {
-                    // line 90
+                    // line 100
                     echo "              <label class=\"label label-died pull-right\">
                   ";
-                    // line 91
+                    // line 101
                     echo twig_escape_filter($this->env, twig_number_format_filter($this->env, ($context["anos"] ?? null), 0, ".", ","), "html", null, true);
                     echo " <small>años</small>
               </label>
               ";
                 }
-                // line 94
+                // line 104
                 echo "            ";
             }
-            // line 95
+            // line 105
             echo "            </td>
             <td class=\"text-right\">";
-            // line 96
+            // line 106
             echo twig_escape_filter($this->env, $this->getAttribute($context["order"], "dias_libres", array()), "html", null, true);
             echo " días</td>
             <td class=\"text-right\">\$ 
               ";
-            // line 98
+            // line 108
             $context["fob"] = ($this->getAttribute($this->getAttribute($context["order"], "resumValues", array()), "valInvoices", array()) + ($this->getAttribute($this->getAttribute($context["order"], "resumValues", array()), "initExpenses", array()) * $this->getAttribute($this->getAttribute($context["order"], "resumValues", array()), "mutiple", array())));
-            // line 99
+            // line 109
             echo "              ";
             $context["saldo"] = (($context["fob"] ?? null) - $this->getAttribute($this->getAttribute($context["order"], "resumValues", array()), "infoInvoices", array()));
-            // line 100
+            // line 110
             echo "            ";
             echo twig_escape_filter($this->env, twig_number_format_filter($this->env, ($context["fob"] ?? null), 2, ".", ","), "html", null, true);
             echo "
           </td>
             <td class=\"text-right\">\$ 
               ";
-            // line 103
+            // line 113
             if (($this->getAttribute($context["order"], "regimen", array()) == 10)) {
-                // line 104
+                // line 114
                 echo "                  ";
                 if (($this->getAttribute($this->getAttribute($context["order"], "resumValues", array()), "regimen10", array()) == true)) {
-                    // line 105
+                    // line 115
                     echo "                    ";
                     echo twig_escape_filter($this->env, twig_number_format_filter($this->env, ($context["fob"] ?? null), 2, ".", ","), "html", null, true);
                     echo "
                   ";
                 } else {
-                    // line 107
+                    // line 117
                     echo "                    ";
                     echo twig_escape_filter($this->env, twig_number_format_filter($this->env, 0, 2, ".", ","), "html", null, true);
                     echo "
                   ";
                 }
-                // line 108
+                // line 118
                 echo "  
               ";
             } else {
-                // line 110
+                // line 120
                 echo "                  ";
                 echo twig_escape_filter($this->env, twig_number_format_filter($this->env, $this->getAttribute($this->getAttribute($context["order"], "resumValues", array()), "infoInvoices", array()), 2, ".", ","), "html", null, true);
                 echo "
               ";
             }
-            // line 111
+            // line 121
             echo "                                      
           </td>          
           ";
-            // line 113
+            // line 123
             if ((($context["saldo"] ?? null) == 0)) {
-                // line 114
+                // line 124
                 echo "          ";
                 $context["text_class"] = "text-success";
-                // line 115
+                // line 125
                 echo "          ";
             } else {
-                // line 116
+                // line 126
                 echo "            ";
                 $context["text_class"] = "text-primary";
-                // line 117
+                // line 127
                 echo "          ";
             }
-            // line 118
+            // line 128
             echo "          
             <td class=\"text-right ";
-            // line 119
+            // line 129
             echo twig_escape_filter($this->env, ($context["text_class"] ?? null), "html", null, true);
             echo "\" >\$ 
               ";
-            // line 120
+            // line 130
             if (($this->getAttribute($context["order"], "regimen", array()) == 10)) {
-                // line 121
+                // line 131
                 echo "                  ";
                 if (($this->getAttribute($this->getAttribute($context["order"], "resumValues", array()), "regimen10", array()) == true)) {
-                    // line 122
+                    // line 132
                     echo "                    ";
                     echo twig_escape_filter($this->env, twig_number_format_filter($this->env, 0, 2, ".", ","), "html", null, true);
                     echo "
                   ";
                 } else {
-                    // line 124
+                    // line 134
                     echo "                    ";
                     echo twig_escape_filter($this->env, twig_number_format_filter($this->env, ($context["fob"] ?? null), 2, ".", ","), "html", null, true);
                     echo "
                   ";
                 }
-                // line 125
+                // line 135
                 echo "  
               ";
             } else {
-                // line 127
+                // line 137
                 echo "                  ";
                 echo twig_escape_filter($this->env, twig_number_format_filter($this->env, ($context["saldo"] ?? null), 2, ".", ","), "html", null, true);
                 echo "
               ";
             }
-            // line 128
+            // line 138
             echo "                                      
 
           </td>
@@ -311,7 +324,7 @@ $context["order"], "dias", array()) > 365)) {
                 </button>
                 <ul class=\"dropdown-menu\" aria-labelledby=\"dLabel\">
                   <li> <a href=\"";
-            // line 138
+            // line 148
             echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
             echo "pedido/presentar/";
             echo twig_escape_filter($this->env, $this->getAttribute($context["order"], "nro_pedido", array()), "html", null, true);
@@ -320,9 +333,9 @@ $context["order"], "dias", array()) > 365)) {
                   </li>
                   <li> 
                     ";
-            // line 142
+            // line 152
             if (($this->getAttribute($context["order"], "bg_isclosed", array()) != "1")) {
-                // line 143
+                // line 153
                 echo "                    <a href=\"";
                 echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
                 echo "pedidofactura/nuevo/";
@@ -332,7 +345,7 @@ $context["order"], "dias", array()) > 365)) {
                     Agregar Productos</a> 
                   </li>
                   <li> <a href=\"";
-                // line 147
+                // line 157
                 echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
                 echo "pedido/editar/";
                 echo twig_escape_filter($this->env, $this->getAttribute($context["order"], "nro_pedido", array()), "html", null, true);
@@ -341,12 +354,12 @@ $context["order"], "dias", array()) > 365)) {
                     Editar Pedido</a> 
                   </li>
                     ";
-                // line 151
+                // line 161
                 if ((($context["fob"] ?? null) == 0)) {
-                    // line 152
+                    // line 162
                     echo "                  <li> 
                     <a href=\"";
-                    // line 153
+                    // line 163
                     echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
                     echo "pedido/eliminar/";
                     echo twig_escape_filter($this->env, $this->getAttribute($context["order"], "nro_pedido", array()), "html", null, true);
@@ -356,25 +369,25 @@ $context["order"], "dias", array()) > 365)) {
                   </li>
                   ";
                 }
-                // line 158
+                // line 168
                 echo "                  
                   ";
             }
-            // line 160
+            // line 170
             echo "                </ul>
               </div>
             </td>
           </tr>
           ";
-            // line 164
+            // line 174
             $context["item"] = (($context["item"] ?? null) + 1);
-            // line 165
+            // line 175
             echo "          ";
         }
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_iterated'], $context['_key'], $context['order'], $context['_parent'], $context['loop']);
         $context = array_intersect_key($context, $_parent) + $_parent;
-        // line 166
+        // line 176
         echo "        </tbody>
       </table>
   </div>
@@ -394,7 +407,7 @@ $context["order"], "dias", array()) > 365)) {
 
     public function getDebugInfo()
     {
-        return array (  378 => 166,  372 => 165,  370 => 164,  364 => 160,  360 => 158,  350 => 153,  347 => 152,  345 => 151,  336 => 147,  326 => 143,  324 => 142,  315 => 138,  303 => 128,  297 => 127,  293 => 125,  287 => 124,  281 => 122,  278 => 121,  276 => 120,  272 => 119,  269 => 118,  266 => 117,  263 => 116,  260 => 115,  257 => 114,  255 => 113,  251 => 111,  245 => 110,  241 => 108,  235 => 107,  229 => 105,  226 => 104,  224 => 103,  217 => 100,  214 => 99,  212 => 98,  207 => 96,  204 => 95,  201 => 94,  195 => 91,  192 => 90,  190 => 89,  185 => 87,  182 => 86,  180 => 85,  175 => 83,  172 => 82,  170 => 81,  166 => 80,  163 => 79,  160 => 78,  157 => 77,  155 => 76,  150 => 75,  144 => 71,  142 => 70,  137 => 68,  133 => 67,  129 => 66,  126 => 65,  120 => 61,  114 => 57,  112 => 56,  104 => 55,  100 => 54,  92 => 52,  89 => 51,  87 => 50,  59 => 27,  50 => 21,  46 => 20,  37 => 14,  25 => 5,  19 => 1,);
+        return array (  391 => 176,  385 => 175,  383 => 174,  377 => 170,  373 => 168,  363 => 163,  360 => 162,  358 => 161,  349 => 157,  339 => 153,  337 => 152,  328 => 148,  316 => 138,  310 => 137,  306 => 135,  300 => 134,  294 => 132,  291 => 131,  289 => 130,  285 => 129,  282 => 128,  279 => 127,  276 => 126,  273 => 125,  270 => 124,  268 => 123,  264 => 121,  258 => 120,  254 => 118,  248 => 117,  242 => 115,  239 => 114,  237 => 113,  230 => 110,  227 => 109,  225 => 108,  220 => 106,  217 => 105,  214 => 104,  208 => 101,  205 => 100,  203 => 99,  198 => 97,  195 => 96,  193 => 95,  188 => 93,  185 => 92,  183 => 91,  179 => 90,  176 => 89,  173 => 88,  170 => 87,  168 => 86,  163 => 85,  157 => 81,  155 => 80,  150 => 78,  146 => 77,  142 => 76,  139 => 75,  133 => 71,  127 => 67,  125 => 66,  117 => 65,  113 => 64,  105 => 62,  102 => 61,  100 => 60,  74 => 37,  67 => 33,  52 => 22,  50 => 21,  46 => 20,  37 => 14,  25 => 5,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -420,21 +433,31 @@ $context["order"], "dias", array()) > 365)) {
             </div>
             <div class=\"col-sm-2\">
                <h4 class=\"text-primary\"> <small>Pedidos Activos: </small> <span id=\"suma\"> 
-                  {{ 0| number_format(0, '.', ',') }} 
+                  {{ infoBase.activeOrders | number_format(0, '.', ',') }} 
                   </span>
                </h4>
             </div>
             <div class=\"col-sm-2\">
                <h4 class=\"text-primary\"> <small>Pedidos Cerrados: </small> 
                   <span id=\"suma\"> {{ simbolo | raw}} 
-                  {{  0 | number_format(0, '.', ',')}}</span>
+                    {% set colsedOrders = infoBase.totalOrders -infoBase.activeOrders %}
+                  {{  colsedOrders | number_format(0, '.', ',')}}</span>
                </h4>
             </div>
             <div class=\"col-sm-3\">
-               <h4 class=\"text-danger\"> <small>Por Regimen 10/70: </small> 
-                  <span id=\"suma\">
-                  {{ 0  | number_format(0, '.', ',')}} / {{ 0  | number_format(0, '.', ',')}}
-                  </span>
+               <h4 class=\"text-danger\"> 
+                <small>Por Regimen 
+                <span class=\"text-danger\">10</span> 
+                <span class=\"text-default\"> / </span>
+                <span class=\"text-primary\">70</span>: 
+              </small> 
+              <span class=\"text-danger\">
+                  {{ infoBase.consumeOrders  | number_format(0, '.', ',')}}
+              </span>
+                   <span class=\"text-default\"> / </span>
+              <span class=\"text-primary\">
+              {{ infoBase.partialsOrders  | number_format(0, '.', ',')}}
+                </span>
                </h4>
             </div>
          </div>

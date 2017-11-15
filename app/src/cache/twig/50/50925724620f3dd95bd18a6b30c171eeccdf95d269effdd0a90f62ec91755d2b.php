@@ -101,31 +101,32 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
             // line 51
             echo "         ";
             echo twig_escape_filter($this->env, twig_number_format_filter($this->env, $this->getAttribute($this->getAttribute(($context["viewData"] ?? null), "order", array()), "dias", array()), 1, ".", ","), "html", null, true);
-            echo " <small>días</small>  
+            echo " 
+         <small>días</small>  
          ";
-        } elseif ((($this->getAttribute($this->getAttribute(        // line 52
+        } elseif ((($this->getAttribute($this->getAttribute(        // line 53
 ($context["viewData"] ?? null), "order", array()), "dias", array()) > 29) && ($this->getAttribute($this->getAttribute(($context["viewData"] ?? null), "order", array()), "dias", array()) < 300))) {
-            // line 53
+            // line 54
             echo "         ";
             echo twig_escape_filter($this->env, twig_number_format_filter($this->env, ($context["meses"] ?? null), 2, ".", ","), "html", null, true);
             echo " <small><b>Meses</b></small>  
          ";
-        } elseif (($this->getAttribute($this->getAttribute(        // line 54
+        } elseif (($this->getAttribute($this->getAttribute(        // line 55
 ($context["viewData"] ?? null), "order", array()), "dias", array()) > 300)) {
-            // line 55
+            // line 56
             echo "         ";
             echo twig_escape_filter($this->env, twig_number_format_filter($this->env, ($context["anos"] ?? null), 3, ".", ","), "html", null, true);
             echo " <small>años</small>
          ";
         }
-        // line 57
+        // line 58
         echo "         </label>
       </div>
       <div class=\"col-sm-2\">
          <strong>Provisiones:</strong> 
          <span class=\"text-warning\">
          ";
-        // line 62
+        // line 63
         echo twig_escape_filter($this->env, twig_number_format_filter($this->env, $this->getAttribute(($context["viewData"] ?? null), "provisions", array()), 0, ".", ","), "html", null, true);
         echo "
          </span>
@@ -134,7 +135,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
          <strong>Consolidado:</strong> 
          <span class=\"text-primary\">
          ";
-        // line 68
+        // line 69
         echo twig_escape_filter($this->env, twig_number_format_filter($this->env, $this->getAttribute(($context["viewData"] ?? null), "consolided", array()), 0, ".", ","), "html", null, true);
         echo "
          </span>
@@ -143,9 +144,9 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
          <strong>Saldo:</strong> 
          <span class=\"text-primary\">
          ";
-        // line 74
-        $context["saldo"] = ($this->getAttribute(($context["viewData"] ?? null), "provisions", array()) - $this->getAttribute(($context["viewData"] ?? null), "consolided", array()));
         // line 75
+        $context["saldo"] = ($this->getAttribute(($context["viewData"] ?? null), "provisions", array()) - $this->getAttribute(($context["viewData"] ?? null), "consolided", array()));
+        // line 76
         echo "         ";
         echo twig_escape_filter($this->env, twig_number_format_filter($this->env, ($context["saldo"] ?? null), 0, ".", ","), "html", null, true);
         echo "
@@ -153,7 +154,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
       </div>
       <div class=\"col-sm-3\">
          <strong>Creado Por:</strong> <span>";
-        // line 79
+        // line 80
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["createBy"] ?? null), 0, array(), "array"), "nombres", array(), "array"), "html", null, true);
         echo "</span>
       </div>
@@ -164,17 +165,17 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
    <ul class=\"nav nav-tabs\" role=\"tablist\">
       <li role=\"presentation\" class=\"active\"><a href=\"#pedido\" role=\"tab\" data-toggle=\"tab\" aria-controls=\"pedido\">Detalle Pedido &nbsp;
          ";
-        // line 87
+        // line 88
         if (($this->getAttribute($this->getAttribute(($context["viewData"] ?? null), "order", array()), "bg_isclosed", array()) == "0")) {
-            // line 88
+            // line 89
             echo "         <span class=\"label label-success\">Abierto</span>
          ";
         } else {
-            // line 90
+            // line 91
             echo "         <span class=\"label label-died\">Cerrado</span>
          ";
         }
-        // line 92
+        // line 93
         echo "         </a>
       </li>
       <li role=\"presentation\"><a href=\"#facturas\" role=\"tab\" data-toggle=\"tab\" aria-controls=\"facturas\">Facturas Productos</a></li>
@@ -192,7 +193,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                <div class=\"input-group\">
                   <span class=\"input-group-addon\" >PEDIDO</span>
                   <span class=\"form-control\">";
-        // line 108
+        // line 109
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["viewData"] ?? null), "order", array()), "nro_pedido", array()), "html", null, true);
         echo " </span>
                </div>
@@ -201,7 +202,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                <div class=\"input-group\">
                   <span class=\"input-group-addon\">RÉGIMEN</span>
                   <span class=\"form-control\">";
-        // line 114
+        // line 115
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["viewData"] ?? null), "order", array()), "regimen", array()), "html", null, true);
         echo "</span>
                </div>
@@ -210,7 +211,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                <div class=\"input-group\">
                   <span class=\"input-group-addon\">INCOTERM</span>
                   <span class=\"form-control\">";
-        // line 120
+        // line 121
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["viewData"] ?? null), "order", array()), "incoterm", array()), "html", null, true);
         echo " </span>
                </div>
@@ -219,7 +220,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                <div class=\"input-group\">
                   <span class=\"input-group-addon\">PAIS</span>
                   <span class=\"form-control\"> ";
-        // line 126
+        // line 127
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["viewData"] ?? null), "order", array()), "pais_origen", array()), "html", null, true);
         echo "</span>
                </div>
@@ -228,7 +229,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                <div class=\"input-group\">
                   <span class=\"input-group-addon\">CIUDAD</span>
                   <span class=\"form-control\">";
-        // line 132
+        // line 133
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["viewData"] ?? null), "order", array()), "ciudad_origen", array()), "html", null, true);
         echo "</span>
                </div>
@@ -240,7 +241,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                <div class=\"input-group\">
                   <span class=\"input-group-addon\">SEGURO SENAE</span>
                   <span class=\"form-control\"> ";
-        // line 141
+        // line 142
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["viewData"] ?? null), "order", array()), "seguro_aduana", array()), "html", null, true);
         echo "</span>
                </div>
@@ -249,7 +250,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                <div class=\"input-group\">
                   <span class=\"input-group-addon\">FLETE SENAE</span>
                   <span class=\"form-control\" > ";
-        // line 147
+        // line 148
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["viewData"] ?? null), "order", array()), "flete_aduana", array()), "html", null, true);
         echo "</span>
                </div>
@@ -258,7 +259,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                <div class=\"input-group\">
                   <span class=\"input-group-addon\">ARRIBO</span>
                   <span class=\"form-control\" > ";
-        // line 153
+        // line 154
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["viewData"] ?? null), "order", array()), "fecha_arribo", array()), "html", null, true);
         echo "  </span>
                </div>
@@ -267,7 +268,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                <div class=\"input-group\">
                   <span class=\"input-group-addon\">DIAS LIBRES</span>
                   <span class=\"form-control\" > ";
-        // line 159
+        // line 160
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["viewData"] ?? null), "order", array()), "dias_libres", array()), "html", null, true);
         echo "  </span>
                </div>
@@ -279,7 +280,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                <div class=\"input-group\">
                   <span class=\"input-group-addon\" id=\"basic-addon3\">COMENTARIOS</span>
                   <span type=\"text\" class=\"form-control\">";
-        // line 168
+        // line 169
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["viewData"] ?? null), "order", array()), "comentarios", array()), "html", null, true);
         echo " </span>
                </div>
@@ -289,7 +290,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                <hr>
             <div class=\"col-md-6\">
                <a href=\"";
-        // line 175
+        // line 176
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "/pedido/editar/";
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["viewData"] ?? null), "order", array()), "nro_pedido", array()), "html", null, true);
@@ -298,7 +299,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                </button></a>
                &nbsp;&nbsp;&nbsp;
                <a href=\"";
-        // line 179
+        // line 180
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "/pedido/eliminar/";
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["viewData"] ?? null), "order", array()), "nro_pedido", array()), "html", null, true);
@@ -308,7 +309,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
             </div>
             <div class=\"col-sm-3\">
                <a href=\"";
-        // line 184
+        // line 185
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "gstinicial/validOrder/";
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["viewData"] ?? null), "order", array()), "nro_pedido", array()), "html", null, true);
@@ -321,7 +322,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
             </div>
             <div class=\"col-sm-3\">
                <a href=\"";
-        // line 192
+        // line 193
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "nacionalizacion/validOrder/";
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["viewData"] ?? null), "order", array()), "nro_pedido", array()), "html", null, true);
@@ -340,7 +341,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
          <div class=\"row\">
             <div class=\"col-sm-6\">
                <a href=\"";
-        // line 206
+        // line 207
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "pedidofactura/nuevo/";
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["viewData"] ?? null), "order", array()), "nro_pedido", array()), "html", null, true);
@@ -354,7 +355,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
             <div class=\"col-sm-2\">
                <h4 class=\"text-primary\"> <small>Cajas Pedido: </small> <span id=\"suma\"> 
                   ";
-        // line 215
+        // line 216
         echo twig_escape_filter($this->env, twig_number_format_filter($this->env, $this->getAttribute($this->getAttribute(($context["viewData"] ?? null), "boxesOrder", array()), "boxesImported", array()), 0, ".", ","), "html", null, true);
         echo " 
                   </span>
@@ -363,11 +364,11 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
             <div class=\"col-sm-2\">
                <h4 class=\"text-primary\"> <small>Cajas Nacionalizadas: </small> 
                   <span id=\"suma\"> ";
-        // line 221
+        // line 222
         echo ($context["simbolo"] ?? null);
         echo " 
                   ";
-        // line 222
+        // line 223
         echo twig_escape_filter($this->env, twig_number_format_filter($this->env, $this->getAttribute($this->getAttribute(($context["viewData"] ?? null), "boxesOrder", array()), "boxesNationalized", array()), 0, ".", ","), "html", null, true);
         echo "</span>
                </h4>
@@ -376,9 +377,9 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                <h4 class=\"text-danger\"> <small>Cajas Stock: </small> 
                   <span id=\"suma\">
                   ";
-        // line 228
-        $context["stock"] = ($this->getAttribute($this->getAttribute(($context["viewData"] ?? null), "boxesOrder", array()), "boxesImported", array()) - $this->getAttribute($this->getAttribute(($context["viewData"] ?? null), "boxesOrder", array()), "boxesNationalized", array()));
         // line 229
+        $context["stock"] = ($this->getAttribute($this->getAttribute(($context["viewData"] ?? null), "boxesOrder", array()), "boxesImported", array()) - $this->getAttribute($this->getAttribute(($context["viewData"] ?? null), "boxesOrder", array()), "boxesNationalized", array()));
+        // line 230
         echo "                  ";
         echo twig_escape_filter($this->env, ($context["stock"] ?? null), "html", null, true);
         echo "
@@ -406,7 +407,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                   </thead>
                   <tbody>
                      ";
-        // line 253
+        // line 254
         $context['_parent'] = $context;
         $context['_seq'] = twig_ensure_traversable($this->getAttribute(($context["viewData"] ?? null), "orderInvoices", array()));
         $context['loop'] = array(
@@ -423,53 +424,49 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
             $context['loop']['last'] = 1 === $length;
         }
         foreach ($context['_seq'] as $context["_key"] => $context["orderInvoice"]) {
-            // line 254
+            // line 255
             echo "                     <tr>
                         <td>";
-            // line 255
+            // line 256
             echo twig_escape_filter($this->env, $this->getAttribute($context["loop"], "index", array()), "html", null, true);
             echo "</td>
                         <td>
                            <a href=\"";
-            // line 257
+            // line 258
             echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
             echo "pedidofactura/presentar/";
             echo twig_escape_filter($this->env, $this->getAttribute($context["orderInvoice"], "id_pedido_factura", array()), "html", null, true);
             echo "\">
                            ";
-            // line 258
+            // line 259
             echo twig_escape_filter($this->env, $this->getAttribute($context["orderInvoice"], "id_factura_proveedor", array()), "html", null, true);
             echo "
                            </a>
                         </td>
                         <td>
                            <a href=\"";
-            // line 262
+            // line 263
             echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
             echo "proveedor/presentar/";
             echo twig_escape_filter($this->env, $this->getAttribute($context["orderInvoice"], "id_proveedor", array()), "html", null, true);
             echo "\">
                            ";
-            // line 263
+            // line 264
             echo twig_escape_filter($this->env, $this->getAttribute($context["orderInvoice"], "nombre", array()), "html", null, true);
             echo "                     
                            </a>
                         </td>
                         <td>";
-            // line 266
+            // line 267
             echo twig_escape_filter($this->env, $this->getAttribute($context["orderInvoice"], "fecha_emision", array()), "html", null, true);
             echo "</td>
                         <td>";
-            // line 267
+            // line 268
             echo twig_escape_filter($this->env, $this->getAttribute($context["orderInvoice"], "vencimiento_pago", array()), "html", null, true);
             echo "</td>
                         <td>";
-            // line 268
-            echo twig_escape_filter($this->env, $this->getAttribute($context["orderInvoice"], "moneda", array()), "html", null, true);
-            echo "</td>
-                        <td>";
             // line 269
-            echo twig_escape_filter($this->env, twig_number_format_filter($this->env, $this->getAttribute($context["orderInvoice"], "valor", array()), 2, ".", ","), "html", null, true);
+            echo twig_escape_filter($this->env, $this->getAttribute($context["orderInvoice"], "moneda", array()), "html", null, true);
             echo "</td>
                         <td>";
             // line 270
@@ -477,6 +474,10 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
             echo "</td>
                         <td>";
             // line 271
+            echo twig_escape_filter($this->env, twig_number_format_filter($this->env, $this->getAttribute($context["orderInvoice"], "valor", array()), 2, ".", ","), "html", null, true);
+            echo "</td>
+                        <td>";
+            // line 272
             echo twig_escape_filter($this->env, twig_number_format_filter($this->env, $this->getAttribute($context["orderInvoice"], "valor", array()), 2, ".", ","), "html", null, true);
             echo "</td>
                         <td>
@@ -488,7 +489,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                               <ul class=\"dropdown-menu\" aria-labelledby=\"dLabel\">
                                  <li> 
                                     <a href=\"";
-            // line 280
+            // line 281
             echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
             echo "pedidofactura/presentar/";
             echo twig_escape_filter($this->env, $this->getAttribute($context["orderInvoice"], "id_pedido_factura", array()), "html", null, true);
@@ -499,7 +500,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                                  </li>
                                  <li> 
                                     <a href=\"";
-            // line 286
+            // line 287
             echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
             echo "pedidofactura/editar/";
             echo twig_escape_filter($this->env, $this->getAttribute($context["orderInvoice"], "id_pedido_factura", array()), "html", null, true);
@@ -507,13 +508,13 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                                     <span class=\"fa fa-pencil fa-fw\"></span>
                                     Editar Factura 
                                     <span class=\"label label-success\"> ";
-            // line 289
+            // line 290
             echo twig_escape_filter($this->env, $this->getAttribute($context["orderInvoice"], "id_factura_proveedor", array()), "html", null, true);
             echo "</span></a> 
                                  </li>
                                  <li>
                                     <a href=\"";
-            // line 292
+            // line 293
             echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
             echo "pedidofactura/eliminar/";
             echo twig_escape_filter($this->env, $this->getAttribute($context["orderInvoice"], "id_pedido_factura", array()), "html", null, true);
@@ -522,7 +523,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                                     Elminar Factura 
                                     <span class=\"label label-danger\">
                                     ";
-            // line 296
+            // line 297
             echo twig_escape_filter($this->env, $this->getAttribute($context["orderInvoice"], "id_factura_proveedor", array()), "html", null, true);
             echo "
                                     </span>
@@ -545,7 +546,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_iterated'], $context['_key'], $context['orderInvoice'], $context['_parent'], $context['loop']);
         $context = array_intersect_key($context, $_parent) + $_parent;
-        // line 305
+        // line 306
         echo "                  </tbody>
                </table>
             </div>
@@ -560,7 +561,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
          <div class=\"row\">
             <div class=\"col-sm-6\">
                <a href=\"";
-        // line 318
+        // line 319
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "gstinicial/nuevo/";
         echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute(($context["viewData"] ?? null), "order", array()), "nro_pedido", array()), "html", null, true);
@@ -572,47 +573,47 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                </a>
             </div>
             ";
-        // line 325
-        $context["cantidad"] = 0;
         // line 326
-        echo "            ";
-        $context["provisionado"] = 0;
+        $context["cantidad"] = 0;
         // line 327
         echo "            ";
-        $context["convalidado"] = 0;
+        $context["provisionado"] = 0;
         // line 328
+        echo "            ";
+        $context["convalidado"] = 0;
+        // line 329
         echo "            ";
         $context['_parent'] = $context;
         $context['_seq'] = twig_ensure_traversable($this->getAttribute(($context["viewData"] ?? null), "initialExpenses", array()));
         foreach ($context['_seq'] as $context["_key"] => $context["initialExpense"]) {
-            // line 329
-            echo "            ";
-            $context["cantidad"] = (($context["cantidad"] ?? null) + 1);
             // line 330
             echo "            ";
-            $context["provisionado"] = (($context["provisionado"] ?? null) + $this->getAttribute($context["initialExpense"], "valor_provisionado", array()));
+            $context["cantidad"] = (($context["cantidad"] ?? null) + 1);
             // line 331
+            echo "            ";
+            $context["provisionado"] = (($context["provisionado"] ?? null) + $this->getAttribute($context["initialExpense"], "valor_provisionado", array()));
+            // line 332
             echo "            ";
         }
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_iterated'], $context['_key'], $context['initialExpense'], $context['_parent'], $context['loop']);
         $context = array_intersect_key($context, $_parent) + $_parent;
-        // line 332
+        // line 333
         echo "            <div class=\"col-sm-2\">
                <h5 class=\"text-primary\"> <small>Cantidad: </small> <span id=\"suma\"> ";
-        // line 333
+        // line 334
         echo twig_escape_filter($this->env, twig_number_format_filter($this->env, ($context["cantidad"] ?? null), 0, ".", ","), "html", null, true);
         echo " </span></h5>
             </div>
             <div class=\"col-sm-2\">
                <h5 class=\"text-primary\"> <small>Provisionado: </small> <span id=\"suma\"> \$ ";
-        // line 336
+        // line 337
         echo twig_escape_filter($this->env, twig_number_format_filter($this->env, ($context["provisionado"] ?? null), 2, ".", ","), "html", null, true);
         echo "</span></h5>
             </div>
             <div class=\"col-sm-2\">
                <h5 class=\"text-danger\"> <small>Convalidado: </small> <span id=\"suma\"> \$ ";
-        // line 339
+        // line 340
         echo twig_escape_filter($this->env, twig_number_format_filter($this->env, ($context["Convalidado"] ?? null), 2, ".", ","), "html", null, true);
         echo " </span></h5>
             </div>
@@ -634,7 +635,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                   </thead>
                   <tbody>
                      ";
-        // line 358
+        // line 359
         $context['_parent'] = $context;
         $context['_seq'] = twig_ensure_traversable($this->getAttribute(($context["viewData"] ?? null), "initialExpenses", array()));
         $context['loop'] = array(
@@ -651,48 +652,48 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
             $context['loop']['last'] = 1 === $length;
         }
         foreach ($context['_seq'] as $context["_key"] => $context["initialExpense"]) {
-            // line 359
+            // line 360
             echo "                     <tr>
                         <td>";
-            // line 360
+            // line 361
             echo twig_escape_filter($this->env, $this->getAttribute($context["loop"], "index", array()), "html", null, true);
             echo "</td>
                         <td>
                            <a href=\"";
-            // line 362
+            // line 363
             echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
             echo "gstinicial/presentar/";
             echo twig_escape_filter($this->env, $this->getAttribute($context["initialExpense"], "id_gastos_nacionalizacion", array()), "html", null, true);
             echo "\">
                            ";
-            // line 363
+            // line 364
             echo twig_escape_filter($this->env, $this->getAttribute($context["initialExpense"], "concepto", array()), "html", null, true);
             echo "
                            </a>
                         </td>
                         <td>
                            <a href=\"";
-            // line 367
+            // line 368
             echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
             echo "proveedor/presentar/";
             echo twig_escape_filter($this->env, $this->getAttribute($context["initialExpense"], "id_proveedor", array()), "html", null, true);
             echo "\">
                            ";
-            // line 368
+            // line 369
             echo twig_escape_filter($this->env, $this->getAttribute($context["initialExpense"], "nombre", array()), "html", null, true);
             echo "
                            </a>
                         </td>
                         <td>";
-            // line 371
+            // line 372
             echo $this->getAttribute($context["initialExpense"], "comentarios", array());
             echo "</td>
                         <td>";
-            // line 372
+            // line 373
             echo twig_escape_filter($this->env, twig_date_format_filter($this->env, $this->getAttribute($context["initialExpense"], "fecha", array()), "m/d/Y"), "html", null, true);
             echo "</td>
                         <td>";
-            // line 373
+            // line 374
             echo twig_escape_filter($this->env, twig_number_format_filter($this->env, $this->getAttribute($context["initialExpense"], "valor_provisionado", array()), 2, ".", ","), "html", null, true);
             echo "</td>
                         <td>
@@ -704,7 +705,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                               <ul class=\"dropdown-menu\" aria-labelledby=\"dLabel\">
                                  <li> 
                                     <a href=\"";
-            // line 382
+            // line 383
             echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
             echo "gstinicial/presentar/";
             echo twig_escape_filter($this->env, $this->getAttribute($context["initialExpense"], "id_gastos_nacionalizacion", array()), "html", null, true);
@@ -715,7 +716,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                                  </li>
                                  <li> 
                                     <a href=\"";
-            // line 388
+            // line 389
             echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
             echo "gstinicial/editar/";
             echo twig_escape_filter($this->env, $this->getAttribute($context["initialExpense"], "id_gastos_nacionalizacion", array()), "html", null, true);
@@ -723,13 +724,13 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                                     <span class=\"fa fa-pencil fa-fw\"></span>
                                     Editar Gasto Inicial
                                     <span class=\"label label-success\"> ";
-            // line 391
+            // line 392
             echo twig_escape_filter($this->env, $this->getAttribute($context["initialExpense"], "id_gastos_nacionalizacion", array()), "html", null, true);
             echo "</span></a> 
                                  </li>
                                  <li>
                                     <a href=\"";
-            // line 394
+            // line 395
             echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
             echo "gstinicial/eliminar/";
             echo twig_escape_filter($this->env, $this->getAttribute($context["initialExpense"], "id_gastos_nacionalizacion", array()), "html", null, true);
@@ -738,7 +739,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                                     Elminar Gasto Inicial
                                     <span class=\"label label-danger\">
                                     ";
-            // line 398
+            // line 399
             echo twig_escape_filter($this->env, $this->getAttribute($context["initialExpense"], "id_gastos_nacionalizacion", array()), "html", null, true);
             echo "
                                     </span>
@@ -761,7 +762,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_iterated'], $context['_key'], $context['initialExpense'], $context['_parent'], $context['loop']);
         $context = array_intersect_key($context, $_parent) + $_parent;
-        // line 407
+        // line 408
         echo "                  </tbody>
                </table>
             </div>
@@ -774,9 +775,9 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
          <div class=\"row\">
             <div class=\"col-sm-6\">
                ";
-        // line 418
+        // line 419
         if (($this->getAttribute($this->getAttribute(($context["viewData"] ?? null), "order", array()), "regimen", array()) == 70)) {
-            // line 419
+            // line 420
             echo "               <a href=\"";
             echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
             echo "gstinicial/nuevo/";
@@ -790,27 +791,27 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                </a>
                ";
         }
-        // line 427
+        // line 428
         echo "            </div>
             
             <div class=\"col-sm-2\">
                <h5 class=\"text-primary\"> <small>Parciales: </small>
                 <span id=\"suma\"> ";
-        // line 431
+        // line 432
         echo twig_escape_filter($this->env, twig_number_format_filter($this->env, 0, 0, ".", ","), "html", null, true);
         echo " </span></h5>
             </div>
             <div class=\"col-sm-2\">
                <h5 class=\"text-primary\"> <small>Sumas: </small> <span id=\"suma\"> 
                         \$ ";
-        // line 435
+        // line 436
         echo twig_escape_filter($this->env, twig_number_format_filter($this->env, 0, 2, ".", ","), "html", null, true);
         echo "</span></h5>
             </div>
             <div class=\"col-sm-2\">
                <h5 class=\"text-danger\"> <small>Saldo:</small> 
                   <span id=\"suma\"> \$ ";
-        // line 439
+        // line 440
         echo twig_escape_filter($this->env, twig_number_format_filter($this->env, ($context["saldo"] ?? null), 2, ".", ","), "html", null, true);
         echo " 
                   </span></h5>
@@ -831,7 +832,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                   </thead>
                   <tbody>
                      ";
-        // line 457
+        // line 458
         $context['_parent'] = $context;
         $context['_seq'] = twig_ensure_traversable($this->getAttribute(($context["viewData"] ?? null), "nationalizations", array()));
         $context['loop'] = array(
@@ -848,37 +849,37 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
             $context['loop']['last'] = 1 === $length;
         }
         foreach ($context['_seq'] as $context["_key"] => $context["nationalization"]) {
-            // line 458
+            // line 459
             echo "                     <tr>
                         <td>";
-            // line 459
+            // line 460
             echo twig_escape_filter($this->env, $this->getAttribute($context["loop"], "index", array()), "html", null, true);
             echo "</td>
                         <td>
                            ";
-            // line 461
+            // line 462
             echo twig_escape_filter($this->env, $this->getAttribute($context["nationalization"], "nro_factura_informativa", array()), "html", null, true);
             echo "
                         </td>
                         <td>
                            <a href=\"";
-            // line 464
+            // line 465
             echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
             echo "proveedor/presentar/";
             echo twig_escape_filter($this->env, $this->getAttribute(($context["initialExpense"] ?? null), "identificacion_proveedor", array()), "html", null, true);
             echo "\">
                            ";
-            // line 465
+            // line 466
             echo twig_escape_filter($this->env, $this->getAttribute($context["nationalization"], "identificacion_proveedor", array()), "html", null, true);
             echo "
                            </a>
                         </td>
                         <td>";
-            // line 468
+            // line 469
             echo twig_escape_filter($this->env, twig_date_format_filter($this->env, $this->getAttribute(($context["initialExpense"] ?? null), "fecha", array()), "m/d/Y"), "html", null, true);
             echo "</td>
                         <td>";
-            // line 469
+            // line 470
             echo twig_escape_filter($this->env, twig_number_format_filter($this->env, $this->getAttribute(($context["initialExpense"] ?? null), "valor", array()), 2, ".", ","), "html", null, true);
             echo "</td>
                         <td>
@@ -890,7 +891,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                               <ul class=\"dropdown-menu\" aria-labelledby=\"dLabel\">
                                  <li> 
                                     <a href=\"";
-            // line 478
+            // line 479
             echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
             echo "pedidofactura/presentar/";
             echo twig_escape_filter($this->env, $this->getAttribute(($context["initialExpense"] ?? null), "id_pedido_factura", array()), "html", null, true);
@@ -901,7 +902,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                                  </li>
                                  <li> 
                                     <a href=\"";
-            // line 484
+            // line 485
             echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
             echo "pedidofactura/nuevo/";
             echo twig_escape_filter($this->env, $this->getAttribute(($context["initialExpense"] ?? null), "id_pedido_factura", array()), "html", null, true);
@@ -912,7 +913,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                                  </li>
                                  <li> 
                                     <a href=\"";
-            // line 490
+            // line 491
             echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
             echo "pedidofactura/editar/";
             echo twig_escape_filter($this->env, $this->getAttribute(($context["initialExpense"] ?? null), "id_pedido_factura", array()), "html", null, true);
@@ -920,13 +921,13 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                                     <span class=\"fa fa-pencil fa-fw\"></span>
                                     Editar Factura 
                                     <span class=\"label label-success\"> ";
-            // line 493
+            // line 494
             echo twig_escape_filter($this->env, $this->getAttribute(($context["initialExpense"] ?? null), "id_factura_proveedor", array()), "html", null, true);
             echo "</span></a> 
                                  </li>
                                  <li>
                                     <a href=\"";
-            // line 496
+            // line 497
             echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
             echo "pedidofactura/eliminar/";
             echo twig_escape_filter($this->env, $this->getAttribute(($context["initialExpense"] ?? null), "id_pedido_factura", array()), "html", null, true);
@@ -935,7 +936,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
                                     Elminar Factura 
                                     <span class=\"label label-danger\">
                                     ";
-            // line 500
+            // line 501
             echo twig_escape_filter($this->env, $this->getAttribute(($context["initialExpense"] ?? null), "id_factura_proveedor", array()), "html", null, true);
             echo "
                                     </span>
@@ -958,7 +959,7 @@ class __TwigTemplate_8b7fee42f1b88f713d17ca4a32a6108eabadc10a8f86852b9aa0911bfd7
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_iterated'], $context['_key'], $context['nationalization'], $context['_parent'], $context['loop']);
         $context = array_intersect_key($context, $_parent) + $_parent;
-        // line 509
+        // line 510
         echo "                  </tbody>
                </table>
             </div>
@@ -1002,7 +1003,7 @@ if (hash) {
 
     public function getDebugInfo()
     {
-        return array (  962 => 509,  939 => 500,  930 => 496,  924 => 493,  916 => 490,  905 => 484,  894 => 478,  882 => 469,  878 => 468,  872 => 465,  866 => 464,  860 => 461,  855 => 459,  852 => 458,  835 => 457,  814 => 439,  807 => 435,  800 => 431,  794 => 427,  780 => 419,  778 => 418,  765 => 407,  742 => 398,  733 => 394,  727 => 391,  719 => 388,  708 => 382,  696 => 373,  692 => 372,  688 => 371,  682 => 368,  676 => 367,  669 => 363,  663 => 362,  658 => 360,  655 => 359,  638 => 358,  616 => 339,  610 => 336,  604 => 333,  601 => 332,  595 => 331,  592 => 330,  589 => 329,  584 => 328,  581 => 327,  578 => 326,  576 => 325,  564 => 318,  549 => 305,  526 => 296,  517 => 292,  511 => 289,  503 => 286,  492 => 280,  480 => 271,  476 => 270,  472 => 269,  468 => 268,  464 => 267,  460 => 266,  454 => 263,  448 => 262,  441 => 258,  435 => 257,  430 => 255,  427 => 254,  410 => 253,  382 => 229,  380 => 228,  371 => 222,  367 => 221,  358 => 215,  344 => 206,  325 => 192,  312 => 184,  302 => 179,  293 => 175,  283 => 168,  271 => 159,  262 => 153,  253 => 147,  244 => 141,  232 => 132,  223 => 126,  214 => 120,  205 => 114,  196 => 108,  178 => 92,  174 => 90,  170 => 88,  168 => 87,  157 => 79,  149 => 75,  147 => 74,  138 => 68,  129 => 62,  122 => 57,  116 => 55,  114 => 54,  109 => 53,  107 => 52,  102 => 51,  99 => 50,  96 => 49,  94 => 48,  85 => 42,  78 => 37,  72 => 35,  68 => 33,  66 => 32,  55 => 23,  51 => 21,  45 => 19,  43 => 18,  31 => 9,  23 => 3,  21 => 2,  19 => 1,);
+        return array (  963 => 510,  940 => 501,  931 => 497,  925 => 494,  917 => 491,  906 => 485,  895 => 479,  883 => 470,  879 => 469,  873 => 466,  867 => 465,  861 => 462,  856 => 460,  853 => 459,  836 => 458,  815 => 440,  808 => 436,  801 => 432,  795 => 428,  781 => 420,  779 => 419,  766 => 408,  743 => 399,  734 => 395,  728 => 392,  720 => 389,  709 => 383,  697 => 374,  693 => 373,  689 => 372,  683 => 369,  677 => 368,  670 => 364,  664 => 363,  659 => 361,  656 => 360,  639 => 359,  617 => 340,  611 => 337,  605 => 334,  602 => 333,  596 => 332,  593 => 331,  590 => 330,  585 => 329,  582 => 328,  579 => 327,  577 => 326,  565 => 319,  550 => 306,  527 => 297,  518 => 293,  512 => 290,  504 => 287,  493 => 281,  481 => 272,  477 => 271,  473 => 270,  469 => 269,  465 => 268,  461 => 267,  455 => 264,  449 => 263,  442 => 259,  436 => 258,  431 => 256,  428 => 255,  411 => 254,  383 => 230,  381 => 229,  372 => 223,  368 => 222,  359 => 216,  345 => 207,  326 => 193,  313 => 185,  303 => 180,  294 => 176,  284 => 169,  272 => 160,  263 => 154,  254 => 148,  245 => 142,  233 => 133,  224 => 127,  215 => 121,  206 => 115,  197 => 109,  179 => 93,  175 => 91,  171 => 89,  169 => 88,  158 => 80,  150 => 76,  148 => 75,  139 => 69,  130 => 63,  123 => 58,  117 => 56,  115 => 55,  110 => 54,  108 => 53,  102 => 51,  99 => 50,  96 => 49,  94 => 48,  85 => 42,  78 => 37,  72 => 35,  68 => 33,  66 => 32,  55 => 23,  51 => 21,  45 => 19,  43 => 18,  31 => 9,  23 => 3,  21 => 2,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -1065,7 +1066,8 @@ if (hash) {
          {% set meses = (viewData.order.dias / 30) %}
          {% set anos = (viewData.order.dias / 365)  %}
          {% if viewData.order.dias < 30 %}
-         {{viewData.order.dias | number_format(1, '.', ',') }} <small>días</small>  
+         {{viewData.order.dias | number_format(1, '.', ',') }} 
+         <small>días</small>  
          {% elseif (viewData.order.dias > 29) and (viewData.order.dias < 300) %}
          {{meses | number_format(2, '.', ',')}} <small><b>Meses</b></small>  
          {% elseif viewData.order.dias > 300 %}

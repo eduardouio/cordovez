@@ -25,7 +25,10 @@ class __TwigTemplate_7b173c94df26f6bd1261edc2ac4cd5907d3ad55a7a988f957beb61d9cde
                                     <i class=\"fa fa-cubes fa-5x\"></i>
                                 </div>
                                 <div class=\"col-xs-9 text-right\">
-                                    <div class=\"huge\">26 <br> Pedidos</div>
+                                    <div class=\"huge\">";
+        // line 10
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["infoBase"] ?? null), "orders", array()), "html", null, true);
+        echo " <br> Pedidos</div>
                                     <div>Módulo de Pedidos</div>
                                 </div>
                             </div>
@@ -50,7 +53,10 @@ class __TwigTemplate_7b173c94df26f6bd1261edc2ac4cd5907d3ad55a7a988f957beb61d9cde
                                     <i class=\"fa fa-users fa-5x\"></i>
                                 </div>
                                 <div class=\"col-xs-9 text-right\">
-                                    <div class=\"huge\">12 <br>
+                                    <div class=\"huge\"> ";
+        // line 32
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["infoBase"] ?? null), "suppliers", array()), "html", null, true);
+        echo " <br>
                                      Proveedores</div>
                                     <div>Módulo Proveedores</div>
                                 </div>
@@ -76,7 +82,10 @@ class __TwigTemplate_7b173c94df26f6bd1261edc2ac4cd5907d3ad55a7a988f957beb61d9cde
                                     <i class=\"fa fa-cube fa-5x\"></i>
                                 </div>
                                 <div class=\"col-xs-9 text-right\">
-                                    <div class=\"huge\">124 <br> 
+                                    <div class=\"huge\">";
+        // line 55
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["infoBase"] ?? null), "products", array()), "html", null, true);
+        echo " <br> 
                                     Productos</div>
                                     <div>Módulo de Productos</div>
                                 </div>
@@ -102,7 +111,10 @@ class __TwigTemplate_7b173c94df26f6bd1261edc2ac4cd5907d3ad55a7a988f957beb61d9cde
                                     <i class=\"fa fa-usd fa-5x\"></i>
                                 </div>
                                 <div class=\"col-xs-9 text-right\">
-                                    <div class=\"huge\">13 <br> Incoterms</div>
+                                    <div class=\"huge\">";
+        // line 78
+        echo twig_escape_filter($this->env, $this->getAttribute(($context["infoBase"] ?? null), "incoterms", array()), "html", null, true);
+        echo " <br> Incoterms</div>
                                     <div>Módulo de Proviciones</div>
                                 </div>
                             </div>
@@ -131,7 +143,7 @@ class __TwigTemplate_7b173c94df26f6bd1261edc2ac4cd5907d3ad55a7a988f957beb61d9cde
 
     public function getDebugInfo()
     {
-        return array (  87 => 61,  61 => 38,  35 => 15,  19 => 1,);
+        return array (  116 => 78,  96 => 61,  87 => 55,  67 => 38,  58 => 32,  38 => 15,  30 => 10,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -153,7 +165,7 @@ class __TwigTemplate_7b173c94df26f6bd1261edc2ac4cd5907d3ad55a7a988f957beb61d9cde
                                     <i class=\"fa fa-cubes fa-5x\"></i>
                                 </div>
                                 <div class=\"col-xs-9 text-right\">
-                                    <div class=\"huge\">26 <br> Pedidos</div>
+                                    <div class=\"huge\">{{infoBase.orders}} <br> Pedidos</div>
                                     <div>Módulo de Pedidos</div>
                                 </div>
                             </div>
@@ -175,7 +187,7 @@ class __TwigTemplate_7b173c94df26f6bd1261edc2ac4cd5907d3ad55a7a988f957beb61d9cde
                                     <i class=\"fa fa-users fa-5x\"></i>
                                 </div>
                                 <div class=\"col-xs-9 text-right\">
-                                    <div class=\"huge\">12 <br>
+                                    <div class=\"huge\"> {{infoBase.suppliers}} <br>
                                      Proveedores</div>
                                     <div>Módulo Proveedores</div>
                                 </div>
@@ -198,7 +210,7 @@ class __TwigTemplate_7b173c94df26f6bd1261edc2ac4cd5907d3ad55a7a988f957beb61d9cde
                                     <i class=\"fa fa-cube fa-5x\"></i>
                                 </div>
                                 <div class=\"col-xs-9 text-right\">
-                                    <div class=\"huge\">124 <br> 
+                                    <div class=\"huge\">{{infoBase.products}} <br> 
                                     Productos</div>
                                     <div>Módulo de Productos</div>
                                 </div>
@@ -221,7 +233,7 @@ class __TwigTemplate_7b173c94df26f6bd1261edc2ac4cd5907d3ad55a7a988f957beb61d9cde
                                     <i class=\"fa fa-usd fa-5x\"></i>
                                 </div>
                                 <div class=\"col-xs-9 text-right\">
-                                    <div class=\"huge\">13 <br> Incoterms</div>
+                                    <div class=\"huge\">{{infoBase.incoterms}} <br> Incoterms</div>
                                     <div>Módulo de Proviciones</div>
                                 </div>
                             </div>

@@ -110,33 +110,7 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
          </div>
       </div>
    </div>
-   <div class=\"row\">
-      <div class=\"col-md-2\">
-         <div class=\"form-group\">
-            <label>Seguro <span class=\"label label-info\">SENAE</span></label>
-            <input 
-               class=\"form-control\" 
-               type=\"number\"
-               step=\"0.01\" 
-               placeholder=\"0.00\" 
-               required=\"true\"
-               name=\"seguro_aduana\"
-               >
-         </div>
-      </div>
-      <div class=\"col-md-2\">
-         <div class=\"form-group\">
-            <label>Flete <span class=\"label label-info\">SENAE</span></label>
-            <input 
-               class=\"form-control\" 
-               type=\"number\"
-               required=\"true\"
-               step=\"0.01\" 
-               placeholder=\"0.00\" 
-               name=\"flete_aduana\"
-               >
-         </div>
-      </div>
+   <div class=\"row\"> 
       <div class=\"col-md-2\">
          <label>Fecha Arribo <span class=\"label label-info\">BODEGA</span></label>
          <div class=\"input-group date\" data-provide=\"datepicker\">
@@ -163,11 +137,11 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
             >
          </div>
       </div>
-      <div class=\"col-md-4\">
+      <div class=\"col-md-6\">
          <div class=\"form-group\">
             <label>Comentarios</label>
             <textarea 
-               rows=\"2\" 
+               rows=\"1\" 
                maxlength=\"250\" 
                class=\"form-control\"
                id=\"comentarios\"
@@ -184,7 +158,7 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
             Guardar Registro
          </button>
       <a href=\"";
-        // line 166
+        // line 140
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "pedido/listar/\" class=\"btn btn-sm btn-default\">
             <span class=\"fa fa-arrow-left fa-fw\"></span>
@@ -196,7 +170,7 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
 
    <script type=\"text/javascript\">
       var incotermsDb = ";
-        // line 175
+        // line 149
         echo ($context["incoterms"] ?? null);
         echo " ;
       \$('#is_arrived').click(function(){
@@ -217,7 +191,7 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
 
     public function getDebugInfo()
     {
-        return array (  200 => 175,  188 => 166,  19 => 1,);
+        return array (  174 => 149,  162 => 140,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -322,33 +296,7 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
          </div>
       </div>
    </div>
-   <div class=\"row\">
-      <div class=\"col-md-2\">
-         <div class=\"form-group\">
-            <label>Seguro <span class=\"label label-info\">SENAE</span></label>
-            <input 
-               class=\"form-control\" 
-               type=\"number\"
-               step=\"0.01\" 
-               placeholder=\"0.00\" 
-               required=\"true\"
-               name=\"seguro_aduana\"
-               >
-         </div>
-      </div>
-      <div class=\"col-md-2\">
-         <div class=\"form-group\">
-            <label>Flete <span class=\"label label-info\">SENAE</span></label>
-            <input 
-               class=\"form-control\" 
-               type=\"number\"
-               required=\"true\"
-               step=\"0.01\" 
-               placeholder=\"0.00\" 
-               name=\"flete_aduana\"
-               >
-         </div>
-      </div>
+   <div class=\"row\"> 
       <div class=\"col-md-2\">
          <label>Fecha Arribo <span class=\"label label-info\">BODEGA</span></label>
          <div class=\"input-group date\" data-provide=\"datepicker\">
@@ -375,11 +323,11 @@ class __TwigTemplate_8b5c2b1dfffa7e14321d4266ba85b81dcf99fa76f559db581b9294cee59
             >
          </div>
       </div>
-      <div class=\"col-md-4\">
+      <div class=\"col-md-6\">
          <div class=\"form-group\">
             <label>Comentarios</label>
             <textarea 
-               rows=\"2\" 
+               rows=\"1\" 
                maxlength=\"250\" 
                class=\"form-control\"
                id=\"comentarios\"

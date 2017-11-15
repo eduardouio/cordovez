@@ -131,39 +131,6 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
    </div>
    <div class=\"row\">
       <div class=\"col-md-2\">
-         <div class=\"form-group\">
-            <label>Seguro <span class=\"label label-info\">SENAE</span></label>
-            <input 
-               class=\"form-control\" 
-               type=\"number\"
-               step=\"0.01\" 
-               placeholder=\"0.00\" 
-               required=\"true\"
-               name=\"seguro_aduana\"
-               value=\"";
-        // line 89
-        echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "seguro_aduana", array()), "html", null, true);
-        echo "\" 
-               >
-         </div>
-      </div>      <div class=\"col-md-2\">
-         <div class=\"form-group\">
-            <label>Flete <span class=\"label label-info\">SENAE</span></label>
-            <input 
-               class=\"form-control\" 
-               type=\"number\"
-               required=\"true\"
-               step=\"0.01\" 
-               placeholder=\"0.00\" 
-               name=\"flete_aduana\"
-               value=\"";
-        // line 102
-        echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "flete_aduana", array()), "html", null, true);
-        echo "\" 
-               >
-         </div>
-      </div>
-      <div class=\"col-md-2\">
          <label>Fecha Arribo <span class=\"label label-info\">BODEGA</span></label>
          <div class=\"input-group date\" data-provide=\"datepicker\">
             <input 
@@ -173,7 +140,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
                name=\"fecha_arribo\" 
                class=\"bootstrap-datepicker\" 
                value=\"";
-        // line 115
+        // line 88
         echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "fecha_arribo", array()), "html", null, true);
         echo "\" 
                >
@@ -191,23 +158,23 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
             step=\"1\" 
             name=\"dias_libres\"
               value=\"";
-        // line 130
+        // line 103
         echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "dias_libres", array()), "html", null, true);
         echo "\" 
             >
          </div>
       </div>
-      <div class=\"col-md-4\">
+      <div class=\"col-md-6\">
          <div class=\"form-group\">
             <label>Comentarios</label>
             <textarea 
-               rows=\"2\" 
+               rows=\"1\" 
                maxlength=\"250\" 
                class=\"form-control\"
                id=\"comentarios\"
                name=\"comentarios\"
                >";
-        // line 143
+        // line 116
         echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "comentarios", array()), "html", null, true);
         echo "</textarea>
          </div>
@@ -221,7 +188,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
             Guardar Registro
          </button>
       <a href=\"";
-        // line 154
+        // line 127
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "pedido/presentar/";
         echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "nro_pedido", array()), "html", null, true);
@@ -234,7 +201,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
    </div>
    <script type=\"text/javascript\">
       var incotermsDb = ";
-        // line 162
+        // line 135
         echo ($context["incoterms"] ?? null);
         echo " ;
    </script>
@@ -253,7 +220,7 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
 
     public function getDebugInfo()
     {
-        return array (  238 => 162,  225 => 154,  211 => 143,  195 => 130,  177 => 115,  161 => 102,  145 => 89,  126 => 73,  111 => 61,  95 => 50,  79 => 39,  67 => 29,  63 => 27,  59 => 25,  57 => 24,  51 => 23,  36 => 11,  24 => 2,  19 => 1,);
+        return array (  205 => 135,  192 => 127,  178 => 116,  162 => 103,  144 => 88,  126 => 73,  111 => 61,  95 => 50,  79 => 39,  67 => 29,  63 => 27,  59 => 25,  57 => 24,  51 => 23,  36 => 11,  24 => 2,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -345,33 +312,6 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
    </div>
    <div class=\"row\">
       <div class=\"col-md-2\">
-         <div class=\"form-group\">
-            <label>Seguro <span class=\"label label-info\">SENAE</span></label>
-            <input 
-               class=\"form-control\" 
-               type=\"number\"
-               step=\"0.01\" 
-               placeholder=\"0.00\" 
-               required=\"true\"
-               name=\"seguro_aduana\"
-               value=\"{{order.seguro_aduana}}\" 
-               >
-         </div>
-      </div>      <div class=\"col-md-2\">
-         <div class=\"form-group\">
-            <label>Flete <span class=\"label label-info\">SENAE</span></label>
-            <input 
-               class=\"form-control\" 
-               type=\"number\"
-               required=\"true\"
-               step=\"0.01\" 
-               placeholder=\"0.00\" 
-               name=\"flete_aduana\"
-               value=\"{{order.flete_aduana}}\" 
-               >
-         </div>
-      </div>
-      <div class=\"col-md-2\">
          <label>Fecha Arribo <span class=\"label label-info\">BODEGA</span></label>
          <div class=\"input-group date\" data-provide=\"datepicker\">
             <input 
@@ -399,11 +339,11 @@ class __TwigTemplate_d97f6747eb8b1073902d806b5121434b7aa246eb8bb4f2886f1dd79b7c5
             >
          </div>
       </div>
-      <div class=\"col-md-4\">
+      <div class=\"col-md-6\">
          <div class=\"form-group\">
             <label>Comentarios</label>
             <textarea 
-               rows=\"2\" 
+               rows=\"1\" 
                maxlength=\"250\" 
                class=\"form-control\"
                id=\"comentarios\"

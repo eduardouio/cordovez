@@ -20,6 +20,19 @@ class Modelorder extends CI_Model {
         parent::__construct();
     }
 
+
+    /**
+    * Obtiene todas las ordenes 
+    * @return array | bool
+    */
+    public function getAll() {
+      return ($this->modelbase->get_table([
+                                      'table' => 'pedido',
+                                            ]));
+
+    }
+
+
     /**
     * Obtiene el registro completo de la orden
     *

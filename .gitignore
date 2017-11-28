@@ -1,3 +1,6 @@
 DemoApp/
 colores/
 *.log
+.buildpath
+.idea/
+.project

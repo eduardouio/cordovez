@@ -10,105 +10,101 @@
  * @filesource
  */
 
-.left-active{
-  background-color: #e0e0e0;
+
+.left-active {
+    background-color: #e0e0e0;
 }
 
-.title-proveedor{
-background-color: #21610B !important;
-color: #fff;
+.title-proveedor {
+    background-color: #21610B !important;
+    color: #fff;
 }
 
-.title-factura_informativa{
-background-color: #333 !important;
-color: #333;
+.title-factura_informativa {
+    background-color: #333 !important;
+    color: #333;
 }
 
-
-.title-detalle_pedido_factura{
+.title-detalle_pedido_factura {
     background-color: #0097a7 !important;
-    color: #fff;    
+    color: #fff;
 }
 
-.title-pedido_factura{
-background-color: #0097a7 !important;
-color: #fff;
+.title-pedido_factura {
+    background-color: #0097a7 !important;
+    color: #fff;
 }
 
-.title-justificacion_gasto_nacionalizacion{
-background-color: #0000a7 !important;
-color: #fff;
+.title-justificacion_gasto_nacionalizacion {
+    background-color: #0000a7 !important;
+    color: #fff;
 }
 
-
-.title-inicio{
-background-color: #778899 !important;
-color: #fff;
+.title-inicio {
+    background-color: #778899 !important;
+    color: #fff;
 }
 
-
-.title-gastos_nacionalizacion{
-background-color: #7b1fa2 !important;
-color: #fff;
+.title-gastos_nacionalizacion {
+    background-color: #7b1fa2 !important;
+    color: #fff;
 }
 
-.title-incoterm{
-padding: 10px 10px 10px 10px;
-margin: 10px 0 10px;
-background-color: #616161 !important;
-color: #fff;
-border-radius: 4px;
-box-shadow:2px 2px 4px #888;
+.title-incoterm {
+    padding: 10px 10px 10px 10px;
+    margin: 10px 0 10px;
+    background-color: #616161 !important;
+    color: #fff;
+    border-radius: 4px;
+    box-shadow: 2px 2px 4px #888;
 }
 
-.title-pedido{
-background-color: #e3001b;
+.title-pedido {
+    background-color: #e3001b;
 }
 
-.title-producto{
-background-color: #04738B;
+.title-producto {
+    background-color: #04738B;
 }
 
 .navbar-default .navbar-brand {
     color: #fff;
- }
-
-.navbar-default .navbar-nav>li>a {
-	color: #fff;
 }
 
-.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.active>a:hover {
+.navbar-default .navbar-nav > li > a {
+    color: #fff;
+}
+
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:hover {
     color: #fff;
     background-color: #58585a;
 }
 
-.modal-title{
-	color: #0084a1;
+.modal-title {
+    color: #0084a1;
 }
 
-body{
-	font-size: 13px
+body {
+    font-size: 12px
 }
-
 
 .btn-default {
     background-color: #f1f1f1;
-    }
+}
 
-    .modal-dialog-notify{
-        width:500px;
-    }
+.modal-dialog-notify {
+    width: 500px;
+}
 
 .input-group-addon {
-    text-align:left;
+    text-align: left;
     padding: 1px 6px;
     font-size: 12px;
 }
 
-.ng-cloak { 
-	display:none; 
+.ng-cloak {
+    display: none;
 }
-
 
 .slidedown {
     position: absolute;
@@ -117,38 +113,44 @@ body{
     width: 100%;
     height: 100%;
 }
+
 .slidedown.ng-enter,
 .slidedown.ng-leave {
     -webkit-transition: all 1s ease;
     transition: all 1s ease;
 }
+
 .slidedown.ng-enter {
     top: -100%;
 }
+
 .slidedown.ng-enter-active {
     top: 0;
 }
+
 .slidedown.ng-leave {
     top: 0;
 }
+
 .slidedown.ng-leave-active {
     top: 100%;
 }
 
-.form-control{
+.form-control {
     font-size: 13px;
 }
 
 .col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-xs-1, .col-xs-10, .col-xs-11, .col-xs-12, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9 {
-    padding-right: 10px;
-    padding-left: 10px;
+    padding-right: 5px;
+    padding-left: 5px;
 }
 
-.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+.table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
     padding: 4px;
-    }
-.panel-footer{
-    height: 60px; 
+}
+
+.panel-footer {
+    height: 60px;
     padding: 2px 5px 2px 2px;
 }
 
@@ -165,11 +167,13 @@ body{
     padding-top: 3px;
     cursor: pointer;
 }
-    .control input {
-        position: absolute;
-        z-index: -1;
-        opacity: 0;
-    }
+
+.control input {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+}
+
 .control_indicator {
     position: absolute;
     top: 1px;
@@ -179,6 +183,7 @@ body{
     background: #e6e6e6;
     border: 1px solid #000000;
 }
+
 .control-radio .control_indicator {
     border-radius: undefined%;
 }
@@ -191,24 +196,29 @@ body{
 .control input:checked ~ .control_indicator {
     background: #2aa1c0;
 }
+
 .control:hover input:not([disabled]):checked ~ .control_indicator,
 .control input:checked:focus ~ .control_indicator {
-    background: #0e6647d;
+    background-color: #0e6647d;
 }
+
 .control input:disabled ~ .control_indicator {
     background: #e6e6e6;
     opacity: 0.6;
     pointer-events: none;
 }
+
 .control_indicator:after {
     box-sizing: unset;
     content: '';
     position: absolute;
     display: none;
 }
+
 .control input:checked ~ .control_indicator:after {
     display: block;
 }
+
 .control-checkbox .control_indicator:after {
     left: 8px;
     top: 4px;
@@ -218,19 +228,19 @@ body{
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
 }
+
 .control-checkbox input:disabled ~ .control_indicator:after {
     border-color: #7b7b7b;
 }
 
-.form-in-line{
+.form-in-line {
     border-color: #F00;
     border-width: 12px;
     background-color: #eee;
     padding: 3px 10px 3px;
-
 }
 
-.label-died{
+.label-died {
     background-color: #444;
 }
 
@@ -239,7 +249,31 @@ body{
     margin: 30px auto;
 }
 
-
-.table>tbody>tr.total-row>td, .table>tbody>tr.total-row>th, .table>tbody>tr>td.total-row, .table>tbody>tr>th.total-row, .table>tfoot>tr.total-row>td, .table>tfoot>tr.total-row>th, .table>tfoot>tr>td.total-row, .table>tfoot>tr>th.total-row, .table>thead>tr.total-row>td, .table>thead>tr.total-row>th, .table>thead>tr>td.total-row, .table>thead>tr>th.total-row {
+.table > tbody > tr.total-row > td, .table > tbody > tr.total-row > th, .table > tbody > tr > td.total-row, .table > tbody > tr > th.total-row, .table > tfoot > tr.total-row > td, .table > tfoot > tr.total-row > th, .table > tfoot > tr > td.total-row, .table > tfoot > tr > th.total-row, .table > thead > tr.total-row > td, .table > thead > tr.total-row > th, .table > thead > tr > td.total-row, .table > thead > tr > th.total-row {
     background-color: #fff;
+}
+
+.text-tittle {
+    width: 100%;
+    background-color: #337ab7;
+    color: #fff;
+    border-radius: 5px;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.div-bordered {
+    border: 0.9px solid #ddd;
+    border-radius: 4px;
+}
+
+.title-documento_pago, .detalle-documento-pago, .title-detalle_documento_pago{
+    background-color: #002166;
+}
+
+th{
+    text-align: center;
+}
+.alert {
+    padding: 10px;
 }

@@ -13,134 +13,191 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @since    Version 1.0.0
  * @filesource
  */
-
-class Modelorder extends CI_Model {
-
-    public function __construct(){
+class Modelorder extends CI_Model
+{
+    private $table = 'pedido'; 
+    private $modelBase;
+    private $modelExpenses;
+    private $modelProduct;
+    
+    public function __construct()
+    {
         parent::__construct();
+        $this->load->model('modelbase');
+        $this->load->model('modelexpenses');
+        $this->load->model('modelproduct');
+        $this->modelBase = new Modelbase();
+        $this->modelExpenses = new Modelexpenses();
+        $this->modelProduct = new Modelproduct(); 
+        
     }
 
 
     /**
-    * Obtiene todas las ordenes 
-    * @return array | bool
-    */
-    public function getAll() {
-      return ($this->modelbase->get_table([
-                                      'table' => 'pedido',
-                                            ]));
-
+     * Obtiene todas las ordenes, solo mas ordenes 
+     * @return array | bool
+     */
+    public function getAll()
+    {
+        return ($this->modelBase->get_table([
+            'table' => 'pedido',
+        ]));
     }
 
 
     /**
-    * Obtiene el registro completo de la orden
-    *
-    * @param (string) $nroOrder
-    * @return array | false
-    */
-    public function get($nroOrder){
-    	$order = $this->modelbase->get_table([
-    						                      	'table' => 'pedido',
-    						                      	'where' => [
-    						                      						'nro_pedido' => $nroOrder,
-    						                      						],
-    						                      	]);
-    	if (gettype($order) != 'array'){
+     * Obtiene un regsistro completo de la orden
+     * @param (string) $nroOrder
+     * @return array | false
+     */
+    public function get($nroOrder)
+    {
+        $order = $this->modelBase->get_table([
+            'table' => 'pedido',
+            'where' => [
+                'nro_pedido' => $nroOrder,
+            ],
+        ]);
+        if((gettype($order) == 'array') && (count($order) > 0)){
+            return $order[0];
+        }
+        return false;
+    }
+
+
+    /**
+     * Obtiene el detalle de las facturas y lo cruza contra el valor total de
+     * la factura
+     * @param (string) $idInvoiceOrder
+     * @return array | false
+     */
+    public function getInvoices($nroOrder)
+    {
+        $invoices = $this->modelBase->get_table([
+            'table' => 'pedido_factura',
+            'where' => [
+                'nro_pedido' => $nroOrder
+            ]
+        ]);
+        if (empty($invoices)) {
             return false;
         }
-        
-        return $order;
-    }
-
-
-     /**
-    * Obtiene el detalle de las facturas y lo cruza contra el valor total de
-    * la factura
-    * @param (string) $idInvoiceOrder 
-    * @return array | false
-    */
-    public function getInvoices($nroOrder){
-        $invoices = $this->modelbase->get_table([
-                                        'table' => 'pedido_factura',
-                                        'where' => [
-                                                'nro_pedido' => $nroOrder
-                                                    ]
-                                            ]);
-        if (empty($invoices)){
-          return false;
-        }
-
-        $result =[];
+        $result = [];
 
         foreach ($invoices as $key => $value) {
-          $supplier = $this->modelbase->get_table([
-                                        'table' => 'proveedor',
-                                        'where' => [
-                                          'identificacion_proveedor' => 
-                                          $value['identificacion_proveedor'],
-                                                    ],
-                                              ]);
-          $value['supplier'] = $supplier[0];
-          
-          $value['detailInvoice'] = $this->getInvoiceDetail(
-                                                  $value['id_pedido_factura']);
-          $result[$key]  = $value;          
+            $value['supplier'] = $this->modelsupplier->get(
+                                            $value['identificacion_proveedor']);
+            $value['detailInvoice'] = $this->getInvoiceDetail($value);
+            $result[$key] = $value;
         }
-
         return $result;
     }
 
-    /** 
-    * Busca los detalles de la factura y la suma de las mimsas 
-    * @param (int)$idInvoice => identificador de la factura
-    * @return array | bool
-    */
-    public function getInvoiceDetail($idInvoice){
-      $detailInvoice = $this->modelbase->get_table([
-                                        'table' => 'detalle_pedido_factura',
-                                        'where' => [
-                                              'id_pedido_factura' => $idInvoice,
-                                                   ],
-                                                ]);
-      if(empty($detailInvoice)){
-        return false;
-      }
+    /**
+     * Busca los detalles de la factura y la suma de las mimsas
+     * @param $invoice objeto factura completo
+     * @return array | bool
+     */
+    public function getInvoiceDetail($invoice)
+    {
+        $detailInvoice = $this->modelBase->get_table([
+            'table' => 'detalle_pedido_factura',
+            'where' => [
+                'id_pedido_factura' => $invoice['id_pedido_factura'],
+            ],
+        ]);
+        if (empty($detailInvoice)) {
+            return false;
+        }
 
-      $result = [];
-      $valueItem = 0.00;
-      $countBoxesProduct = 0.00;
+        $result = [];
+        $valueItem = 0.00;
+        $countBoxesProduct = 0.00;
 
-      foreach ($detailInvoice as $key => $value) {
-        $valueItem += floatval($value['costo_caja']) * 
-                                          floatval($value['nro_cajas']);
-        $countBoxesProduct += floatval($value['nro_cajas']);
-        $product = $this->modelbase->get_table([
-                                    'table' => 'producto',
-                                    'where' => [
-                                       'cod_contable' => $value['cod_contable'],
-                                                ],
-                                              ]);
+        foreach ($detailInvoice as $key => $value) {
+            $valueItem += floatval($value['costo_caja']) *
+                floatval($value['nro_cajas']);
 
-        $value['nombre'] = $product[0]['nombre'];
-        $value['cantidad_x_caja'] = $product[0]['cantidad_x_caja'];
+            $countBoxesProduct += floatval($value['nro_cajas']);
 
-        $value['unidades'] = (intval($value['cantidad_x_caja']) * 
-                                  intval($value['nro_cajas']));
+            $product = $this->modelProduct->get($value['cod_contable']);
 
-        $value['costo_unidad'] = (floatval($value['costo_caja']) / 
-                                        floatval($value['cantidad_x_caja']));
+            $value['nombre'] = $product['nombre'];
+            $value['cantidad_x_caja'] = $product['cantidad_x_caja'];
+            $value['unidades'] = (intval($value['cantidad_x_caja']) *
+                intval($value['nro_cajas']));
+            $value['costo_unidad'] = (floatval($value['costo_caja']) /
+                floatval($value['cantidad_x_caja']));
+            $value['total_item'] = (floatval($value['costo_caja']) *
+                floatval($value['nro_cajas']));
 
-        $value['total_item'] = (floatval($value['costo_caja']) *
-                                        floatval($value['nro_cajas']));
-        $result[$key] = $value;
-      }
+            $result[$key] = $value;
+        }
 
-      $result['sums'] = [
-                          'valueItems' => $valueItem,
-                          'countBoxesProduct' => $countBoxesProduct,
-                              ];
-
-      return $result;
+        $result['sums'] = [
+            'valueItems' => $valueItem,
+            'money' => $invoice['moneda'],
+            'tasa_change' => $invoice['tipo_cambio'],
+            'countBoxesProduct' => $countBoxesProduct,
+        ];
+        return $result;
     }
- }
+
+    /**
+     * Lista las facturas pedido por proveedor
+     * @param (string) $suplierId
+     * @return array | boolean
+     */
+    public function getBysupplier($supplierId)
+    {
+        $invoicesList = $this->modelBase->get_table([
+            'table' => 'pedido_factura',
+            'where' => [
+                'identificacion_proveedor' =>
+                    $supplierId,
+            ],
+        ]);
+        if ((gettype($invoicesList) == 'array') && 
+            (count($invoicesList) > 0)) {
+            return $invoicesList;
+        }
+        return false;
+    }
+    
+    
+    /**
+     * busca todas las activas que aun tengas gastos por justificar
+     * Retorna un arreglo con los numeros de orden unicamente
+     * @return mixed
+     */
+    public function getActives(){
+        $orders = $this->modelBase->get_table([
+            'select' => ['nro_pedido',],
+            'table' => 'gastos_nacionalizacion',
+            'where' => [
+                'bg_closed' => 0,
+            ],
+            'goup_by'
+        ]);
+       if((gettype($orders) == 'array') && (count($orders))){
+           $tempArray = [];
+           $i = 0;
+           $keyArray = [];
+           foreach ($orders as $val){
+               if(! in_array($val['nro_pedido'], $keyArray)){
+                   $keyArray[$i] = $val['nro_pedido'];
+                   $tempArray[$i] = $val;
+               }
+               $i++;
+           }   
+           $result = [];
+           foreach ($tempArray as $key => $value){
+               $value['expenses'] = 
+               $this->modelExpenses->getActiveExpenses($value['nro_pedido']);
+               $result[$key] = $value;
+           }
+           return $result;
+       }
+       return false;
+    }
+}

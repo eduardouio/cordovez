@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
- * Arma los datos para los parametros de gastos iniciales
+ * Modelo de validacion de ordenes y pagos por cruzar
  * de datos
  * @package    CordovezApp
  * @author    Eduardo Villota <eduardouio7@gmail.com>
@@ -12,16 +12,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @since    Version 1.0.0
  * @filesource
  */
-class Rateexpenses extends CI_Model {
+class Modelvalidate extends \CI_Model
+{
+    private $table = 'pedido';
 
-	function __construct(){
-		parent::__construct();
-	}
-
-	public function getAllRates($regimen){
-		print $regimen;
-	}
-
-
-
+    public function __construct()
+    {
+        parent::__construct();
+    }
+    
+   
+    
+      
+    
 }
+

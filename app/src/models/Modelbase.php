@@ -40,6 +40,11 @@ class ModelBase extends CI_Model {
     *                               'col' => 'condition1',
     *                               'coln' => 'conditionn',
     *                           ],
+    *           'notwhere' => [
+    *                               'col' => 'condition1',
+    *                               'col' => 'condition1',
+    *                               'coln' => 'conditionn',
+    *                           ],
     *
     *           'orderby' => [
     *                               'col1' => 'ASC | DESC',

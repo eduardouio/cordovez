@@ -54,7 +54,7 @@
                required="required" 
                name="fecha" 
                class="bootstrap-datepicker" 
-               value="{{ initExpense.fecha }}" 
+               value="{{ initExpense.fecha | date ('d/m/Y')}}" 
                >
             <div class="input-group-addon">
                <span class="glyphicon glyphicon-th"></span>
@@ -110,30 +110,41 @@
 	$('#comentarios').keyup(function(){
 		this.value = this.value.toUpperCase();
 	});
-	
-		var newInput = `<div class="col-sm-2" id="date_end">
+
+	var newInput = `<div class="col-sm-2">
 		<div class="form-group">
 			<label>Fecha (Hasta)</label>
-			 <div class="input-group date" data-provide="datepicker">
+			 <div class="input-group">
             <input 
                type="text" 
                class="form-control" 
                id="fecha_fin" 
                required="required" 
                name="fecha_fin" 
-               class="bootstrap-datepicker" 
-               value="{{order.fecha_fin}}"
+               value="{{ initExpense.fecha_fin | date ('m/d/Y')}}"
                >
             <div class="input-group-addon">
                <span class="glyphicon glyphicon-th"></span>
             </div>
          </div>
 		</div>
-	</div>`;
-		
+	</div>
+	`;
 
-		if ( $('#concepto').val() === 'ALMACENAJE  INICIAL'){
+	checkDates();
+
+	function checkDates() {
+		var concepto = $('#concepto').val();
+
+		if (( concepto === 'ALMACENAJE INICIAL') ||
+			   ( concepto === 'ALMACENAJE ALMAGRO') ||
+			   ( concepto === 'DEMORAJE')
+			  ){
+
 			$('#hasta').append(newInput).fadeIn('slow');
-		}
-
+			$('#fecha_fin').datepicker({
+    			language: "es",
+    			daysOfWeekHighlighted: "1"
+					});
+		}};
 </script>

@@ -16,10 +16,13 @@ class Login extends CI_Controller {
 	private $controller = "usuario";
 	private $template = '/pages/pageLogin.html';
 	private $cryptKey  = 'qJB0rGtIn5UB1xG03efyCp';
+	private $modelBase ;
 
 	function __construct(){
 		parent::__construct();
 		$this->checkSession();
+		$this->load->model('modelbase');
+		$this->modelBase = new ModelBase();
 	}
 
 	/**	
@@ -80,7 +83,7 @@ class Login extends CI_Controller {
 						'where' => ['username' => $user['username'],],
 						];
 
-		$userDb = $this->modelbase->get_table($params);
+		$userDb = $this->modelBase->get_table($params);
 
 		if($userDb == false){
 			$config = [

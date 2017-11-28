@@ -18,38 +18,39 @@ class __TwigTemplate_f198aceac6e8712a11690f61193d02c13a194a94fbcb6c2edffdfe716f8
         // line 1
         echo "<form method=\"post\" action=\"";
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
-        echo "facturapagos/validar\">
+        echo "facturapagos/validar/\">
   <div class=\"row\">
     <div class=\"col-sm-6\">
       <div class=\"form-group\">
         <label>Proveedor</label>
         <select 
         name=\"identificacion_proveedor\"
+        autofocus = 'autofocus'
         required=\"true\" 
         class=\"form-control\">
         ";
-        // line 10
+        // line 11
         if ((($context["fail"] ?? null) == true)) {
-            // line 11
+            // line 12
             echo "        <option selected=\"true\" value=\"";
             echo twig_escape_filter($this->env, $this->getAttribute(($context["invoice"] ?? null), "identificacion_proveedor", array()), "html", null, true);
             echo "\">
         ";
-            // line 12
+            // line 13
             echo twig_escape_filter($this->env, ($context["supplierName"] ?? null), "html", null, true);
             echo " </option>
         ";
         } else {
-            // line 14
+            // line 15
             echo "        <option disabled=\"\" selected=\"\" >Seleccione... </option>
         ";
         }
-        // line 16
+        // line 17
         echo "        ";
         $context['_parent'] = $context;
         $context['_seq'] = twig_ensure_traversable(($context["suppliers"] ?? null));
         foreach ($context['_seq'] as $context["_key"] => $context["supplier"]) {
-            // line 17
+            // line 18
             echo "          <option value=\"";
             echo twig_escape_filter($this->env, $this->getAttribute($context["supplier"], "identificacion_proveedor", array()), "html", null, true);
             echo "\"> ";
@@ -60,7 +61,7 @@ class __TwigTemplate_f198aceac6e8712a11690f61193d02c13a194a94fbcb6c2edffdfe716f8
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_iterated'], $context['_key'], $context['supplier'], $context['_parent'], $context['loop']);
         $context = array_intersect_key($context, $_parent) + $_parent;
-        // line 19
+        // line 20
         echo "        </select>
       </div>
     </div>
@@ -70,11 +71,11 @@ class __TwigTemplate_f198aceac6e8712a11690f61193d02c13a194a94fbcb6c2edffdfe716f8
         <input 
         type=\"text\" 
         class=\"form-control\" 
-        maxlength=\"10\" 
+        maxlength=\"20\"
         name=\"nro_factura\"
         required=\"true\" 
         value=\"";
-        // line 31
+        // line 32
         echo twig_escape_filter($this->env, $this->getAttribute(($context["invoice"] ?? null), "nro_factura", array()), "html", null, true);
         echo "\" 
         >
@@ -92,7 +93,7 @@ class __TwigTemplate_f198aceac6e8712a11690f61193d02c13a194a94fbcb6c2edffdfe716f8
                name=\"fecha_emision\" 
                class=\"bootstrap-datepicker\" 
                value=\"";
-        // line 46
+        // line 47
         echo twig_escape_filter($this->env, $this->getAttribute(($context["invoice"] ?? null), "fecha_emision", array()), "html", null, true);
         echo "\" 
                >
@@ -112,7 +113,7 @@ class __TwigTemplate_f198aceac6e8712a11690f61193d02c13a194a94fbcb6c2edffdfe716f8
           maxlength=\"8\" 
           name=\"valor\"
           value=\"";
-        // line 63
+        // line 64
         echo twig_escape_filter($this->env, $this->getAttribute(($context["invoice"] ?? null), "valor", array()), "html", null, true);
         echo "\" 
           >
@@ -124,11 +125,12 @@ class __TwigTemplate_f198aceac6e8712a11690f61193d02c13a194a94fbcb6c2edffdfe716f8
         <div class=\"form-group\">
           <label>Comentarios</label>
           <textarea 
-          name=\"comentarios\" 
+          name=\"comentarios\"
+          id =\"comentarios\"
           maxlength=\"250\" 
           class=\"form-control\"
           >";
-        // line 76
+        // line 78
         echo twig_escape_filter($this->env, $this->getAttribute(($context["invoice"] ?? null), "comentarios", array()), "html", null, true);
         echo "</textarea>
         </div>
@@ -142,7 +144,7 @@ class __TwigTemplate_f198aceac6e8712a11690f61193d02c13a194a94fbcb6c2edffdfe716f8
             Guardar Registro
          </button>
       <a href=\"";
-        // line 87
+        // line 89
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "facturapagos/\" class=\"btn btn-sm btn-default\">
             <span class=\"fa fa-arrow-left fa-fw\"></span>
@@ -150,7 +152,12 @@ class __TwigTemplate_f198aceac6e8712a11690f61193d02c13a194a94fbcb6c2edffdfe716f8
          </a>
       </div>
    </div>
-</form>";
+</form>
+<script type=\"text/javascript\">
+    \$('#comentarios').keyup(function(){
+        this.value = this.value.toUpperCase();
+    })
+</script>";
     }
 
     public function getTemplateName()
@@ -165,7 +172,7 @@ class __TwigTemplate_f198aceac6e8712a11690f61193d02c13a194a94fbcb6c2edffdfe716f8
 
     public function getDebugInfo()
     {
-        return array (  146 => 87,  132 => 76,  116 => 63,  96 => 46,  78 => 31,  64 => 19,  53 => 17,  48 => 16,  44 => 14,  39 => 12,  34 => 11,  32 => 10,  19 => 1,);
+        return array (  148 => 89,  134 => 78,  117 => 64,  97 => 47,  79 => 32,  65 => 20,  54 => 18,  49 => 17,  45 => 15,  40 => 13,  35 => 12,  33 => 11,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -178,13 +185,14 @@ class __TwigTemplate_f198aceac6e8712a11690f61193d02c13a194a94fbcb6c2edffdfe716f8
 
     public function getSourceContext()
     {
-        return new Twig_Source("<form method=\"post\" action=\"{{rute_url}}facturapagos/validar\">
+        return new Twig_Source("<form method=\"post\" action=\"{{rute_url}}facturapagos/validar/\">
   <div class=\"row\">
     <div class=\"col-sm-6\">
       <div class=\"form-group\">
         <label>Proveedor</label>
         <select 
         name=\"identificacion_proveedor\"
+        autofocus = 'autofocus'
         required=\"true\" 
         class=\"form-control\">
         {% if fail == true %}
@@ -205,7 +213,7 @@ class __TwigTemplate_f198aceac6e8712a11690f61193d02c13a194a94fbcb6c2edffdfe716f8
         <input 
         type=\"text\" 
         class=\"form-control\" 
-        maxlength=\"10\" 
+        maxlength=\"20\"
         name=\"nro_factura\"
         required=\"true\" 
         value=\"{{ invoice.nro_factura }}\" 
@@ -250,7 +258,8 @@ class __TwigTemplate_f198aceac6e8712a11690f61193d02c13a194a94fbcb6c2edffdfe716f8
         <div class=\"form-group\">
           <label>Comentarios</label>
           <textarea 
-          name=\"comentarios\" 
+          name=\"comentarios\"
+          id =\"comentarios\"
           maxlength=\"250\" 
           class=\"form-control\"
           >{{invoice.comentarios}}</textarea>
@@ -270,6 +279,11 @@ class __TwigTemplate_f198aceac6e8712a11690f61193d02c13a194a94fbcb6c2edffdfe716f8
          </a>
       </div>
    </div>
-</form>", "forms/frm_factura_pagos.html.twig", "/var/www/html/app/src/views/forms/frm_factura_pagos.html.twig");
+</form>
+<script type=\"text/javascript\">
+    \$('#comentarios').keyup(function(){
+        this.value = this.value.toUpperCase();
+    })
+</script>", "forms/frm_factura_pagos.html.twig", "/var/www/html/app/src/views/forms/frm_factura_pagos.html.twig");
     }
 }

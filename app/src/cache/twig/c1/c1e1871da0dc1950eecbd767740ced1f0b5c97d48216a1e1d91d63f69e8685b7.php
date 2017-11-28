@@ -42,7 +42,7 @@ class __TwigTemplate_238d403db5dde966d0d9a8244659b7b1357e7ac298a9bdacf9c10956dd0
       <link href=\"";
         // line 15
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "dist/css/sb-admin-2.css\" rel=\"stylesheet\">
+        echo "css/sb-admin-2.css\" rel=\"stylesheet\">
       <!-- Custom Fonts -->
       <link href=\"";
         // line 17
@@ -52,7 +52,7 @@ class __TwigTemplate_238d403db5dde966d0d9a8244659b7b1357e7ac298a9bdacf9c10956dd0
       <link href=\"";
         // line 19
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "vendor/styles/cordovez.css\" rel=\"stylesheet\" type=\"text/css\">
+        echo "css/cordovez.css\" rel=\"stylesheet\" type=\"text/css\">
       <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
       <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
       <!--[if lt IE 9]>
@@ -265,7 +265,7 @@ class __TwigTemplate_238d403db5dde966d0d9a8244659b7b1357e7ac298a9bdacf9c10956dd0
       <script src=\"";
         // line 205
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
-        echo "dist/js/sb-admin-2.js\"></script>
+        echo "js/sb-admin-2.js\"></script>
 </body>
 </html>
 ";
@@ -310,11 +310,11 @@ class __TwigTemplate_238d403db5dde966d0d9a8244659b7b1357e7ac298a9bdacf9c10956dd0
       <!-- MetisMenu CSS -->
       <link href=\"{{base_url}}vendor/metisMenu/metisMenu.min.css\" rel=\"stylesheet\">
       <!-- Custom CSS -->
-      <link href=\"{{base_url}}dist/css/sb-admin-2.css\" rel=\"stylesheet\">
+      <link href=\"{{base_url}}css/sb-admin-2.css\" rel=\"stylesheet\">
       <!-- Custom Fonts -->
       <link href=\"{{base_url}}vendor/font-awesome/css/font-awesome.min.css\" rel=\"stylesheet\" type=\"text/css\">
       <!-- Custom Styles -->
-      <link href=\"{{base_url}}vendor/styles/cordovez.css\" rel=\"stylesheet\" type=\"text/css\">
+      <link href=\"{{base_url}}css/cordovez.css\" rel=\"stylesheet\" type=\"text/css\">
       <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
       <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
       <!--[if lt IE 9]>
@@ -500,7 +500,7 @@ class __TwigTemplate_238d403db5dde966d0d9a8244659b7b1357e7ac298a9bdacf9c10956dd0
       <!-- Metis Menu Plugin JavaScript -->
       <script src=\"{{base_url}}vendor/metisMenu/metisMenu.min.js\"></script>
       <!-- Custom Theme JavaScript -->
-      <script src=\"{{base_url}}dist/js/sb-admin-2.js\"></script>
+      <script src=\"{{base_url}}js/sb-admin-2.js\"></script>
 </body>
 </html>
 ", "/pages/pageLogin.html.twig", "/var/www/html/app/src/views/pages/pageLogin.html.twig");

@@ -33,7 +33,10 @@ class Detallepedido extends MY_Controller {
 	}
 
 	/**
-	* Crea un nuevo producto en una factuar
+	* Muestra el formulario para registrar un nuevo producto en el 
+	* Detalle de un pedido
+	* @param int $idInvoice Identificador Factura AI
+	* @return mixed
 	*/
 	public function nuevo($idInvoice){
 		$this->db->where('id_pedido_factura', $idInvoice);
@@ -56,11 +59,12 @@ class Detallepedido extends MY_Controller {
 			}
 		}
 
-		$config['create'] = true;		
-		$config['products'] = $products;
-		$config['productsarray'] = json_encode($products);
-		$config['invoice'] = $invoice;
-		$this->responseHttp($config);
+		$this->responseHttp([
+            'create' => true,
+            'products' => $products,
+            'productsarray' => json_encode($products),
+            'invoice' => $invoice
+        ]);
 	}
 
 

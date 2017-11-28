@@ -1,5 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+
 /**
  * Valida los datos de las provisiones
  *
@@ -11,237 +12,268 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @since    Version 1.0.0
  * @filesource
  */
-class Facturapagos extends MY_Controller {
-	private $resultDb;
-	private $controller = "justificacion_gasto_nacionalizacion";
-	private $template = "/pages/pageFacturas.html";
+class Facturapagos extends MY_Controller
+{
+    private $controller = "documento_pago";
+    private $template = "/pages/pageFacturas.html";
+    private $listPerPage = 15;
+    private $modelOrder;
+    private $modelUser;
+    private $modelSupplier;
+    private $modelPaid;
+    
 
-	/**
-	 * Constructor de la funcion
-	 */
-	public function __construct(){
-		parent::__construct();
-	}
+    public function __construct()
+    {
+        parent::__construct();
+        $this->init();
+    }
+    
+    /**
+     * Carga los modelos a usar en la clase
+     * @return void
+     */
+    private function init()
+    {
+        $this->load->model('modelorder');
+        $this->load->model('modeluser');
+        $this->load->model('modelsupplier');
+        $this->load->model('modelpaid');
+        $this->modelOrder = new Modelorder();
+        $this->modelUser = new Modeluser();
+        $this->modelSupplier = new Modelsupplier();
+        $this->modelPaid = new Modelpaid();
+    }
 
-	/**
-	* Muestra la factura pagos pedido para un 
-	*/
-	public function index(){
-		$invoiceParams = [
-			'table' => $this->controller,
-		];
+    /**
+     * Redirecciona a la lista de las facturas
+     * @return void
+     */
+    public function index()
+    {
+        $this->listar();
+    }
 
-		$config =	[
-			'titleContent' => 'Listado de Facturas Por Pedidos',
-			'list' => true,
-			'invoices' => $this->getDb($invoiceParams),
-			];
+    /**
+     * Lista Todas las facturas de pagos disponibles en el sistema
+     * @param $offset (int) primer elemento de la lista
+     * @return mixed
+     */
+    public function listar($offset = 0)
+    {
+        $this->db->order_by('fecha_emision', 'DESC');
+        $this->db->limit($this->listPerPage, $offset);
+        $resultDb = $this->db->get($this->controller);
+        $documents = $resultDb->result_array();
+        $pages_links = ((count($documents) - 1) / $this->listPerPage);
+        if (gettype($pages_links) == 'double') {
+            (int)$pages_links = (int)$pages_links + 1;
+        };
+        $documentList = [];
+        foreach ($documents as $item => $document) {
+            $document['supplier'] = $this->modelSupplier->get(
+                                        $document['identificacion_proveedor']);
+            $document['documentDetail'] = $this->modelPaid->getDetails(
+                                                 $document['id_documento_pago']);
+            $document['user'] = $this->modelUser->get($document['id_user']);
+            $documentList[$item] = $document;
+        }
+        $this->responseHttp([
+            'list' => true,
+            'controller' => $this->controller,
+            'list_active' => 'class="active"',
+            'titleContent' => 'Lista de Comprobantes de Pago',
+            'userData' => $this->session->userdata(),
+            'pagination' => true,
+            'documentsPaids' => $documentList,
+            'perPage' => $this->listPerPage,
+            'pagination_pages' => $pages_links,
+            'current_page' => (int)(($offset) / 10) + 1,
+            'last_page' => (int)(($pages_links - 1) * 10),
+            'pagination_url' => base_url() . 'index.php/pedido/listar/',
+        ]);
+    }
 
-		$this->responseHttp($config);
-	}
-
-	/**
-	* registra una nueva factura en el sistema
-	*/
-	public function nuevo(){
-		$this->db->order_by('nombre');
-		$resultDb = $this->db->get('proveedor');
-
-		$config =	[
-			'titleContent' => 'Registro de una Neva Factura',
-			'suppliers' => $resultDb->result_array(),
-			'create' => true,
-			];
-
-	$this->responseHttp($config);
-	}
-
-
-	public function validar() {
-		if($this->rest->_getRequestMethod()!= 'POST'){
-			$this->index();
-			return true;
-		}
-
-		$invoice = $this->input->post();
-		$invoice['fecha_emision'] = date('Y-m-d', 
-																				strtotime($invoice['fecha_emision']));
-		$invoice['id_user'] = $this->session->userdata('id_user');
-		$validData = $this->_validData($invoice);
-
-		if (!$validData['status']){
-			$this->db->select('nombre');
-			$this->db->where('identificacion_proveedor', 
-																				$invoice['identificacion_proveedor']);
-			$resultDb = $this->db->get('proveedor');
-			$supplierName = $resultDb->result_array();
-			$config = [
-				'fail' => true,
-				'message' => 'Uno de los valores ingresados no es correcto, revise los'.
-																												' siguientes  campos',
-				'fields_error' => $validData['len'],
-				'invoice' => $this->input->post(),
-				'update' => isset($invoice['id_factura_pagos']),
-				'create' => !isset($invoice['id_factura_pagos']),
-				'supplierName' => $supplierName[0]['nombre'],
-			];
-			$this->responseHttp($config);			
-			return true;
-		}
-		isset($invoice['id_factura_pagos']) ? $this->update($invoice) : 
-																											$this->create($invoice);
-
-	}
-
-	/**
-	* Actualiza un registro en la base
-	*/
-	private function update(array $invoice) {
-		$invoice['last_update'] = date('Y-m-d H:i:s');
-		$this->db->where('id_factura_pagos', $invoice['id_factura_pagos']);
-		if ($this->db->update($this->controller, $invoice)){
-			$this->redirectShoInvoice($invoice['id_factura_pagos']);
-			return true;
-		}
-		print 'Error al Actualizar el Registro ... ';
-		return false;
-	}
-
-
-	/**
-	* Crea un nuevo regisrtro en la base de datos
-	*/
-	private function create(array $invoice) {
-		$this->db->where('identificacion_proveedor', 
-																					$invoice['identificacion_proveedor']);
-		$this->db->where('nro_factura', $invoice['nro_factura']);
-		$resultDb = $this->db->get($this->controller);
-
-		if ($resultDb->num_rows() == 1) {
-			$invoice = $resultDb->result_array();
-			$config = [
-				'viewMessage' => true,
-				'message' => 'El registro ya existe',
-				'idRow' => $invoice[0]['id_factura_pagos'],
-				'titleContent' => 'La Factura Ya Se Encuentra Registrada.',
-			];
-				$this->responseHttp($config);
-				return false;
-		}
-
-		if($this->db->insert($this->controller, $invoice)){
-			$lastInfo = $this->mymodel->lastInfo();
-			$this->redirectShoInvoice($lastInfo['lastInsertId']);
-			return true;
-		}
-			print 'Error al Guardar el Registro...';
-			return false;
-	}
+    /**
+     * Presenta el formulario para el registro de un nuevo documento de Pago
+     * @return mixed
+     */
+    public function nuevo()
+    {
+        $this->responseHttp([
+            'titleContent' => 'Registro Nuevo Comprobante De Pago',
+            'suppliers' => $this->modelSupplier->getAll(),
+            'create' => true,
+        ]);
+    }
 
 
-	/**
-	* Redirecciona a la factura luego de guardar 
-	*/
-	public function redirectShoInvoice($idInvoice){
-		header('Status: 301 Moved Permanently', false, 301);
-  	      header('Location: ' . base_url() . 
-  	      									'index.php/facturapagos/presentar/' . $idInvoice);		
-	}
+    /**
+     * Presenta el formulario para editar las cabeceras de una facatura
+     * @param $nroDocument
+     */
+    public function editar($nroDocument)
+    {
+        if (!isset($nroDocument)){
+            $this->redirectPage('paidsList');
+            return false;
+        }
+        $document = $this->modelPaid->get($nroDocument);
+        if ($document == false){
+            $this->redirectPage('paidsList');
+            return false;
+        }
+
+        $this->responseHttp([
+            'titleContent' => 'Editar Factura ['. $document['nro_factura'] .']',
+            'update' => true,
+            'suppliers' => $this->modelSupplier->getAll(),
+            'document' => $document,
+        ]);
+    }
+
+    /**
+     * elimina una factura de la base de datos
+     * @param $nroDocument
+     */
+    public function eliminar($nroDocument){
+        if(!isset($nroDocument)){
+            $this->redirectPage('paidsList');
+            return false;
+        }
+        $this->db->where('id_documento_pago', $nroDocument);
+        if($this->db->delete($this->controller)){
+            $this->responseHttp([
+                'titleContent' => 'Registro Eliminado',
+                'viewMessage' => true,
+                'deleted' => true,
+                'message' => 'Registro Eliminado Correctamente!',
+            ]);
+            return true;
+        }
+        
+        $document = $this->modelPaid->get($nroDocument);
+        $this->responseHttp([
+            'titleContent' => 'Error Al Eliminal',
+            'viewMessage' => true,
+            'message' => 'No se puede eliminar el regitro, tiene dependencias',
+            'idRow' => $nroDocument,
+        ]);
+        return false;
+    }
 
 
-	/**
-	* Presenta una factura con todos su items
-	*/
-	public function presentar($idInvoice){
-		if(!isset($idInvoice)){
-			print 'Falta el parametro';
-			return false;
-		}
-
-		$paramsInvoice = [
-			'table' => $this->controller,
-			'condition' => 'id_factura_pagos',
-			'value' => $idInvoice
-		];
-		$invoice = $this->getDb($paramsInvoice);
-
-		if(!$invoice) {
-			print 'La factura no existe';
-			return false;
-		}
-
-
-		$paramsSupplier = [
-			'table' => 'proveedor',
-			'condition' => 'identificacion_proveedor',
-			'value' => $invoice[0]['identificacion_proveedor'],
-		];
-		$supplier = $this->getDb($paramsSupplier);
-
-		$paramDetailInvoice = [
-			'table' => 'factura_pagos_pedido',
-			'condition' => 'id_factura_pagos',
-			'value' => $invoice[0]['id_factura_pagos'],
-		];
-		$detailsInvoice = $this->getDb($paramDetailInvoice);
-
-		$userParams = [
-				'table' => 'usuario',
-				'condition' => 'id_user',
-				'value' => $invoice[0]['id_user'],
-					];
-		$userdata = $this->getDb($userParams);
-
-		$config = [
-			'titleContent' => 'Detalle de Factura # [ ' . $invoice[0]['nro_factura'] . ' ]',
-			'invoice' => $invoice[0],
-			'supplier' => $supplier[0],
-			'userdata' => $userdata[0],
-			'detailsInvoice' => $detailsInvoice,
-			'show' => true,
-		];	
-		$this->responseHttp($config);			
-	}
-
-
-	private function getDb($params){
-		if (isset($params['condition'])){
-			$this->db->where($params['condition'],$params['value']);
-		}
-
-		$resultDb = $this->db->get($params['table']);
-		if ($resultDb->num_rows() > 0) {
-			return $resultDb->result_array();
-		}
-		return false;
-	}
-
-	/**
-	 * Se validan las columnas que debe tener la consulta para que no falle
-	 * @return [array] | [bolean]
-	 */
-	private function _validData($data){
-		$paramsData = [
-								'identificacion_proveedor' => 5,
-								'nro_factura' => 1,
-								'fecha_emision' => 10,
-								'valor' => 2,
-								'id_user' => 1,
-									];
-		return $this->_checkColumnsData($paramsData, $data);
-	}
+    /**
+     * Guarda una factura en el sistema o la actualiza si existe
+     */
+    public function validar()
+    {
+        if (!$_POST) {
+            $this->redirectPage('paidsList');
+            return true;
+        }
+        $document = $this->input->post();
+        $document['fecha_emision'] = date('Y-m-d', strtotime(
+                                                $document['fecha_emision']));
+        $document['id_user'] = $this->session->userdata('id_user');
+        $status = $this->validData($document);
+        if($status['status']){
+            if(!isset($document['id_documento_pago'])){
+                $this->db->where('nro_factura', $document['nro_factura']);
+                $this->db->where('identificacion_proveedor', $document['identificacion_proveedor']);
+                $result = $this->db->get($this->controller);
+                if ($result->num_rows() == 1){
+                    $documentDb = $result->result_array();
+                    $this->responseHttp([
+                        'titleContent' => 'Registro Nuevo Comprobante De Pago',
+                        'viewMessage' => true,
+                        'message' => 'Este documento ya está registrado!',
+                        'idRow' => $documentDb[0]['id_documento_pago'],
+                        'suppliers' => $this->modelSupplier->getAll(),
+                    ]);
+                    return false;
+                }
+                $this->db->insert($this->controller, $document);
+                $lastId = $this->db->insert_id();
+                $this->redirectPage('paidPresent', $lastId);
+            }else{
+                $document['last_update'] = date('Y-m-d H:i:s');
+                $this->db->where('id_documento_pago',
+                                                $document['id_documento_pago']);
+                $this->db->update($this->controller, $document);
+                $this->redirectPage('paidPresent',
+                                                $document['id_documento_pago']);
+                }
+        }else{
+            $this->responseHttp([
+                'titleContent' => 'Registro Nuevo Comprobante De Pago',
+                'incompleteForm' => true,
+                'message' => 'La información de uno de los campos es inválida!',
+                'errors' => $status,
+                'suppliers' => $this->modelSupplier->getAll(),
+                'create' => true,
+            ]);
+        }
+    }
 
 
-			/* *
-		* Envia la respuestas html al navegador
-		*/
-		public function responseHttp($config){
-			$config['title'] = 'Pedidos';
-			$config['base_url'] = base_url();
-			$config['rute_url'] = base_url() . 'index.php/';
-			$config['controller'] = $this->controller;
-			$config['iconTitle'] = 'fa-file-text';
-			$config['content'] = 'home';
-			return $this->twig->display($this->template, $config);
-		}
+    /**
+     * Recupera la informacion completa de una factura
+     * @param $idInvoice
+     * @return array | bool
+     */
+    public function presentar($nroDocument)
+    {
+        if(!isset($nroDocument)){
+            $this->redirectPage('paidsList');
+            return false;
+        }        
+        $document = $this->modelPaid->get($nroDocument);
+        if ($document == false){
+            $this->redirectPage('paidsList');
+            return false;
+        }
+        $this->responseHttp([
+            'titleContent' => 'Detalle Documento De Pago [' . 
+                                  $document['nro_factura']. '] <small>'. 
+                                  $document['supplier']['nombre'] . '</small>',
+            'document' => $document,
+            'user' => $this->modelUser->get($document['id_user']),
+            'show' => true,
+        ]);
+    }
+
+
+    /**
+     * Se validan las columnas que debe tener la consulta para que no falle
+     * @return [array] | [bolean]
+     */
+    private function validData($data)
+    {
+        $paramsData = [
+            'identificacion_proveedor' => 5,
+            'nro_factura' => 1,
+            'fecha_emision' => 10,
+            'valor' => 2,
+            'id_user' => 1,
+        ];
+        return $this->_checkColumnsData($paramsData, $data);
+    }
+
+
+    /**
+     * Envia el render html al navegador
+     * @param $config
+     * @return mixed
+     */
+    public function responseHttp($config)
+    {
+        $config['title'] = 'Documentos   Pagos';
+        $config['base_url'] = base_url();
+        $config['rute_url'] = base_url() . 'index.php/';
+        $config['controller'] = $this->controller;
+        $config['iconTitle'] = 'fa-file-text';
+        $config['content'] = 'home';
+        return $this->twig->display($this->template, $config);
+    }
 }

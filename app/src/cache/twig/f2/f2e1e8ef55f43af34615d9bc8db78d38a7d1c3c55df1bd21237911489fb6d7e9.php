@@ -104,7 +104,7 @@ class __TwigTemplate_9497fa7932e2b52985d20c254691f9011bbbf8b04e2f12cffdf34696254
                class=\"bootstrap-datepicker\" 
                value=\"";
         // line 57
-        echo twig_escape_filter($this->env, $this->getAttribute(($context["initExpense"] ?? null), "fecha", array()), "html", null, true);
+        echo twig_escape_filter($this->env, twig_date_format_filter($this->env, $this->getAttribute(($context["initExpense"] ?? null), "fecha", array()), "d/m/Y"), "html", null, true);
         echo "\" 
                >
             <div class=\"input-group-addon\">
@@ -175,21 +175,20 @@ class __TwigTemplate_9497fa7932e2b52985d20c254691f9011bbbf8b04e2f12cffdf34696254
 \t\$('#comentarios').keyup(function(){
 \t\tthis.value = this.value.toUpperCase();
 \t});
-\t
-\t\tvar newInput = `<div class=\"col-sm-2\" id=\"date_end\">
+
+\tvar newInput = `<div class=\"col-sm-2\">
 \t\t<div class=\"form-group\">
 \t\t\t<label>Fecha (Hasta)</label>
-\t\t\t <div class=\"input-group date\" data-provide=\"datepicker\">
+\t\t\t <div class=\"input-group\">
             <input 
                type=\"text\" 
                class=\"form-control\" 
                id=\"fecha_fin\" 
                required=\"required\" 
                name=\"fecha_fin\" 
-               class=\"bootstrap-datepicker\" 
                value=\"";
-        // line 125
-        echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "fecha_fin", array()), "html", null, true);
+        // line 124
+        echo twig_escape_filter($this->env, twig_date_format_filter($this->env, $this->getAttribute(($context["initExpense"] ?? null), "fecha_fin", array()), "m/d/Y"), "html", null, true);
         echo "\"
                >
             <div class=\"input-group-addon\">
@@ -197,15 +196,26 @@ class __TwigTemplate_9497fa7932e2b52985d20c254691f9011bbbf8b04e2f12cffdf34696254
             </div>
          </div>
 \t\t</div>
-\t</div>`;
-\t\t
+\t</div>
+\t`;
 
-\t\tif ( \$('#concepto').val() === 'ALMACENAJE  INICIAL'){
+\tcheckDates();
+
+\tfunction checkDates() {
+\t\tvar concepto = \$('#concepto').val();
+
+\t\tif (( concepto === 'ALMACENAJE INICIAL') ||
+\t\t\t   ( concepto === 'ALMACENAJE ALMAGRO') ||
+\t\t\t   ( concepto === 'DEMORAJE')
+\t\t\t  ){
+
 \t\t\t\$('#hasta').append(newInput).fadeIn('slow');
-\t\t}
-
-</script>
-";
+\t\t\t\$('#fecha_fin').datepicker({
+    \t\t\tlanguage: \"es\",
+    \t\t\tdaysOfWeekHighlighted: \"1\"
+\t\t\t\t\t});
+\t\t}};
+</script>";
     }
 
     public function getTemplateName()
@@ -220,7 +230,7 @@ class __TwigTemplate_9497fa7932e2b52985d20c254691f9011bbbf8b04e2f12cffdf34696254
 
     public function getDebugInfo()
     {
-        return array (  192 => 125,  167 => 103,  160 => 101,  146 => 90,  130 => 77,  107 => 57,  88 => 41,  73 => 28,  62 => 26,  58 => 25,  52 => 24,  36 => 11,  24 => 2,  19 => 1,);
+        return array (  191 => 124,  167 => 103,  160 => 101,  146 => 90,  130 => 77,  107 => 57,  88 => 41,  73 => 28,  62 => 26,  58 => 25,  52 => 24,  36 => 11,  24 => 2,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -289,7 +299,7 @@ class __TwigTemplate_9497fa7932e2b52985d20c254691f9011bbbf8b04e2f12cffdf34696254
                required=\"required\" 
                name=\"fecha\" 
                class=\"bootstrap-datepicker\" 
-               value=\"{{ initExpense.fecha }}\" 
+               value=\"{{ initExpense.fecha | date ('d/m/Y')}}\" 
                >
             <div class=\"input-group-addon\">
                <span class=\"glyphicon glyphicon-th\"></span>
@@ -345,33 +355,43 @@ class __TwigTemplate_9497fa7932e2b52985d20c254691f9011bbbf8b04e2f12cffdf34696254
 \t\$('#comentarios').keyup(function(){
 \t\tthis.value = this.value.toUpperCase();
 \t});
-\t
-\t\tvar newInput = `<div class=\"col-sm-2\" id=\"date_end\">
+
+\tvar newInput = `<div class=\"col-sm-2\">
 \t\t<div class=\"form-group\">
 \t\t\t<label>Fecha (Hasta)</label>
-\t\t\t <div class=\"input-group date\" data-provide=\"datepicker\">
+\t\t\t <div class=\"input-group\">
             <input 
                type=\"text\" 
                class=\"form-control\" 
                id=\"fecha_fin\" 
                required=\"required\" 
                name=\"fecha_fin\" 
-               class=\"bootstrap-datepicker\" 
-               value=\"{{order.fecha_fin}}\"
+               value=\"{{ initExpense.fecha_fin | date ('m/d/Y')}}\"
                >
             <div class=\"input-group-addon\">
                <span class=\"glyphicon glyphicon-th\"></span>
             </div>
          </div>
 \t\t</div>
-\t</div>`;
-\t\t
+\t</div>
+\t`;
 
-\t\tif ( \$('#concepto').val() === 'ALMACENAJE  INICIAL'){
+\tcheckDates();
+
+\tfunction checkDates() {
+\t\tvar concepto = \$('#concepto').val();
+
+\t\tif (( concepto === 'ALMACENAJE INICIAL') ||
+\t\t\t   ( concepto === 'ALMACENAJE ALMAGRO') ||
+\t\t\t   ( concepto === 'DEMORAJE')
+\t\t\t  ){
+
 \t\t\t\$('#hasta').append(newInput).fadeIn('slow');
-\t\t}
-
-</script>
-", "forms/frm-gasto-inicial-edit.html.twig", "/var/www/html/app/src/views/forms/frm-gasto-inicial-edit.html.twig");
+\t\t\t\$('#fecha_fin').datepicker({
+    \t\t\tlanguage: \"es\",
+    \t\t\tdaysOfWeekHighlighted: \"1\"
+\t\t\t\t\t});
+\t\t}};
+</script>", "forms/frm-gasto-inicial-edit.html.twig", "/var/www/html/app/src/views/forms/frm-gasto-inicial-edit.html.twig");
     }
 }

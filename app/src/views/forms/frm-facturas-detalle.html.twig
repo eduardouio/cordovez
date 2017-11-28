@@ -1,0 +1,76 @@
+<div class="well well-sm">
+	<div class="row">
+		<div class="col-md-3">
+			<strong>Proveedor:</strong> <span>{{ document.supplier.nombre }}</span>
+		</div>
+		<div class="col-md-2">
+			<strong>Ruc:</strong> <span>{{ document.supplier.identificacion_proveedor }}</span>
+		</div>
+		<div class="col-md-2">
+			<strong>Fecha:</strong> <span>{{ document.fecha_emision  }}</span>
+		</div>
+		<div class="col-md-5">
+			<strong>Comentarios:</strong> <span>{{ document.comentarios }}</span>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-2">
+			<strong>Valor $:</strong> <span class="text-primary">{{ document.valor | number_format(2,',','.')}}</span>
+		</div>
+		<div class="col-md-2">
+			<strong>Justificado $:</strong> <span class="text-success"> $
+				{{ 0 | number_format(0,',','.') }}
+			</span>
+		</div>
+		<div class="col-md-2">
+			<strong>Pendiente $:</strong> <span class="text-danger"> $ {{ 0 | number_format(0,',','.') }}
+			</span>
+		</div>
+		<div class="col-md-3">
+			<strong>Creado Por :</strong> <span>{{ user.nombres }}</span>
+		</div>
+		<div class="col-md-2">
+			<span>{{ document.date_create }}</span>
+		</div>
+	</div>
+</div>
+<br>
+<div class="alert alert-info alert-dismissable">
+	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		<span class="fa fa-warning"></span> Seleccione un pedido y una
+		provision a justificar, se puede justificar de forma parcial o
+		completamente el valor de una provisión. 
+</div>
+
+<form action"{{ rute_url }}/detallefacpago/nuevo/" method="post">
+<div class="row">
+<div class="col-md-2">
+<div class="form-group">
+<label>Nro Pedido</label>
+<select class="form-control">
+<option selected="">Seleccione..</option>
+{% for order in orders %}
+<option value="{{ order.nro_pedido }}">{{ order.nro_pedido }} </option>
+{% endfor %}
+</select>
+</div>
+</div>
+<div class="col-md-6">
+<div class="form-group">
+<label> Concepto: </label>
+<select class="form-control">
+<option selected="">Seleccione...</option>
+{% for order in orders  %}
+	{% for expense in order.expenses %}
+		<option>{{ expense.concepto }}</option>
+    {% endfor %}	
+{% endfor %} 
+</select>	
+</div>
+</div>
+</div>
+</form>
+<script type="text/javascript">
+var orders = {{orders |raw }};
+
+</script>

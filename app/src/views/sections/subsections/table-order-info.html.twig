@@ -1,0 +1,156 @@
+                        <div class="text-tittle">Detalle de Facturas del Pedido</div>
+                         <small class="text-primary">
+                        FACTURAS EN DÓLARES
+                        </small>
+                        <table class="table table-hover table-condensed table-striped">
+                           <thead>
+                              <tr>
+                                 <th>#</th>
+                                 <th>Proveedor</th>
+                                 <th>Fecha</th>
+                                 <th>Cajas</th>
+                                 <th>Valor Reg</th>
+                                 <th>Valor Fac</th>
+                                 <th>Estado</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              {% set sumOrderExpenses = 0 %}
+                              {% set sumOrderExpensesSum = 0 %}
+                              {% set totalboxes = 0 %}
+                              {% for invoice in invoicesOrder %}
+                              {% if invoice.moneda != 'EUROS' %}
+                              {% set sumOrderExpenses = sumOrderExpenses +  invoice.valor %}
+                              <tr>
+                                 <td>{{loop.index}}</td>
+                                 <td>
+                                    <a href="{{rute_url}}pedidofactura/presentar/{{invoice.id_pedido_factura}}">
+                                    {{invoice.supplier.nombre}}
+                                    </a>
+                                 </td>
+                                 <td>{{invoice.fecha_emision}}</td>
+
+                                 <td>{{invoice.detailInvoice.sums.countBoxesProduct | number_format(0,',','.') }}</td>
+
+                                 {% set totalboxes = totalboxes +  invoice.detailInvoice.sums.countBoxesProduct %}
+                                 {% set valRegister = invoice.detailInvoice.sums.valueItems %}
+                                 
+                                 <td class="text-right">$ {{invoice.detailInvoice.sums.valueItems | number_format(2,',','.') }}</td>
+                                 <td class="text-right" >$ {{invoice.valor  | number_format(2,',','.') }}</td>
+                                 {% if valRegister ==  invoice.valor%}
+                                    <td class="success text-right"> 
+                                       Completa
+                                    </td>
+                                    {% else %}
+                                       <td class="danger text-right"> 
+                                          <a href="{{rute_url}}pedidofactura/presentar/{{invoice.id_pedido_factura}}">
+                                       Revisar
+                                          </a>
+                                    </td>
+                                 {% endif %}
+                              </tr>
+                              {% endif %}
+                              {% endfor %}
+                              <tr class="total-row">
+                                 <td colspan="3">
+                                    <strong>
+                                    Total Facturas Producto CAJAS/(DOLARES):
+                                    </strong>
+                                 </td>
+                                 <td>
+                                    <strong>
+                                    {{ totalboxes | number_format(0,',','.')}}
+                                    </strong>
+                                 </td>
+                                 <td class="text-right">
+                                    &nbsp;
+                                 </td>
+                                 <td  class="text-right">
+                                    <strong> $ 
+                                    {{ sumOrderExpenses | number_format(2, '.', ',') }}
+                                    </strong>
+                                 </td>
+                                 <td>
+                                    &nbsp;
+                                 </td>
+                              </tr>
+                           </tbody>
+                        </table>
+                        <hr>
+                        <small class="text-primary">
+                        FACTURAS EN EUROS
+                        </small>
+                         <table class="table table-hover table-condensed table-striped">
+                           <thead>
+                              <tr>
+                                 <th>#</th>
+                                 <th>Proveedor</th>
+                                 <th>Fecha</th>
+                                 <th>Cajas</th>
+                                 <th>Valor Reg</th>
+                                 <th>Valor Fac</th>
+                                 <th>Estado</th>
+                              </tr>
+                           </thead>
+                          <tbody>
+                              {% set sumOrderExpenses = 0 %}
+                              {% set sumOrderExpensesSum = 0 %}
+                              {% set totalboxes = 0 %}
+                              {% for invoice in invoicesOrder %}
+                              {% if invoice.moneda == 'EUROS' %}
+                              {% set sumOrderExpenses = sumOrderExpenses +  invoice.valor %}
+                              <tr>
+                                 <td>{{loop.index}}</td>
+                                 <td>
+                                    <a href="{{rute_url}}pedidofactura/presentar/{{invoice.id_pedido_factura}}">
+                                    {{invoice.supplier.nombre}}
+                                    </a>
+                                 </td>
+                                 <td>{{invoice.fecha_emision}}</td>
+
+                                 <td>{{invoice.detailInvoice.sums.countBoxesProduct | number_format(0,',','.') }}</td>
+
+                                 {% set totalboxes = totalboxes +  invoice.detailInvoice.sums.countBoxesProduct %}
+                                 {% set valRegister = invoice.detailInvoice.sums.valueItems %}
+                                 
+                                 <td class="text-right">&euro; {{invoice.detailInvoice.sums.valueItems | number_format(2,',','.') }}</td>
+                                 <td class="text-right" >&euro; {{invoice.valor  | number_format(2,',','.') }}</td>
+                                 {% if valRegister ==  invoice.valor%}
+                                    <td class="success text-right"> 
+                                       Completa
+                                    </td>
+                                    {% else %}
+                                       <td class="danger text-right"> 
+                                          <a href="{{rute_url}}pedidofactura/presentar/{{invoice.id_pedido_factura}}">
+                                       Revisar
+                                          </a>
+                                    </td>
+                                 {% endif %}
+                              </tr>
+                              {% endif %}
+                              {% endfor %}
+                              <tr class="total-row">
+                                 <td colspan="3">
+                                    <strong>
+                                    Total Facturas Producto CAJAS/(EUROS):
+                                    </strong>
+                                 </td>
+                                 <td>
+                                    <strong>
+                                    {{ totalboxes | number_format(0,',','.')}}
+                                    </strong>
+                                 </td>
+                                 <td class="text-right">
+                                    &nbsp;
+                                 </td>
+                                 <td  class="text-right">
+                                    <strong> &euro; 
+                                    {{ sumOrderExpenses | number_format(2, '.', ',') }}
+                                    </strong>
+                                 </td>
+                                 <td>
+                                    &nbsp;
+                                 </td>
+                              </tr>
+                           </tbody>
+                        </table>

@@ -7,7 +7,7 @@
 			type="text" 
 			class="form-control" 
 			name="nro_pedido"
-			value="{{order[0].nro_pedido}}" 
+			value="{{order.nro_pedido}}" 
 			readonly="true" 
 			>
 		</div>
@@ -38,24 +38,20 @@
 			name="concepto"
 			>
 			<option disabled="" selected="">Seleccione...</option>
-			<option value="AGENTE INICIAL DOCUMENTAL">AGENTE INICIAL DOCUMENTAL</option>
-			<option value="AGESTE INICIAL FISICO">AGESTE INICIAL FISICO</option>
-			<option value="ALMACENAJE  INICIAL">ALMACENAJE  INICIAL</option>
-			<option value="CANDADO SATELITAL">CANDADO SATELITAL</option>
-			<option value="CUSTODIA ARMADA">CUSTODIA ARMADA</option>
-			<option value="DEMORAJE">DEMORAJE</option>
-
+			{% for expense in unusedExpenses %}
+				<option value="{{expense.concepto}}">{{expense.concepto}}</option>
+			{% endfor %}
 		</select>
 		</div>
 	</div>
 <div class="col-sm-2">
 		<div class="form-group">
 			<label>Fecha (Desde)</label>
-			         <div class="input-group date" data-provide="datepicker">
+			         <div class="input-group">
             <input 
                type="text" 
                class="form-control" 
-               id="fecha" 
+               id="selector-fecha" 
                required="required" 
                name="fecha" 
                class="bootstrap-datepicker" 
@@ -85,7 +81,6 @@
 			>
 		</div>
 	</div>
-
 	<div class="col-sm-8">
 		<div class="form-group">
 			<label>Comentarios</label>
@@ -105,14 +100,17 @@
             <span class="fa fa-save fa-fw"></span>
             Guardar Registro
          </button>
-      <a href="{{rute_url}}pedido/presentar/{{order[0].nro_pedido}}" class="btn btn-sm btn-default">
+      <a href="{{rute_url}}pedido/presentar/{{order.nro_pedido}}" class="btn btn-sm btn-default">
             <span class="fa fa-arrow-left fa-fw"></span>
-            Regresar Pedido <b>({{order[0].nro_pedido}}) </b>
+            Regresar Pedido <b>({{order.nro_pedido}}) </b>
          </a>
       </div>
    </div>
 </form>
 <script type="text/javascript">
+
+var orderArrived = '{{order.fecha_arribo | date ('m/d/Y') }}';
+
 
 	$('#comentarios').keyup(function(){
 		this.value = this.value.toUpperCase();
@@ -121,7 +119,7 @@
 	var newInput = `<div class="col-sm-2" id="date_end">
 		<div class="form-group">
 			<label>Fecha (Hasta)</label>
-			 <div class="input-group date" data-provide="datepicker">
+			 <div class="input-group">
             <input 
                type="text" 
                class="form-control" 
@@ -135,19 +133,23 @@
             </div>
          </div>
 		</div>
-	</div>`
+	</div>
+	`
 	
-		var usedExpenses = {{ used_expenses | raw }} ;		
-
-		$.each(usedExpenses, function(key, value){
-			if($("#concepto option[value='" + value.concepto + "'").val() != 'ALMACENAJE  INICIAL'){
-				$("#concepto option[value='" + value.concepto + "'").remove();
-			}
-		});
-
 	$('#concepto').change(function(){
-		if ( $(this).val() === 'ALMACENAJE  INICIAL'){
+		if (( $(this).val() === 'ALMACENAJE INICIAL') ||
+			   ( $(this).val() === 'ALMACENAJE ALMAGRO') ||
+			   ( $(this).val() === 'DEMORAJE')
+			  ){
+
+			$('#selector-fecha').val(orderArrived);
+
+			$('#date_end').remove().fadeIn('slow');
 			$('#hasta').append(newInput).fadeIn('slow');
+			$('#fecha_fin').datepicker({
+    			language: "es",
+    			daysOfWeekHighlighted: "1"
+					});
 		}else{
 			$('#date_end').remove().fadeIn('slow');
 		}	});

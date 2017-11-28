@@ -1,10 +1,11 @@
-<form method="post" action="{{rute_url}}facturapagos/validar">
+<form method="post" action="{{rute_url}}facturapagos/validar/">
   <div class="row">
     <div class="col-sm-6">
       <div class="form-group">
         <label>Proveedor</label>
         <select 
         name="identificacion_proveedor"
+        autofocus = 'autofocus'
         required="true" 
         class="form-control">
         {% if fail == true %}
@@ -25,7 +26,7 @@
         <input 
         type="text" 
         class="form-control" 
-        maxlength="10" 
+        maxlength="20"
         name="nro_factura"
         required="true" 
         value="{{ invoice.nro_factura }}" 
@@ -70,7 +71,8 @@
         <div class="form-group">
           <label>Comentarios</label>
           <textarea 
-          name="comentarios" 
+          name="comentarios"
+          id ="comentarios"
           maxlength="250" 
           class="form-control"
           >{{invoice.comentarios}}</textarea>
@@ -91,3 +93,8 @@
       </div>
    </div>
 </form>
+<script type="text/javascript">
+    $('#comentarios').keyup(function(){
+        this.value = this.value.toUpperCase();
+    })
+</script>

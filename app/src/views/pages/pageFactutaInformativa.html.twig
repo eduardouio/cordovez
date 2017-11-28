@@ -20,6 +20,11 @@
 	<div class="well">
 		<h3 class="text-primary">	{{message}} </h3>
 		<br><br>
+		<ul>
+		{% for input in data %}
+			<li>{{input}}</li>
+		{% endfor %}
+		</ul>
 		<p>
 			{% if deleted == true %} 
 						<a href="{{rute_url}}pedido/presentar/{{order}}">

@@ -30,14 +30,11 @@
           <tr>
             <td class="text-right"> <b>Fecha:</b></td>
             <td>{{ initExpense.fecha }}</td>
-          </tr>
-          {% if initExpense.concepto == 'ALMACENAJE  INICIAL' %}
+          </tr>         
           <tr>
             <td class="text-right"> <b>Fecha Fin:</b></td>
             <td>{{ initExpense.fecha_fin }}</td>
-          </tr>
-          {% endif %}
-          
+          </tr>          
           <tr>
             <td class="text-right"> <b>Concepto:</b></td>
             <td> {{ initExpense.concepto | raw }}</td>

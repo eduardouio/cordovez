@@ -1,0 +1,94 @@
+<div class="row">
+    <div class="col-sm-3">
+        {% if viewData.order.regimen == 70 %}
+            <a href="{{ rute_url }}gstinicial/validargi/{{ viewData.order.nro_pedido }}">
+                <button type="button" class="btn btn-primary btn-sm"
+                        style="width: 100%">
+                    <span class="fa fa-gear"></span>
+                    Generar Gastos Iniciales
+                </button>
+            </a>
+            <br>
+            <br>
+        {% endif %}
+    </div>
+    <div class="col-sm-3">&nbsp;</div>
+    <div class="col-sm-2">
+        <h5 class="text-primary">
+            <small>Parciales:</small>
+            <span id="suma"> {{ 0 | number_format(0, '.', ',') }} </span></h5>
+    </div>
+    <div class="col-sm-2">
+        <h5 class="text-primary">
+            <small>Sumas:</small>
+            <span id="suma">
+                        $ {{ 0 | number_format(2, '.', ',') }}</span></h5>
+    </div>
+    <div class="col-sm-2">
+        <h5 class="text-danger">
+            <small>Saldo:</small>
+            <span id="suma"> $ {{ saldo | number_format(2, '.', ',') }}
+                  </span></h5>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <table class="table table-hover table-bordered table-striped">
+            <thead>
+            <tr style="background-color: #c1c1c1;">
+                <th>#</th>
+                <th>Nro Fact</th>
+                <th>Proveedor</th>
+                <th>Fecha</th>
+                <th>Moneda</th>
+                <th>Tipo Cambio</th>
+                <th>Valor</th>
+                <th>Total</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for invoice in viewData.invoicesInfo %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ invoice.nro_factura_informativa }}</td>
+                    <td>{{ invoice.supplier.nombre }}</td>
+                    <td>{{ invoice.fecha_emision }}</td>
+                    <td>{{ invoice.moneda }}</td>
+                    <td>{{ invoice.tipo_cambio }}</td>
+                    <td>{{ invoice.valor }}</td>
+                    <td>{{ (invoice.tipo_cambio * invoice.valor) | number_format(2,',','.') }} </td>
+                    <td>
+                        <div class="dropdown">
+                            <button id="dLabel" type="button"
+                                    data-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="true"
+                                    class="btn btn-sm btn-default">
+                                <span class="fa fa-chevron-down"></span>
+                                Acciones <span class="fa fa-list"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dLabel">
+                                <li>
+                                    <a href="{{ rute_url }}facinformativa/presentar/{{ order.nro_pedido }}">
+                                        <span class="fa fa-eye fa-fw"></span>
+                                        Ver Factura Informativa </a>
+                                </li>
+                                <li>
+                                    <a href="{{ rute_url }}facinfdetalle/nuevo/{{ invoice.id_factura_informativa }}">
+                                        <span class="fa fa-eye fa-fw"></span>
+                                        Agregar Productos</a>
+                                </li>
+                                <li>
+                                    <a href="{{ rute_url }}facinformativa/editar/{{ invoice.id_factura_informativa }}">
+                                        <span class="fa fa-pencil fa-fw"></span>
+                                        Editar Factura Informativa</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

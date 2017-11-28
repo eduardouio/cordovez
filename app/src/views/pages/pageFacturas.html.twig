@@ -2,9 +2,42 @@
 {% include 'base/navbarheader.html.twig' %}
 {% include 'base/navbarleft.html.twig' %}
 {% include 'base/content.html.twig' %}
+{% if incompleteForm == true %}
+	<div class="well">
+		<h3 class="text-primary">	{{message}} </h3>
+		<ul>
+			{%  for error in errors.columns %}
+				<li>{{ error }} </li>
+			{% endfor %}
+		</ul>
+	</div>
+{% endif %}
+{% if viewMessage == true %}
+	<div class="well">
+		<h3 class="text-primary">	{{message}} </h3>
+		<br><br>
+		<p>
+            {% if deleted == true %}
+				<a href="{{rute_url}}facturapagos/listar/">
+					<button>
+						<span class="fa fa-list"></span>
+						Ver
+					</button>
+				</a>
+            {% else %}
+				<a href="{{rute_url}}facturapagos/presentar/{{idRow}}">
+					<button>
+						<span class="fa fa-eye"></span>
+						Ver
+					</button>
+				</a>
+            {% endif %}
 
+		</p>
+	</div>
+{% endif %}
 {% if show == true %}
-	{% include 'sections/mostrar-factura-gasto.html.twig' %}
+	{% include 'sections/mostrar-factura-pago.html.twig' %}
 {% endif %}
 
 {% if list == true %}
@@ -13,37 +46,11 @@
 
 
 {% if create == true %}
-{% include 'forms/frm_factura_pagos.html.twig' %}
+{% include 'forms/frm-factura-pagos.html.twig' %}
 {% endif %}
 
 {% if  update == true %}
-{% include 'forms/frm_factura_pagos_edit.html.twig' %}
-{% endif %}
-
-
-{% if viewMessage == true %}
-	<div class="well">
-		<h3 class="text-primary">	{{message}} </h3>
-		<br><br>
-		<p>
-			{% if deleted == true %} 
-						<a href="{{rute_url}}facturapagos/listar/">
-				<button>
-					<span class="fa fa-list"></span>
-					Ver
-				</button>
-				</a>
-			{% else %}  
-				<a href="{{rute_url}}facturapagos/presentar/{{idRow}}">
-		<button>
-			<span class="fa fa-eye"></span>
-			Ver
-		</button>
-		</a>
-			{% endif %}
-		
-		</p>
-	</div>
+{% include 'forms/frm-factura-pagos-edit.html.twig' %}
 {% endif %}
 
 {% include 'base/content_close.html.twig' %}

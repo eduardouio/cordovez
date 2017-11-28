@@ -1,0 +1,105 @@
+<div class="row">
+<div class="col-sm-6">
+   <a href="{{rute_url}}pedidofactura/nuevo/{{viewData.order.nro_pedido}}">
+   <button class="btn btn-sm btn-default">
+   <span class="fa fa-plus fa-fw"> </span>
+   Agregar Factura Productos
+   </button>
+   </a>
+</div>
+<div class="col-sm-2">
+   <h4 class="text-primary"> <small>Cajas Pedido: </small> <span id="suma"> 
+      {{ viewData.boxesOrder.boxesImported | number_format(0, '.', ',') }} 
+      </span>
+   </h4>
+</div>
+<div class="col-sm-2">
+   <h4 class="text-primary"> <small>Cajas Nacionalizadas: </small> 
+      <span id="suma"> {{ simbolo | raw}} 
+      {{ viewData.boxesOrder.boxesNationalized  | number_format(0, '.', ',')}}</span>
+   </h4>
+</div>
+<div class="col-sm-2">
+   <h4 class="text-danger"> <small>Cajas Stock: </small> 
+      <span id="suma">
+      {% set stock = viewData.boxesOrder.boxesImported - viewData.boxesOrder.boxesNationalized %}
+      {{ stock }}
+      </span>
+   </h4>
+</div>
+</div>
+<br>
+<div class="row">
+<div class="col-sm-12">
+   <table class="table table-hover table-bordered table-striped">
+      <thead>
+         <tr style="background-color: #c1c1c1;">
+            <th>#</th>
+            <th>Nro Factura</th>
+            <th>Proveedor</th>
+            <th>F Emision</th>
+            <th>F Vencimiento</th>
+            <th>Moneda</th>
+            <th>Valor</th>
+            <th>Retirado</th>
+            <th>Saldo</th>
+            <th>Acciones</th>
+         </tr>
+      </thead>
+      <tbody>
+         {% for orderInvoice in viewData.orderInvoices %}
+         <tr>
+            <td>{{loop.index}}</td>
+            <td>
+               <a href="{{rute_url}}pedidofactura/presentar/{{orderInvoice.id_pedido_factura}}">
+               {{orderInvoice.id_factura_proveedor}}
+               </a>
+            </td>
+            <td>
+               <a href="{{rute_url}}proveedor/presentar/{{orderInvoice.id_proveedor}}">
+               {{orderInvoice.nombre}}                     
+               </a>
+            </td>
+            <td>{{orderInvoice.fecha_emision}}</td>
+            <td>{{orderInvoice.vencimiento_pago}}</td>
+            <td>{{orderInvoice.moneda}}</td>
+            <td>{{orderInvoice.valor | number_format(2, '.', ',') }}</td>
+            <td>{{orderInvoice.valor | number_format(2, '.', ',') }}</td>
+            <td>{{orderInvoice.valor | number_format(2, '.', ',') }}</td>
+            <td>
+               <div class="dropdown">
+                  <button class="btn btn-sm btn-default" id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Acciones <span class="fa fa-list fa-fw" ></span>
+                  <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dLabel">
+                     <li> 
+                        <a href="{{rute_url}}pedidofactura/presentar/{{orderInvoice.id_pedido_factura}}">
+                        <span class="fa fa-eye fa-fw"></span>
+                        Ver Productos
+                        </a> 
+                     </li>
+                     <li> 
+                        <a href="{{rute_url}}pedidofactura/editar/{{orderInvoice.id_pedido_factura}}">
+                        <span class="fa fa-pencil fa-fw"></span>
+                        Editar Factura 
+                        <span class="label label-success"> {{orderInvoice.id_factura_proveedor}}</span></a> 
+                     </li>
+                     <li>
+                        <a href="{{rute_url}}pedidofactura/eliminar/{{orderInvoice.id_pedido_factura}}">
+                        <span class="text-danger fa fa-trash fa-fw"></span>
+                        Elminar Factura 
+                        <span class="label label-danger">
+                        {{orderInvoice.id_factura_proveedor}}
+                        </span>
+                        </a> 
+                     </li>
+                  </ul>
+               </div>
+            </td>
+         </tr>
+         {% endfor %}
+      </tbody>
+   </table>
+</div>
+</div>

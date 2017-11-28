@@ -67,13 +67,30 @@ class __TwigTemplate_24c1be9abb03e1d5fedc352e7431e529a7ff27d6e0a31d1ee3f3a7ef459
             echo twig_escape_filter($this->env, ($context["message"] ?? null), "html", null, true);
             echo " </h3>
 \t\t<br><br>
+\t\t<ul>
+\t\t";
+            // line 24
+            $context['_parent'] = $context;
+            $context['_seq'] = twig_ensure_traversable(($context["data"] ?? null));
+            foreach ($context['_seq'] as $context["_key"] => $context["input"]) {
+                // line 25
+                echo "\t\t\t<li>";
+                echo twig_escape_filter($this->env, $context["input"], "html", null, true);
+                echo "</li>
+\t\t";
+            }
+            $_parent = $context['_parent'];
+            unset($context['_seq'], $context['_iterated'], $context['_key'], $context['input'], $context['_parent'], $context['loop']);
+            $context = array_intersect_key($context, $_parent) + $_parent;
+            // line 27
+            echo "\t\t</ul>
 \t\t<p>
 \t\t\t";
-            // line 24
+            // line 29
             if ((($context["deleted"] ?? null) == true)) {
                 echo " 
 \t\t\t\t\t\t<a href=\"";
-                // line 25
+                // line 30
                 echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
                 echo "pedido/presentar/";
                 echo twig_escape_filter($this->env, ($context["order"] ?? null), "html", null, true);
@@ -85,10 +102,10 @@ class __TwigTemplate_24c1be9abb03e1d5fedc352e7431e529a7ff27d6e0a31d1ee3f3a7ef459
 \t\t\t\t</a>
 \t\t\t";
             } else {
-                // line 31
+                // line 36
                 echo "  
 \t\t\t\t<a href=\"";
-                // line 32
+                // line 37
                 echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
                 echo "pedido/presentar/";
                 echo twig_escape_filter($this->env, ($context["order"] ?? null), "html", null, true);
@@ -100,21 +117,21 @@ class __TwigTemplate_24c1be9abb03e1d5fedc352e7431e529a7ff27d6e0a31d1ee3f3a7ef459
 \t\t</a>
 \t\t\t";
             }
-            // line 39
+            // line 44
             echo "\t\t
 \t\t</p>
 \t</div>
 ";
         }
-        // line 43
+        // line 48
         echo "
 ";
-        // line 44
-        $this->loadTemplate("base/content_close.html.twig", "/pages/pageFactutaInformativa.html.twig", 44)->display($context);
-        // line 45
-        $this->loadTemplate("base/signaturefoot.html.twig", "/pages/pageFactutaInformativa.html.twig", 45)->display($context);
-        // line 46
-        $this->loadTemplate("base/footer.html.twig", "/pages/pageFactutaInformativa.html.twig", 46)->display($context);
+        // line 49
+        $this->loadTemplate("base/content_close.html.twig", "/pages/pageFactutaInformativa.html.twig", 49)->display($context);
+        // line 50
+        $this->loadTemplate("base/signaturefoot.html.twig", "/pages/pageFactutaInformativa.html.twig", 50)->display($context);
+        // line 51
+        $this->loadTemplate("base/footer.html.twig", "/pages/pageFactutaInformativa.html.twig", 51)->display($context);
     }
 
     public function getTemplateName()
@@ -129,7 +146,7 @@ class __TwigTemplate_24c1be9abb03e1d5fedc352e7431e529a7ff27d6e0a31d1ee3f3a7ef459
 
     public function getDebugInfo()
     {
-        return array (  117 => 46,  115 => 45,  113 => 44,  110 => 43,  104 => 39,  92 => 32,  89 => 31,  77 => 25,  73 => 24,  67 => 21,  64 => 20,  62 => 19,  58 => 17,  52 => 15,  50 => 14,  47 => 13,  41 => 11,  39 => 10,  36 => 9,  32 => 7,  30 => 6,  27 => 5,  25 => 4,  23 => 3,  21 => 2,  19 => 1,);
+        return array (  134 => 51,  132 => 50,  130 => 49,  127 => 48,  121 => 44,  109 => 37,  106 => 36,  94 => 30,  90 => 29,  86 => 27,  77 => 25,  73 => 24,  67 => 21,  64 => 20,  62 => 19,  58 => 17,  52 => 15,  50 => 14,  47 => 13,  41 => 11,  39 => 10,  36 => 9,  32 => 7,  30 => 6,  27 => 5,  25 => 4,  23 => 3,  21 => 2,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -164,6 +181,11 @@ class __TwigTemplate_24c1be9abb03e1d5fedc352e7431e529a7ff27d6e0a31d1ee3f3a7ef459
 \t<div class=\"well\">
 \t\t<h3 class=\"text-primary\">\t{{message}} </h3>
 \t\t<br><br>
+\t\t<ul>
+\t\t{% for input in data %}
+\t\t\t<li>{{input}}</li>
+\t\t{% endfor %}
+\t\t</ul>
 \t\t<p>
 \t\t\t{% if deleted == true %} 
 \t\t\t\t\t\t<a href=\"{{rute_url}}pedido/presentar/{{order}}\">

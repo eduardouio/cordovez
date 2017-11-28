@@ -37,39 +37,47 @@ class __TwigTemplate_45d44c1cb2b4a7962c1f6c29bfb45318cde76a9459f5a6f72d0dea3a58c
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/bootstrap/css/bootstrap.min.css\" rel=\"stylesheet\">
    
+   <link rel=\"stylesheet\" type=\"text/css\" href=\"";
+        // line 16
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "vendor/datepicker/css/bootstrap-datepicker.min.css\">
     <!-- MetisMenu CSS -->
     <link href=\"";
-        // line 17
+        // line 18
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/metisMenu/metisMenu.min.css\" rel=\"stylesheet\">
     <!-- Custom CSS -->
     <link href=\"";
-        // line 19
+        // line 20
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "css/sb-admin-2.css\" rel=\"stylesheet\">
     <!-- Custom Fonts -->
     <link href=\"";
-        // line 21
+        // line 22
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/font-awesome/css/font-awesome.min.css\" rel=\"stylesheet\" type=\"text/css\">
     <!-- Custom Styles -->
     <link href=\"";
-        // line 23
+        // line 24
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "css/cordovez.css\" rel=\"stylesheet\" type=\"text/css\">
     <!-- jQuery -->
     <script src=\"";
-        // line 25
+        // line 26
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/jquery/jquery.min.js\"></script>
     <script src=\"";
-        // line 26
+        // line 27
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/jquery/jqueryui.min.js\"></script>
     <link rel=\"stylesheet\" type=\"text/css\" href=\"";
-        // line 27
+        // line 28
         echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
         echo "vendor/jquery/jqueryui-min.css\"> 
+    <script src=\"";
+        // line 29
+        echo twig_escape_filter($this->env, ($context["base_url"] ?? null), "html", null, true);
+        echo "vendor/datepicker/js/bootstrap-datepicker.min.js\"></script>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -93,7 +101,7 @@ class __TwigTemplate_45d44c1cb2b4a7962c1f6c29bfb45318cde76a9459f5a6f72d0dea3a58c
 
     public function getDebugInfo()
     {
-        return array (  71 => 27,  67 => 26,  63 => 25,  58 => 23,  53 => 21,  48 => 19,  43 => 17,  37 => 14,  30 => 10,  19 => 1,);
+        return array (  79 => 29,  75 => 28,  71 => 27,  67 => 26,  62 => 24,  57 => 22,  52 => 20,  47 => 18,  42 => 16,  37 => 14,  30 => 10,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -121,6 +129,7 @@ class __TwigTemplate_45d44c1cb2b4a7962c1f6c29bfb45318cde76a9459f5a6f72d0dea3a58c
     <!-- Bootstrap Core CSS -->
     <link href=\"{{base_url}}vendor/bootstrap/css/bootstrap.min.css\" rel=\"stylesheet\">
    
+   <link rel=\"stylesheet\" type=\"text/css\" href=\"{{base_url}}vendor/datepicker/css/bootstrap-datepicker.min.css\">
     <!-- MetisMenu CSS -->
     <link href=\"{{base_url}}vendor/metisMenu/metisMenu.min.css\" rel=\"stylesheet\">
     <!-- Custom CSS -->
@@ -133,6 +142,7 @@ class __TwigTemplate_45d44c1cb2b4a7962c1f6c29bfb45318cde76a9459f5a6f72d0dea3a58c
     <script src=\"{{base_url}}vendor/jquery/jquery.min.js\"></script>
     <script src=\"{{base_url}}vendor/jquery/jqueryui.min.js\"></script>
     <link rel=\"stylesheet\" type=\"text/css\" href=\"{{base_url}}vendor/jquery/jqueryui-min.css\"> 
+    <script src=\"{{base_url}}vendor/datepicker/js/bootstrap-datepicker.min.js\"></script>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>

@@ -111,30 +111,29 @@ class __TwigTemplate_78932d951d81322ff22d6025ef6b2ed790c9fdf0a809946e074f0cfdd21
         }
         // line 46
         echo "
-
 ";
-        // line 48
+        // line 47
         if ((($context["create"] ?? null) == true)) {
-            // line 49
-            $this->loadTemplate("forms/frm-factura-pagos.html.twig", "/pages/pageFacturas.html.twig", 49)->display($context);
+            // line 48
+            $this->loadTemplate("forms/frm-factura-pagos.html.twig", "/pages/pageFacturas.html.twig", 48)->display($context);
         }
+        // line 50
+        echo "
+";
         // line 51
-        echo "
-";
-        // line 52
         if ((($context["update"] ?? null) == true)) {
-            // line 53
-            $this->loadTemplate("forms/frm-factura-pagos-edit.html.twig", "/pages/pageFacturas.html.twig", 53)->display($context);
+            // line 52
+            $this->loadTemplate("forms/frm-factura-pagos-edit.html.twig", "/pages/pageFacturas.html.twig", 52)->display($context);
         }
-        // line 55
+        // line 54
         echo "
 ";
+        // line 55
+        $this->loadTemplate("base/content_close.html.twig", "/pages/pageFacturas.html.twig", 55)->display($context);
         // line 56
-        $this->loadTemplate("base/content_close.html.twig", "/pages/pageFacturas.html.twig", 56)->display($context);
+        $this->loadTemplate("base/signaturefoot.html.twig", "/pages/pageFacturas.html.twig", 56)->display($context);
         // line 57
-        $this->loadTemplate("base/signaturefoot.html.twig", "/pages/pageFacturas.html.twig", 57)->display($context);
-        // line 58
-        $this->loadTemplate("base/footer.html.twig", "/pages/pageFacturas.html.twig", 58)->display($context);
+        $this->loadTemplate("base/footer.html.twig", "/pages/pageFacturas.html.twig", 57)->display($context);
     }
 
     public function getTemplateName()
@@ -149,7 +148,7 @@ class __TwigTemplate_78932d951d81322ff22d6025ef6b2ed790c9fdf0a809946e074f0cfdd21
 
     public function getDebugInfo()
     {
-        return array (  137 => 58,  135 => 57,  133 => 56,  130 => 55,  127 => 53,  125 => 52,  122 => 51,  119 => 49,  117 => 48,  113 => 46,  109 => 44,  107 => 43,  104 => 42,  100 => 40,  98 => 39,  92 => 35,  79 => 28,  68 => 21,  66 => 20,  60 => 17,  57 => 16,  55 => 15,  50 => 12,  41 => 10,  37 => 9,  32 => 7,  29 => 6,  27 => 5,  25 => 4,  23 => 3,  21 => 2,  19 => 1,);
+        return array (  136 => 57,  134 => 56,  132 => 55,  129 => 54,  126 => 52,  124 => 51,  121 => 50,  118 => 48,  116 => 47,  113 => 46,  109 => 44,  107 => 43,  104 => 42,  100 => 40,  98 => 39,  92 => 35,  79 => 28,  68 => 21,  66 => 20,  60 => 17,  57 => 16,  55 => 15,  50 => 12,  41 => 10,  37 => 9,  32 => 7,  29 => 6,  27 => 5,  25 => 4,  23 => 3,  21 => 2,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -207,7 +206,6 @@ class __TwigTemplate_78932d951d81322ff22d6025ef6b2ed790c9fdf0a809946e074f0cfdd21
 {% if list == true %}
 \t{% include 'sections/listar-factura-pago.html.twig' %}
 {% endif %}
-
 
 {% if create == true %}
 {% include 'forms/frm-factura-pagos.html.twig' %}

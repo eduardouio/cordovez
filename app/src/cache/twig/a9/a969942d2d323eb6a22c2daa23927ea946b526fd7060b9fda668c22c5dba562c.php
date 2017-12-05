@@ -25,7 +25,7 @@ class __TwigTemplate_e45e1c545f2dbcc5bd2e1c802636eade051dc86d98ef6ed93a4dda45c44
         echo "facturapagos/nuevo/\">
                 <button class=\"btn btn-sm btn-default\">
                     <span class=\"fa fa-plus fa-fw\"></span>
-                    Nuevo Factura o Comprobate
+                    Nuevo Factura o Comprobante
                 </button>
             </a>
         </div>
@@ -87,17 +87,18 @@ class __TwigTemplate_e45e1c545f2dbcc5bd2e1c802636eade051dc86d98ef6ed93a4dda45c44
             <thead>
             <tr style=\"background-color: #c1c1c1;\">
                 <th>#</th>
-                <th>Nro</th>
                 <th>Proveedor</th>
+                <th>Factura</th>
                 <th>Fecha</th>
                 <th>Valor</th>
-                <th>Pedido(s)</th>
+                <th>Ingresado</th>
+                <th>Saldo</th>
                 <th>Acciones</th>
             </tr>
             </thead>
             <tbody>
             ";
-        // line 66
+        // line 67
         $context['_parent'] = $context;
         $context['_seq'] = twig_ensure_traversable(($context["documentsPaids"] ?? null));
         $context['loop'] = array(
@@ -114,47 +115,76 @@ class __TwigTemplate_e45e1c545f2dbcc5bd2e1c802636eade051dc86d98ef6ed93a4dda45c44
             $context['loop']['last'] = 1 === $length;
         }
         foreach ($context['_seq'] as $context["_key"] => $context["document"]) {
-            // line 67
-            echo "                <tr>
-                    <td>";
             // line 68
+            echo "            ";
+            $context["saldoItem"] = ($this->getAttribute($context["document"], "valor", array()) - $this->getAttribute($this->getAttribute($this->getAttribute($context["document"], "documentDetail", array()), "invoiceDetails", array()), "sums", array()));
+            // line 69
+            echo "
+                <tr>
+                    <td>";
+            // line 71
             echo twig_escape_filter($this->env, $this->getAttribute($context["loop"], "index", array()), "html", null, true);
             echo "</td>
                     <td>
                         <a href=\"";
-            // line 70
-            echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
-            echo "facturapagos/presentar/";
-            echo twig_escape_filter($this->env, $this->getAttribute($context["document"], "id_documento_pago", array()), "html", null, true);
-            echo "\">
-                            ";
-            // line 71
-            echo twig_escape_filter($this->env, $this->getAttribute($context["document"], "id_documento_pago", array()), "html", null, true);
-            echo "
-                        </a>
-                    </td>
-                    <td>
-                        <a href=\"";
-            // line 75
+            // line 73
             echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
             echo "facturapagos/presentar/";
             echo twig_escape_filter($this->env, $this->getAttribute($context["document"], "id_documento_pago", array()), "html", null, true);
             echo "\">
                         ";
-            // line 76
+            // line 74
             echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute($context["document"], "supplier", array()), "nombre", array()), "html", null, true);
             echo "
                         </a>
                     </td>
-                    <td class=\"text-center\">";
+                    <td>
+                        <a href=\"";
+            // line 78
+            echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
+            echo "facturapagos/presentar/";
+            echo twig_escape_filter($this->env, $this->getAttribute($context["document"], "id_documento_pago", array()), "html", null, true);
+            echo "\">
+                            ";
             // line 79
+            echo twig_escape_filter($this->env, $this->getAttribute($context["document"], "nro_factura", array()), "html", null, true);
+            echo "
+                        </a>
+                    </td>
+                    <td class=\"text-center\">";
+            // line 82
             echo twig_escape_filter($this->env, $this->getAttribute($context["document"], "fecha_emision", array()), "html", null, true);
             echo "</td>
-                    <td class=\"text-right\">";
-            // line 80
+                    <td class=\"text-right\">\$ ";
+            // line 83
             echo twig_escape_filter($this->env, twig_number_format_filter($this->env, $this->getAttribute($context["document"], "valor", array()), 2, ".", ","), "html", null, true);
             echo "</td>
-                    <td>completar</td>
+                    <td class=\"text-right\">
+                        \$ ";
+            // line 85
+            echo twig_escape_filter($this->env, twig_number_format_filter($this->env, $this->getAttribute($this->getAttribute($this->getAttribute($context["document"], "documentDetail", array()), "invoiceDetails", array()), "sums", array()), 2, ".", ","), "html", null, true);
+            echo "
+                    </td>
+                    <td class=\"text-center\">
+                        ";
+            // line 88
+            if ((($context["saldoItem"] ?? null) != 0)) {
+                // line 89
+                echo "                        <span class=\"text-danger\" >\$ ";
+                echo twig_escape_filter($this->env, ($context["saldoItem"] ?? null), "html", null, true);
+                echo "</span>
+                        ";
+            }
+            // line 91
+            echo "                        ";
+            if ((($context["saldoItem"] ?? null) == 0)) {
+                // line 92
+                echo "                        <span class=\"text-success\" > <span class=\"fa fa-check\"></span> Ok </span>
+                        ";
+            }
+            // line 93
+            echo "                        
+                    </td>
                     <td>
                         <div class=\"dropdown\">
                             <button id=\"dLabel\" type=\"button\"
@@ -162,12 +192,12 @@ class __TwigTemplate_e45e1c545f2dbcc5bd2e1c802636eade051dc86d98ef6ed93a4dda45c44
                                     aria-expanded=\"false\"
                                     class=\"btn btn-sm btn-default\">
                                 <span class=\"fa fa-chevron-down\"></span>
-                                Seleccione
+                                Seleccione..
                             </button>
                             <ul class=\"dropdown-menu\" aria-labelledby=\"dLabel\">
                                 <li>
                                     <a href=\"";
-            // line 93
+            // line 106
             echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
             echo "facturapagos/presentar/";
             echo twig_escape_filter($this->env, $this->getAttribute($context["document"], "id_documento_pago", array()), "html", null, true);
@@ -177,7 +207,7 @@ class __TwigTemplate_e45e1c545f2dbcc5bd2e1c802636eade051dc86d98ef6ed93a4dda45c44
                                 </li>
                                 <li>
                                     <a href=\"";
-            // line 98
+            // line 111
             echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
             echo "facturapagos/editar/";
             echo twig_escape_filter($this->env, $this->getAttribute($context["document"], "id_documento_pago", array()), "html", null, true);
@@ -187,7 +217,7 @@ class __TwigTemplate_e45e1c545f2dbcc5bd2e1c802636eade051dc86d98ef6ed93a4dda45c44
                                 </li>
                                 <li>
                                     <a href=\"";
-            // line 103
+            // line 116
             echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
             echo "facturapagos/eliminar/";
             echo twig_escape_filter($this->env, $this->getAttribute($context["document"], "id_documento_pago", array()), "html", null, true);
@@ -212,10 +242,9 @@ class __TwigTemplate_e45e1c545f2dbcc5bd2e1c802636eade051dc86d98ef6ed93a4dda45c44
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_iterated'], $context['_key'], $context['document'], $context['_parent'], $context['loop']);
         $context = array_intersect_key($context, $_parent) + $_parent;
-        // line 112
+        // line 125
         echo "            </tbody>
         </table>
-</div>
 </div>
 <!--tabPedido-->";
     }
@@ -232,7 +261,7 @@ class __TwigTemplate_e45e1c545f2dbcc5bd2e1c802636eade051dc86d98ef6ed93a4dda45c44
 
     public function getDebugInfo()
     {
-        return array (  216 => 112,  191 => 103,  181 => 98,  171 => 93,  155 => 80,  151 => 79,  145 => 76,  139 => 75,  132 => 71,  126 => 70,  121 => 68,  118 => 67,  101 => 66,  62 => 30,  55 => 26,  46 => 20,  37 => 14,  24 => 4,  19 => 1,);
+        return array (  246 => 125,  221 => 116,  211 => 111,  201 => 106,  186 => 93,  182 => 92,  179 => 91,  173 => 89,  171 => 88,  165 => 85,  160 => 83,  156 => 82,  150 => 79,  144 => 78,  137 => 74,  131 => 73,  126 => 71,  122 => 69,  119 => 68,  102 => 67,  62 => 30,  55 => 26,  46 => 20,  37 => 14,  24 => 4,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -251,7 +280,7 @@ class __TwigTemplate_e45e1c545f2dbcc5bd2e1c802636eade051dc86d98ef6ed93a4dda45c44
             <a href=\"{{ rute_url }}facturapagos/nuevo/\">
                 <button class=\"btn btn-sm btn-default\">
                     <span class=\"fa fa-plus fa-fw\"></span>
-                    Nuevo Factura o Comprobate
+                    Nuevo Factura o Comprobante
                 </button>
             </a>
         </div>
@@ -301,31 +330,44 @@ class __TwigTemplate_e45e1c545f2dbcc5bd2e1c802636eade051dc86d98ef6ed93a4dda45c44
             <thead>
             <tr style=\"background-color: #c1c1c1;\">
                 <th>#</th>
-                <th>Nro</th>
                 <th>Proveedor</th>
+                <th>Factura</th>
                 <th>Fecha</th>
                 <th>Valor</th>
-                <th>Pedido(s)</th>
+                <th>Ingresado</th>
+                <th>Saldo</th>
                 <th>Acciones</th>
             </tr>
             </thead>
             <tbody>
             {% for document in documentsPaids %}
+            {% set saldoItem  = (document.valor - document.documentDetail.invoiceDetails.sums) %}
+
                 <tr>
                     <td>{{ loop.index }}</td>
-                    <td>
-                        <a href=\"{{ rute_url }}facturapagos/presentar/{{ document.id_documento_pago}}\">
-                            {{ document.id_documento_pago }}
-                        </a>
-                    </td>
                     <td>
                         <a href=\"{{ rute_url }}facturapagos/presentar/{{ document.id_documento_pago}}\">
                         {{ document.supplier.nombre}}
                         </a>
                     </td>
+                    <td>
+                        <a href=\"{{ rute_url }}facturapagos/presentar/{{ document.id_documento_pago}}\">
+                            {{ document.nro_factura }}
+                        </a>
+                    </td>
                     <td class=\"text-center\">{{ document.fecha_emision }}</td>
-                    <td class=\"text-right\">{{ document.valor | number_format(2, '.', ',') }}</td>
-                    <td>completar</td>
+                    <td class=\"text-right\">\$ {{ document.valor | number_format(2, '.', ',') }}</td>
+                    <td class=\"text-right\">
+                        \$ {{ document.documentDetail.invoiceDetails.sums | number_format(2, '.', ',') }}
+                    </td>
+                    <td class=\"text-center\">
+                        {% if saldoItem != 0  %}
+                        <span class=\"text-danger\" >\$ {{saldoItem}}</span>
+                        {% endif %}
+                        {% if saldoItem == 0 %}
+                        <span class=\"text-success\" > <span class=\"fa fa-check\"></span> Ok </span>
+                        {% endif %}                        
+                    </td>
                     <td>
                         <div class=\"dropdown\">
                             <button id=\"dLabel\" type=\"button\"
@@ -333,7 +375,7 @@ class __TwigTemplate_e45e1c545f2dbcc5bd2e1c802636eade051dc86d98ef6ed93a4dda45c44
                                     aria-expanded=\"false\"
                                     class=\"btn btn-sm btn-default\">
                                 <span class=\"fa fa-chevron-down\"></span>
-                                Seleccione
+                                Seleccione..
                             </button>
                             <ul class=\"dropdown-menu\" aria-labelledby=\"dLabel\">
                                 <li>
@@ -358,7 +400,6 @@ class __TwigTemplate_e45e1c545f2dbcc5bd2e1c802636eade051dc86d98ef6ed93a4dda45c44
             {% endfor %}
             </tbody>
         </table>
-</div>
 </div>
 <!--tabPedido-->", "sections/listar-factura-pago.html.twig", "/var/www/html/app/src/views/sections/listar-factura-pago.html.twig");
     }

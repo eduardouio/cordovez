@@ -49,23 +49,34 @@ class __TwigTemplate_7ce0ea0df63fbdb5f7d642ec9a0ecb07a4b646c3c7d075b2cc7505c24dd
         echo "
 ";
         // line 15
-        if ((($context["viewMessage"] ?? null) == true)) {
+        if ((($context["show"] ?? null) == true)) {
             // line 16
+            $this->loadTemplate("sections/mostrar-facturas-detalle.html.twig", "/pages/pageFacturasDetalles.html.twig", 16)->display($context);
+            echo "    
+";
+        }
+        // line 18
+        echo "
+
+";
+        // line 20
+        if ((($context["viewMessage"] ?? null) == true)) {
+            // line 21
             echo "\t<div class=\"well\">
 \t\t<h3 class=\"text-primary\">\t";
-            // line 17
+            // line 22
             echo twig_escape_filter($this->env, ($context["message"] ?? null), "html", null, true);
             echo " </h3>
 \t\t<br><br>
 \t\t<p>
 \t\t\t";
-            // line 20
+            // line 25
             if ((($context["deleted"] ?? null) == true)) {
                 echo " 
 \t\t\t\t\t\t<a href=\"";
-                // line 21
+                // line 26
                 echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
-                echo "pedidofactura/presentar/";
+                echo "facturapagos/presentar/";
                 echo twig_escape_filter($this->env, ($context["idRow"] ?? null), "html", null, true);
                 echo "\"> 
 \t\t\t\t<button>
@@ -75,12 +86,12 @@ class __TwigTemplate_7ce0ea0df63fbdb5f7d642ec9a0ecb07a4b646c3c7d075b2cc7505c24dd
 \t\t\t\t</a>
 \t\t\t";
             } else {
-                // line 27
+                // line 32
                 echo "  
 \t\t\t\t<a href=\"";
-                // line 28
+                // line 33
                 echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
-                echo "pedidofactura/presentar/";
+                echo "facturapagos/presentar/";
                 echo twig_escape_filter($this->env, ($context["idRow"] ?? null), "html", null, true);
                 echo "\">
 \t\t<button>
@@ -90,20 +101,20 @@ class __TwigTemplate_7ce0ea0df63fbdb5f7d642ec9a0ecb07a4b646c3c7d075b2cc7505c24dd
 \t\t</a>
 \t\t\t";
             }
-            // line 35
+            // line 40
             echo "\t\t</p>
 \t</div>
 ";
         }
-        // line 38
+        // line 43
         echo "
 ";
-        // line 39
-        $this->loadTemplate("base/content_close.html.twig", "/pages/pageFacturasDetalles.html.twig", 39)->display($context);
-        // line 40
-        $this->loadTemplate("base/signaturefoot.html.twig", "/pages/pageFacturasDetalles.html.twig", 40)->display($context);
-        // line 41
-        $this->loadTemplate("base/footer.html.twig", "/pages/pageFacturasDetalles.html.twig", 41)->display($context);
+        // line 44
+        $this->loadTemplate("base/content_close.html.twig", "/pages/pageFacturasDetalles.html.twig", 44)->display($context);
+        // line 45
+        $this->loadTemplate("base/signaturefoot.html.twig", "/pages/pageFacturasDetalles.html.twig", 45)->display($context);
+        // line 46
+        $this->loadTemplate("base/footer.html.twig", "/pages/pageFacturasDetalles.html.twig", 46)->display($context);
     }
 
     public function getTemplateName()
@@ -118,7 +129,7 @@ class __TwigTemplate_7ce0ea0df63fbdb5f7d642ec9a0ecb07a4b646c3c7d075b2cc7505c24dd
 
     public function getDebugInfo()
     {
-        return array (  106 => 41,  104 => 40,  102 => 39,  99 => 38,  94 => 35,  82 => 28,  79 => 27,  67 => 21,  63 => 20,  57 => 17,  54 => 16,  52 => 15,  49 => 14,  44 => 12,  42 => 11,  39 => 10,  33 => 8,  31 => 7,  27 => 5,  25 => 4,  23 => 3,  21 => 2,  19 => 1,);
+        return array (  117 => 46,  115 => 45,  113 => 44,  110 => 43,  105 => 40,  93 => 33,  90 => 32,  78 => 26,  74 => 25,  68 => 22,  65 => 21,  63 => 20,  59 => 18,  54 => 16,  52 => 15,  49 => 14,  44 => 12,  42 => 11,  39 => 10,  33 => 8,  31 => 7,  27 => 5,  25 => 4,  23 => 3,  21 => 2,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -145,20 +156,25 @@ class __TwigTemplate_7ce0ea0df63fbdb5f7d642ec9a0ecb07a4b646c3c7d075b2cc7505c24dd
 {% include 'forms/frm-facturas-detalle-edit.html.twig' %}    
 {% endif %}
 
+{% if show == true %}
+{% include 'sections/mostrar-facturas-detalle.html.twig' %}    
+{% endif %}
+
+
 {% if viewMessage == true %}
 \t<div class=\"well\">
 \t\t<h3 class=\"text-primary\">\t{{message}} </h3>
 \t\t<br><br>
 \t\t<p>
 \t\t\t{% if deleted == true %} 
-\t\t\t\t\t\t<a href=\"{{rute_url}}pedidofactura/presentar/{{idRow}}\"> 
+\t\t\t\t\t\t<a href=\"{{rute_url}}facturapagos/presentar/{{idRow}}\"> 
 \t\t\t\t<button>
 \t\t\t\t\t<span class=\"fa fa-list\"></span>
 \t\t\t\t\tVer
 \t\t\t\t</button>
 \t\t\t\t</a>
 \t\t\t{% else %}  
-\t\t\t\t<a href=\"{{rute_url}}pedidofactura/presentar/{{idRow}}\">
+\t\t\t\t<a href=\"{{rute_url}}facturapagos/presentar/{{idRow}}\">
 \t\t<button>
 \t\t\t<span class=\"fa fa-eye\"></span>
 \t\t\tVer

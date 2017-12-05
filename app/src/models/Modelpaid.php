@@ -1,5 +1,4 @@
 <?php
-use PhpParser\Node\Expr\Cast\Bool_;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -18,34 +17,46 @@ class Modelpaid extends CI_Model{
     private $table = 'documento_pago';
     private $modelBase;
     private $modelSupplier;
+    private $modelExpenses;
+    private $modelPaidDetail;
     
     function __construct(){
         parent::__construct();
+        $this->init();
+    }
+    
+    /**
+     * Inicia los modelos de la clase
+     */
+    public function init(){
         $this->load->model('modelbase');
         $this->load->model('modelsupplier');
+        $this->load->model('modelexpenses');
+        $this->load->model('modelpaiddetail');
         $this->modelBase = new Modelbase();
         $this->modelSupplier = new Modelsupplier();
+        $this->modelExpenses = new Modelexpenses();
+        $this->modelPaidDetail = new Modelpaiddetail();
     }
 
     /**
-     * Obtiene el detalle de una factura completa
-     * @param $nroDoument nro de factura
+     * Obtiene el detalle de una factura de pago completa
+     * @param string $nroDoument  de factura
      * @return array | boolean
      */
-    public function get($nroDoument)
+    public function get($nroDocument)
     {
         $invoice = $this->modelBase->get_table([
             'table' => $this->table,
             'where' => [
-                'id_documento_pago' => $nroDoument,
+                'id_documento_pago' => $nroDocument,
             ],
         ]);
-
         if ((gettype($invoice) == 'array') && (count($invoice) > 0)){
             $invoice = $invoice[0];
             $invoice['supplier'] = $this->modelSupplier->get(
                                         $invoice['identificacion_proveedor']);
-            $invoice['invoiceDetails'] = $this->getDetails(
+            $invoice['invoiceDetails'] = $this->modelPaidDetail->get(
                                                 $invoice['id_documento_pago']);
             return $invoice;
         }
@@ -78,49 +89,22 @@ class Modelpaid extends CI_Model{
         return false;
     }
 
-
+    
     /**
-     * Obtiene los detalles de las facturas y sus sumas
-     * @param $nroDocument
-     * @return array | boolean
+     * Retorna la informacion de tabla de un documento 
+     * @param int $idDocument
      */
-    public function getDetails($nroDocument)
-    {
-        $detailsInvoice = $this->modelBase->get_table([
-            'table' => 'detalle_documento_pago',
+    public function getDocument($idDocument){
+        $document = $this->modelBase->get_table([
+            'table' => $this->table,
             'where' => [
-                'id_documento_pago' => $nroDocument,
+                'id_documento_pago' => $idDocument,
             ],
         ]);
-        if (gettype($detailsInvoice) == 'array' && count($detailsInvoice) > 0){
-            $val = 0.0;
-            foreach ($detailsInvoice as $item => $detail){
-                $val += $detail['valor'];
-            }
-            $detailsInvoice['sums'] = $val;
-            return $detailsInvoice;
+        
+        if ((gettype($document) == 'array') && (count($document) > 0)){
+            return $document[0];
         }
         return false;
-    }
-
-    /**
-     * Se registra una factura en la base de datos
-     * @param $document int
-     * @return boolean;
-     */
-    private function create($document)
-    {
-        print 'registra una factura';
-        return false;
-    }
-
-    /**
-     * @param $document factura, se actualiza usando el id_documento_pago
-     * @return boolean;
-     */
-    private function update($document)
-    {
-        print 'Actualiza un registro de factura';
-        return true;
-    }
+    }    
 }

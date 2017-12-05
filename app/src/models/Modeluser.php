@@ -19,7 +19,7 @@ class Modeluser extends CI_Model {
      * @param int $idUser
      * @return array | boolean
      */
-    public function get(int $idUser): array
+    public function get($idUser) 
     {
         $user = $this->modelbase->get_table([
             'table' => $this->table,

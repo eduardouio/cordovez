@@ -98,7 +98,7 @@ $db['pruebas'] = array(
 
 $db['produccion'] = array(
         'dsn'   => '',
-        'hostname' => '179.49.60.158',
+        'hostname' => 'localhost',
         'username' => 'appCordovez',
         'password' => '\DBGfW<7;vBa5(LB',
         'database' => 'cordovezApp',

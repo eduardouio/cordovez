@@ -4,7 +4,7 @@
             <a href="{{ rute_url }}facturapagos/nuevo/">
                 <button class="btn btn-sm btn-default">
                     <span class="fa fa-plus fa-fw"></span>
-                    Nuevo Factura o Comprobate
+                    Nuevo Factura o Comprobante
                 </button>
             </a>
         </div>
@@ -54,31 +54,44 @@
             <thead>
             <tr style="background-color: #c1c1c1;">
                 <th>#</th>
-                <th>Nro</th>
                 <th>Proveedor</th>
+                <th>Factura</th>
                 <th>Fecha</th>
                 <th>Valor</th>
-                <th>Pedido(s)</th>
+                <th>Ingresado</th>
+                <th>Saldo</th>
                 <th>Acciones</th>
             </tr>
             </thead>
             <tbody>
             {% for document in documentsPaids %}
+            {% set saldoItem  = (document.valor - document.documentDetail.invoiceDetails.sums) %}
+
                 <tr>
                     <td>{{ loop.index }}</td>
-                    <td>
-                        <a href="{{ rute_url }}facturapagos/presentar/{{ document.id_documento_pago}}">
-                            {{ document.id_documento_pago }}
-                        </a>
-                    </td>
                     <td>
                         <a href="{{ rute_url }}facturapagos/presentar/{{ document.id_documento_pago}}">
                         {{ document.supplier.nombre}}
                         </a>
                     </td>
+                    <td>
+                        <a href="{{ rute_url }}facturapagos/presentar/{{ document.id_documento_pago}}">
+                            {{ document.nro_factura }}
+                        </a>
+                    </td>
                     <td class="text-center">{{ document.fecha_emision }}</td>
-                    <td class="text-right">{{ document.valor | number_format(2, '.', ',') }}</td>
-                    <td>completar</td>
+                    <td class="text-right">$ {{ document.valor | number_format(2, '.', ',') }}</td>
+                    <td class="text-right">
+                        $ {{ document.documentDetail.invoiceDetails.sums | number_format(2, '.', ',') }}
+                    </td>
+                    <td class="text-center">
+                        {% if saldoItem != 0  %}
+                        <span class="text-danger" >$ {{saldoItem}}</span>
+                        {% endif %}
+                        {% if saldoItem == 0 %}
+                        <span class="text-success" > <span class="fa fa-check"></span> Ok </span>
+                        {% endif %}                        
+                    </td>
                     <td>
                         <div class="dropdown">
                             <button id="dLabel" type="button"
@@ -86,7 +99,7 @@
                                     aria-expanded="false"
                                     class="btn btn-sm btn-default">
                                 <span class="fa fa-chevron-down"></span>
-                                Seleccione
+                                Seleccione..
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dLabel">
                                 <li>
@@ -111,6 +124,5 @@
             {% endfor %}
             </tbody>
         </table>
-</div>
 </div>
 <!--tabPedido-->

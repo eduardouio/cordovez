@@ -15,14 +15,34 @@ class Proveedor extends MY_Controller {
 	private $listPerPage = 40;
 	private $controller = "proveedor";
 	private $template = '/pages/pageProveedor.html';
+	private $modelUser;
+	private $modelSupplier;
+	
+	
 
 	/**
 	 * Constructor de la funcion
 	 */
 	public function __construct(){
 		parent::__construct();
+		$this->init();
 	}
-
+    
+	/**
+	 * Inicia todos los modelos necesarios
+	 */
+	public function init(){
+	    $this->load->model('Modelsupplier');
+	    $this->load->model('Modeluser');
+	    $this->modelUser = new Modeluser();
+	    $this->modelSupplier = new Modelsupplier();
+	}
+	   
+	
+	
+	/**
+	 * Redirecciona a la lista de proveedores
+	 */   
 	public function index(){
 		$this->listar();
 	}
@@ -36,15 +56,13 @@ class Proveedor extends MY_Controller {
 			$this->redirectPage('suppliersList');
 			return false;
 		}
-
-		$this->db->where('id_proveedor', $idSupplier);
-		$resultDb = $this->db->get($this->controller);
-		$supplier = $resultDb->result_array();
+        		
+		$supplier = $this->modelSupplier->get($idSupplier);
 		$config = array(
 									'titleContent' => 'Detalle De Proveedor: ' . $supplier[0]['nombre'] ,
-									'supplier' => $supplier[0],
+									'supplier' => $supplier,
 									'show' => true,
-									'createBy' => $this->getUserDataDb($supplier[0]['id_user']),
+									'createBy' => $this->modelUser->get($supplier['id_user']),
 									);
 		$this->responseHttp($config);
 	}
@@ -230,3 +248,4 @@ public function nuevo(){
 		return $this->twig->display($this->template, $config);
 	}
 }
+

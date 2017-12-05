@@ -12,20 +12,25 @@
 {% include 'forms/frm-facturas-detalle-edit.html.twig' %}    
 {% endif %}
 
+{% if show == true %}
+{% include 'sections/mostrar-facturas-detalle.html.twig' %}    
+{% endif %}
+
+
 {% if viewMessage == true %}
 	<div class="well">
 		<h3 class="text-primary">	{{message}} </h3>
 		<br><br>
 		<p>
 			{% if deleted == true %} 
-						<a href="{{rute_url}}pedidofactura/presentar/{{idRow}}"> 
+						<a href="{{rute_url}}facturapagos/presentar/{{idRow}}"> 
 				<button>
 					<span class="fa fa-list"></span>
 					Ver
 				</button>
 				</a>
 			{% else %}  
-				<a href="{{rute_url}}pedidofactura/presentar/{{idRow}}">
+				<a href="{{rute_url}}facturapagos/presentar/{{idRow}}">
 		<button>
 			<span class="fa fa-eye"></span>
 			Ver

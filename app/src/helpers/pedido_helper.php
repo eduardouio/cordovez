@@ -7,10 +7,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @return boolean
  */
 if (!function_exists('searchOrderCeroValues')) {
-    function searchOrderCeroValues(array $dataArray): bool
-    {
+    function searchOrderCeroValues(array $dataArray) : bool 
+    {   
+        if (gettype($dataArray) == 'boolean'){
+            return false;
+        }
         unset($dataArray['statusOrder']['have_gasto_origen']);
         foreach ($dataArray as $key) {
+            if ($key == false){
+                return false;
+            }
             foreach ($key as $item) {
                 if (gettype($item) == 'array') {
                     if ($item['valor_provisionado'] == 0.0) {

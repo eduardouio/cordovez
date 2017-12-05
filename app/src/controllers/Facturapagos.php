@@ -73,7 +73,7 @@ class Facturapagos extends MY_Controller
         foreach ($documents as $item => $document) {
             $document['supplier'] = $this->modelSupplier->get(
                                         $document['identificacion_proveedor']);
-            $document['documentDetail'] = $this->modelPaid->getDetails(
+            $document['documentDetail'] = $this->modelPaid->get(
                                                  $document['id_documento_pago']);
             $document['user'] = $this->modelUser->get($document['id_user']);
             $documentList[$item] = $document;

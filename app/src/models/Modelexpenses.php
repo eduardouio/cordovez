@@ -111,6 +111,25 @@ class Modelexpenses extends CI_Model
         return $expenses;
     }
     
+    
+    /**
+     * Obtiene una Provision completa
+     * @param int $idExpense
+     * @return array | boolean
+     */
+    public function getExpense($idExpense){
+        $expense = $this->modelBase->get_table([
+            'table' => $this->table,
+            'where' => [
+                'id_gastos_nacionalizacion' => $idExpense,
+            ],
+        ]);
+        if(gettype($expense) == 'array' && count($expense) > 0){
+             return $expense[0]; 
+        }
+        return false;
+    }
+    
   
     /**
      * Obtiene todos los gastos iniciales activos, sin justificar
@@ -127,7 +146,6 @@ class Modelexpenses extends CI_Model
                 'bg_closed' => 0,
             ],
         ]);
-        
         if(gettype($expenses) == 'array' && count($expenses) > 0){
             return $expenses;
         }

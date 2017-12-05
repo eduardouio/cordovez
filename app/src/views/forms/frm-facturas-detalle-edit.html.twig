@@ -1,0 +1,223 @@
+<div class="well well-sm">
+	<div class="row">
+		<div class="col-md-3">
+			<strong>Proveedor:</strong> <span>{{ document.supplier.nombre }}</span>
+		</div>
+		<div class="col-md-2">
+			<strong>Ruc:</strong> <span>{{ document.supplier.identificacion_proveedor }}</span>
+		</div>
+		<div class="col-md-2">
+			<strong>Fecha:</strong> <span>{{ document.fecha_emision  }}</span>
+		</div>
+		<div class="col-md-5">
+			<strong>Comentarios:</strong> <span>{{ document.comentarios }}</span>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-2">
+			<strong>Valor $:</strong> <span class="text-primary">{{ document.valor | number_format(2,',','.')}}</span>
+		</div>
+		<div class="col-md-2">
+			<strong>Justificado $:</strong> <span class="text-success"> $
+				{{ 0 | number_format(0,',','.') }}
+			</span>
+		</div>
+		<div class="col-md-2">
+			<strong>Pendiente $:</strong> <span class="text-danger"> $ {{ 0 | number_format(0,',','.') }}
+			</span>
+		</div>
+		<div class="col-md-3">
+			<strong>Creado Por :</strong> <span>{{ user.nombres }}</span>
+		</div>
+		<div class="col-md-2">
+			<span>{{ document.date_create }}</span>
+		</div>
+	</div>
+</div>
+<br>
+<div class="alert alert-info alert-dismissable">
+	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+	<span class="fa fa-warning"></span> Seleccione un pedido, luego en la
+	lista de <strong>Concepto</strong> una provision a justificar, se puede
+	justificar de forma parcial o completamente el valor de una provisión.
+</div>
+<form action = "{{ rute_url }}detallefacpago/validar/" method="post">
+	<input type="hidden" name="id_documento_pago" value="{{document.id_documento_pago}}">
+	<input type="hidden" name="id_detalle_documento_pago" value="{{detailInvoice.id_detalle_documento_pago}}">
+	<div class="row">
+		<div class="col-md-2">
+			<div class="form-group">
+				<label>Nro Pedido</label> <select
+					class="form-control" id="nro_pedido" autofocus="autofocus">
+					<option selected="" value="{{provision.nro_pedido}}">{{ provision.nro_pedido }}</option>
+				</select>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="form-group">
+				<label> Concepto: </label> <select class="form-control"
+					name="id_gastos_nacionalizacion" id="id_provision">
+					<option selected="selected" value="{{provision.id_gastos_nacionalizacion}}">{{provision.concepto}}</option>
+				</select>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-group">
+				<label> Valor a Justificar USD </label> <input 
+					type="number" name="valor"
+					id="valor" step="0.01" required="required" class="form-control" 
+					value="{{detailInvoice.valor}}"
+					>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+	<div class="col-md-6">
+			<br>
+				<div class="text-tittle">
+					<strong>DETALLE DE LA PROVISIÓN 
+							&nbsp;&nbsp;  {{provision.id_gastos_nacionalizacion}}</strong>
+				</div>
+				<table class="table table-hover table-striped table-condensed">
+					<thead>
+						<tr>
+							<th>Detalle:</th>
+							<th>Valor:</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="text-right"><strong>Id Registro&nbsp;</strong></td>
+							<td>{{provision.id_gastos_nacionalizacion}}</td>
+						</tr>
+						<tr>
+							<td class="text-right"><strong>Nro Pedido &nbsp;</strong></td>
+							<td> {{provision.nro_pedido}} </td>
+						</tr>
+						<tr>
+							<td class="text-right"><strong>Concepto&nbsp;</strong></td>
+							<td class="success"> {{provision.concepto}} </td>
+						</tr>
+						<tr>
+							<td class="text-right"><strong>Valor
+									Provisionado&nbsp;</strong></td>
+							<td>$  {{provision.valor_provisionado}} </td>
+						</tr>
+						<tr>
+							<td class="text-right"><strong>Comentarios &nbsp;</strong></td>
+							<td> {{provision.comentarios}} </td>
+						</tr>
+						<tr>
+							<td class="text-right"><strong>Fecha &nbsp;</strong></td>
+							<td>  {{provision.fecha}} </td>
+						</tr>
+						<tr>
+							<td class="text-right"><strong>Fecha Hasta &nbsp;</strong></td>
+							<td> {{provision.fecha_fin}} </td>
+						</tr>
+						<tr>
+							<td class="text-right"><strong>Creado Por &nbsp;</strong></td>
+							<td>  {{user.nombres}}  </td>
+						</tr>
+						<tr>
+							<td class="text-right"><strong>Fecha/Hora Registro
+									&nbsp;</strong></td>
+							<td> {{provision.date_create}}  </td>
+						</tr>
+						<tr>
+							<td class="text-right">
+								<strong>Ultima Actualización</strong>
+							</td>
+							<td>
+								{{provision.last_update}}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		<div class="col-md-6">
+			<div class="text-center">
+				<br>
+				<h1>
+					Saldo $ <span id="saldo"> {{ provision.valor_provisionado - detailInvoice.valor }} </span>
+				</h1>
+				<div id="status">
+				</div>
+				<div id="status">
+				</div>
+				<br>
+				<br>
+				<br>
+				<div class="row" style="font-size:16px;">
+				<div class="col-md-4">
+					 <strong> Provision: </strong> 
+					 {{provision.valor_provisionado }}
+				</div>
+				<div class="col-md-4">
+					 <strong> Justificado: </strong> 
+					   {{valor_justificado}}
+				</div>
+				<div class="col-md-4">
+					<strong> Por Justificar: </strong>
+					  {{por_justificar}}
+				</div>
+				</div>
+			</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4 col-md-offset-8">
+			<a
+				href="{{rute_url}}facturapagos/presentar/{{document.id_documento_pago}}"
+				class="btn btn-sm btn-default "> <span class="fa fa-arrow-left"></span>Volver
+				a la Factura [{{document.nro_factura}}]
+			</a>
+			&nbsp;&nbsp;&nbsp;
+			<button class="btn btn-sm btn-default" type="submit">
+				<span class="fa fa-save"></span> Actualizar Justificación
+			</button>
+		</div>
+	</div>
+</form>
+<br>
+<script type="text/javascript">
+var list = {};
+var provision = {};
+var template = '';
+var valor_provisionado = {{ provision.valor_provisionado }};
+var valor = 0;
+var success = `<h3 class="text-success">
+					<span class="fa fa-check"></span>Provisión Justificada
+				</h3>`;
+var pending = `<h3 class="text-danger">
+					<span class="fa fa-warning"></span> Provisión Incompleta
+				</h3>`;
+var exceeded = `<h3 class="text-danger">
+					<span class="fa fa-warning"></span> Provisión Excedida.
+				</h3>`;
+
+/**
+* Comprueba el saldo de la justificacion
+*/
+$('#valor').keyup(function(){
+	if (this.value === ''){
+		valor = 0;
+	}else{
+		valor = parseFloat(this.value);
+	}
+	var saldo = Math.round((valor_provisionado - valor) *100)/100;
+	$('#status').empty();
+	$('#saldo').text(saldo.toString());
+	if (saldo < 0){
+		$('#status').append(exceeded);
+		$('#valor').val('0');
+	}
+	if (saldo === 0){
+		$('#status').append(success);		
+	}else{
+		$('#status').append(pending);		
+	}
+})
+</script>
+

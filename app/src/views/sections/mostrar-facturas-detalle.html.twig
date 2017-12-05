@@ -1,0 +1,68 @@
+<div class="detalle-factura-pagos">
+  <br>
+  <div class="row">
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered table-striped">
+        <thead>
+          <tr style="background-color: #c1c1c1;">
+            <th>Campo</th>
+            <th>Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-right"><strong>Nro. Pedido </strong></td>
+            <td>{{ provision.nro_pedido }}</td>
+          </tr>
+          <tr>
+            <td class="text-right">
+              <strong>Nro. Factura</strong>
+            </td>
+            <td>
+                {{document.nro_factura}}
+            </td>
+          </tr>
+          <tr>
+            <td class="text-right"><strong> Proveedor</strong></td>
+            <td>
+              {{supplier.nombre}}
+            </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <strong>Concepto</strong> </td>
+            <td>{{provision.concepto}}</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <strong>Valor </strong></td>
+            <td> {{detail.valor}} </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <strong>Fecha de Registro </strong></td>
+            <td> {{detail.date_create}} </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <strong>Creado Por: </strong></td>
+            <td> {{user.nombres}} </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <strong>Ultima Actualización: </strong></td>
+            <td> {{detail.last_update}} </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-6">
+      <a href="{{rute_url}}facturapagos/presentar/{{document.id_documento_pago}}" class="btn btn-default btn-sm">
+      <span class="fa fa-arrow-left fa-fw"></span>  Volver al Documento {{document.nro_factura}}
+    </a>
+      <a href="{{rute_url}}detallefacpago/editar/{{detail.id_detalle_documento_pago}}" class="btn btn-default btn-sm">
+      <span class="fa fa-pencil fa-fw"></span>  Editar Justificación
+    </a>
+      <a href="{{rute_url}}detallefacpago/eliminar/{{detail.id_detalle_documento_pago}}" class="btn btn-danger btn-sm">
+      <span class="fa fa-trash fa-fw"></span>  Eliminar Justificación
+    </a>
+    </div>
+  </div>
+</div>

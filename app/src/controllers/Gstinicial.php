@@ -76,34 +76,28 @@ class Gstinicial extends MY_Controller
      */
     public function presentar($idInitExpense)
     {
-        $initExpense = $this->modelBase->get_table([
-            'table' => $this->controller,
-            'where' => [
-                'id_gastos_nacionalizacion' => $idInitExpense
-            ]
-        ]);
-        $supplier = $this->modelBase->get_table([
-            'table' => 'proveedor',
-            'where' => [
-                'identificacion_proveedor' => $initExpense[0]['identificacion_proveedor']
-            ]
-        ]);
+        if (!isset($idInitExpense)){
+            $this->redirectPage('ordersList');
+            return false;
+        }
         
-        $order = $this->modelBase->get_table([
-            'table' => 'pedido',
-            'where' => [
-                'nro_pedido' => $initExpense[0]['nro_pedido']
-            ]
-        ]);
-        $config = [
-            'order' => $order[0],
-            'initExpense' => $initExpense[0],
-            'supplier' => $supplier[0],
+        $initExpense = $this->modelExpenses->getExpense($idInitExpense);
+        
+        if ($initExpense == false){
+            $this->redirectPage('ordersList');
+            return false;
+        };
+        
+        $order = $this->modelOrder->get($initExpense['nro_pedido']);
+        
+        $this->responseHttp([
+            'order' => $order,
+            'initExpense' => $initExpense,
+            'supplier' => $this->modelSupplier->get($initExpense['identificacion_proveedor']),
             'createBy' => $this->session->userdata(),
-            'titleContent' => 'Descripción De Gasto Incial Pedido:' . $order[0]['nro_pedido'],
+            'titleContent' => 'Descripción De Gasto Incial Pedido:' . $order['nro_pedido'],
             'show' => true
-        ];
-        $this->responseHttp($config);
+        ]);
     }
 
     /**
@@ -119,7 +113,6 @@ class Gstinicial extends MY_Controller
             $this->redirectPage('ordersList');
         }
         $order = $this->modelOrder->get($nroOrder);
-        $order = $order[0];
         $suppliers = $this->modelSupplier->getAll();
         $rateExpenses = $this->modelExpenses->getAllRates($order['regimen']);
         $usedExpenses = $this->modelExpenses->get($order['nro_pedido']);
@@ -285,7 +278,6 @@ class Gstinicial extends MY_Controller
         $incoterms = $this->modelIncoterms->get($order);
         $invoicesOrder = $this->modelOrder->getInvoices($nroOrder);
         $initExpenses = $this->myModel->getInitialExpenses($nroOrder);
-        
         $minimal = $this->getMinimalParams($order, $initExpenses);
         $minimal['valuesOrder'] = $this->calcValuesOrderItems($order, $invoicesOrder, $initExpenses);
         $config = [
@@ -474,11 +466,13 @@ class Gstinicial extends MY_Controller
             }
         }
         
-        foreach ($initExpenses as $key => $value) {
-            if ($value['concepto'] == 'GASTO ORIGEN') {
-                $valuesOrder['gastos_origen'] = floatval($value['valor_provisionado']);
-            } elseif ($value['concepto'] == 'FLETE') {
-                $valuesOrder['flete'] = floatval($value['valor_provisionado']);
+        if(gettype($initExpenses) == 'array'){
+            foreach ($initExpenses as $key => $value) {
+                if ($value['concepto'] == 'GASTO ORIGEN') {
+                    $valuesOrder['gastos_origen'] = floatval($value['valor_provisionado']);
+                } elseif ($value['concepto'] == 'FLETE') {
+                    $valuesOrder['flete'] = floatval($value['valor_provisionado']);
+                }
             }
         }
         

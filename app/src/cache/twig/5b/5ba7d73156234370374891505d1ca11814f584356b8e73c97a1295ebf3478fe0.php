@@ -92,23 +92,45 @@ class __TwigTemplate_1212ae9ee47a3c277b23beb86469701a90c50f16d36ffa9485198bce592
         echo " </td>
           </tr>
           <tr>
+            <td class=\"text-right\"> <b>Status:</b></td>
+            <td> 
+              ";
+        // line 52
+        if (($this->getAttribute(($context["initExpense"] ?? null), "bg_closed", array()) == 0)) {
+            // line 53
+            echo "                <span class=\"label label-warning\"> 
+                Provisión Sin Justificar 
+              </span>
+              ";
+        } else {
+            // line 57
+            echo "                <span class=\"label label-success\">
+                Provisión Justificada 
+                 </span>
+              ";
+        }
+        // line 60
+        echo "              
+            </td>
+          </tr>
+          <tr>
             <td class=\"text-right\"> <b>Creado El:</b></td>
             <td> ";
-        // line 51
+        // line 65
         echo twig_escape_filter($this->env, $this->getAttribute(($context["initExpense"] ?? null), "date_create", array()), "html", null, true);
         echo " </td>
           </tr>
           <tr>
             <td class=\"text-right\"> <b>Ultima Actualización:</b></td>
             <td> ";
-        // line 55
+        // line 69
         echo twig_escape_filter($this->env, $this->getAttribute(($context["initExpense"] ?? null), "last_update", array()), "html", null, true);
         echo " </td>
           </tr>
           <tr>
             <td class=\"text-right\"> <b>Creado Por:</b></td>
             <td> ";
-        // line 59
+        // line 73
         echo twig_escape_filter($this->env, $this->getAttribute(($context["createBy"] ?? null), "nombres", array()), "html", null, true);
         echo " </td>
           </tr>
@@ -119,18 +141,18 @@ class __TwigTemplate_1212ae9ee47a3c277b23beb86469701a90c50f16d36ffa9485198bce592
   <div class=\"row\">
     <div class=\"col-sm-6\">
       <a href=\"";
-        // line 67
+        // line 81
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "pedido/presentar/";
         echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "nro_pedido", array()), "html", null, true);
         echo "\" class=\"btn btn-default btn-sm\">
       <span class=\"fa fa-arrow-left fa-fw\"></span>  Volver al Pedido ";
-        // line 68
+        // line 82
         echo twig_escape_filter($this->env, $this->getAttribute(($context["order"] ?? null), "nro_pedido", array()), "html", null, true);
         echo "
     </a>
       <a href=\"";
-        // line 70
+        // line 84
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "gstinicial/editar/";
         echo twig_escape_filter($this->env, $this->getAttribute(($context["initExpense"] ?? null), "id_gastos_nacionalizacion", array()), "html", null, true);
@@ -138,7 +160,7 @@ class __TwigTemplate_1212ae9ee47a3c277b23beb86469701a90c50f16d36ffa9485198bce592
       <span class=\"fa fa-pencil fa-fw\"></span>  Editar Gasto Inicial
     </a>
       <a href=\"";
-        // line 73
+        // line 87
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "gstinicial/eliminar/";
         echo twig_escape_filter($this->env, $this->getAttribute(($context["initExpense"] ?? null), "id_gastos_nacionalizacion", array()), "html", null, true);
@@ -162,7 +184,7 @@ class __TwigTemplate_1212ae9ee47a3c277b23beb86469701a90c50f16d36ffa9485198bce592
 
     public function getDebugInfo()
     {
-        return array (  142 => 73,  134 => 70,  129 => 68,  123 => 67,  112 => 59,  105 => 55,  98 => 51,  91 => 47,  84 => 43,  77 => 39,  70 => 35,  63 => 31,  56 => 27,  49 => 23,  42 => 19,  35 => 15,  19 => 1,);
+        return array (  164 => 87,  156 => 84,  151 => 82,  145 => 81,  134 => 73,  127 => 69,  120 => 65,  113 => 60,  107 => 57,  101 => 53,  99 => 52,  91 => 47,  84 => 43,  77 => 39,  70 => 35,  63 => 31,  56 => 27,  49 => 23,  42 => 19,  35 => 15,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -222,6 +244,20 @@ class __TwigTemplate_1212ae9ee47a3c277b23beb86469701a90c50f16d36ffa9485198bce592
           <tr>
             <td class=\"text-right\"> <b>Comentarios:</b></td>
             <td> {{ initExpense.comentarios }} </td>
+          </tr>
+          <tr>
+            <td class=\"text-right\"> <b>Status:</b></td>
+            <td> 
+              {% if initExpense.bg_closed == 0 %}
+                <span class=\"label label-warning\"> 
+                Provisión Sin Justificar 
+              </span>
+              {% else %}
+                <span class=\"label label-success\">
+                Provisión Justificada 
+                 </span>
+              {% endif %}              
+            </td>
           </tr>
           <tr>
             <td class=\"text-right\"> <b>Creado El:</b></td>

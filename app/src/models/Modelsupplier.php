@@ -76,7 +76,29 @@ class Modelsupplier extends CI_Model
         }
         return false;
     }
-
+    
+    /**
+     * Retorna una lista de proveedores locales
+     * @param string $location 'NACIONAL' | 'INTERNACIONAL'   
+     * @return array | boolean
+     */
+    public function getByLocation(string $location)
+    {
+        if(gettype($location) != 'string'){
+            return false;
+        }
+        $suppliers = $this->modelBase->get_table([
+            'table' => $this->table,
+            'where' => [
+                'tipo_provedor' => $location,
+            ],
+        ]);
+        if ((gettype($suppliers) == 'array') && (count($suppliers) > 0)){
+            return $suppliers;
+        }
+        return false;
+    }
+    
     /**
      * Obtiene toda la informacion de un proveedor
      * Productos

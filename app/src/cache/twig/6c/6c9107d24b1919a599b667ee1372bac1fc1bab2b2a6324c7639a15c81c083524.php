@@ -16,7 +16,9 @@ class __TwigTemplate_ff27bb2d00eb70b475fb8f89dc0787590c6b4e91ad15c7606e23b44dae7
     protected function doDisplay(array $context, array $blocks = array())
     {
         // line 1
-        echo "<form method=\"post\" action=\"";
+        echo "<br>
+<form method=\"post\" action=\"";
+        // line 2
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "facturapagos/validar/\">
   <div class=\"row\">
@@ -29,28 +31,28 @@ class __TwigTemplate_ff27bb2d00eb70b475fb8f89dc0787590c6b4e91ad15c7606e23b44dae7
         required=\"true\" 
         class=\"form-control\">
         ";
-        // line 11
+        // line 12
         if ((($context["fail"] ?? null) == true)) {
-            // line 12
+            // line 13
             echo "        <option selected=\"true\" value=\"";
             echo twig_escape_filter($this->env, $this->getAttribute(($context["invoice"] ?? null), "identificacion_proveedor", array()), "html", null, true);
             echo "\">
         ";
-            // line 13
+            // line 14
             echo twig_escape_filter($this->env, ($context["supplierName"] ?? null), "html", null, true);
             echo " </option>
         ";
         } else {
-            // line 15
+            // line 16
             echo "        <option disabled=\"\" selected=\"\" >Seleccione... </option>
         ";
         }
-        // line 17
+        // line 18
         echo "        ";
         $context['_parent'] = $context;
         $context['_seq'] = twig_ensure_traversable(($context["suppliers"] ?? null));
         foreach ($context['_seq'] as $context["_key"] => $context["supplier"]) {
-            // line 18
+            // line 19
             echo "          <option value=\"";
             echo twig_escape_filter($this->env, $this->getAttribute($context["supplier"], "identificacion_proveedor", array()), "html", null, true);
             echo "\"> ";
@@ -61,7 +63,7 @@ class __TwigTemplate_ff27bb2d00eb70b475fb8f89dc0787590c6b4e91ad15c7606e23b44dae7
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_iterated'], $context['_key'], $context['supplier'], $context['_parent'], $context['loop']);
         $context = array_intersect_key($context, $_parent) + $_parent;
-        // line 20
+        // line 21
         echo "        </select>
       </div>
     </div>
@@ -75,7 +77,7 @@ class __TwigTemplate_ff27bb2d00eb70b475fb8f89dc0787590c6b4e91ad15c7606e23b44dae7
         name=\"nro_factura\"
         required=\"true\" 
         value=\"";
-        // line 32
+        // line 33
         echo twig_escape_filter($this->env, $this->getAttribute(($context["invoice"] ?? null), "nro_factura", array()), "html", null, true);
         echo "\" 
         >
@@ -93,7 +95,7 @@ class __TwigTemplate_ff27bb2d00eb70b475fb8f89dc0787590c6b4e91ad15c7606e23b44dae7
                name=\"fecha_emision\" 
                class=\"bootstrap-datepicker\" 
                value=\"";
-        // line 47
+        // line 48
         echo twig_escape_filter($this->env, $this->getAttribute(($context["invoice"] ?? null), "fecha_emision", array()), "html", null, true);
         echo "\" 
                >
@@ -113,7 +115,7 @@ class __TwigTemplate_ff27bb2d00eb70b475fb8f89dc0787590c6b4e91ad15c7606e23b44dae7
           maxlength=\"8\" 
           name=\"valor\"
           value=\"";
-        // line 64
+        // line 65
         echo twig_escape_filter($this->env, $this->getAttribute(($context["invoice"] ?? null), "valor", array()), "html", null, true);
         echo "\" 
           >
@@ -130,7 +132,7 @@ class __TwigTemplate_ff27bb2d00eb70b475fb8f89dc0787590c6b4e91ad15c7606e23b44dae7
           maxlength=\"250\" 
           class=\"form-control\"
           >";
-        // line 78
+        // line 79
         echo twig_escape_filter($this->env, $this->getAttribute(($context["invoice"] ?? null), "comentarios", array()), "html", null, true);
         echo "</textarea>
         </div>
@@ -144,7 +146,7 @@ class __TwigTemplate_ff27bb2d00eb70b475fb8f89dc0787590c6b4e91ad15c7606e23b44dae7
             Guardar Registro
          </button>
       <a href=\"";
-        // line 89
+        // line 90
         echo twig_escape_filter($this->env, ($context["rute_url"] ?? null), "html", null, true);
         echo "facturapagos/\" class=\"btn btn-sm btn-default\">
             <span class=\"fa fa-arrow-left fa-fw\"></span>
@@ -172,7 +174,7 @@ class __TwigTemplate_ff27bb2d00eb70b475fb8f89dc0787590c6b4e91ad15c7606e23b44dae7
 
     public function getDebugInfo()
     {
-        return array (  148 => 89,  134 => 78,  117 => 64,  97 => 47,  79 => 32,  65 => 20,  54 => 18,  49 => 17,  45 => 15,  40 => 13,  35 => 12,  33 => 11,  19 => 1,);
+        return array (  150 => 90,  136 => 79,  119 => 65,  99 => 48,  81 => 33,  67 => 21,  56 => 19,  51 => 18,  47 => 16,  42 => 14,  37 => 13,  35 => 12,  22 => 2,  19 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -185,7 +187,8 @@ class __TwigTemplate_ff27bb2d00eb70b475fb8f89dc0787590c6b4e91ad15c7606e23b44dae7
 
     public function getSourceContext()
     {
-        return new Twig_Source("<form method=\"post\" action=\"{{rute_url}}facturapagos/validar/\">
+        return new Twig_Source("<br>
+<form method=\"post\" action=\"{{rute_url}}facturapagos/validar/\">
   <div class=\"row\">
     <div class=\"col-sm-6\">
       <div class=\"form-group\">

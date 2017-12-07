@@ -95,7 +95,7 @@ class Gstinicial extends MY_Controller
             'initExpense' => $initExpense,
             'supplier' => $this->modelSupplier->get($initExpense['identificacion_proveedor']),
             'createBy' => $this->session->userdata(),
-            'titleContent' => 'Descripción De Gasto Incial Pedido:' . $order['nro_pedido'],
+            'titleContent' => 'Descripción De Gasto Inicial Pedido:' . $order['nro_pedido'],
             'show' => true
         ]);
     }

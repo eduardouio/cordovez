@@ -21,6 +21,7 @@ class Facturapagos extends MY_Controller
     private $modelUser;
     private $modelSupplier;
     private $modelPaid;
+    private $myModel;
     
 
     public function __construct()
@@ -39,10 +40,12 @@ class Facturapagos extends MY_Controller
         $this->load->model('modeluser');
         $this->load->model('modelsupplier');
         $this->load->model('modelpaid');
+        $this->load->model('mymodel');
         $this->modelOrder = new Modelorder();
         $this->modelUser = new Modeluser();
         $this->modelSupplier = new Modelsupplier();
         $this->modelPaid = new Modelpaid();
+        $this->myModel = new Mymodel();
     }
 
     /**
@@ -101,8 +104,8 @@ class Facturapagos extends MY_Controller
     public function nuevo()
     {
         $this->responseHttp([
-            'titleContent' => 'Registro Nuevo Comprobante De Pago',
-            'suppliers' => $this->modelSupplier->getAll(),
+            'titleContent' => 'Registro Nuevo Comprobante De Pago Servicios',
+            'suppliers' => $this->modelSupplier->getByLocation('NACIONAL'),
             'create' => true,
         ]);
     }

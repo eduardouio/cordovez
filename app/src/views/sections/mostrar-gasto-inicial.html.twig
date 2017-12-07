@@ -47,6 +47,20 @@
             <td> {{ initExpense.comentarios }} </td>
           </tr>
           <tr>
+            <td class="text-right"> <b>Status:</b></td>
+            <td> 
+              {% if initExpense.bg_closed == 0 %}
+                <span class="label label-warning"> 
+                Provisión Sin Justificar 
+              </span>
+              {% else %}
+                <span class="label label-success">
+                Provisión Justificada 
+                 </span>
+              {% endif %}              
+            </td>
+          </tr>
+          <tr>
             <td class="text-right"> <b>Creado El:</b></td>
             <td> {{ initExpense.date_create }} </td>
           </tr>

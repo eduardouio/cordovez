@@ -45,6 +45,8 @@
                                     type="radio" 
                                     name="{{ rateExpense.concepto | replace({' ':''})}}" 
                                     value="{{rateExpense.id_tarifa_gastos}}"
+                                    id= 'cehck{{loop.index}}'
+                                    onclick = "test('cehck{{loop.index}}')"
                                     >
                                  </td>
                               </tr>
@@ -63,3 +65,31 @@
 <br>
                         </form>
 
+<script type="text/javascript">
+
+   var radioState = false;
+   function test(element){
+      if(radioState == false){
+         check(element);
+         radioState = true;
+      }else{
+         uncheck(element);
+         radioState = false;
+      }
+   }
+
+/**
+* Marca a un radio button como seleccionado
+*/
+function check(element){
+   document.getElementById(element).checked = true;
+}
+
+/**
+* quita la seleccion a un radio button
+*/
+function uncheck(element){
+   document.getElementById(element).checked = false;
+}
+
+</script>

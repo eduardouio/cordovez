@@ -1,36 +1,28 @@
 <div class="well well-sm">
 	<div class="row">
-		<div class="col-md-3">
+		<div class="col-md-5">
 			<strong>Proveedor:</strong> <span>{{ document.supplier.nombre }}</span>
 		</div>
-		<div class="col-md-2">
+		<div class="col-md-3">
 			<strong>Ruc:</strong> <span>{{ document.supplier.identificacion_proveedor }}</span>
 		</div>
-		<div class="col-md-2">
+		<div class="col-md-3">
 			<strong>Fecha:</strong> <span>{{ document.fecha_emision  }}</span>
-		</div>
-		<div class="col-md-5">
-			<strong>Comentarios:</strong> <span>{{ document.comentarios }}</span>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-md-2">
 			<strong>Valor $:</strong> <span class="text-primary">{{ document.valor | number_format(2,',','.')}}</span>
 		</div>
-		<div class="col-md-2">
-			<strong>Justificado $:</strong> <span class="text-success"> $
-				{{ 0 | number_format(0,',','.') }}
-			</span>
-		</div>
-		<div class="col-md-2">
-			<strong>Pendiente $:</strong> <span class="text-danger"> $ {{ 0 | number_format(0,',','.') }}
-			</span>
-		</div>
 		<div class="col-md-3">
 			<strong>Creado Por :</strong> <span>{{ user.nombres }}</span>
 		</div>
 		<div class="col-md-2">
+			<strong>Registrado:</strong>
 			<span>{{ document.date_create }}</span>
+		</div>
+		<div class="col-md-5">
+			<strong>Comentarios:</strong> <span>{{ document.comentarios }}</span>
 		</div>
 	</div>
 </div>
@@ -155,11 +147,11 @@
 				</div>
 				<div class="col-md-4">
 					 <strong> Justificado: </strong> 
-					   {{valor_justificado}}
+					   {{valJustified | number_format(2)}}
 				</div>
 				<div class="col-md-4">
 					<strong> Por Justificar: </strong>
-					  {{por_justificar}}
+					  {{(provision.valor_provisionado - valJustified - detailInvoice.valor) | number_format(2)}}
 				</div>
 				</div>
 			</div>
@@ -186,7 +178,8 @@ var list = {};
 var provision = {};
 var template = '';
 var valor_provisionado = {{ provision.valor_provisionado }};
-var valor = 0;
+var valJustified = {{valJustified}};
+var valor = {{ detailInvoice.valor }};
 var success = `<h3 class="text-success">
 					<span class="fa fa-check"></span>Provisión Justificada
 				</h3>`;
@@ -197,16 +190,14 @@ var exceeded = `<h3 class="text-danger">
 					<span class="fa fa-warning"></span> Provisión Excedida.
 				</h3>`;
 
-/**
-* Comprueba el saldo de la justificacion
-*/
-$('#valor').keyup(function(){
-	if (this.value === ''){
+function checkValue(){
+	var value = $('#valor').val();
+	if (value === ''){
 		valor = 0;
 	}else{
-		valor = parseFloat(this.value);
+		valor = parseFloat(value);
 	}
-	var saldo = Math.round((valor_provisionado - valor) *100)/100;
+	var saldo = Math.round((valor_provisionado - (valor + valJustified)) *100)/100;
 	$('#status').empty();
 	$('#saldo').text(saldo.toString());
 	if (saldo < 0){
@@ -218,6 +209,15 @@ $('#valor').keyup(function(){
 	}else{
 		$('#status').append(pending);		
 	}
+}
+
+checkValue();
+
+/**
+* Comprueba el saldo de la justificacion
+*/
+$('#valor').keyup(function(){
+	checkValue();
 })
 </script>
 

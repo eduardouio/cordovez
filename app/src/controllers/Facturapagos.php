@@ -81,6 +81,7 @@ class Facturapagos extends MY_Controller
             $document['user'] = $this->modelUser->get($document['id_user']);
             $documentList[$item] = $document;
         }
+        
         $this->responseHttp([
             'list' => true,
             'controller' => $this->controller,

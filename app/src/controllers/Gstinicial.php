@@ -314,7 +314,7 @@ class Gstinicial extends MY_Controller
             $this->redirectPage('ordersList');
             return false;
         }
-        $incoterms = $this->modelIncoterms->get($order[0]);
+        $incoterms = $this->modelIncoterms->get($order);
         
         if ($incoterms == false) {
             $this->redirectPage('presentOrder', $nroOrder);

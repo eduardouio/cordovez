@@ -1,36 +1,27 @@
 <div class="well well-sm">
 	<div class="row">
-		<div class="col-md-3">
+		<div class="col-md-5">
 			<strong>Proveedor:</strong> <span>{{ document.supplier.nombre }}</span>
 		</div>
-		<div class="col-md-2">
+		<div class="col-md-3">
 			<strong>Ruc:</strong> <span>{{ document.supplier.identificacion_proveedor }}</span>
 		</div>
-		<div class="col-md-2">
+		<div class="col-md-3">
 			<strong>Fecha:</strong> <span>{{ document.fecha_emision  }}</span>
-		</div>
-		<div class="col-md-5">
-			<strong>Comentarios:</strong> <span>{{ document.comentarios }}</span>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-md-2">
 			<strong>Valor $:</strong> <span class="text-primary">{{ document.valor | number_format(2,',','.')}}</span>
 		</div>
-		<div class="col-md-2">
-			<strong>Justificado $:</strong> <span class="text-success"> $
-				{{ 0 | number_format(0,',','.') }}
-			</span>
-		</div>
-		<div class="col-md-2">
-			<strong>Pendiente $:</strong> <span class="text-danger"> $ {{ 0 | number_format(0,',','.') }}
-			</span>
-		</div>
 		<div class="col-md-3">
 			<strong>Creado Por :</strong> <span>{{ user.nombres }}</span>
 		</div>
 		<div class="col-md-2">
 			<span>{{ document.date_create }}</span>
+		</div>
+		<div class="col-md-5">
+			<strong>Comentarios:</strong> <span>{{ document.comentarios }}</span>
 		</div>
 	</div>
 </div>

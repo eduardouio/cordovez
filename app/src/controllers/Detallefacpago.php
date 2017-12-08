@@ -117,16 +117,21 @@ class Detallefacpago extends \MY_Controller
     
     /**
      * Presenta un formulario para editar la justificacion
+     * recupera la informacion de las otras justificaciones
      * @param int $idDetail
      */
     public function editar($idDetail){
         $detail = $this->modelPaidDetail->getDetail($idDetail);
+        
         if ($detail == false){
             $this->redirectPage('paidsList');
             return false;
         }
+        
         $document = $this->modelPaid->get($detail['id_documento_pago']);
         $provision = $this->modelExpenses->getExpense($detail['id_gastos_nacionalizacion']);
+        $details = $this->modelPaidDetail->getByExpense($detail['id_gastos_nacionalizacion']);
+        $valJustified = ($details['sums'] - $detail['valor']);
         
         $arreglo = [
             'invoiceDetail' => $detail,
@@ -137,6 +142,8 @@ class Detallefacpago extends \MY_Controller
                                 $document['nro_factura'] . '] <small>' . 
                                 $document['supplier']['nombre'] . '</small>',
             'document' => $document,
+            'details' => $details,
+            'valJustified' => $valJustified,
             'provision' => $provision,
             'user' => $this->modelUser->get($provision['id_user']),
             'detailInvoice' => $detail,
@@ -182,17 +189,28 @@ class Detallefacpago extends \MY_Controller
     
     
     /**
-     * Elimina el detalle de una documento de pago
+     * Elimina el detalle de una documento de pago y verifica que la
+     * provision quede injustificada
      * @param int $idDetail
      */
     public function eliminar($idDetail){
-        $detail = $this->modelPaidDetail->getDetail($idDetail);
+        $detail = $this->modelPaidDetail->getDetail($idDetail);        
         if ($detail == false){
             $this->redirectPage('paidsList');
             return false;
         }
+        $provision = $this->modelExpenses->getExpense(
+                                                $detail['id_gastos_nacionalizacion']);
+        $provisonUpdate = [
+            'bg_closed' => 0,
+        ]; 
         $this->db->where('id_detalle_documento_pago', $idDetail);
         if ($this->db->delete($this->controller)){
+            if($provision['bg_closed']){
+                $this->db->where('id_gastos_nacionalizacion', 
+                                                $detail['id_gastos_nacionalizacion']);
+                $this->db->update('gastos_nacionalizacion', $provisonUpdate );
+            }
             $this->redirectPage('paidPresent', $detail['id_documento_pago']);
            }
     }

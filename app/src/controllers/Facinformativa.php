@@ -60,16 +60,16 @@ class Facinformativa extends MY_Controller {
 	* @return viod 
 	*/
 	public function nuevo($nroOrder){
-	    if(isset($nroOrder) == false){
-	        $this->redirectPage('ordersList');
-	        return false;
-        }
-
 		$order = $this->modelOrder->get($nroOrder);
+		if($order == false){
+		    $this->redirectPage('ordersList');
+		    return false;
+		}
+		
         $this->responseHttp([
             'create_invoice' => true,
             'order' => $order,
-            'invoices' => $this->modelOrder->getInvoices($nroOrder),
+            'invoicesOrder' => $this->modelOrder->getInvoices($nroOrder),
             'infoInvoices' => $this->modelinfoinvoice->get($nroOrder),
             'supplier' =>  $this->modelsupplier->get($this->almaceneraId),
             'haveEuros' => $this->orderHaveEuros($nroOrder),
@@ -79,7 +79,6 @@ class Facinformativa extends MY_Controller {
             'warehouseDays' => warehouseDays($order),
                         ]);
 	}
-
 
 
 	/**

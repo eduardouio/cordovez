@@ -1,14 +1,14 @@
 {% set valFob  = 0.0 %}
 {% set valInformativas  = 0.0 %}
 {% set parcials = 0 %}
-{% for invoice in  invoices%}
+{% for invoice in  invoicesOrder %}
     {%  set valFob = valFob + (
             invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) %}
 {% endfor %}
 {% for infoInvoice in infoInvoices  %}
     {% set parcials = parcials + 1 %}
     {% set valInformativas = valInformativas + (
-    (infoInvoice.valor) * (infoInvoice.tipo_cambio)
+    (infoInvoice.valor)
     )%}
 {% endfor %}
   <div class="well well-sm">
@@ -100,19 +100,7 @@
       >
     </div>
     </div>
-    <div class="col-md-2">
-    <div class="form-group">
-      <label>Nro Factura</label>
-      <input 
-      type="text" 
-      name="nro_factura_informativa"
-      class="form-control" 
-      autofocus="autofocus" 
-      required="required" 
-      >
-    </div>
-    </div>
-    <div class="col-md-3">
+        <div class="col-md-3">
       <div class="form-group">
       <label>Proveedor</label>
     <select
@@ -122,6 +110,18 @@
     > 
     <option value="{{supplier.identificacion_proveedor}}"> {{supplier.nombre}} </option>
     </select>
+    </div>
+    </div>
+    <div class="col-md-2">
+    <div class="form-group">
+      <label>Nro Factura Informativa</label>
+      <input 
+      type="text" 
+      name="nro_factura_informativa"
+      class="form-control" 
+      autofocus="autofocus" 
+      required="required" 
+      >
     </div>
     </div>
         <div class="col-md-2">

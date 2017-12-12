@@ -1,0 +1,176 @@
+{% set sumDetails = detailInfoinvoice %}
+{% if detailInfoinvoice == false %}
+{% set sumDetails = 0 %}
+{% endif %}
+{% set saldoFactura = (infoInvoice.valor - sumDetails  ) %}
+{% set valorJustificado = 0.0 %}
+{% set moneda = '&euro;' %}
+{% if infoInvoice.moneda == 'DOLARES' %}
+{% set moneda = '$' %}
+{% endif %}
+<div class="well well-sm">
+	<div class="row">
+		<div class="col-md-3">
+			<strong>Proveedor:</strong> <span>{{ supplier.nombre }}</span>
+		</div>
+		<div class="col-md-2">
+			<strong>Ruc:</strong> <span>{{ supplier.identificacion_proveedor }}</span>
+		</div>
+		<div class="col-md-2">
+			<strong>Fecha:</strong> <span>{{ infoInvoice.fecha_emision  }}</span>
+		</div>
+		<div class="col-md-2">
+			<strong>Seguro</strong> {{infoInvoice.seguro_aduana }}
+			/ 
+			<strong>Flete</strong> {{infoInvoice.flete_aduana }}
+		</div>
+		<div class="col-md-3">
+			<strong>Comentarios:</strong> <span>{{ infoInvoice.comentarios }}</span>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-2">
+			<strong>Valor {{moneda | raw}}:</strong> <span class="text-primary">{{ infoInvoice.valor | number_format(2,',','.')}}</span>
+		</div>
+		<div class="col-md-2">
+			<strong>Moneda </strong> <span class="text-success"> {{ moneda | raw }}
+				{{ infoInvoice.moneda | upper }}
+			</span>
+		</div>
+		<div class="col-md-2">
+			<strong>Tipo de Cambio:</strong> <span class="text-danger"> $
+				{{ infoInvoice.tipo_cambio | number_format(2,',','.') }}
+			</span>
+		</div>
+		<div class="col-md-4">
+			<strong>Creado Por :</strong> <span>{{ user.nombres }}</span>
+			<span class="text-primary"> [{{ infoInvoice.date_create }}]</span>
+		</div>
+	</div>
+</div>
+<br>
+<div class="row">
+	<div class="col-md-6">
+		{% if saldoFactura > 0 %}
+		    &nbsp;
+    <small class="text-danger"> <span class="fa fa-warning"></span> Completar El Detalle De La Factura
+    </small>
+    <br>
+    <br>
+		<a
+			href="{{ rute_url }}facinfdetalle/nuevo/{{ infoInvoice.id_factura_informativa }}"
+			class="btn btn-default btn-sm"> <span class="fa fa-file"></span>
+			Agregar Detalle
+		</a> 			
+		{% endif %}
+		{% if saldoFactura < 0 %}
+		<h4 class="text-danger" ><span class="fa fa-warning"></span> Factura Inválida, VALORES EXCEDIDOS</h4>  
+		{% endif %}
+		{% if saldoFactura == 0 %}
+		<h4 class="text-succes" ><span class="fa fa-check"></span> Factura Completa</h4>  
+		{% endif %}
+		<br>
+		<br>
+	</div>
+	<div class="col-md-2">
+		<h4 class="text-primary">
+			<small>Val Factura: {{moneda | raw}}</small> <span> {{ infoInvoice.valor | number_format(2,',','.')}}</span>
+		</h4>
+	</div>
+	<div class="col-md-2">
+		<h4 class="text-success">
+			<small>Val Justificado: {{ moneda | raw }}</small> <span> {{ invoiceDetails.sums | number_format(2,',','.') }}</span>
+		</h4>
+	</div>
+	<div class="col-md-2">
+		<h4 
+		{% if saldoFactura > 0 %}
+			class="text-success"
+		{% endif %}
+		{% if saldoFactura < 0 %}
+			class ="text-danger"
+		{% endif %}
+		{% if saldoFactura == 0 %}
+		class ="text-success"
+		{% endif %}
+		class="text-defult"
+		>
+			<small>Val Pendiente: {{ moneda | raw }}</small> <span> {{ saldoFactura | number_format(2,',','.') }}</span>
+		</h4>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<table class="table table-hover table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Producto</th>
+					<th>Grado A</th>
+					<th>Cajas</th>
+					<th>Costo Caja</th>
+					<th>Costo U</th>
+					<th>Capacidad</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+			{%  for detail in details %}		
+			<td>{{loop.index}}</td>
+				<td> <a href="{{rute_url}}producto/presentar/{{detail.cod_contable}}">
+			{{ detail.product.name  }}
+			</a>
+		</td>
+			</td>
+			<td> {{ detail.grado_alcoholico}} </td>
+			<td>{{ detail.nro_cajas }}</td>
+			<td>{{ (detail.nro_cajas/ orderDetail.value) | number_format(2,',','.')  }}</td>
+			<td> {{ product.capacidad }} </td>
+			<td>
+				 <div class="dropdown">
+                <button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-sm btn-default">
+                <span class="fa fa-chevron-down" ></span>
+                Seleccione
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dLabel">
+                	<li> <a href="{{rute_url}}facinfdetalle/presentar/{{detail.id_factura_informativa_detalle}}">
+                    <span class="fa fa-eye fa-fw"></span>
+                    Agregar Detalle Factura</a> 
+                  </li>
+                  <li> <a href="{{rute_url}}facinfdetalle/presentar/{{detail.id_factura_informativa_detalle}}">
+                    <span class="fa fa-eye fa-fw"></span>
+                    Ver Detalle Factura</a> 
+                  </li>
+                  <li> <a href="{{rute_url}}producto/presentar/{{detail.cod_contable}}">
+                    <span class="fa fa-eye fa-fw"></span>
+                    Ver Producto</a> 
+                  </li>
+                  <li> <a href="{{rute_url}}facinfdetalle/editar/{{detail.id_factura_informativa_detalle}}">
+                    <span class="fa fa-pencil fa-fw"></span>
+                    Editar Detalle Factura</a> 
+                  </li>
+                  <li> <a href="{{rute_url}}facinfdetalle/eliminar/{{detail.id_factura_informativa_detalle}}" class="text-danger">
+                    <span class="fa fa-trash fa-fw"></span>
+                    Eliminar Detalle Factura</a> 
+                  </li>
+                </ul>
+              </div>
+			</td>
+			</tr>
+			{%  endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-2">
+		<a href="{{rute_url}}pedido/presentar/{{ infoInvoice.nro_pedido }}">
+			<i class="fa fa-arrow-left"></i> Volver al Pedido [{{ infoInvoice.nro_pedido }}]
+		</a>
+	</div>
+	<div class="col-md-offset-10">
+	<a href="{{rute_url}}facinformativa/editar/{{infoInvoice.id_factura_informativa}}" class="btn btn-info btn-sm"> 
+	Editar Cabeceras Facura
+	</a>
+	</div>
+</div>

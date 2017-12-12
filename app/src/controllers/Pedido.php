@@ -168,7 +168,7 @@ class Pedido extends MY_Controller
             'orderInvoices' => $this->myModel->getOrderInvProducts($nroOrder),
             'initialExpenses' => $this->myModel->getInitialExpenses($nroOrder),
             'nationalizations' => $this->myModel->getNationalizations($nroOrder),
-            'invoicesInfo' => $this->modelInfoInvoice->get($nroOrder),
+            'invoicesInfo' => $this->modelInfoInvoice->getByOrder($nroOrder),
             'boxesOrder' => $this->myModel->getBoxesOrder($nroOrder, $order['regimen']),
             'provisions' => 0, #implementar
             'consolided' => 0, #implementar

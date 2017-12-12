@@ -3,15 +3,15 @@
 {% include 'base/navbarleft.html.twig' %}
 {% include 'base/content.html.twig' %}
 
-{% if show_invoices == true %}
-	{% include 'sections/mostrar-factura-informativa.html.twig' %}
+{% if show_detail == true %}
+	{% include 'sections/mostrar-factura-informativa-detalle.html.twig' %}
 {% endif %}
 
-{% if create_invoice == true %}
+{% if create_detail == true %}
 	{% include 'forms/frm-factura-informativa.html.twig' %}  
 {% endif %}
 
-{% if edit_invoice == true %}
+{% if edit_detail == true %}
 	{% include 'forms/frm-factura-informativa-edit.html.twig' %}    
 {% endif %}
 

@@ -41,7 +41,7 @@ class Modelinfoinvoice extends CI_Model
      * @param (string) $nroOrder
      * @return array | boolean
      */
-    public function get($nroOrder)
+    public function getByOrder($nroOrder)
     {
         $invoices = $this->modelBase->get_table([
             'table' => $this->table,
@@ -64,7 +64,42 @@ class Modelinfoinvoice extends CI_Model
         return false;
     }
 
-
+    /**
+     * Obtiene el registro de una factura informativa
+     * @param int $idFacInformative
+     * @return array | boolean
+     */
+    public function get($idFacInformative){
+        $infoInvoice = $this->modelBase->get_table([
+            'table' => $this->table,
+            'where' => [
+                'id_factura_informativa' => $idFacInformative,
+            ],
+        ]);
+        
+        if((gettype($infoInvoice) == 'array') && (count($infoInvoice) > 0)){
+            return $infoInvoice[0];
+        }
+        
+        return false;
+    }
+    
+    
+    /**
+     * Eliminar una factura infotmativa de la base de datos si no puede retorna false
+     * @param integer $idFactInformative identificador de regitro
+     * @return boolean 
+     */
+    public function delete($idFactInformative){
+        $this->db->where('id_factura_informativa', $idFactInformative);
+        if($this->db->delete($this->table)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    
     /**
      * Obtiene el detalle de una factura informativa
      * @param $invoice factura informativa
@@ -91,7 +126,7 @@ class Modelinfoinvoice extends CI_Model
                 floatval($value['nro_cajas']);
 
             $countBoxesProduct += floatval($value['nro_cajas']);
-            $product = $this->modelproduct->get($valu['cod_contable']);
+            $product = $this->modelproduct->get($value['cod_contable']);
 
             $value['nombre'] = $product['nombre'];
             $value['cantidad_x_caja'] = $product['cantidad_x_caja'];

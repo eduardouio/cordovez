@@ -280,6 +280,7 @@ class Gstinicial extends MY_Controller
         $initExpenses = $this->myModel->getInitialExpenses($nroOrder);
         $minimal = $this->getMinimalParams($order, $initExpenses);
         $minimal['valuesOrder'] = $this->calcValuesOrderItems($order, $invoicesOrder, $initExpenses);
+
         $config = [
             'validateExpenses' => true,
             'titleContent' => 'Generar Gastos Iniciales Pedido: [' . $nroOrder . '] ' . ' <small>Validar Información</small>',

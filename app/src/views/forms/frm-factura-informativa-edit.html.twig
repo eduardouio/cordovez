@@ -67,7 +67,7 @@ invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) 
          <span class="text-primary">
          {{ warehouseDays.years }} años /
          {{ warehouseDays.mounts }} meses /
-         {{ warehouseDays.days }} días
+         {{ warehouseDays.days }} días /
          </span>
       </div>
       <div class="col-sm-2">
@@ -97,10 +97,10 @@ invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) 
 </div>
 <br>
 <div class="row">
-   <div class="col-sm-3">
+   <div class="col-sm-5">
       &nbsp;
    </div>
-   <div class="col-sm-3">
+   <div class="col-sm-2">
       <h4 class="text-primary">
          <small>Saldo en $:</small>
          <span id="saldo_dolares">
@@ -108,7 +108,7 @@ invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) 
          </span>
       </h4>
    </div>
-   <div class="col-sm-3">
+   <div class="col-sm-2">
       <h4 class="text-primary">
          <small>Saldo En &euro;:</small>
          <span id="saldo_euros"> 
@@ -119,12 +119,13 @@ invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) 
    <div class="col-sm-3">
       <a href="{{rute_url}}pedido/presentar/{{order.nro_pedido}}" class="btn btn-sm btn-warning">
          <span class="fa fa-arrow-left fa-fw"></span>
-         Cancelar y Volver Pedido<b>[{{order.nro_pedido}}]</b>
+         Cancelar y Volver al Pedido <b>[{{order.nro_pedido}}]</b>
          </a>
    </div>
 </div>
 <br>
 <form method="post" action="{{rute_url}}facinformativa/validar/">
+	<input type="hidden" name="id_factura_informativa" value="{{infoInvoice.id_factura_informativa}}">
    <div class="row">
       <div class="col-md-1">
          <div class="form-group">
@@ -159,6 +160,7 @@ invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) 
                class="form-control" 
                autofocus="autofocus" 
                required="required" 
+               value="{{infoInvoice.nro_factura_informativa}}" 
                >
          </div>
       </div>
@@ -173,6 +175,7 @@ invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) 
                   required="required" 
                   name="fecha_emision" 
                   class="bootstrap-datepicker" 
+                  value="{{infoInvoice.fecha_emision}}" 
                   >
                <div class="input-group-addon">
                   <span class="glyphicon glyphicon-th"></span>
@@ -190,6 +193,7 @@ invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) 
                class="form-control" 
                step="0.01" 
                required="required" 
+               value="{{infoInvoice.seguro_aduana}}" 
                >
          </div>
       </div>
@@ -203,6 +207,7 @@ invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) 
                class="form-control" 
                step="0.01" 
                required="required" 
+               value="{{infoInvoice.flete_aduana}}" 
                >
          </div>
       </div>
@@ -217,6 +222,7 @@ invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) 
                placeholder="000-0000-00-000000"
                class="form-control" 
                maxlength="20" 
+               value="{{infoInvoice.nro_refrendo}}" 
                >
          </div>
       </div>
@@ -230,6 +236,7 @@ invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) 
                id="valor"
                step="0.01" 
                required="required" 
+               value="{{infoInvoice.valor}}" 
                >
          </div>
       </div>
@@ -243,8 +250,7 @@ invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) 
                required = "required"
                class="form-control"
                >
-               <option value="EUROS">EUROS</option>
-               <option value="DOLARES">DOLARES</option>
+               <option value="{{infoInvoice.moneda}}">{{infoInvoice.moneda}}</option>
             </select>
          </div>
       </div>
@@ -257,7 +263,7 @@ invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) 
                step="0.01" 
                name="tipo_cambio"
                id="tipo_cambio"
-               value="{{haveEuros.tipo_cambio}}" 
+               value="{{infoInvoice.tipo_cambio}}" 
                required="required" 
                >
          </div>
@@ -269,7 +275,7 @@ invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) 
                disabled=""   
                class="form-control"   
                id="total" 
-               value="0" 
+               value="{{(infoInvoice.tipo_cambio * infoInvoice.valor) | number_format(2,'.',',')}}" 
                style="font-weight: bold; font-size: 14px; color:blue" 
                >
          </div>
@@ -278,10 +284,10 @@ invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) 
       <input type="hidden" name="moneda" value="DOLARES">
       <input type="hidden" name="tipo_cambio" value="1">
       {% endif %}
-      <div class="col-md-2">
+            <div class="col-md-2">
          <div class="form-group">
             <label>Comentarios</label>
-            <textarea name="comentarios" class="form-control" rows="3" id="comentarios"></textarea>
+            <textarea name="comentarios" class="form-control" rows="3" id="comentarios">{{ infoInvoice.comentarios }}</textarea>
          </div>
       </div>
    </div>
@@ -318,9 +324,10 @@ invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) 
      $('#total').val($('#valor').val() * $('#tipo_cambio').val());   
    });
 
-   //tranformamos a mayusculas los comentarios
+ //tranformamos a mayusculas los comentarios
    $('#comentarios').keyup(function() {
    this.value = this.value.toUpperCase();
 });
+
 </script>
 

@@ -25,6 +25,11 @@
     color: #333;
 }
 
+.title-factura_informativa_detalle{
+	background-color: #444 !important;
+    color: #444;
+}
+
 .title-detalle_pedido_factura {
     background-color: #0097a7 !important;
     color: #fff;

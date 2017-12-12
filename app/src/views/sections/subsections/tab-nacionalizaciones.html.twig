@@ -53,8 +53,18 @@
             {% for invoice in viewData.invoicesInfo %}
                 <tr>
                     <td>{{ loop.index }}</td>
-                    <td>{{ invoice.nro_factura_informativa }}</td>
-                    <td>{{ invoice.supplier.nombre }}</td>
+                    <td>
+                        <a href="{{ rute_url }}facinformativa/presentar/{{ invoice.id_factura_informativa }}">
+                                        <span class="fa fa-eye fa-fw"></span>
+                                        {{ invoice.nro_factura_informativa }}
+                                         </a>
+                </td>
+                    <td>
+                        <a href="{{ rute_url }}proveedor/presentar/{{ invoice.identificacion_proveedor }}">
+                                        <span class="fa fa-eye fa-fw"></span>
+                                        {{ invoice.supplier.nombre }}
+                                         </a>
+                    </td>
                     <td>{{ invoice.fecha_emision }}</td>
                     <td>{{ invoice.moneda }}</td>
                     <td>{{ invoice.tipo_cambio }}</td>
@@ -71,7 +81,7 @@
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dLabel">
                                 <li>
-                                    <a href="{{ rute_url }}facinformativa/presentar/{{ order.nro_pedido }}">
+                                    <a href="{{ rute_url }}facinformativa/presentar/{{ invoice.id_factura_informativa }}">
                                         <span class="fa fa-eye fa-fw"></span>
                                         Ver Factura Informativa </a>
                                 </li>
@@ -84,6 +94,11 @@
                                     <a href="{{ rute_url }}facinformativa/editar/{{ invoice.id_factura_informativa }}">
                                         <span class="fa fa-pencil fa-fw"></span>
                                         Editar Factura Informativa</a>
+                                </li>
+                                <li>
+                                    <a href="{{ rute_url }}facinformativa/eliminar/{{ invoice.id_factura_informativa }}">
+                                        <span class="fa fa-trash fa-fw"></span>
+                                        Eliminar Factura Informativa</a>
                                 </li>
                             </ul>
                         </div>

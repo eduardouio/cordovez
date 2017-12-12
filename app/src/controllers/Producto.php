@@ -125,6 +125,10 @@ class Producto extends MY_Controller {
 			$config['viewMessage'] = true;
 			$config['message'] = 'La información de uno de los campos es incorrecta!';
 			$config['data'] = $status['columns'];
+			print '<pre>';
+			print_r($config);
+			print '</pre>';
+
 			$this->responseHttp($config);
 			return true;
 		}
@@ -165,7 +169,7 @@ class Producto extends MY_Controller {
 		$columnsLen = array(
 			'cod_contable' => 20,
 			'identificacion_proveedor' => 1,
-			'cod_ice' => 39,
+			'cod_ice' => 30,
 			'nombre' => 4,
 			'capacidad_ml' => 1,
 			'cantidad_x_caja' => 1,

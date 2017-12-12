@@ -18,7 +18,8 @@ class Facinformativa extends MY_Controller {
 	private $modelOrder;
 	private $modelUser;
 	private $modelSupplier;
-	private $modelInfoinvoice;
+	private $modelInfoInvoice;
+	private $myModel;
 
 	/**
 	 * Constructor de la funcion
@@ -39,10 +40,12 @@ class Facinformativa extends MY_Controller {
 	    $this->load->model('modeluser');
 	    $this->load->model('modelsupplier');
 	    $this->load->model('modelinfoinvoice');
+	    $this->load->model('mymodel');
 	    $this->modelOrder = new Modelorder();
 	    $this->modelUser = new Modeluser();
 	    $this->modelSupplier = new Modelsupplier();
 	    $this->modelInfoInvoice = new Modelinfoinvoice();
+	    $this->myModel = new Mymodel();
 	}
 	    
 
@@ -53,7 +56,46 @@ class Facinformativa extends MY_Controller {
 		$this->redirectPage('ordersList');
 		return true;
 	}
+	
+	
+	/**
+	 * Muestra a detalle una factura informativa
+	 * @param integer $idFacInformative
+	 * @return bool | template
+	 */
+	public function presentar($idFacInformative){
+	    $infoInvoice = $this->modelInfoInvoice->get($idFacInformative);
+	    if ($infoInvoice == false){
+	        $this->index();
+	        return false;
+	    }
+	    $order = $this->modelOrder->get($infoInvoice['nro_pedido']);
+	    $supplier = $this->modelSupplier->get($infoInvoice['identificacion_proveedor']);
+	    print('<pre>');
+	    print print_r([
+	            'show_invoices' => true,
+	            'titleContent' => 'Detalle Factura Informativa [ <small> ' . $infoInvoice['nro_factura_informativa'] .
+	            ' => ' . $supplier['nombre'] . ' </small> ]',
+	            'order' => $order,
+	            'infoInvoice' => $infoInvoice,
+	            'detailInfoinvoice' => $this->modelInfoInvoice->getInvoiceDetail($infoInvoice),
+	            'supplier' => $supplier,
+	            'user' => $this->modelUser->get($infoInvoice['id_user']),
+	        ]);
+	    print('</pre>');
+	    $this->responseHttp([
+	        'show_invoices' => true,
+	        'titleContent' => 'Detalle Factura Informativa [ <small> ' . $infoInvoice['nro_factura_informativa'] . 
+	                           ' => ' . $supplier['nombre'] . ' </small> ]',
+	        'order' => $order,
+	        'infoInvoice' => $infoInvoice,
+	        'detailInfoinvoice' => $this->modelInfoInvoice->getInvoiceDetail($infoInvoice),
+	        'supplier' => $supplier,
+	        'user' => $this->modelUser->get($infoInvoice['id_user']),
+	    ]);
+	}
 
+	
 	/**
 	* Presenta el formulario para registrar una nueva factura informativa
 	* @param (string) $nroOrder 
@@ -65,12 +107,11 @@ class Facinformativa extends MY_Controller {
 		    $this->redirectPage('ordersList');
 		    return false;
 		}
-		
         $this->responseHttp([
             'create_invoice' => true,
             'order' => $order,
             'invoicesOrder' => $this->modelOrder->getInvoices($nroOrder),
-            'infoInvoices' => $this->modelinfoinvoice->get($nroOrder),
+            'infoInvoices' => $this->modelInfoInvoice->getByOrder($nroOrder),
             'supplier' =>  $this->modelsupplier->get($this->almaceneraId),
             'haveEuros' => $this->orderHaveEuros($nroOrder),
             'titleContent' => 'Ingreso de Factura Informativa Pedido: ['.
@@ -79,7 +120,65 @@ class Facinformativa extends MY_Controller {
             'warehouseDays' => warehouseDays($order),
                         ]);
 	}
-
+	
+	
+	/**
+	 * Prepara el formulario para editar una factura informativa
+	 * @param integer $idFacInformative id_factura_informativa
+	 * @return Template 
+	 */
+	public function editar($idFacInformative){
+	    $infoInvoice =  $this->modelInfoInvoice->get($idFacInformative);
+	    if($infoInvoice == false){
+	        $this->redirectPage('ordersList');
+	        return false;
+	    }
+	    $order = $this->modelOrder->get($infoInvoice['nro_pedido']);
+	    
+	    $this->responseHttp([
+	        'edit_invoice' => true,
+	        'order' => $order,
+	        'invoicesOrder' => $this->modelOrder->getInvoices($infoInvoice['nro_pedido']),
+	        'infoInvoices' => $this->modelInfoInvoice->getByOrder($infoInvoice['nro_pedido']),
+	        'infoInvoice' =>$infoInvoice,
+	        'supplier' =>  $this->modelSupplier->get($this->almaceneraId),
+	        'haveEuros' => $this->orderHaveEuros($infoInvoice['nro_pedido']),
+	        'titleContent' => 'Editar Factura Informativa Nro ' . $infoInvoice['nro_factura_informativa'] . 
+	        ' Pedido: ['.
+	        $infoInvoice['nro_pedido'] . ']',
+	        'user' => $this->modelUser->get($infoInvoice['id_user']),
+	        'warehouseDays' => warehouseDays($order),
+	    ]);
+	}
+    
+	
+	/**
+	 * Elimina una factura informativa de la base de datos, solo si esta
+	 * no tiene dependencias
+	 * @param integer $idFacInformativa
+	 * @return bool | template
+	 */
+	public function eliminar($idFacInformative){
+	    $infoInvoice  = $this->modelInfoInvoice->get($idFacInformative);
+	    if ($infoInvoice == false){
+	        $this->redirectPage('ordersList');
+	        return false;
+	    }	 	
+	    if ($this->modelInfoInvoice->delete($idFacInformative)){
+	        $this->redirectPage('presentOrder', $infoInvoice['nro_pedido']);
+	    }else{
+	        $this->responseHttp([
+	            'titleContent' => 'No se puede eliminar el registro <small> Factura Informativa [ '. 
+	            $infoInvoice['nro_factura_informativa']. ' ] </small> ',
+	            'viewMessage' => true,
+	            'deleted' => true,
+	            'message' => 'El registro no puede ser eliminado, tiene dependencias',
+	            'id_row' => $infoInvoice['id_factura_informativa'],
+	            'order' => $infoInvoice['nro_pedido'],
+	        ]);
+	    }
+	    
+	}
 
 	/**
 	* Valida y gusrada una factura informativa si no existe redirecciona a pedidos
@@ -98,10 +197,12 @@ class Facinformativa extends MY_Controller {
 		$status = $this->validData($infoInvoice);
 		if ($status['status']) {
 			if(isset($infoInvoice['id_factura_informativa'])){
-				$this->db->where('id_factura_informativa', 
-																				$infoInvoice['id_factura_informativa']);
-				$infoInvoice['last_update'] = date('Y-md');
-				print 'actualizar';
+			    $infoInvoice['last_update'] = date('Y-m-d H:m:s');
+				$this->db->where('id_factura_informativa', $infoInvoice['id_factura_informativa']);
+				if($this->db->update($this->controller, $infoInvoice)){
+				    $this->redirectPage('presentOrder', $infoInvoice['nro_pedido']);
+				}			
+				
 			}else{
 			if($this->db->insert($this->controller, $infoInvoice)){
 				$this->redirectPage('presentOrder', $infoInvoice['nro_pedido']);
@@ -122,7 +223,7 @@ class Facinformativa extends MY_Controller {
 			);
 		}
 	}
-
+    
 
 	/**
 	* Verifica si el pedido tiene una factura en euros
@@ -162,10 +263,12 @@ class Facinformativa extends MY_Controller {
 	}
 
 
-		/* *
+	/* *
 	* Envia la respuestas html al navegador
+	* @param array $config Arreglo con info de la plantilla
+	* @return template
 	*/
-	public function responseHttp($config){
+	private function responseHttp($config){
 		$config['base_url'] = base_url();
 		$config['title'] = 'Factura Informativa';
 		$config['rute_url'] = base_url() . 'index.php/';

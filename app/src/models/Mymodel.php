@@ -148,7 +148,12 @@ class Mymodel extends CI_Model
      * Realiza una busqueda en la base de datos de aeurdo a las soguientes condiciones
      * 
      * @param string $tableDb nombre de la tabla a buscar
-     * @param array $searchValues valores relacionados a buscar
+     * @param array $searchValues arreglo clave valor
+     *              $searchValues  = [
+     *                  string searchCriteria criterio de busqueda,
+     *                  array columns columnas en las que se desea buscar,
+     *                  array orderby columna por la que ordena la orientacion (opcional)
+     *              ]
      */
     public function searchDb(string $tableDb, array $querySearchParams){
         $searchCritera = $querySearchParams['searchCriteria'];
@@ -164,8 +169,14 @@ class Mymodel extends CI_Model
             $query .= " OR ".  $paramQuery . " LIKE " . " '%". $searchCritera . "%' ";
             $index ++;
         }
-        $result = $this->db->query($query);
         
+        if (isset($querySearchParams['orderby'])){
+            $query .= ' ORDER BY ';            
+            foreach ($querySearchParams['orderby'] as $key => $val){
+                $query .= $key . ' ' . $val . '';   
+            }
+        }
+        $result = $this->db->query($query);        
         if ($result->num_rows() == 0){
             return false;
         }

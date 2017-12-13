@@ -15,7 +15,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Proveedor extends MY_Controller
 {
 
-    private $listPerPage = 40;
+    private $listPerPage = 20;
 
     private $controller = "proveedor";
 
@@ -87,7 +87,7 @@ class Proveedor extends MY_Controller
      */
     public function presentar($idSupplier)
     {
-        $supplier = $this->modelSupplier->getById($idSupplier);
+        $supplier = $this->modelSupplier->get($idSupplier);
         
         if ($supplier == false) {
             $this->index();
@@ -206,7 +206,7 @@ class Proveedor extends MY_Controller
                     $this->errorDbNotify();
                     return false;
                 }
-                $this->redirectPage('supplierPresent' , $lastId);
+                $this->redirectPage('supplierPresent' , $supplier['identificacion_proveedor']);
                 return true;
             }
         } else {
@@ -226,18 +226,20 @@ class Proveedor extends MY_Controller
      */
     public function eliminar($idSupplier)
     {
-        $this->db->where('id_proveedor', $idSupplier);
-        if ($this->db->delete($this->controller)) {
-            $config['viewMessage'] = true;
-            $config['deleted'] = true;
-            $config['message'] = 'El Proveedor Fue Eliminado Exitosamente!';
-            $this->responseHttp($config);
+        $supplier = $this->modelSupplier->getById($idSupplier);
+        if ($supplier == false){
+            return false;
+        }
+        
+        if($this->modelSupplier->delete($idSupplier)){        
+            $this->index();
         } else {
-            $config['id_supplier'] = $idSupplier;
-            $config['viewMessage'] = true;
-            $config['message'] = 'El Proveedor No Puede Ser Eliminado, 
-										                      Tiene Dependencias!';
-            $this->responseHttp($config);
+            $this->responseHttp([
+                'id_supplier' => $idSupplier,
+                'viewMessage' => true,
+                'message' => 'El Proveedor No Puede Ser Eliminado, 
+										                      Tiene Dependencias!',
+						          ]);
         }
     }
 

@@ -101,6 +101,23 @@ class Modelsupplier extends CI_Model
         return false;
     }
     
+    /**
+     * Obtiene un proveedot por categoria
+     * @param string $category nombre de la categoria licores, aduana, etc
+     * @return array | boolean
+     */
+    public function getByCategory(string $category)
+    {
+        $querySearchParams = [
+            'searchCriteria' => $category,
+            'columns' => ['categoria'],
+            'orderby' => [
+                'nombre' => 'ASC', 
+            ],
+        ];
+        return ($this->myModel->searchDb($this->table, $querySearchParams));
+    }
+    
     
     /**
      * Realiza una busqueda de proveedor de acuerdo a un criterio

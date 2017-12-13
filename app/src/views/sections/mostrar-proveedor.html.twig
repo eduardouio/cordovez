@@ -50,16 +50,16 @@
             <td> {{ supplier.comentarios | raw }}</td>
           </tr>
           <tr>
+            <td class="text-right"> <b>Creado Por:</b></td>
+            <td> {{ user.nombres }} </td>
+          </tr>
+          <tr>
             <td class="text-right"> <b>Fecha de Registro:</b></td>
             <td> {{ supplier.date_create }} </td>
           </tr>
           <tr>
             <td class="text-right"> <b>Ultima Actualización:</b></td>
             <td> {{ supplier.last_update }} </td>
-          </tr>
-          <tr>
-            <td class="text-right"> <b>Creado Por:</b></td>
-            <td> {{ createBy[0].nombres }} </td>
           </tr>
         </tbody>
       </table>

@@ -23,6 +23,8 @@ class Modelsupplier extends CI_Model
     private $modelInvoice;
 
     private $modelOrder;
+    
+    private $myModel;
 
     function __construct()
     {
@@ -37,8 +39,10 @@ class Modelsupplier extends CI_Model
     {
         $this->load->model('Modelbase');
         $this->load->model('Modelorder');
+        $this->load->model('Mymodel');
         $this->modelBase = new ModelBase();
         $this->modelOrder = new Modelorder();
+        $this->myModel = new Mymodel();
     }
 
     /**
@@ -95,6 +99,27 @@ class Modelsupplier extends CI_Model
             return $supplier[0];
         }
         return false;
+    }
+    
+    
+    /**
+     * Realiza una busqueda de proveedor de acuerdo a un criterio
+     * NOMBRE
+     * RUC
+     * CATEGORIA
+     * @param string $searchCriteria
+     * @return boolean | array
+     */
+    public function search($searchCriteria){
+      $querySearchParams = [
+          'columns' => [
+              'nombre', 
+              'identificacion_proveedor', 
+              'categoria',
+          ],
+          'searchCriteria' => $searchCriteria,
+      ];
+      return ($this->myModel->searchDb($this->table, $querySearchParams));
     }
     
     /**

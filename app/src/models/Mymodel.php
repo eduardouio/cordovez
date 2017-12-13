@@ -142,6 +142,35 @@ class Mymodel extends CI_Model
         $lastData["lastInsertId"] = $this->db->insert_id();
         return $lastData;
     }
+    
+    
+    /**
+     * Realiza una busqueda en la base de datos de aeurdo a las soguientes condiciones
+     * 
+     * @param string $tableDb nombre de la tabla a buscar
+     * @param array $searchValues valores relacionados a buscar
+     */
+    public function searchDb(string $tableDb, array $querySearchParams){
+        $searchCritera = $querySearchParams['searchCriteria'];
+        $query = 'select * from ' . $tableDb . ' where ';
+        $index = 0;
+        foreach ($querySearchParams['columns'] as  $paramQuery){
+            if ($index > 0){
+                $query .= " OR ";
+            }
+            $query .= $paramQuery . " = '"  . $searchCritera . "' ";
+            $query .= " OR ".  $paramQuery . " LIKE " . " '%". $searchCritera . "' ";
+            $query .= " OR ".  $paramQuery . " LIKE " . " '". $searchCritera . "%' ";
+            $query .= " OR ".  $paramQuery . " LIKE " . " '%". $searchCritera . "%' ";
+            $index ++;
+        }
+        $result = $this->db->query($query);
+        
+        if ($result->num_rows() == 0){
+            return false;
+        }
+        return ($result->result_array());
+    }
 
 
     /**

@@ -30,13 +30,14 @@
       <h5 class="text-danger"> <small>Nacionales: </small> <span id="suma">  {{ countNat | number_format(0, '.', ',') }} </span></h5>
     </div>
     <div class="col-sm-3">
-      <form action="{{rute_url}}proveedor/busquedas/" 
+      <form action="{{rute_url}}proveedor/buscar/" 
       method="POST" 
       class="form-inline" 
       role="form">
         <div class="form-group">
           <input 
           type="text" 
+          name="searchCriteria" 
           class="form-control" 
           placeholder="Buscar"
           >

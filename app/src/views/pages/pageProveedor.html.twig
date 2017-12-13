@@ -24,6 +24,29 @@
 	<div class="well">
 		<h3 class="text-primary">	{{message}} </h3>
 		<br><br>
+		{% if errorForm == true %}
+		<p>
+			Debe ingresar un valor para los siguientes campos
+			<ul>
+		{% for column in dataValidate.columns %}
+			<li> {{column}}</li>
+		{% endfor %}
+		</ul>
+		<hr>
+		La longitud de los siuientes campos es insuficicente
+			<ul>
+		{% for len in dataValidate.len %}
+				<li>	{{len}}</li>
+		{% endfor %}
+		</ul>
+		</p>
+		<button onclick="goBack()" class="btn btn-sm btn-primary">
+			Corregir Error
+		</button>
+		
+		<br>
+		{% endif %}
+		<br>
 		<p>
 			{% if deleted == true %} 
 						<a href="{{rute_url}}proveedor/listar/"> 
@@ -33,8 +56,8 @@
 				</button>
 				</a>
 			{% else %}  
-				<a href="{{rute_url}}proveedor/presentar/{{id_supplier}}">
-		<button>
+				<a href="{{rute_url}}proveedor/listar/">
+		<button class="btn btn-sm btn-default">
 			<span class="fa fa-eye"></span>
 			Volver A la lista
 		</button>
@@ -45,6 +68,12 @@
 		</p>
 	</div>
 {% endif %}
+<script type="text/javascript">
+		function goBack() {
+    window.history.back();
+}
+</script>
+</script>
 {% include 'base/content_close.html.twig' %}
 {% include 'base/signaturefoot.html.twig' %}
 {% include 'base/footer.html.twig' %}

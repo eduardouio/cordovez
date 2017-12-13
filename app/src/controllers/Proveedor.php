@@ -57,7 +57,30 @@ class Proveedor extends MY_Controller
         $this->redirectPage('suppliersList');
         return true;
     }
-
+    
+    
+    /**
+     * Realiza una busqueda de proveedores busca en  
+     * nombre
+     * RUC
+     * CATEGORIA 
+     */
+    public function buscar(){
+       if(!$_POST){
+           $this->index();
+           return true;
+       }   
+       $suppliers = $this->modelSupplier->search($this->input->post('searchCriteria'));
+       $this->responseHttp([
+           'titleContent' => 'Lista de Proveedores Encontrados Para: <strong>' . 
+                            $this->input->post('searchCriteria') . '</strong>',
+           'list' => true,
+           'count' => count($suppliers),
+           'suppliers' => $suppliers,
+       ]);
+    }
+    
+        
     /**
      * Muestra la ficha de informacion de in proveedor
      * @param string $idSupplier indentificacion proveedor RUC
@@ -74,7 +97,7 @@ class Proveedor extends MY_Controller
             'titleContent' => 'Detalle De Proveedor: ' . $supplier['nombre'],
             'supplier' => $supplier,
             'show' => true,
-            'createBy' => $this->modelUser->get($supplier['id_user']),
+            'user' => $this->modelUser->get($supplier['id_user']),
             'products' => $this->modelProduct->getBySupplier($supplier['identificacion_proveedor'])
         ]);
     }
@@ -159,18 +182,7 @@ class Proveedor extends MY_Controller
         }
         
         $supplier['id_user'] = $this->session->userdata('id_user');
-        
-        $supplierDB = $this->modelSupplier->get($supplier['identificacion_proveedor']);
-          if ($supplierDB){
-                $this->responseHttp([
-                    'supplier' => $supplierDB,
-                    'viewMessage' => true ,
-                    'deleted' => false,
-                    'message' => 'El Proveedor Ya Está Registrado!',
-                ]);
-             return false;
-            }
-            
+                    
         $status = $this->_validData($supplier);
         if ($status['status']) {
             if (isset($supplier['id_proveedor'])) {;
@@ -179,20 +191,30 @@ class Proveedor extends MY_Controller
                 $this->redirectPage('supplierPresent', $supplier['id_proveedor']);
                 return true;
             } else {
+                $supplierDB = $this->modelSupplier->get($supplier['identificacion_proveedor']);
+                if ($supplierDB){
+                    $this->responseHttp([
+                        'supplier' => $supplierDB,
+                        'viewMessage' => true ,
+                        'deleted' => false,
+                        'message' => 'El Proveedor Ya Está Registrado!',
+                    ]);
+                    return false;
+                }
                 $lastId = $this->modelSupplier->create($supplier);
                 if($lastId == false){
                     $this->errorDbNotify();
                     return false;
                 }
-                $this->redirectPage('supplierPresent' , $supplier['id_proveedor']);
+                $this->redirectPage('supplierPresent' , $lastId);
                 return true;
             }
         } else {
             $this->responseHttp([
-                'order' => $supplier['id_proveedor'],
                 'viewMessage' => true,
+                'errorForm' => true,
                 'message' => 'La información de uno de los campos es incorrecta!',
-                'dataValidate' => $status['columns'],
+                'dataValidate' => $status,
                 'supplier' => $supplier,
             ]);
             return true;
@@ -214,7 +236,7 @@ class Proveedor extends MY_Controller
             $config['id_supplier'] = $idSupplier;
             $config['viewMessage'] = true;
             $config['message'] = 'El Proveedor No Puede Ser Eliminado, 
-																												 Tiene Dependencias!';
+										                      Tiene Dependencias!';
             $this->responseHttp($config);
         }
     }
@@ -229,7 +251,7 @@ class Proveedor extends MY_Controller
         $columnsLen = array(
             'nombre' => 4,
             'tipo_provedor' => 6,
-            'categoria' => 8,
+            'categoria' => 2,
             'identificacion_proveedor' => 4,
             'id_user' => 1
         );

@@ -2,46 +2,59 @@
 {% include 'base/navbarheader.html.twig' %}
 {% include 'base/navbarleft.html.twig' %}
 {% include 'base/content.html.twig' %}
-
-{% if show == true %}
-	{% include 'sections/mostrar-producto.html.twig' %}	
-{% endif %}
-
-{% if list == true %}
-	{% include 'sections/listar-producto.html.twig' %}	
-{% endif %}
-
-{% if create == true %}
-	{% include 'forms/frm_producto.html.twig' %}	
-{% endif %}
-
-
 {% if viewMessage == true %}
-	<div class="well">
-		<h3 class="text-primary">	{{message}} </h3>
-		<br><br>
-		<p>
-			{% if deleted == true %} 
-						<a href="{{rute_url}}producto/presentar/{{idProduct}}"> 
-				<button>
-					<span class="fa fa-list"></span>
-					Ver
-				</button>
-				</a>
-			{% else %}  
-				<a href="{{rute_url}}producto/presentar/{{idProduct}}">
-		<button>
-			<span class="fa fa-eye"></span>
-			Ver
-		</button>
-		</a>
-			{% endif %}
-		
-		</p>
-	</div>
+<div class="well">
+   <h3 class="text-primary">	{{message}} </h3>
+   <br><br>
+   <p>
+      {% if(errorList.status == false) %}
+      <p>
+      Estos Campos tienen la longitud incorrecta
+      <ul>
+      {% for column in errorList.len %}
+      <li> {{ column }} </li>	
+      {% endfor %}
+      </ul>
+      </p>
+      <p>
+            Estos Campos Deben tener un valor registrado
+      <ul>
+      {% for column in errorList.columns %}
+      <li> {{ column }} </li>	
+      {% endfor %}
+      </ul>
+      </p>     
+      {% endif %}
+      {% if deleted == true %} 
+      <a href="{{rute_url}}producto/listar/"> 
+      <button>
+      <span class="fa fa-list"></span>
+       Volver a la lista
+      </button>
+      </a>
+      {% elseif (deleted == false) %}  
+      <a href="{{rute_url}}producto/presentar/{{idProduct}}">
+      <button>
+      <span class="fa fa-eye"></span>
+      Ver producto
+      </button>
+      </a>
+      {% endif %}
+   </p>
+</div>
 {% endif %}
-
-
+{% if show == true %}
+{% include 'sections/mostrar-producto.html.twig' %}	
+{% endif %}
+{% if list == true %}
+{% include 'sections/listar-producto.html.twig' %}	
+{% endif %}
+{% if create == true %}
+{% include 'forms/frm_producto.html.twig' %}	
+{% endif %}
+{% if edit == true %}
+{% include 'forms/frm_producto.html.twig' %}	
+{% endif %}
 {% include 'base/content_close.html.twig' %}
 {% include 'base/signaturefoot.html.twig' %}
 {% include 'base/footer.html.twig' %}

@@ -14,41 +14,58 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Producto extends MY_Controller {
 	private $controller= "producto";
 	private $template = '/pages/pageProducto.html';
-	private $listPerPage = 13;
-
+	private $listPerPage = 15;
+	private $modelSupplier;
+	private $modelProduct;
+	private $modelUser;
+	
 	/**
 	 * Constructor de la funcion
 	 */
 	public function __construct(){
 		parent::__construct();
+		$this->init();
 	}
-
+    
+	/**
+	 * Inicializa los modelos de la clase de producto
+	 */
+	private function init(){
+	    $this->load->model('Modelproduct');
+	    $this->load->model('Modelsupplier');
+	    $this->load->model('Modeluser');
+	    $this->modelProduct = new Modelproduct();
+	    $this->modelSupplier = new Modelsupplier();
+	    $this->modelUser = new Modeluser();
+	}
+	
+	
 	/**	
 	* redirecciona a la lista de los prodcutos
 	*/
 	public function index(){
-		$this->listar();
+		$this->redirectPage('productsList');
+		return true;
 	}
 
 	/**
 	* Presenta lista de todos los productos Disponibles
+	* @return template
 	*/
 	public function listar($offset = 0){
 		$this->db->order_by('nombre', 'ASC');
 		$this->db->limit($this->listPerPage, $offset);
-		$resultDb = $this->db->get('productoView');
-		if ($resultDb ) {
+		$resultDb = $this->db->get($this->controller);		
+		$count =  $this->db->count_all_results($this->controller);
+		$pages_links = 0;
+		if ($resultDb) {
 			$products = $resultDb->result_array();
+			$pages_links =  ( $count / $this->listPerPage );
+			if (gettype($pages_links) == 'double') {
+			    (int)$pages_links = (int)$pages_links + 1;
+			};
 		}
-
-		$count = $this->db->count_all_results($this->controller);
-		$pages_links =  ( $count / $this->listPerPage );
-
-		if (gettype($pages_links) == 'double') {
-			(int)$pages_links = (int)$pages_links + 1;
-		};
-
-		$config = array(
+		$this->responseHttp([
 				'count' => $count,
 				'titleContent' => 'Lista de Productos',
 				'list' => true,
@@ -59,29 +76,31 @@ class Producto extends MY_Controller {
 				'current_page' => (int)(($offset)/$this->listPerPage) + 1,
 				'last_page' => (int)(($pages_links - 1) * $this->listPerPage),
 				'pagination_url' => base_url() . 'index.php/producto/listar/',
-		);
-		$this->responseHttp($config);
+		]);
 	}
 
 
 	/**
-	* Crea un nuevo profuto
+	* Presenta el formulario para regitro de un nuevo producto
+	* @return template
 	*/
 	public function nuevo(){
-		$this->db->like('categoria', 'licores');
-		$resultDb = $this->db->get('proveedor');
-		$config = array(
-											'titleContent' => 'Ingresar Un Nuevo Producto', 
-											'create' => true,
-											'suppliers' => $resultDb->result_array(),
-										);
-
-		$this->responseHttp($config);
+	    $suppliers = $this->modelSupplier->getByCategory('licores');
+	    if ($suppliers == false){
+	        $this->redirectPage('supplierNew');
+	        return false;
+	    }
+	    $this->responseHttp([
+			'titleContent' => 'Ingresar Un Nuevo Producto', 
+			'create' => true,
+			'suppliers' => $suppliers,
+    						]);
 	}
 
 	/**
-	 * crea y/o modifica un producto
-	 * @return JSON (response)
+	 * Actualiza o registra un nuevo producto en la tabla
+	 * @param array $_POST arreglo del producto
+	 * @return boolean
 	 */
 	public function validar(){
 		if(empty($_POST)){
@@ -91,46 +110,38 @@ class Producto extends MY_Controller {
 		$product = $this->input->post();
 		$product['id_user'] = $this->session->userdata('id_user');
 
-		if(!isset($product['id_producto'])){
-				$this->db->where('cod_contable', 
-																				$product['cod_contable']);
-				$resultDb = $this->db->get($this->controller);				
-				if($resultDb->num_rows() == 1 ){		
-					$config['idProduct'] = $product['cod_contable'];
-					$config['viewMessage'] = true;
-					$config['message'] = 'El Producto Ya Está Registrado!';
-					$this->responseHttp($config);
-					return true;
-				}	
-		}
-
 		$status = $this->_validData($product);
 			if ($status['status']){
-				if (!isset($product['id_producto'])){
-					$this->db->insert($this->controller, $product);			
-	    		header('Status: 301 Moved Permanently', false, 301);
-  	      header('Location: ' . base_url() . 'index.php/producto/presentar/' . 
-  	    																$product['cod_contable']);		
-					return true;
+				if (isset($product['id_producto'])){
+				    if($this->modelProduct->update($product['id_producto'], $product)){
+				       $this->redirectPage('productPresent', $product['cod_contable']);
+				       return true;
+				    }else{
+				       $this->redirectPage('productsList');
+				    }
 				}else{
-					$product['last_update'] = date('Y-m-d H:i:s');
-					$this->db->where('id_producto', $product['id_producto']);
-					$this->db->update($this->controller, $product);
-					header('Status: 301 Moved Permanently', false, 301);
-  	      header('Location: ' . base_url() . 'index.php/producto/presentar/' . 
-  	    															$product['cod_contable']);		
-					return true;
+					if($this->modelProduct->create($product)){
+					    $this->redirectPage('productPresent', $product['cod_contable']);
+					    return true;
+					}else{
+					    $this->responseHttp([
+					        'viewMessage' => true,
+					        'message' => 'Hubo un problema al registrar el producto,' .
+					        ' el probable que el producto ya exista',
+					        'idProduct' => $product['cod_contable'],
+					    ]);				     
+					}
 				}
-		}else{
-			$config['viewMessage'] = true;
-			$config['message'] = 'La información de uno de los campos es incorrecta!';
-			$config['data'] = $status['columns'];
-			print '<pre>';
-			print_r($config);
-			print '</pre>';
-
-			$this->responseHttp($config);
-			return true;
+		  }else{
+		      $this->responseHttp([
+		          'viewMessage' => true,
+		          'create' => true,
+		          'product' => $product,
+		          'supplierData' => $this->modelSupplier->get($product['identificacion_proveedor']),
+		          'suppliers' => $this->modelSupplier->getByCategory('licores'),
+		          'message' => 'La información de uno de los campos es incorrecta!',
+		          'errorList' => $status,
+		      ]);
 		}
 	}
 
@@ -138,29 +149,90 @@ class Producto extends MY_Controller {
 	/**
 	* Presenta un prodycro
 	*/
-	public function presentar($idProduct){
-		$this->db->where('cod_contable' , $idProduct);
-		$resultDb = $this->db->get($this->controller);
-		$product = $resultDb->result_array();
-		$this->db->where('identificacion_proveedor', $product[0]['identificacion_proveedor']);
-		$resultDb = $this->db->get('proveedor');
-		$supplier = $resultDb->result_array();
-
-		$this->db->where('id_user', $product[0]['id_user']);
-		$resultDb = $this->db->get('usuario');
-		$user = $resultDb->result_array();
-		$config = array(
-							'titleContent' => 'Detalle de Producto',
+	public function presentar($codContable){
+	    $product = $this->modelProduct->get($codContable);
+	    if ($product == false){
+	        $this->index();
+	        return false;
+	    }
+	    $this->responseHttp([
+							'titleContent' => 'Detalle de Producto:  [<small>' . 
+	                           $product['nombre'] . '</small>]',
 							'show' => true,
-							'product' => $product[0],
-							'supplier' => $supplier[0],
-							'createBy' => $user[0],
-							'title' => 'Productos',
-
-								);
-		
-		$this->responseHttp($config);
+							'product' => $product,
+							'supplier' => $this->modelSupplier->get($product['identificacion_proveedor']),
+							'createBy' => $this->modelUser->get($product['id_user']),
+							]);	
 	}
+	
+	
+	/**
+	 * Presenta el formulario para editar el produco
+	 * @param integer $idProduct id de tabla
+	 * @return string template
+	 */
+	public function editar($idProduct){
+	    $product = $this->modelProduct->getById($idProduct);
+	    if($product == false){
+	        $this->index();
+	        return false;
+	    }
+	    
+	    $this->responseHttp([
+	        'edit' => true,
+	        'supplierData' => $this->modelSupplier->get($product['identificacion_proveedor']),
+	        'product' => $product,
+	    ]);
+	}
+	
+	/**
+	 * Elimina un producto de la tabla, si el producto esta referenciado 
+	 * retorna falso
+	 * @param integer $idProducto id de tabla
+	 * @return string template
+	 */
+	public function eliminar($idProduct){
+	    $product = $this->modelProduct->getById($idProduct);
+	    if($product == false){
+	        $this->index();
+	        return false;
+	    }
+	   
+	    if($this->modelProduct->delete($idProduct)){
+	        $this->index();
+	        return  true;
+	    }
+	    
+	    $this->responseHttp([
+	            'idProduct' => $product['cod_contable'],
+	            'viewMessage' => true,
+	            'message' => 'El Producto No Puede Ser Eliminado,
+										                      Tiene Dependencias!',
+	    ]);
+	}
+	
+	 /**
+     * Realiza una busqueda de productos  
+     * nombre
+     * RUC
+     * CATEGORIA 
+     */
+    public function buscar(){
+       if(!$_POST){
+           $this->index();
+           return true;
+       }   
+       $products = $this->modelProduct->search($this->input->post('searchCriteria'));
+       $this->responseHttp([
+           'titleContent' => 'Lista de Productos Encontrados Para: <strong>' . 
+                            $this->input->post('searchCriteria') . '</strong>',
+           'list' => true,
+           'count' => count($products),
+           'products' => $products,
+       ]);
+    }
+    
+    
 	/**
 	 * se validan los datos que deben estar para que la consulta no falle
 	 * @return [array] | [bolean]
@@ -174,7 +246,7 @@ class Producto extends MY_Controller {
 			'capacidad_ml' => 1,
 			'cantidad_x_caja' => 1,
 			'grado_alcoholico' => 1,
-			'costo_unidad' => 1,
+			'costo_caja' => 1,
 			'estado' => 1,
 			'custodia_doble' => 1,
 			'id_user' => 1
@@ -185,12 +257,12 @@ class Producto extends MY_Controller {
 		/* *
 		* Envia la respuestas html al navegador
 		*/
-		public function responseHttp($config){
-			$config['title'] = 'Facturas Pedidos';
+		private function responseHttp($config){
+			$config['title'] = 'Módulo Productos';
 			$config['base_url'] = base_url();
 			$config['rute_url'] = base_url() . 'index.php/';
 			$config['controller'] = $this->controller;
-			$config['iconTitle'] = 'fa-cubes';
+			$config['iconTitle'] = 'fa-cube';
 			$config['content'] = 'home';
 			return $this->twig->display($this->template, $config);
 		}

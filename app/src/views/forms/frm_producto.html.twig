@@ -1,4 +1,14 @@
+<div class="row">
+<div class="alert alert-info alert-dismissable">
+	<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+	<span class="fa fa-warning"></span> Para ingresar el precio de un producto se debe ingresar
+	 es el valor original de compra, no usar conversiones de monedas.
+</div>
+</div>
 <form action="{{ rute_url }}producto/validar/" method="post">
+ {% if edit == true %}
+ <input type="hidden" name="id_producto" value="{{ product.id_producto }}">
+ {% endif %}
    <div class="row">
       <div class="col-lg-5">
          <div class="form-group">
@@ -11,6 +21,7 @@
                name="nombre"
                id="nombre"
                autofocus="true"
+               value={{ product.nombre }}
                >
          </div>
       </div>
@@ -24,6 +35,7 @@
                required="true"
                maxlength="20"
                name="cod_contable"
+               value = "{{ product.cod_contable }}"
                >
          </div>
       </div>
@@ -38,6 +50,7 @@
                maxlength="39"
                name="cod_ice"
                id="cod_ice"
+               value="{{ product.cod_ice }}"
                >
          </div>
       </div>
@@ -52,7 +65,14 @@
                class="form-control"
                required="true"
                >
-               <option selected="true" disabled ="true" >Seleccione...</option>
+               {% if edit == true %}
+               		<option selected="true" value="{{ supplierData.identificacion_proveedor }}"> {{ supplierData.nombre  }} </option>
+               {% endif %}
+               {% if errorList.status == false %}
+               		<option selected="true" value="{{ supplierData.identificacion_proveedor }}"> {{ supplierData.nombre  }} </option>
+               {% else %}
+               		<option selected="true" disabled ="true" >Seleccione...</option>
+               {% endif %}
                {% for supplier in suppliers %}
                   <option value="{{supplier.identificacion_proveedor}}" >
                      {{ supplier.nombre }}
@@ -70,6 +90,7 @@
                step="1"
                required="true"
                name="cantidad_x_caja"
+               value="{{ product.cantidad_x_caja  }}"
                >
          </div>
       </div>
@@ -81,6 +102,7 @@
                required="true"
                type="number"
                name="capacidad_ml"
+               value="{{ product.capacidad_ml }}"
                >
          </div>
       </div>
@@ -92,7 +114,9 @@
                required="true"
                type="number"
                step="0.01"
-               name="grado_alcoholico">
+               name="grado_alcoholico"
+               value="{{ product.grado_alcoholico }}"
+               >
          </div>
       </div>
    </div>
@@ -124,13 +148,14 @@
       </div>
       <div class="col-lg-2">
       	<div class="form-group">
-      		<label>Valor Caja</label>
+      		<label>Valor Caja USD/EURO</label>
       		<input 
             type="number" 
-            step="0.001" 
-      		name="costo_unidad"
+            step="0.00001" 
+      		name="costo_caja"
       		required="true" 
             class="form-control"
+            value="{{ product.costo_caja }}"
       		>
       	</div>
       </div>
@@ -142,7 +167,7 @@
                maxlength="120"
                name= "comentarios"
                id= "comentarios"
-               rows="2"></textarea>
+               rows="2">{{ product.comentarios     }}</textarea>
          </div>
       </div>
    </div>

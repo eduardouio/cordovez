@@ -16,11 +16,14 @@ class Modelproduct extends CI_Model{
 
     private $table = 'producto';
     private $modelBase;
+    private $myModel;
 
     function __construct(){
         parent::__construct();
         $this->load->model('Modelbase');
+        $this->load->model('Mymodel');
         $this->modelBase = new  ModelBase();
+        $this->myModel = new  Mymodel();
     }
     
     
@@ -61,6 +64,25 @@ class Modelproduct extends CI_Model{
     
     
     /**
+     * Obtiene un producto de la tabla
+     * @param string $idProduct identificador tabla
+     */
+    public function getById(string $idProduct)
+    {
+        $product = $this->modelBase->get_table([
+            'table' => $this->table,
+            'where' => [
+                'id_producto' => $idProduct,
+            ],
+        ]);
+        if((gettype($product) == 'array') && (count($product) > 0)){
+            return $product[0];
+        }
+        return false;
+    }
+    
+    
+    /**
      * Obtiene la lista de productos de un proveedor
      * @param int $idSupplier ruc proveedor
      */
@@ -78,6 +100,68 @@ class Modelproduct extends CI_Model{
             return $products;
         }
         return false;
+    }
+    
+    
+    /**
+     * Actualiza un producto en la base de datos
+     * @param int $idProduct identificador del producto
+     * @param array $product arreglo del producto
+     * @return boolean
+     */
+    public  function update(int $idProduct, array $product){
+        $this->db->where('id_producto', $idProduct);
+        if($this->db->update($this->table, $product)){
+            return true;
+        }
+        return false;
+    }
+    
+    
+    /**
+     * Registra un producto en la base de datos
+     * @param array $product arreglo del produto
+     * @return boolean
+     */
+    public function create( array $product ){
+        if($this->db->insert($this->table, $product)){
+            return true;   
+        }
+        return false;
+    }
+    
+    
+    /**
+     * elimina un producto de la base de datos
+     * @param int $idProduct identicacion AI tabla
+     * @return boolean
+     */
+    public function delete($idProduct){
+        $this->db->where('id_producto', $idProduct);
+        if($this->db->delete($this->table)){
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Realiza una busqueda de producto de acuerdo a un criterio
+     * NOMBRE
+     * COD_CONTABLE
+     * Grado Alcolico
+     * @param string $searchCriteria
+     * @return boolean | array
+     */
+    public function search($searchCriteria){
+        $querySearchParams = [
+            'columns' => [
+                'nombre',
+                'cod_contable',
+                'grado_alcoholico',
+            ],
+            'searchCriteria' => $searchCriteria,
+        ];
+        return ($this->myModel->searchDb($this->table, $querySearchParams));
     }
     
 }

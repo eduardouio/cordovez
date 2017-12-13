@@ -1,8 +1,22 @@
-<!--tabPedido-->
-<div class="proveedor">
+<div>
+   <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="activeTue Dec 12 06:35:55 2017">
+        <a href="#proveedor" role="tab" data-toggle="tab" aria-controls="proveedor">
+        <span class="fa fa-users"></span> Detalle de Proveedor</a>
+      </li>
+      <li role="presentation">
+        <a href="#productos" role="tab" data-toggle="tab" aria-controls="productos">
+          <span class="fa fa-cubes"></span> Productos/Servicios del Proveedor
+        </a>
+      </li>
+   </ul>
+   <br>
+   <div class="tab-content">
+      <!-- tabDetalleProveedor-->
+      <div role="tabpanel" class="tab-pane active" id="proveedor">
+         <div class="proveedor">
   <br>
   <div class="row">
-    <div class="table-responsive">
       <table class="table table-hover table-bordered table-striped">
         <thead>
           <tr style="background-color: #c1c1c1;">
@@ -51,19 +65,97 @@
       </table>
     </div>
   </div>
+      </div>
+      <!-- /tabDetalleProveedor-->
+      <!-- tabProductos-->
+      <div role="tabpanel" class="tab-pane" id="productos">
+         <div class="row">
+            <table class="table table-hover table-bordered table-striped">
+            <thead>
+               <tr style="background-color: #c1c1c1;">
+                  <th>#</th>
+                  <th>Cod Producto</th>
+                  <th>Nombre</th>
+                  <th>Capacidad</th>
+                  <th>Grd Alco</th>
+                  <th>Cant Caja</th>
+                  <th>Valor Caja</th>
+                  <th>Acciones</th>
+               </tr>
+            </thead>
+            <tbody>
+               {% for product in products %}
+               <tr>
+                  <td>{{loop.index}}</td>
+                  <td>
+                    <span class="fa fa-pencil"></span>
+                     <a href="{{ rute_url }}producto/editar/{{product.cod_contable}}">
+                    {{product.cod_contable}}
+                  </a>
+                  </td>
+                  <td>
+                    <span class="fa fa-eye"></span>
+                     <a href="{{ rute_url }}producto/presentar/{{product.cod_contable}}">
+                     {{product.nombre}}
+                     </a>
+                  </td>
+                  <td>{{product.capacidad_ml}}</td>
+                  <td>{{product.grado_alcoholico}}</td>
+                  <td>{{product.cantidad_x_caja}}</td>
+                  <td>{{product.costo_caja }}</td>
+                  <td>
+                     <div class="dropdown">
+                        <button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-sm btn-default">
+                        <span class="fa fa-chevron-down" ></span>
+                        Seleccione
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dLabel">
+                           <li> 
+                            <a href="{{rute_url}}producto/presentar/{{product.cod_contable}}"> 
+                              <span class="fa fa-eye fa-fw"></span>
+                              Ver Producto 
+                            </a>  
+                           </li>
+                              <li> <a href="{{rute_url}}producto/editar/{{product.id_producto}}">
+                                <span class="fa fa-pencil fa-fw"></span>
+                                Editar Producto</a> 
+                              </li>
+                              <li> <a href="{{rute_url}}producto/eliminar/{{product.id_producto}}">
+                                <span class="fa fa-trash fa-fw"></span>
+                                Elminar Producto</a> 
+                              </li>
+                        </ul>
+                     </div>
+                  </td>
+               </tr>
+               {% endfor %}
+            </tbody>
+         </table>
+         </div>
+      </div>
+      <!-- /tabProductos-->
+   </div>
+</div>
+<!--/tabs-->
+<br>
     <div class="row">
-    <div class="col-sm-6">
+    <div class="col-sm-12">
       <a href="{{rute_url}}proveedor/listar" class="btn btn-default btn-sm">
       <span class="fa fa-arrow-left fa-fw"></span>  Listar Proveedores
     </a>
+    &nbsp; &nbsp;
       <a href="{{rute_url}}proveedor/editar/{{supplier.id_proveedor}}" class="btn btn-default btn-sm">
       <span class="fa fa-pencil fa-fw"></span>  Editar Proveedor
     </a>
-
+    {% if (supplier.categoria == 'LICORES') or (supplier.categoria == 'LICORES;')  %}
+    &nbsp;&nbsp;
+    <a href="{{rute_url}}/producto/nuevo/" class="btn btn-default btn-sm">
+      <span class="fa fa-file-o fa-fw"></span>  Nuevo Producto
+    </a>
+    {% endif %}
+    &nbsp;&nbsp;
     <a href="{{rute_url}}proveedor/eliminar/{{supplier.id_proveedor}}" class="btn btn-danger btn-sm">
       <span class="fa fa-trash fa-fw"></span> Eliminar Proveedor
     </a>
     </div>
-  </div>
 </div>
-<!--tabPedido-->

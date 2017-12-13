@@ -87,10 +87,11 @@ class MY_Controller extends CI_Controller
         $target = [
             'loginForm' =>  'index.php/login/',
             'ordersList' => 'index.php/pedido/listar',
+            'presentOrder' =>  'index.php/pedido/presentar',
             'paidsList' => 'index.php/facturapagos/listar/',
             'paidPresent' => 'index.php/facturapagos/presentar',
+            'supplierPresent' => 'index.php/proveedor/presentar',
             'suppliersList' => 'index.php/proveedor/listar',
-            'presentOrder' =>  'index.php/pedido/presentar',
             'validargi' =>  'index.php/gstinicial/validargi/',
             'replaceIncoterms' =>   'index.php/gstinicial/replaceIncoterms',
             'putIncoterms' => 'index.php/gstinicial/putIncoterms',

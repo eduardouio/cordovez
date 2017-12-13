@@ -59,7 +59,7 @@ class Modelsupplier extends CI_Model
     /**
      * Obtiene un proveedor con la informacion basica, la registrada en la tabla
      * 
-     * @param (string) $supplierId
+     * @param (string) $supplierId ruc del proveedor
      * @return array | boolean
      */
     public function get($idSupplier)
@@ -68,6 +68,26 @@ class Modelsupplier extends CI_Model
             'table' => $this->table,
             'where' => [
                 'identificacion_proveedor' => $idSupplier
+            ]
+        ]);
+        
+        if ((gettype($supplier) == 'array') && (count($supplier) > 0)) {
+            return $supplier[0];
+        }
+        return false;
+    }
+    
+    
+    /**
+     * Obtiene un proveedor por el identifiador de la tabla
+     * @param int $idSupplier
+     * @return array | boolean
+     */
+    public function getById($idSupplier){
+        $supplier = $this->modelBase->get_table([
+            'table' => $this->table,
+            'where' => [
+                'id_proveedor' => $idSupplier
             ]
         ]);
         
@@ -98,6 +118,49 @@ class Modelsupplier extends CI_Model
         }
         return false;
     }
+    
+    
+    /**
+     * Actualiza la informacion de un proveedor
+     * @param integer $idSupplier id autoincremental
+     * @param array $supplier arreglo asociativo con info del proveedor
+     * @return boolean | lastInsertid
+     */
+    public function update($idSupplier, $supplier){
+        $this->db->where('id_proveedor', $idSupplier);
+        if($this->db->update($this->table, $supplier)){
+            return true;
+        }
+        return false;
+    }
+    
+    
+    /**
+     * Registra un proveedor en la base 
+     * @param array $supplier datos asociados del proveedor
+     * @return boolean | integer (last insert id) 
+     */
+    public function create($supplier){
+        if($this->db->insert($this->table, $supplier)){
+            return ($this->db->insert_id());
+        }
+    }
+    
+    
+    /**
+     * Elimna un proveedor
+     * @param int $idSupplier
+     * @retutn boolean
+     */
+    public function delete($idSupplier)
+    {
+        $this->db->where('id_proveedor', $idSupplier);
+        if ($this->db->delete($this->table)){
+            return true;
+        }
+        return false;
+    }
+
     
     /**
      * Obtiene toda la informacion de un proveedor

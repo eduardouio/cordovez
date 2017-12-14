@@ -95,7 +95,7 @@ class Modelorder extends CI_Model
 
     /**
      * Busca los detalles de la factura y la suma de las mimsas
-     * @param $invoice objeto factura completo
+     * @param array $invoice objeto factura completo
      * @return array | bool
      */
     public function getInvoiceDetail($invoice)
@@ -157,8 +157,7 @@ class Modelorder extends CI_Model
                     $supplierId,
             ],
         ]);
-        if ((gettype($invoicesList) == 'array') && 
-            (count($invoicesList) > 0)) {
+        if ((gettype($invoicesList) == 'array') && (count($invoicesList) > 0)) {
             return $invoicesList;
         }
         return false;

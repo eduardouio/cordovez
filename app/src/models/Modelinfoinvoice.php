@@ -150,4 +150,25 @@ class Modelinfoinvoice extends CI_Model
         ];
         return $result;
     }
+    
+    /**
+     * Retorna la primera factura iformativa de un pedido
+     * 
+     * @param integer $idInfoInvoice
+     * @return array | boolean
+     */
+    public function getFirstInfoInvoice($nroOrder)
+    {
+        $nationalization = $this->modelBase->get_table([
+            'table' => $this->table,
+            'where' => [
+                'nro_pedido' => $idInfoInvoice,
+            ],
+            'limit' => 1,
+        ]);
+        if ((gettype($nationalization) == 'array') && (count($nationalization) > 0)) {
+            return $nationalization[0];
+        }
+        return false;
+    }
 }

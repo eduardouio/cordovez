@@ -51,6 +51,7 @@ class ModelBase extends CI_Model {
     *                               'col2' => 'ASC | DESC',
     *                               'coln' => 'ASC | DESC',
     *                           ],
+    *           'limit' => [ int ],
     *       ];
     *
     * @return (array) | (boolean)
@@ -110,6 +111,10 @@ class ModelBase extends CI_Model {
                 }   
                 $position ++;
             }
+        }
+        
+        if(isset($paramsQuery['limit'])){
+            $sql .= ' ' . $paramsQuery['limit'];
         }
 
         $resultDb = $this->db->query($sql);

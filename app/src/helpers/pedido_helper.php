@@ -34,25 +34,22 @@ if (!function_exists('searchOrderCeroValues')) {
 }
 
 /**
- * calcula la diferencia entre la fecha de llegada y ahora y el demoraje
+ * Calcula la diferencia en dias entre dos fechas
+ * El valor que retorna es redondeado al mas bajo por eso se le suma
+ * un punto para calcular el valos a la fecha indicada 
  * @param array $order Objeto orden completo
- * @return array
+ * @return int numero de dias entre las fechas
  */
-if (! function_exists('warehouseDays')){
-    function warehouseDays(array $order) : array
-    {
-        $dateArribed = date('Y-m-d', strtotime($order['fecha_arribo']));
-        $now = date('Y-m-d');
-        $diff = date_diff(date_create($dateArribed), date_create($now));
-        $delay = 0;
-        if ($order['bg_haveExpenses'] == 0){
-            $delay = $diff->d;
+if (! function_exists('dateDiffInDays')){
+    function dateDiffInDays(string $dateBegin, string $dateEndUp  ) : int
+    {   
+        if($dateBegin == $dateEndUp){
+            return 1;
         }
-        return ([
-            'days' => $diff->d,
-            'mounts' => $diff->m,
-            'years' => $diff->y,
-            'delay' => $delay,
-        ]);
+        
+        $dateBegin = strtotime($dateBegin);
+        $dateEndUp = strtotime($dateEndUp);
+        $dateDiffInSeconds = ($dateEndUp - $dateBegin);
+        return (floor($dateDiffInSeconds/(60 * 60 * 24)) + 1);
     }
 }

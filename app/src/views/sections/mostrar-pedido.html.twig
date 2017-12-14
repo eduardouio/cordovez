@@ -85,7 +85,7 @@
 <!-- Tabs -->
 <div>
    <ul class="nav nav-tabs" role="tablist">
-      <li role="presentation" class="active"><a href="#pedido" role="tab" data-toggle="tab" aria-controls="pedido">Detalle Pedido &nbsp;
+      <li role="presentation"><a href="#pedido" role="tab" data-toggle="tab" aria-controls="pedido">Detalle Pedido &nbsp;
          {% if viewData.order.bg_isclosed == '0' %}
          <span class="label label-success">Abierto</span>
          {% else %}
@@ -93,7 +93,7 @@
          {% endif %}
          </a>
       </li>
-      <li role="presentation">
+      <li role="presentation" class="active">
       	<a href="#facturas" role="tab" data-toggle="tab" aria-controls="facturas">
       	<span class="fa fa-file"></span> Facturas Productos</a>
       </li>
@@ -121,12 +121,12 @@
    <br>
    <div class="tab-content">
       <!-- tabPedidoDetalle-->
-      <div role="tabpanel" class="tab-pane active" id="pedido">
+      <div role="tabpanel" id="pedido" class="tab-pane">
          {% include 'sections/subsections/tab-detalle-pedido.html.twig' %}
       </div>
       <!-- /tabPedidoDetalle-->
       <!-- tabFacturas-->
-      <div role="tabpanel" class="tab-pane" id="facturas">
+      <div role="tabpanel" class="tab-pane active" id="facturas">
          {% include 'sections/subsections/tab-facturas-productos-pedido.html.twig' %}            
       </div>
       <!-- /Tab Facturas-->

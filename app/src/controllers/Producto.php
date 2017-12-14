@@ -224,8 +224,8 @@ class Producto extends MY_Controller {
        }   
        $products = $this->modelProduct->search($this->input->post('searchCriteria'));
        $this->responseHttp([
-           'titleContent' => 'Lista de Productos Encontrados Para: <strong>' . 
-                            $this->input->post('searchCriteria') . '</strong>',
+           'titleContent' => 'Lista de Productos Encontrados Para: [<strong>' . 
+                            $this->input->post('searchCriteria') . '</strong>]',
            'list' => true,
            'count' => count($products),
            'products' => $products,

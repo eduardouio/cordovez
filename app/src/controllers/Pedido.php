@@ -22,12 +22,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Pedido extends MY_Controller
 {
     private $controller = 'pedido';
-    private $listPerPage = 15;
+    private $listPerPage = 12;
     private $seguroVal = 2.2;
     private $template = '/pages/pagePedido.html';
     private $modelOrder;
     private $modelSupplier;
-    private $modelNationalized;
+    private $modelNationalization;
     private $modelProduct;
     private $modelInfoInvoice;
     private $modelBase;
@@ -49,14 +49,14 @@ class Pedido extends MY_Controller
          $this->load->model('modelorder');
          $this->load->model('modelsupplier');
          $this->load->model('modelproduct');
-         $this->load->model('modelnationalized');
+         $this->load->model('modelnationalization');
          $this->load->model('modelinfoinvoice');
          $this->load->model('mymodel');
          $this->load->model('modeluser');
          $this->modelOrder = new Modelorder();
          $this->modelSupplier = new Modelsupplier();
          $this->modelProduct = new Modelproduct();
-         $this->modelNationalized = new Modelnationalized();
+         $this->modelNationalization = new Modelnationalization();
          $this->modelBase = new ModelBase();
          $this->modelInfoInvoice = new Modelinfoinvoice();
          $this->myModel = new Mymodel();
@@ -65,18 +65,20 @@ class Pedido extends MY_Controller
      
      
     /**
-     * redirect to order list
+     * redirecciona a la lista de proveedores
      * @return void
      */
     public function index()
     {
-        $this->listar();
+       $this->redirectPage('ordersList');
+       return true;
     }
 
     /**
-     * Present list with all orders
-     * @param int $offset
-     * @return void
+     * Presenta la lista de los pedidos, y las acciones para cada 
+     * uno de ellos
+     * @param int $offset limite inferior de la lista
+     * @return string template plantilla de la pagina
      */
     public function listar(int $offset = 0)
     {
@@ -85,24 +87,27 @@ class Pedido extends MY_Controller
         $this->db->limit($this->listPerPage, $offset);
         $resultDb = $this->db->get($this->controller);
         $orders = $resultDb->result_array();
-        $pages_links = ((count($orders) - 1) / $this->listPerPage);
+        $pages_links = (($this->db->count_all($this->controller) - 1) / $this->listPerPage);
+        
         if (gettype($pages_links) == 'double') {
             (int)$pages_links = (int)$pages_links + 1;
         };
+        
         $orderList = [];
         foreach ($orders as $item => $order) {
-            $orderId = $order['nro_pedido'];
-            $order['invoices'] = $this->modelOrder->getInvoices($orderId);
-            $order['warehouseDays'] = warehouseDays($order);
-            $order['nationalized'] = $this->modelNationalized->getNationalizedVal($order);
+            $order['invoices'] = $this->modelOrder->getInvoices(
+                                                    $order['nro_pedido']
+                                                                );
+            $order['nationalized'] = $this->modelNationalization->getNationalizedVal($order);
+            $order['warenHouseDays'] = $this->getWarenHouseDaysInitial($order);
             $orderList[$item] = $order;
         }
+        
         $this->responseHttp([
             'list_orders' => true,
             'list_active' => 'class="active"',
             'orders' => $orderList,
             'titleContent' => 'Lista de Pedidos Cordovez',
-            'userData' => $this->session->userdata(),
             'infoBase' => $this->getStatisticsInfo(),
             'pagination' => true,
             'perPage' => $this->listPerPage,
@@ -115,8 +120,12 @@ class Pedido extends MY_Controller
 
 
     /**
-     * retorna las estadisticas de los pedidos
-     * @return (array)
+     * retorna las estadisticas de los pedidos para la cabecera de la lista
+     * @return array   [totalOrders,
+     *                  consumeOrders,
+     *                  partialOrders,
+     *                  ativeOrders
+     *                  ]
      */
     private function getStatisticsInfo()
     {
@@ -133,7 +142,7 @@ class Pedido extends MY_Controller
             } elseif (($order['regimen'] == '10')) {
                 $info['consumeOrders']++;
             }
-            if ($order['bg_islocked'] == '0') {
+            if ($order['bg_isclosed'] == '0') {
                 $info['activeOrders']++;
             }
         }
@@ -142,6 +151,42 @@ class Pedido extends MY_Controller
         $info['totalOrders']--;
         $info['activeOrders']--;
         return $info;
+    }
+    
+    /**
+     * Obtiene el tiempo en dias de un pedido en la bodega inicial
+     * si el pedido se encuentra nacionalizado o tiene una factura
+     * informativa retorna el tiempo que estubo en la bodega inicial
+     * @param array $order pedido a evaluar
+     * @return int
+     */
+    private function  getWarenHouseDaysInitial(array $order) : int
+    {
+        if( gettype($order['fecha_salida_bodega_puerto']) == 'NULL'){
+            return (dateDiffInDays($order['fecha_arribo'], 
+                                   date('Y-m-d'))
+                   );
+        }        
+        return (dateDiffInDays($order['fecha_arribo'], 
+                               $order['fecha_salida_bodega_puerto'])
+            );
+    }
+    
+    
+    /**
+     * Retorna el tiempo de dias por el bodegaje de un pedido.
+     * @param array $order arreglo con los detalles de la orden
+     * @return int tiempo en dias de almacenaje
+     */
+    private function getWarenHouseDaysPartials($order) : int{
+        if( gettype($order['fecha_salida_almacenera']) == 'NULL'){
+            return (dateDiffInDays($order['fecha_ingreso_almacenera'],
+                date('Y-m-d'))
+                );
+        }
+        return (dateDiffInDays($order['fecha_ingreso_almacenera'],
+                               $order['fecha_salida_almacenera'])
+            );
     }
 
 
@@ -161,6 +206,7 @@ class Pedido extends MY_Controller
             $this->redirectPage('orderList');
             return false;
         }
+        $order['user'] = $this->modelUser->get($order['id_user']);
 
         $data = [
             'order' => $order,
@@ -246,7 +292,7 @@ class Pedido extends MY_Controller
 
     /**
      * crea y/o modifica un pedido
-     * @return JSON (response)
+     * @return array (response) JsonSerializable
      */
     public function validar()
     {
@@ -308,7 +354,6 @@ class Pedido extends MY_Controller
                 'message' => 'La información de uno de los campos es incorrecta!',
                 'data' => $status,
             ];
-
             $this->responseHttp($config);
             return true;
         }
@@ -334,7 +379,8 @@ class Pedido extends MY_Controller
 
 
     /* *
-    * Envia la respuestas html al navegador
+    * Redenderiza la informacion y la envia al navegador
+    * @param array $config informacion de la plantilla
     */
     private function responseHttp($config)
     {

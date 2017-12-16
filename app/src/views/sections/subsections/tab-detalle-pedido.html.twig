@@ -1,86 +1,115 @@
-         <div class="row">
-         <div class="col-md-2">&nbsp;</div>
-            <div class="col-md-8">
-      <table class="table table-hover table-bordered table-striped">
-        <thead>
-          <tr style="background-color: #c1c1c1;">
-            <th>Nombre</th>
-            <th>Valor</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="text-right"> <b>ID:</b></td>
-            <td>{{ viewData.order.id_pedido }}</td>
-          </tr>
-          <tr>
-            <td class="text-right"><b>Nro Pedido:</b></td>
-            <td>{{ viewData.order.nro_pedido }}</td>
-          </tr>
-          <tr>
-            <td class="text-right"> <b>Regimen:</b></td>
-            <td>{{ viewData.order.regimen }}</td>
-          </tr>
-          <tr>           
-            <td class="text-right"><b>Incoterm:</b></td>
-            <td>{{ viewData.order.incoterm }}</td>
-          </tr>          
-          <tr>
-            <td class="text-right"> <b>Puerto de Embarque:</b></td>
-            <td>{{ viewData.order.ciudad_origen }}</td>
-          </tr>
-          <tr>
-            <td class="text-right"> <b>Pais Origen:</b></td>
-            <td>{{ viewData.order.pais_origen }}</td>
-          </tr>
-          <tr>
-            <td class="text-right"> <b>Dias Libres (Demoraje):</b></td>
-            <td>{{ viewData.order.dias_libres }}</td>
-          </tr>
-          <tr>
-            <td class="text-right"> <b>Fecha Llegada a Puerto:</b></td>
-            <td>{{ viewData.order.fecha_arribo }}</td>
-          </tr>
-          <tr>
-            <td class="text-right"> <b>Número Referendo:</b></td>
-            <td>{{ viewData.order.nro_refrendo }}</td>
-          </tr>
-          <tr>
-            <td class="text-right"> <b>Comentarios:</b></td>
-            <td>{{ viewData.order.comentarios }}</td>
-          </tr>
-          <tr>
-            <td class="text-right"> <b>Creado El:</b></td>
-            <td>{{ viewData.order.date_create }}</td>
-          </tr>
-          <tr>
-            <td class="text-right"> <b>Ultima Actualización:</b></td>
-			<td>{{ viewData.order.last_update }}</td>
-          </tr>
-          <tr>
-            <td class="text-right"> <b>Creado Por:</b></td>
-            <td>{{ viewData.order.user.nombres }}</td>            
-          </tr>
-        </tbody>
-      </table>
-  </div>
-             <div class="col-md-2">&nbsp;</div>
-         </div>
-         <div class="row">
-            <div class="col-md-12">
-               <a href="{{rute_url}}/pedido/editar/{{viewData.order.nro_pedido}}" class="text-primary">
-               <button class="btn btn-sm btn-default"><span class="fa fa-pencil fa-fw"></span>Ediar Pedido 
-               </button></a>
-               &nbsp;&nbsp;
-               <a href="{{rute_url}}/pedido/eliminar/{{viewData.order.nro_pedido}}">
-               <button class="btn btn-sm btn-default"> <span class="fa fa-trash fa-fw"></span>Elimnar Pedido 
-               </button></a>
-               &nbsp;&nbsp;
-               <a href="{{rute_url}}gstinicial/validargi/{{viewData.order.nro_pedido}}">
-               <button type="button" class="btn btn-primary btn-sm">
-               <span class="fa fa-gear"></span>
-               Generar Gastos Iniciales
-               </button>
-               </a>
-            </div>
-         </div>
+
+<div class="row">
+	<div class="col-md-2">&nbsp;</div>
+	<div class="col-md-8">
+		<table class="table table-hover table-bordered table-striped">
+			<thead>
+				<tr style="background-color: #c1c1c1;">
+					<th>Nombre</th>
+					<th>Valor</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="text-right"><b>ID:</b></td>
+					<td>{{ order.id_pedido }}</td>
+				</tr>
+				<tr>
+					<td class="text-right"><b>Nro Pedido:</b></td>
+					<td>{{ order.nro_pedido }}</td>
+				</tr>
+				<tr>
+					<td class="text-right"><b>Regimen:</b></td>
+					<td>{{ order.regimen }}</td>
+				</tr>
+				<tr>
+					<td class="text-right"><b>Incoterm:</b></td>
+					<td>{{ order.incoterm }}</td>
+				</tr>
+				<tr>
+					<td class="text-right"><b>Puerto de Embarque:</b></td>
+					<td>{{ order.ciudad_origen }}</td>
+				</tr>
+				<tr>
+					<td class="text-right"><b>Pais Origen:</b></td>
+					<td>{{ order.pais_origen }}</td>
+				</tr>
+				<tr>
+					<td class="text-right"><b>Dias Libres (Demoraje):</b></td>
+					<td>{{ order.dias_libres }}</td>
+				</tr>
+				<tr>
+					<td class="text-right"><b>Fecha Llegada a Puerto:</b></td>
+					<td>{{ order.fecha_arribo }}</td>
+				</tr>
+				<tr>
+					<td class="text-right"><b>Número Referendo:</b></td>
+					<td>{{ order.nro_refrendo }}</td>
+				</tr>
+				<tr>
+					<td class="text-right"><b>Comentarios:</b></td>
+					<td>{{ order.comentarios }}</td>
+				</tr>
+				<tr>
+					<td class="text-right"><b>Creado El:</b></td>
+					<td>{{ order.date_create }}</td>
+				</tr>
+				<tr>
+					<td class="text-right"><b>Ultima Actualización:</b></td>
+					<td>{{ order.last_update }}</td>
+				</tr>
+				<tr>
+					<td class="text-right"><b>Creado Por:</b></td>
+					<td>{{ order.user.nombres }}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="col-md-2">&nbsp;</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+	{% if order.bg_isclosed == '0' %}
+	<a
+			href="{{rute_url}}gstinicial/validargi/{{order.nro_pedido}}">
+			<button type="button" class="btn btn-default btn-sm">
+				<span class="fa fa-gear"></span> Generar Gastos Iniciales
+			</button>
+		</a>
+		&nbsp;&nbsp;
+		<a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}"
+			class="text-primary">
+			<button class="btn btn-sm btn-default">
+				<span class="fa fa-pencil fa-fw"></span>Ediar Pedido
+			</button>
+		</a>  &nbsp;&nbsp; 
+		<a
+			href="{{rute_url}}pedidofactura/nuevo/{{ order.nro_pedido }}">
+			<button class="btn btn-sm btn-default">
+				<span class="fa fa-plus"></span> Agregar Productos
+			</button>
+		</a> &nbsp;&nbsp;
+		<a
+			href="{{rute_url}}facturapagos/nuevo/{{order.nro_pedido}}">
+			<button class="btn btn-sm btn-default">
+				<span class="fa fa-file-o"></span> Justificar Gasto
+			</button>
+		</a>
+		{% endif %}
+		&nbsp;&nbsp; <a
+			href="#{{order.nro_pedido}}">
+			<button class="btn btn-sm btn-primary">
+				<span class="fa fa-file-pdf-o"></span> Informe General
+			</button>
+		</a> 
+		{% if order.bg_isclosed == '0' %}
+		&nbsp;&nbsp;
+		&nbsp;&nbsp; <a
+			href="{{rute_url}}pedido/eliminar/{{order.nro_pedido}}">
+			<button class="btn btn-sm btn-danger">
+				<span class="fa fa-trash fa-fw"></span>Elimnar Pedido
+			</button>
+		</a>  
+		{% endif %}
+	</div>
+</div>

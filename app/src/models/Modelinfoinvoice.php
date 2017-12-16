@@ -18,6 +18,7 @@ class Modelinfoinvoice extends CI_Model
     private $modelBase;
     private $modelSupplier;
     private $modelproducto;
+    private $modelOrderInvoice;
  
 
     /**
@@ -29,10 +30,11 @@ class Modelinfoinvoice extends CI_Model
         $this->load->model('modelbase');
         $this->load->model('modelsupplier');
         $this->load->model('modelproduct');
-        
+        $this->load->model('modelorderinvoice');
         $this->modelBase = new ModelBase();
         $this->modelSupplier = new Modelsupplier();
         $this->modelproducto = new Modelproduct();
+        $this->modelOrderInvoice = new Modelorderinvoice();
     }
 
 
@@ -171,4 +173,5 @@ class Modelinfoinvoice extends CI_Model
         }
         return false;
     }
+   
 }

@@ -1,10 +1,10 @@
-         <div class="row">
+        <div class="row">
             <div class="col-sm-6">
-               <a href="{{rute_url}}gstinicial/nuevo/{{viewData.order.nro_pedido}}">
-               <button class="btn btn-sm btn-default">
-               <span class="fa fa-plus fa-fw"> </span>
-               Agregar Gasto Nacional <span class="label label-warning">provisionado</span>
-               </button>
+<a href="{{rute_url}}gstinicial/validargi/{{order.nro_pedido}}">
+                  <button type="button" class="btn btn-primary btn-sm" >
+                     <span class="fa fa-gear"></span>
+                     Generar Gastos Iniciales
+                  </button>
                </a>
             </div>
             {% set cantidad = 0 %}
@@ -93,16 +93,4 @@
                </table>
             </div>
          </div>
-         <div class="row">
-            <div class="com-md-9">
-               &nbsp;
-            </div>
-            <div class="col-md-3">
-               <a href="{{rute_url}}gstinicial/validargi/{{viewData.order.nro_pedido}}">
-                  <button type="button" class="btn btn-primary btn-sm" style="width: 100%">
-                     <span class="fa fa-gear"></span>
-                     Generar Gastos Iniciales
-                  </button>
-               </a>
-            </div>
-         </div>
+         

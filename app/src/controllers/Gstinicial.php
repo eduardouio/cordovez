@@ -269,7 +269,7 @@ class Gstinicial extends MY_Controller
     {
         $order = $this->modelOrder->get($nroOrder);
         
-        if ((empty($order) == true) || ($order == false)) {
+        if ($order == false) {
             $this->redirectPage('ordersList');
             return true;
         }

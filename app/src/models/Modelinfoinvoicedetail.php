@@ -45,5 +45,24 @@ class Modelinfoinvoicedetail extends \CI_Model
         }
         return false;
     }
+    
+    /**
+     * Lista los productos de las facturas informativas
+     * @param int $idInfoDetail
+     * @return array | boolean
+     */
+    public function  getInfoInvoiceDetail($idInfoDetail)
+    {
+        $detailInfoInvoice = $this->modelBase->get_table([
+            'table' => $this->table,
+            'where' => [
+                'id_factura_informativa' => $idInfoDetail,
+            ],
+        ]);
+        if ($detailInfoInvoice == false ){
+            return false;
+        }
+        return $detailInfoInvoice;
+    }
 }
 

@@ -100,6 +100,9 @@ class Modelexpenses extends CI_Model
             'where' => [
                 'nro_pedido' => $nroOrder,
             ],
+           'orderby' => [
+             'tipo' => 'DESC',
+           ],
         ]);
         if ($expenses == false) {
             return false;
@@ -134,7 +137,7 @@ class Modelexpenses extends CI_Model
     /**
      * Obtiene todos los gastos iniciales activos, sin justificar
      * De un pedido
-     * @param $nroOrder strin numero de Ordern
+     * @param string $nroOrder numero de Ordern
      * @return array | bool
      */
     public function getActiveExpenses($nroOrder)

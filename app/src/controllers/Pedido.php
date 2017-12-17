@@ -50,6 +50,8 @@ class Pedido extends MY_Controller
     private $modelExpenses;
 
     private $modelOrderInvoice;
+    
+    private $modelPaidDetail;
 
     public function __construct()
     {
@@ -73,6 +75,7 @@ class Pedido extends MY_Controller
         $this->load->model('modelproductinvoice');
         $this->load->model('modelexpenses');
         $this->load->model('modelorderinvoice');
+        $this->load->model('modelpaiddetail');
         $this->modelOrder = new Modelorder();
         $this->modelSupplier = new Modelsupplier();
         $this->modelProduct = new Modelproduct();
@@ -85,6 +88,7 @@ class Pedido extends MY_Controller
         $this->modelProductInvoice = new Modelproductinvoice();
         $this->modelExpenses = new Modelexpenses();
         $this->modelOrderInvoice = new Modelorderinvoice();
+        $this->modelPaidDetail = new Modelpaiddetail();
     }
 
     /**
@@ -232,6 +236,8 @@ class Pedido extends MY_Controller
         $order['valuesOrder'] = $this->myModel->getValuesOrder($order);
         $invoicesOrder = $this->modelProductInvoice->getByOrder($nroOrder);
         $infoInvoices = $this->modelInfoInvoice->getByOrder($nroOrder);
+        $initialExpenses = $this->modelExpenses->get($nroOrder);
+        $paidsDetails = $this->modelPaidDetail->getByOrder($nroOrder);
         
         if (gettype($invoicesOrder) == 'array' && count($invoicesOrder) > 0) {
             $invoicesOrderTemp = [];
@@ -243,12 +249,31 @@ class Pedido extends MY_Controller
             $invoicesOrder = $invoicesOrderTemp;
         }
         
+        if(gettype($initialExpenses) == 'array' && count($initialExpenses) > 0){            
+            $initialExpensesTemp = [];
+            foreach ($initialExpenses as $row => $expense){
+                $expense['supplier'] = $this->modelSupplier->get($expense['identificacion_proveedor']);
+                $initialExpensesTemp[$row] = $expense;
+            }
+            $initialExpenses = $initialExpensesTemp;
+        }
+        
+        if(gettype($paidsDetails) == 'array' && count($paidsDetails) > 0){   
+            $paidsDetailsTemp = [];
+            foreach ($paidsDetails as $item => $detail){
+                $detail['supplier'] = $this->modelSupplier->get($detail['identificacion_proveedor']);
+                $paidsDetailsTemp[$item] = $detail;
+            }
+            $paidsDetails = $paidsDetailsTemp;
+        }
+        
         $this->responseHttp([
             'show_order' => true,
             'order' => $order,
             'warenHouseDays' => $this->getWarenHouseDaysInitial($order),
             'orderInvoices' => $invoicesOrder,
-            'initialExpenses' => $this->modelExpenses->get($nroOrder),
+            'initialExpenses' => $initialExpenses,
+            'paidsDetails' => $paidsDetails,
             'nationalizations' => $this->myModel->getNationalizations($nroOrder),
             'invoicesInfo' => $infoInvoices,
             'boxesOrder' => $this->myModel->getBoxesOrder($nroOrder, $order['regimen']),

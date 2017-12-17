@@ -104,7 +104,7 @@ class Modelinfoinvoice extends CI_Model
     
     /**
      * Obtiene el detalle de una factura informativa
-     * @param $invoice factura informativa
+     * @param array $invoice factura informativa
      * @return array | boolean
      */
     public function getInvoiceDetail($invoice)

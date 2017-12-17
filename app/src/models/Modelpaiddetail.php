@@ -101,5 +101,38 @@ class Modelpaiddetail extends \CI_Model
         }
         return false;
     }
+    
+    
+    /**
+     * Retorna las justificaciones para una orden, ya que aqui se almacenan
+     * las justificaciones a las provisiones
+     * @param string $nroOrder
+     * @return array | boolean
+     */
+    public function getByOrder($nroOrder)
+    {
+        $query = "  SELECT 
+                            a.*, 
+                            b.nro_pedido,
+                            c.nro_factura,
+                            c.identificacion_proveedor,
+                            c.fecha_emision,
+                            b.concepto 
+                    FROM detalle_documento_pago AS a 
+                    JOIN gastos_nacionalizacion AS b 
+                    USING(id_gastos_nacionalizacion)
+                    JOIN documento_pago as c 
+                    USING(id_documento_pago)
+                    WHERE nro_pedido =  '" . $nroOrder ."' ORDER BY b.concepto DESC";
+        
+        $paidsDetails = $this->db->query($query);
+        $paidsDetails = $paidsDetails->result_array();
+        if(gettype($paidsDetails) == 'array' && count($paidsDetails) > 0){
+            return $paidsDetails;
+        }
+        return false;
+    } 
+    
+    
 }
 

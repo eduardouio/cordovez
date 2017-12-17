@@ -92,17 +92,26 @@
       </li>
       <li role="presentation">
       	<a href="#gastos" role="tab" data-toggle="tab" aria-controls="gastos">
-      		<span class="fa fa-list"></span> Gastos Iniciales
+      		<span class="fa fa-list"></span> Gastos Nacionalizacion
       	</a>
       </li>
+      {% if order.regimen == 10 %}
       <li role="presentation">
       	<a href="#nacionalizaciones" role="tab" data-toggle="tab" aria-controls="nacionalizaciones">
-      		<span class="fa fa-archive"></span> Nacionalizaciones
+      		<span class="fa fa-archive"></span> Impuestos Nacionalizacion
       	</a>
       </li>
+      {% else %}
       <li role="presentation">
-      	<a href="#facturasServicios" role="tab" data-toggle="tab" aria-controls="facturasfacturasServicios">
-      		<span class="fa fa-file-o"></span> Facturas Servicios
+      	<a href="#facturas-informativas" role="tab" data-toggle="tab" aria-controls="facturas-informativas">
+      		<span class="fa fa-file-o"></span> Facturas Informativas
+      	</a>
+      </li>
+      {%  endif %}
+      
+      <li role="presentation">
+      	<a href="#servicios" role="tab" data-toggle="tab" aria-controls="servicios">
+      		<span class="fa fa-file-text-o"></span> Facturas Servicios
       	</a>
       </li>
    </ul>
@@ -123,13 +132,23 @@
          {% include 'sections/subsections/tab-gastos-iniciales.html.twig' %}            
       </div>
       <!-- /Gastos iniciales -->
+      
+       {% if order.regimen == 10 %}
       <!-- factura Nacionalizaciones -->
       <div role="tabpanel" class="tab-pane" id="nacionalizaciones">
          {% include 'sections/subsections/tab-nacionalizaciones.html.twig' %}            
       </div>
       <!-- /factura Nacionalizaciones -->
+     {% else %}
+     <!-- factura Informativas -->
+      <div role="tabpanel" class="tab-pane" id="facturas-informativas">
+         {% include 'sections/subsections/tab-facturas-informativas.html.twig' %}            
+      </div>
+      <!-- /factura Informativas -->
+     {% endif %}
+      
       <!-- Tab Facturas Servicios -->
-      <div role="tabpanel" class="tab-pane" id="facturasServicios">
+      <div role="tabpanel" class="tab-pane" id="servicios">
          {% include 'sections/subsections/tab-facturas-servicios.html.twig' %}            
       </div>
       <!-- /Tab Facturas Servicios -->

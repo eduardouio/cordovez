@@ -99,7 +99,7 @@ class Facinformativa extends MY_Controller {
 	/**
 	* Presenta el formulario para registrar una nueva factura informativa
 	* @param (string) $nroOrder 
-	* @return viod 
+	* @return void
 	*/
 	public function nuevo($nroOrder){
 		$order = $this->modelOrder->get($nroOrder);
@@ -125,7 +125,7 @@ class Facinformativa extends MY_Controller {
 	/**
 	 * Prepara el formulario para editar una factura informativa
 	 * @param integer $idFacInformative id_factura_informativa
-	 * @return Template 
+	 * @return string Template 
 	 */
 	public function editar($idFacInformative){
 	    $infoInvoice =  $this->modelInfoInvoice->get($idFacInformative);

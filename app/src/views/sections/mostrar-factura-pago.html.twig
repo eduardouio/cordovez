@@ -47,7 +47,7 @@
 		<a
 			href="{{ rute_url }}detallefacpago/nuevo/{{ document.id_documento_pago }}"
 			class="btn btn-default btn-sm"> <span class="fa fa-file"></span>
-			Agregar Detalle
+			Justificar Provision en Pedido
 		</a> 			
 		{% endif %}
 		{% if saldoFactura < 0 %}
@@ -166,10 +166,13 @@
 	</div>
 </div>
 <div class="row">
-	<div class="col-md-2">
-		<a href="{{rute_url}}/facturapagos/listar/"><i class="fa fa-arrow-left"></i> Regresar a La Lista De Facturas</a>
+	<div class="col-md-4">
+		<a href="{{rute_url}}/facturapagos/listar/" class="btn btn-sm btn-default"><i class="fa fa-arrow-left"></i> Regresar a La Lista De Facturas</a>
+		&nbsp;
+		<a href="{{rute_url}}/facturapagos/eliminar/{{document.id_documento_pago}}" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> Eliminar Factuar</a>
+		
 	</div>
-	<div class="col-md-offset-10">
+	<div class="col-md-offset-8">
 	<a href="{{rute_url}}facturapagos/editar/{{document.id_documento_pago}}" class="btn btn-info btn-sm"> 
 	Editar Cabeceras Facura
 	</a>

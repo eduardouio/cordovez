@@ -25,12 +25,12 @@
       </div>
       <div class="col-sm-3">
          <h4 class="text-danger">
-            <small>Por Regimen <span class="text-danger">10</span> <span
-               class="text-default"> / </span> <span class="text-primary">70</span>:
-            </small> <span class="text-danger"> {{ infoBase.consumeOrders  | number_format(0, '.', ',') }}
+            <small>Por Regimen [<span class="text-danger">10</span> <span
+               class="text-default"> / </span> <span class="text-primary">70</span>]:
+            </small> [<span class="text-danger"> {{ infoBase.consumeOrders  | number_format(0, '.', ',') }}
             </span> <span class="text-default"> / </span> <span class="text-primary">
             {{ infoBase.partialsOrders  | number_format(0, '.', ',') }}
-            </span>
+            </span>]
          </h4>
       </div>
    </div>
@@ -97,14 +97,18 @@
                            <span class="fa fa-eye"></span> Ver Pedido
                            </a>
                         </li>
-                        <li>{% if order.bg_isclosed != '1' %} <a
-                           href="{{ rute_url }}pedidofactura/nuevo/{{ order.nro_pedido }}">
-                           <span class="fa fa-eye"></span> Agregar Productos
-                           </a>
-                        </li>
                         <li><a
                            href="{{ rute_url }}pedido/editar/{{ order.nro_pedido }}">
                            <span class="fa fa-pencil"></span> Editar Pedido
+                           </a>
+                        </li>
+                        <li><a href="{{ rute_url }}gstinicial/validargi/{{ order.nro_pedido }}">
+                           <span class="fa fa-gear"></span> Gen. Gst Iniciales
+                           </a>
+                        </li>
+                        <li>{% if order.bg_isclosed != '1' %} <a
+                           href="{{ rute_url }}pedidofactura/nuevo/{{ order.nro_pedido }}">
+                           <span class="fa fa-cube"></span> Agregar Productos
                            </a>
                         </li>
                         {% if fob == 0 %}

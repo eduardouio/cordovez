@@ -51,6 +51,8 @@ class Pedido extends MY_Controller
 
     private $modelOrderInvoice;
     
+    private $modelOrderInvoiceDetail;
+    
     private $modelPaidDetail;
 
     public function __construct()
@@ -75,6 +77,7 @@ class Pedido extends MY_Controller
         $this->load->model('modelproductinvoice');
         $this->load->model('modelexpenses');
         $this->load->model('modelorderinvoice');
+        $this->load->model('modelorderinvoicedetail');
         $this->load->model('modelpaiddetail');
         $this->modelOrder = new Modelorder();
         $this->modelSupplier = new Modelsupplier();
@@ -89,6 +92,7 @@ class Pedido extends MY_Controller
         $this->modelExpenses = new Modelexpenses();
         $this->modelOrderInvoice = new Modelorderinvoice();
         $this->modelPaidDetail = new Modelpaiddetail();
+        $this->modelOrderInvoiceDetail = new Modelorderinvoicedetail();
     }
 
     /**
@@ -145,73 +149,6 @@ class Pedido extends MY_Controller
             'last_page' => (int) (($pages_links - 1) * 10),
             'pagination_url' => base_url() . 'index.php/pedido/listar/'
         ]);
-    }
-
-    /**
-     * retorna las estadisticas de los pedidos para la cabecera de la lista
-     * 
-     * @return array [totalOrders,
-     *         consumeOrders,
-     *         partialOrders,
-     *         ativeOrders
-     *         ]
-     */
-    private function getStatisticsInfo()
-    {
-        $orders = $this->modelOrder->getAll();
-        $info = [
-            'totalOrders' => count($orders),
-            'consumeOrders' => 0,
-            'partialsOrders' => 0,
-            'activeOrders' => 0
-        ];
-        foreach ($orders as $key => $order) {
-            if ($order['regimen'] == '70') {
-                $info['partialsOrders'] ++;
-            } elseif (($order['regimen'] == '10')) {
-                $info['consumeOrders'] ++;
-            }
-            if ($order['bg_isclosed'] == '0') {
-                $info['activeOrders'] ++;
-            }
-        }
-        // se quita por el pedido cero
-        $info['consumeOrders'] --;
-        $info['totalOrders'] --;
-        $info['activeOrders'] --;
-        return $info;
-    }
-
-    /**
-     * Obtiene el tiempo en dias de un pedido en la bodega inicial
-     * si el pedido se encuentra nacionalizado o tiene una factura
-     * informativa retorna el tiempo que estubo en la bodega inicial
-     * 
-     * @param array $order
-     *            pedido a evaluar
-     * @return int
-     */
-    private function getWarenHouseDaysInitial(array $order): int
-    {
-        if (gettype($order['fecha_salida_bodega_puerto']) == 'NULL') {
-            return (dateDiffInDays($order['fecha_arribo'], date('Y-m-d')));
-        }
-        return (dateDiffInDays($order['fecha_arribo'], $order['fecha_salida_bodega_puerto']));
-    }
-
-    /**
-     * Retorna el tiempo de dias por el bodegaje de un pedido.
-     * 
-     * @param array $order
-     *            arreglo con los detalles de la orden
-     * @return int tiempo en dias de almacenaje
-     */
-    private function getWarenHouseDaysPartials($order): int
-    {
-        if (gettype($order['fecha_salida_almacenera']) == 'NULL') {
-            return (dateDiffInDays($order['fecha_ingreso_almacenera'], date('Y-m-d')));
-        }
-        return (dateDiffInDays($order['fecha_ingreso_almacenera'], $order['fecha_salida_almacenera']));
     }
 
     /**
@@ -283,40 +220,6 @@ class Pedido extends MY_Controller
         ]);
     }
 
-    /**
-     * Varifica los saldos de las facturas
-     * 
-     * @param array $invoiceOrder productos de la factura 
-     * @param array $infoInvoices listado facturas informativas del pedido
-     * @return float
-     */
-    private function checkStockInvoices($invoiceOrder, $infoInvoices): float
-    {
-        if ($infoInvoices == false) {
-            return 0.0;
-        }
-        $detailsInvoice = $this->modelOrderInvoice->getProducts($invoiceOrder['id_pedido_factura']);
-        $detailInfoinvoices = [];
-        
-        foreach ($infoInvoices as $item => $invoice){
-            $detailInfoInvoice = $this->modelInfoInvoiceDetail->getInfoInvoiceDetail($invoice['id_factura_informativa']);
-            if (gettype($detailInfoInvoice) == 'array' && count($detailInfoInvoice) > 0){
-                array_push($detailInfoinvoices, $detailInfoInvoice);
-            }
-        }
-        $nationalizedValue = 0; 
-        foreach ($detailsInvoice as $item => $productOrder){
-           foreach ($detailInfoinvoices  as $productNationalized){
-               if($productOrder['cod_contable'] == $productNationalized[0]['cod_contable']){
-                   $nationalizedValue += (
-                       ($productOrder['nro_cajas'] - $productNationalized['nro_cajas']) * 
-                        floatval($productOrder['costo_caja'])
-                       );
-               }
-           }
-        }
-        return $nationalizedValue;
-    }
 
     /**
      * Muestra el formulario para crear un pedido
@@ -402,7 +305,8 @@ class Pedido extends MY_Controller
         if (! isset($pedido['id_pedido'])) {
             if ((int) $pedido['n_pedido'] < 100 && intval($pedido['n_pedido']) > 9) {
                 $pedido['n_pedido'] = '0' . intval($pedido['n_pedido']);
-            } elseif ((int) $pedido['n_pedido'] < 9) {
+            }
+            if ((int) $pedido['n_pedido'] < 9) {
                 $pedido['n_pedido'] = '00' . intval($pedido['n_pedido']);
             }
             
@@ -449,7 +353,113 @@ class Pedido extends MY_Controller
             return true;
         }
     }
-
+    
+    
+    /**
+     * Varifica los saldos de las facturas
+     *
+     * @param array $invoiceOrder productos de la factura
+     * @param array $infoInvoices listado facturas informativas del pedido
+     * @return float
+     */
+    private function checkStockInvoices($invoiceOrder, $infoInvoices): float
+    {
+        if ($infoInvoices == false) {
+            return 0.0;
+        }
+        $detailsInvoice = $this->modelOrderInvoiceDetail->getProducts($invoiceOrder['id_pedido_factura']);
+        $detailInfoinvoices = [];
+        
+        foreach ($infoInvoices as $item => $invoice){
+            $detailInfoInvoice = $this->modelInfoInvoiceDetail->getInfoInvoiceDetail($invoice['id_factura_informativa']);
+            if (gettype($detailInfoInvoice) == 'array' && count($detailInfoInvoice) > 0){
+                array_push($detailInfoinvoices, $detailInfoInvoice);
+            }
+        }
+        $nationalizedValue = 0;
+        if ($nationalizedValue != false){
+        foreach ($detailsInvoice as $item => $productOrder){
+            foreach ($detailInfoinvoices  as $productNationalized){
+                if($productOrder['cod_contable'] == $productNationalized[0]['cod_contable']){
+                    $nationalizedValue += (
+                        ($productOrder['nro_cajas'] - $productNationalized['nro_cajas']) *
+                        floatval($productOrder['costo_caja'])
+                        );
+                }
+            }
+        }
+        }
+        return $nationalizedValue;
+    }
+    
+    
+    /**
+     * retorna las estadisticas de los pedidos para la cabecera de la lista
+     *
+     * @return array [totalOrders,
+     *         consumeOrders,
+     *         partialOrders,
+     *         ativeOrders
+     *         ]
+     */
+    private function getStatisticsInfo()
+    {
+        $orders = $this->modelOrder->getAll();
+        $info = [
+            'totalOrders' => count($orders),
+            'consumeOrders' => 0,
+            'partialsOrders' => 0,
+            'activeOrders' => 0
+        ];
+        foreach ($orders as $key => $order) {
+            if ($order['regimen'] == '70') {
+                $info['partialsOrders'] ++;
+            } elseif (($order['regimen'] == '10')) {
+                $info['consumeOrders'] ++;
+            }
+            if ($order['bg_isclosed'] == '0') {
+                $info['activeOrders'] ++;
+            }
+        }
+        // se quita por el pedido cero
+        $info['consumeOrders'] --;
+        $info['totalOrders'] --;
+        $info['activeOrders'] --;
+        return $info;
+    }
+    
+    /**
+     * Obtiene el tiempo en dias de un pedido en la bodega inicial
+     * si el pedido se encuentra nacionalizado o tiene una factura
+     * informativa retorna el tiempo que estubo en la bodega inicial
+     *
+     * @param array $order
+     *            pedido a evaluar
+     * @return int
+     */
+    private function getWarenHouseDaysInitial(array $order): int
+    {
+        if (gettype($order['fecha_salida_bodega_puerto']) == 'NULL') {
+            return (dateDiffInDays($order['fecha_arribo'], date('Y-m-d')));
+        }
+        return (dateDiffInDays($order['fecha_arribo'], $order['fecha_salida_bodega_puerto']));
+    }
+    
+    /**
+     * Retorna el tiempo de dias por el bodegaje de un pedido.
+     *
+     * @param array $order
+     *            arreglo con los detalles de la orden
+     * @return int tiempo en dias de almacenaje
+     */
+    private function getWarenHouseDaysPartials($order): int
+    {
+        if (gettype($order['fecha_salida_almacenera']) == 'NULL') {
+            return (dateDiffInDays($order['fecha_ingreso_almacenera'], date('Y-m-d')));
+        }
+        return (dateDiffInDays($order['fecha_ingreso_almacenera'], $order['fecha_salida_almacenera']));
+    }
+    
     /**
      * se validan los datos que deben estar para que la consulta no falle
      * 

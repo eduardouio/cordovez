@@ -97,6 +97,7 @@
           <tr style="background-color: #c1c1c1;">
             <th>#</th>
             <th>Nombre</th>
+            <th>Ficha</th>
             <th>Grado A</th>
             <th>Nro Cajas</th>
             <th>Costo Caja</th>
@@ -111,13 +112,14 @@
           {% for detail in invoiceDetail %}
           <tr>
             <td>{{ loop.index }}</td>
-            <td> <a href="{{ rute_url }}producto/presentar/{{ detail.cod_contable }}">{{ detail.nombre }}</a></td>
+            <td> <a href="{{ rute_url }}detallepedido/editar/{{ detail.detalle_pedido_factura }}"> <span class="fa fa-pencil"></span> {{ detail.nombre }}</a></td>
+            <td>  <a href="{{ rute_url }}producto/presentar/{{ detail.cod_contable }}" target="_blank"> <span class="fa fa-eye"></span> Ficha</a></td>
             <td class="text-right">{{ detail.grado_alcoholico }}</td>
             <td class="text-right">{{ detail.nro_cajas }}</td>
-            <td class="text-right">{{ simbolo | raw}} {{ detail.costo_caja | number_format(2, '.', ',')}}</td>
+            <td class="text-right">{{ simbolo | raw}} {{ detail.costo_caja | number_format(6, '.', ',')}}</td>
             <td class="text-right">{{ detail.cantidad_x_caja | number_format(2, '.', ',')}}</td>
             <td class="text-right">{{ detail.unidades }}</td>
-            <td class="text-right">{{ simbolo | raw}} {{ detail.costo_unidad | number_format(3, '.', ',') }}</td>
+            <td class="text-right">{{ simbolo | raw}} {{ detail.costo_unidad | number_format(4, '.', ',') }}</td>
             <td class="text-right">{{ simbolo | raw}} {{ detail.total_item | number_format(2, '.', ',') }}</td>
             <td>
               <div class="dropdown">

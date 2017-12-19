@@ -9,162 +9,179 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @author    Eduardo Villota <eduardouio7@gmail.com>
  * @copyright    Copyright (c) 2014,  Agencias y Representaciones Cordovez S.A.
  * @license    Derechos reservados Agencias y Representaciones Cordovez S.A.
- * @link    https://gitlab.com/eduardo/APPImportaciones
+ * @link    https://gitlab.com/eduardo/APPImportaciones http://google.com
  * @since    Version 1.0.0
  * @filesource
  */
 class Detallepedido extends MY_Controller {
 	private $controller= "detalle_pedido_factura";
 	private $template = '/pages/pagePedidoFacturaDetalle.html';
+	private $modelSupplier;
+	private $modelUser;
+	private $modelProduct;
+	private $modelOrderInvoiceDetail;
+	private $modelOrderInvoice;
+	private $modelOrder;
+	
 
-		/**
+	/**
 	 * Constructor de la funcion
 	 */
 	public function __construct(){
 		parent::__construct();
+		$this->init();
+	}
+	
+	
+	/**
+	 * Carga los modelos inciales para la clase
+	 */
+	private function init(){
+	    $this->load->model('modelsupplier');
+	    $this->load->model('modeluser');
+	    $this->load->model('modelproduct');
+	    $this->load->model('modelorderinvoicedetail');
+	    $this->load->model('modelorderinvoice');
+	    $this->load->model('modelorder');
+	    $this->modelSupplier = new Modelsupplier();
+	    $this->modelUser = new Modeluser();
+	    $this->modelProduct = new Modelproduct();
+	    $this->modelOrderInvoiceDetail = new Modelorderinvoicedetail();
+	    $this->modelOrderInvoice = new Modelorderinvoice();
+	    $this->modelOrder = new Modelorder();
 	}
 
 
 	/**
-	* El index le lleva a la lista de los pedidos
+	* Redirecciona a la lista de pedidos
 	*/
 	public function index(){
-			header('Location: ' . base_url() . 'index.php/pedido/listar/');
+		$this->redirectPage('ordersList');
+		return true;
 	}
 
 	/**
 	* Muestra el formulario para registrar un nuevo producto en el 
 	* Detalle de un pedido
 	* @param int $idInvoice Identificador Factura AI
-	* @return mixed
+	* @return string template | boolean
 	*/
-	public function nuevo($idInvoice){
-		$this->db->where('id_pedido_factura', $idInvoice);
-		$invoicedb = $this->db->get('pedido_factura');
-		$invoice = $invoicedb->result_array();
-		$this->db->where('identificacion_proveedor', 
-																		$invoice[0]['identificacion_proveedor']);
-		$resultDb = $this->db->get('producto');
-		$products = $resultDb->result_array();
-
-		$this->db->where('id_pedido_factura', $invoice[0]['id_pedido_factura']);
-		$resultDb = $this->db->get('detalle_pedido_factura');
-		$productsInvoice = $resultDb->result_array();
-
-		foreach ($products as $key => $item) {
-			foreach ($productsInvoice as $k => $va) {
-				if($item['cod_contable'] == $va['cod_contable']){
-					unset($products[$key]);
-				}
-			}
+	public function nuevo($idInvoiceOrder){
+		$invoiceOrder = $this->modelOrderInvoice->get($idInvoiceOrder);
+		if($invoiceOrder == false){
+		    $this->index();
+		    return false;
 		}
-
+		$products = $this->modelProduct->getBySupplier($invoiceOrder['identificacion_proveedor']);
+		$supplier = $this->modelSupplier->get($invoiceOrder['identificacion_proveedor']);
 		$this->responseHttp([
+		    'titleContent' => 'Registro de nuevo producto para Factura [ ' . $invoiceOrder['id_factura_proveedor']  . 
+		                      ' ] de [ ' . $supplier['nombre']  .' ] Pedido [ ' . $invoiceOrder['nro_pedido'] .
+		                      ' ]',
             'create' => true,
             'products' => $products,
             'productsarray' => json_encode($products),
-            'invoice' => $invoice
+            'invoice' => $invoiceOrder
         ]);
 	}
 
 
 	/**
-	* Prepara el formulario para la edicion
+	* Prepara el formulario con la informacion del 
+	* detalle de la factura para la edicion
+	* @param int $idDetailOrderInvoice identificador factura
+	* @return string | boolean
 	*/
-	public function editar($idDetail){
-		$this->db->where('detalle_pedido_factura', $idDetail);
-		$resultDb = $this->db->get($this->controller);
-		$detail = $resultDb->result_array();
-		$this->db->where('cod_contable', $detail[0]['cod_contable']);
-		$resultDb = $this->db->get('producto');
-		$product = $resultDb->result_array();
-		$this->db->where('id_pedido_factura', $detail[0]['id_pedido_factura']);
-		$resultDb = $this->db->get('pedido_factura');
-		$invoice = $resultDb->result_array();
-		$config['edit'] = true;
-		$config['detail'] = $detail;
-		$config['invoice'] = $invoice[0];
-		$config['nombre'] = $product[0]['nombre'];
-		$this->responseHttp($config);
-
+	public function editar($idDetailOrderInvoice){
+	    $detailInvoiceOrder = $this->modelOrderInvoiceDetail->get($idDetailOrderInvoice);
+	    if ($detailInvoiceOrder == false){
+	        $this->index();
+	        return true;
+	    }
+	    $invoiceOrer = $this->modelOrderInvoice->get($detailInvoiceOrder['id_pedido_factura']);
+	    $product = $this->modelProduct->get($detailInvoiceOrder['cod_contable']);
+	    
+	    $this->responseHttp([
+	        'titleContent' => 'Modificar Producto [ ' . $product['nombre'] . ' ] de la Factura [ ' . 
+	                           $invoiceOrer['id_factura_proveedor'] . '] Pedido ['. $invoiceOrer['nro_pedido'] .']',
+	        'edit' => true,
+	        'detailInvoiceOrder' => $detailInvoiceOrder,
+	        'invoiceOrder' => $invoiceOrer ,
+	        'product' => $product,
+	    ]);
 	}
 
 	
 	/**	
-	* Elimina un detalle de factura
+	* Intenta eliminar el detalle de una factura
+	* @param int $idDetailInvoiceOrder identificador del detalle
+	* @return boolean | redirect
 	*/
-	public function eliminar($idDetail){
-		$this->db->where('detalle_pedido_factura', $idDetail);
-		$resultDb = $this->db->get($this->controller);
-		$detail = $resultDb->result_array();
+	public function eliminar($idorderInvoiceDetail){
+	    $detailOrderInvoice = $this->modelOrderInvoiceDetail->get($idorderInvoiceDetail);
+	    if ($detailOrderInvoice == false){
+	        $this->index();
+	        return false;
+	    }
+	    if($this->modelOrderInvoiceDetail->delete($idorderInvoiceDetail)){
+	        return ($this->redirectPage('orderInvoicePresent', $detailOrderInvoice['id_pedido_factura']));
+        }
 
-		$this->db->where('detalle_pedido_factura', $idDetail);
-		if ($this->db->delete($this->controller)){
-			$config['orderDetail'] = $detail[0]['id_pedido_factura'];
-			$config['viewMessage'] = true;
-			$config['deleted'] = true;
-			$config['message'] = 'La factura fue eliminada Exitosamente!';
-			$this->responseHttp($config);
-		}else{
-			$config['orderDetail'] = $detail[0]['id_pedido_factura'];
-			$config['viewMessage'] = true;
-			$config['message'] = 'El pedido no puede ser Eliminado, 
-																												 tiene dependencias!';
-			$this->responseHttp($config);
-		}
+        return($this->responseHttp([
+            'orderDetail' => $detailOrderInvoice,
+            'viewMessage' => true,
+            'message' => 'No se puede eliminar el registro',
+        ]));
 	}
 
 
 	/**
-	* Valida los datos antes de guardar en la base de datos
+	* Valida la informacion recibida por Post Actualiza o crea un registro
+	* @param array $_POST
+	* @return array template html
 	*/
 	public function validar(){
-		if($this->rest->_getRequestMethod()!= 'POST'){
-			$this->_notAuthorized();
-		}
-
-		$detail =  $this->input->post();
-		$detail['id_user'] = $this->session->userdata('id_user');
-
-		if(!isset($detail['detalle_pedido_factura'])){
-				$this->db->where('cod_contable',
-																			 $detail['cod_contable']);
-				$this->db->where('id_pedido_factura',
-																		$detail['id_pedido_factura']);
-				$resultDb = $this->db->get($this->controller);
-
-				if($resultDb->num_rows() == 1 ){		
-					$config['orderInvoice'] = $resultDb->result_array();
-					$config['viewMessage'] = true;
-					$config['fail'] = true;
-					$config['orderDetail'] = $detail['id_pedido_factura'];
-					$config['message'] = 'Este producto ya esta en la factura!';
-					$this->responseHttp($config);
-					return true;
-				}	
-		}
-
-		$status = $this->_validData($detail);
-
-			if ($status['status']){
-				if (!isset($detail['detalle_pedido_factura'])){
-					$this->db->insert($this->controller, $detail);
-					$this->redirectPage('presentInvoiceOrder',$detail['id_pedido_factura']);
-					return true;
-				}else{
-					$detail['last_update'] = date('Y-m-d H:i:s');
-					$this->db->where('detalle_pedido_factura', $detail['detalle_pedido_factura']);
-					$this->db->update($this->controller, $detail);
-					$this->redirectPage('presentInvoiceOrder',$detail['id_pedido_factura']);
-					return true;
+	    if(!$_POST){
+	       $this->index();
+	       return false;
+	    }
+		$invoiceOrderDetail =  $this->input->post();
+		$invoiceOrderDetail['id_user'] = $this->session->userdata('id_user');
+	
+	    if ($this->modelOrderInvoiceDetail->isAlreadyExistItem($invoiceOrderDetail) && !isset($invoiceOrderDetail['detalle_pedido_factura'])){
+	        return ($this->responseHttp([
+	            'titleContent' => 'El registro que intenta ingresar ya existe en la factura',
+	            'orderInvoice' => $this->modelOrderInvoice->get($invoiceOrderDetail['id_pedido_factura']),
+	            'viewMessage' => true,
+	            'fail' => true,
+	            'orderDetail' => $invoiceOrderDetail['id_pedido_factura'],
+	            'message' => 'Este producto ya esta en la factura!',
+	        ])); 
+	    }   
+	    $status = $this->_validData($invoiceOrderDetail);
+	    if ($status['status']){
+			if (!isset($invoiceOrderDetail['detalle_pedido_factura'])){
+			    $lastId = $this->modelOrderInvoiceDetail->create($invoiceOrderDetail);
+			    return(
+			        $this->redirectPage('orderInvoicePresent', $invoiceOrderDetail['id_pedido_factura'])
+			        );
+			}else{
+				$invoiceOrderDetail['last_update'] = date('Y-m-d H:i:s');
+				$this->modelOrderInvoiceDetail->update($invoiceOrderDetail);
+				$product = $this->modelProduct->get($invoiceOrderDetail['cod_contable']);
+				$product['costo_caja'] = $invoiceOrderDetail['costo_caja'];
+				$this->modelProduct->update($product['id_producto'], $product);
+				return(
+				    $this->redirectPage('orderInvoicePresent', $invoiceOrderDetail['id_pedido_factura'])
+				    );
 				}
 		}else{
-			$config['viewMessage'] = true;
-			$config['message'] = 'La información de uno de los campos es incorrecta!';
-			$config['data'] = $status['columns'];
-			$this->responseHttp($config);
-			print(var_dump($status['columns']));
-			return true;
+			return($this->responseHttp([
+			    'titleContent' => 'Error en uno de los campos',
+			    'viewMessage' => true,
+			    'message' => 'La información de uno de los campos es incorrecta!',
+			    'data' => $status['columns'],
+			]));
 		}	
 	}
 
@@ -194,9 +211,8 @@ class Detallepedido extends MY_Controller {
 		$config['base_url'] = base_url();
 		$config['rute_url'] = base_url() . 'index.php/';
 		$config['controller'] = $this->controller;
-		$config['iconTitle'] = 'fa-cubes';
+		$config['iconTitle'] = 'fa-cube';
 		$config['content'] = 'home';
-		$config['titleContent'] = 'Ingreso De Producto';
 		return $this->twig->display($this->template, $config);
 	}
 

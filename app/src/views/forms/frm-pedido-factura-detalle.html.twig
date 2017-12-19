@@ -1,9 +1,9 @@
 <form method="post" action="{{rute_url}}detallepedido/validar">
-   <input type="hidden" name="id_pedido_factura" value="{{invoice[0].id_pedido_factura}}">
+   <input type="hidden" name="id_pedido_factura" value="{{invoice.id_pedido_factura}}">
    <div class="row">
       <div class="col-md-6">
          <div class="form-group">
-            <label>Producto</label>
+            <label>Producto &nbsp;&nbsp; <a href="{{ rute_url }}producto/nuevo"> <span class="fa fa-plus"></span>Nuevo Producto</a></label>
             <select 
             class="form-control" 
             name="cod_contable" 
@@ -61,7 +61,7 @@
          name="costo_caja"
          id="costo_caja"
          required="true" 
-         step="0.001" 
+         step="0.0000000001"
          readonly="true" 
          >
 
@@ -82,7 +82,7 @@
             <span class="fa fa-save fa-fw"></span>
             Guardar Producto
          </button>
-      <a href="{{rute_url}}pedidofactura/presentar/{{invoice[0].id_pedido_factura}}" class="btn btn-sm btn-default">
+      <a href="{{rute_url}}pedidofactura/presentar/{{invoice.id_pedido_factura}}" class="btn btn-sm btn-default">
             <span class="fa fa-arrow-left fa-fw"></span>
             Regresar Factura
          </a>

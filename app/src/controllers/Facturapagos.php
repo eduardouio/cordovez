@@ -199,7 +199,7 @@ class Facturapagos extends MY_Controller
                 }
                 $this->db->insert($this->controller, $document);
                 $lastId = $this->db->insert_id();
-                $this->redirectPage('paidPresent', $lastId);
+                $this->redirectPage('paidDetailNew', $lastId);
             }else{
                 $document['last_update'] = date('Y-m-d H:i:s');
                 $this->db->where('id_documento_pago',

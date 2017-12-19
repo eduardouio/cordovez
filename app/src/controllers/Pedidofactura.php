@@ -23,10 +23,12 @@ class Pedidofactura extends MY_Controller
     private $modelSupplier;
 
     private $modelOrder;
-
-    private $modelBase;
     
-    private $modelProductInvoice;
+    private $modelUser;
+    
+    private $modeOrderInvoice;
+    
+    private $modeOrderInvoiceDetail;
 
     /**
      * Constructor de la funcion
@@ -43,11 +45,15 @@ class Pedidofactura extends MY_Controller
     private function init()
     {
         $this->load->model('modelorder');
+        $this->load->model('modeluser');
         $this->load->model('modelsupplier');
-        $this->load->model('modelbase');
+        $this->load->model('modelorderinvoice');
+        $this->load->model('modelorderinvoicedetail');
         $this->modelOrder = new Modelorder();
+        $this->modelUser = new Modeluser();
         $this->modelSupplier = new Modelsupplier();
-        $this->modelBase = new ModelBase();
+        $this->modeOrderInvoice = new Modelorderinvoice();
+        $this->modeOrderInvoiceDetail = new Modelorderinvoicedetail();
     }
 
     /**
@@ -61,42 +67,42 @@ class Pedidofactura extends MY_Controller
 
     /**
      * Presenta una factura pedido a detalle
+     * @param int $idInvoiceOrder indetificador de tabla
+     * @return string template
      */
-    public function presentar($idInvoice)
+    public function presentar($idInvoiceOrder)
     {
-        if (! isset($idInvoice)) {
-            $this->redirectPage('ordersList');
+        $invoiceOrder = $this->modeOrderInvoice->get($idInvoiceOrder);
+        if ($invoiceOrder == false ){
+            $this->index();
             return false;
         }
+        $invoiceDetail = $this->modelOrder->getInvoiceDetail($invoiceOrder);
+        $sums = false;
         
-            $this->db->where('id_pedido_factura', $idInvoice);
-            $resultDb = $this->db->get('pedido_factura');
-            $invoice = $resultDb->result_array();
-            $this->db->where('id_user', $invoice[0]['id_user']);
-            $resultDb = $this->db->get('usuario');
-            $userdata = $resultDb->result_array();
-            $config['show_invoices'] = true;
-            $config['user'] = $userdata[0];
-            $config['invoice'] = $invoice[0];
-            $config['supplier'] = $this->modelSupplier->get($invoice[0]['identificacion_proveedor']);
-            $invoiceDetail = $this->modelOrder->getInvoiceDetail($invoice[0]);
-        if ($invoiceDetail == false) {
-            $config['sums'] = false;
-            $config['invoiceDetail'] = $invoiceDetail;
-        } else {
-            $config['sums'] = $invoiceDetail['sums'];
+        if($invoiceDetail != false){
+            $sums = $invoiceDetail['sums'];
             unset($invoiceDetail['sums']);
             $config['invoiceDetail'] = $invoiceDetail;
         }
         
-        $config['titleContent'] = 'Detalle Factura [ # ' . 
-        $invoice[0]['id_factura_proveedor'] . 
-        ' ] Pedido [ ' . $invoice[0]['nro_pedido'] . ' ]';
-        $this->responseHttp($config);
+        $this->responseHttp([
+            'titleContent' => 'Detalle Factura [ # ' .
+                                      $invoiceOrder['id_factura_proveedor'] .
+                                     ' ] Pedido [ ' . $invoiceOrder['nro_pedido'] . ' ]',
+            'show_invoices' => true,
+            'user' => $this->modelUser->get($invoiceOrder['id_user']),
+            'invoice' => $invoiceOrder,
+            'invoiceDetail' => $invoiceDetail,
+            'sums' => $sums,
+            'supplier' => $this->modelSupplier->get($invoiceOrder['identificacion_proveedor']),
+       ]);
     }
 
     /**
-     * Muestra el formulario para crear una factura
+     * Muestra el formulario para crear una facturapedido
+     * @param string $nroOrder numero de pedido
+     * @return string template
      */
     public function nuevo($nroOrder)
     {
@@ -106,78 +112,76 @@ class Pedidofactura extends MY_Controller
             $this->index();
             return false;
         }
-        
-        $suppliers = $this->modelBase->get_table([
-            'table' => 'proveedor',
-            'where' => [
-                'tipo_provedor' => 'INTERNACIONAL'
-            ]
-        ]);
-        $config = [
+        $suppliers = $this->modelSupplier->getByLocation('INTERNACIONAL');
+        $this->responseHttp([
             'create_invoice' => true,
             'order' => $order,
             'suppliers' => $suppliers,
             'titleContent' => 'Ingreso de Factura Pedido: [' . $nroOrder . ']'
-        ];
-        $this->responseHttp($config);
+        ]);
     }
 
     /**
-     * Muestra el formulario de edicion
+     * Muestra el formulario de edicion con la informacion del pedido
+     * @param int $idInvoice indentificador tabla
+     * @return string template 
      */
-    public function editar($invoiceId)
+    public function editar($idInvoice)
     {
-        $this->db->where('id_pedido_factura', $invoiceId);
-        $resultDb = $this->db->get($this->controller);
-        $invoice = $resultDb->result_array();
-        
-        $this->db->where('identificacion_proveedor', $invoice[0]['identificacion_proveedor']);
-        $resultDb = $this->db->get('proveedor');
-        $config = array(
+        $invoiceOrder = $this->modeOrderInvoice->get($idInvoice);
+        if($invoiceOrder == false){
+            $this->index();
+            return true;
+        }
+        $this->responseHttp([
             'titleContent' => 'Editando Pedido Factura',
             'edit_invoice' => true,
-            'invoice' => $invoice,
-            'supplier' => $resultDb->result_array()
-        );
-        
-        $this->responseHttp($config);
+            'invoice' => $invoiceOrder,
+            'supplier' => $this->modelSupplier->get($invoiceOrder['identificacion_proveedor']),
+        ]);
     }
 
     /**
-     * elimina un pedido de la tabla, solo lo elimina sino tiene parciales
+     * elimina un pedido de la tabla, sino tiene parciales
+     * @param int $invoiceId identificador tabla
+     * @return string template  
      */
-    public function eliminar($invoiceId)
+    public function eliminar($idInvoiceOrder)
     {
-        $this->db->where('id_pedido_factura', $invoiceId);
-        $resultDb = $this->db->get($this->controller);
-        $order = $resultDb->result_array();
-        $this->db->where('id_pedido_factura', $invoiceId);
-        if ($this->db->delete($this->controller)) {
-            $config['order'] = $order[0]['nro_pedido'];
-            $config['viewMessage'] = true;
-            $config['deleted'] = true;
-            $config['message'] = 'Factura Eliminada Exitosamente!';
-            $this->responseHttp($config);
-        } else {
-            $config['order'] = $order[0]['nro_pedido'];
-            $config['viewMessage'] = true;
-            $config['message'] = 'El Pedido No Puede Ser Eliminado, 
-								 Tiene Dependencias!';
-            $this->responseHttp($config);
+        $invoiceOrder = $this->modeOrderInvoice->get($idInvoiceOrder);
+        if($invoiceOrder == false){
+            return $this->index();
+            return false;
         }
+       
+        if($this->modeOrderInvoice->delete($idInvoiceOrder)){
+            $this->responseHttp([
+                'order' => $invoiceOrder['nro_pedido'],
+                'viewMessage' => true,
+                'deleted' => true,
+                'message' => 'Factura Eliminada Exitosamente!',
+            ]);
+            return true;
+        }
+        
+    $this->responseHttp([
+        'order' => $invoiceOrder['nro_pedido'],
+        'viewMessage' => true,
+        'message' => 'El Pedido No Puede Ser Eliminado, 
+						 Tiene Dependencias!',
+         ]);
+
     }
 
     /**
      * crea y/o modifica una factura pedido
-     * 
-     * @param
-     *            array arreglo de la factura
+     * @param array arreglo de la factura
      * @return string template
      */
     public function validar()
     {
         if (! $_POST) {
-            $this->redirectPage('ordersList');
+            $this->index();
         }
         
         $orderInvoice = $this->input->post();
@@ -201,18 +205,18 @@ class Pedidofactura extends MY_Controller
         
         $orderInvoice['vencimiento_pago'] = date('Y-m-d', strtotime($orderInvoice['vencimiento_pago']));
         $orderInvoice['fecha_emision'] = date('Y-m-d', strtotime($orderInvoice['fecha_emision']));
+        $orderInvoice['fecha_pago'] = date('Y-m-d', strtotime($orderInvoice['fecha_pago']));
         $status = $this->_validData($orderInvoice);
         
         if ($status['status']) {
             if (! isset($orderInvoice['id_pedido_factura'])) {
-                $this->db->insert($this->controller, $orderInvoice);
-                $this->presentarPedido($orderInvoice['nro_pedido']);
+                $resultQuery = $this->modeOrderInvoice->create($orderInvoice);
+                $this->redirectPage('orderInvoicePresent', $resultQuery);
                 return true;
             } else {
                 $orderInvoice['last_update'] = date('Y-m-d H:i:s');
-                $this->db->where('id_pedido_factura', $orderInvoice['id_pedido_factura']);
-                $this->db->update($this->controller, $orderInvoice);
-                $this->presentarPedido($orderInvoice['nro_pedido']);
+                $this->modeOrderInvoice->update($orderInvoice);
+                $this->redirectPage('orderInvoicePresent', $orderInvoice['id_pedido_factura']);
                 return true;
             }
         } else {
@@ -222,14 +226,6 @@ class Pedidofactura extends MY_Controller
             $this->responseHttp($config);
             return true;
         }
-    }
-
-    /**
-     * Presenta el pedido cuando se hacen los cambios
-     */
-    private function presentarPedido($nroOrder)
-    {
-        header('Location: ' . base_url() . 'index.php/pedido/presentar/' . $nroOrder);
     }
 
     /**

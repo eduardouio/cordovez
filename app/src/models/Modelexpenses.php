@@ -107,13 +107,31 @@ class Modelexpenses extends CI_Model
         if ($expenses == false) {
             return false;
         }
-
-        if (count($expenses) == 1) {
-            $expenses = $expenses[0];
-        }
         return $expenses;
     }
     
+    /**
+     * Retorna todos los gastos inicales de un pedido
+     * @param (string) $nroOrder
+     * @return array | boolean
+     */
+    public function getInitialExpenses($nroOrder)
+    {
+        $expenses = $this->modelBase->get_table([
+            'table' => $this->table,
+            'where' => [
+                'nro_pedido' => $nroOrder,
+                'tipo' => 'INICIAL'
+            ],
+            'orderby' => [
+                'tipo' => 'DESC',
+            ],
+        ]);
+        if ($expenses == false) {
+            return false;
+        }
+        return $expenses;
+    }
     
     /**
      * Obtiene una Provision completa

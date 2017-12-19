@@ -82,7 +82,6 @@ class Facinformativa extends MY_Controller {
 	            'supplier' => $supplier,
 	            'user' => $this->modelUser->get($infoInvoice['id_user']),
 	        ]);
-	    print('</pre>');
 	    $this->responseHttp([
 	        'show_invoices' => true,
 	        'titleContent' => 'Detalle Factura Informativa [ <small> ' . $infoInvoice['nro_factura_informativa'] . 

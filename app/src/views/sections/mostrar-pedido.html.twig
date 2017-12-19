@@ -58,7 +58,7 @@
          </span>
       </div>
       <div class="col-sm-2">
-         <strong>Consolidado:</strong> 
+         <strong>Justificado en Fact</strong> 
          <span class="text-primary">
          {{ order.valuesOrder.localPaidsExpenses | number_format(0, '.', ',') }}
          </span>
@@ -92,13 +92,13 @@
       </li>
       <li role="presentation">
       	<a href="#gastos" role="tab" data-toggle="tab" aria-controls="gastos">
-      		<span class="fa fa-list"></span> Gastos Nacionalizacion
+      		<span class="fa fa-list"></span> Gastos Iniciales
       	</a>
       </li>
       {% if order.regimen == 10 %}
       <li role="presentation">
       	<a href="#nacionalizaciones" role="tab" data-toggle="tab" aria-controls="nacionalizaciones">
-      		<span class="fa fa-archive"></span> Impuestos Nacionalizacion
+      		<span class="fa fa-archive"></span> Gastos Nacionalizacion
       	</a>
       </li>
       {% else %}
@@ -111,7 +111,7 @@
       
       <li role="presentation">
       	<a href="#servicios" role="tab" data-toggle="tab" aria-controls="servicios">
-      		<span class="fa fa-file-text-o"></span> Facturas Servicios
+      		<span class="fa fa-file-text-o"></span> Provisiones Justificadas
       	</a>
       </li>
    </ul>

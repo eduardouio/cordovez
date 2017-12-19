@@ -95,12 +95,17 @@
 <div class="col-md-12">
 <a href="{{ rute_url }}producto/listar/" class="btn btn-default btn-sm">
   <span class="fa fa-list fa-fw"></span>
-  Listar Todos
+  Listar Producto
 </a>
 
 <a href="{{ rute_url }}producto/editar/{{ product.id_producto }}" class="btn btn-default btn-sm">
   <span class="fa fa-pencil fa-fw"></span>
   Editar Producto
+</a>
+
+<a href="{{ rute_url }}producto/nuevo/" class="btn btn-default btn-sm">
+  <span class="fa fa-plus fa-fw"></span>
+  Nuevo Producto
 </a>
 
 <a href="{{ rute_url }}producto/eliminar/{{ product.id_producto }}" class="btn btn-danger btn-sm">

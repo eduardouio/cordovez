@@ -103,7 +103,7 @@
                {% endif %}
             </tr>
             <tr>
-            <td>Fecha Arribo</td>
+            <td>Fecha Llegada Puerto</td>
                {% if order.fecha_arribo == NULL %}
                <td>No Registrado</td>
                <td class="danger">
@@ -113,7 +113,9 @@
                </td>
                {% else %}
                   <td>{{ order.fecha_arribo }} </td>
-                  <td class="success">OK</td>
+                  <td class="success">OK
+                  <a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}"><span class="fa fa-pencil"></span>Editar</a>
+                  </td>
                {% endif %}
                                              
             </tr>
@@ -128,7 +130,9 @@
                </td>
                {% else %}
                   <td>{{ order.dias_libres }} </td>
-                  <td class="success">OK</td>
+                  <td class="success">OK
+                  <a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}"><span class="fa fa-pencil"></span>Editar</a>
+                  </td>
                {% endif %}
                
             </tr>
@@ -141,20 +145,33 @@
                         {{expense.valor_provisionado}}
                      </td>
                      {% if expense.valor_provisionado > 0 %}
-                        <td class="success">OK</td>
-                        {% else %}
+                        <td class="success">OK
+                        <a href="{{rute_url}}gstinicial/editar/{{expense.id_gastos_nacionalizacion}}">
+                     <span class="fa fa-pencil"></span> Editar
+                     </a>
+                        </td>
+                        
+                        {%else %}       
+                        <td class="danger">                 
                         <a href="{{rute_url}}gstinicial/editar/{{expense.id_gastos_nacionalizacion}}">
                      Registrar                           
                         </a>
-                     {% endif %}
-                  {% else %}
+                        </td>
+
+                     {% endif %}                  
+                     
+                     {% else %}
                      <td>No Requerido</td>
                      <td class="success">OK</td>
                   {% endif %}
                {% else %}
                   <td>{{expense.valor_provisionado}}</td>
                   {% if expense.valor_provisionado > 0 %}
-                     <td class="success">OK</td>
+                     <td class="success">
+                     OK <a href="{{rute_url}}gstinicial/editar/{{expense.id_gastos_nacionalizacion}}">
+                     <span class="fa fa-pencil"></span> Editar
+                     </a>
+                     </td>
                   {% else %}
                      <td class="danger">
                         <a href="{{rute_url}}gstinicial/editar/{{expense.id_gastos_nacionalizacion}}">

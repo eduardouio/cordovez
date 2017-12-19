@@ -23,7 +23,7 @@
                <h5 class="text-primary"> <small>Provisionado: </small> <span id="suma"> $ {{ provisionado | number_format(2, '.', ',')}}</span></h5>
             </div>
             <div class="col-sm-2">
-               <h5 class="text-danger"> <small>Convalidado: </small> <span id="suma"> $ {{ convalidado | number_format(2, '.', ',') }} </span></h5>
+               <h5 class="text-danger"> <small>Justificado En Fact.: </small> <span id="suma"> $ {{ convalidado | number_format(2, '.', ',') }} </span></h5>
             </div>
          </div>
          <br>
@@ -58,7 +58,7 @@
                         <td>
                         <span class="fa fa-pencil"></span>
                         {% if order.bg_haveExpenses == 0 %}
-                           <a href="{{rute_url}}proveedor/presentar/{{initialExpense.id_proveedor}}">
+                           <a href="{{rute_url}}gstinicial/editar/{{initialExpense.id_gastos_nacionalizacion}}">
                             <small>{{initialExpense.supplier.nombre}}</small>
                            </a>
                        {% else  %}

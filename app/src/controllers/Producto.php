@@ -50,7 +50,7 @@ class Producto extends MY_Controller {
 
 	/**
 	* Presenta lista de todos los productos Disponibles
-	* @return template
+	* @return string template
 	*/
 	public function listar($offset = 0){
 		$this->db->order_by('nombre', 'ASC');
@@ -135,6 +135,7 @@ class Producto extends MY_Controller {
 		  }else{
 		      $this->responseHttp([
 		          'viewMessage' => true,
+		          'errorForm' => true,
 		          'create' => true,
 		          'product' => $product,
 		          'supplierData' => $this->modelSupplier->get($product['identificacion_proveedor']),
@@ -177,7 +178,6 @@ class Producto extends MY_Controller {
 	        $this->index();
 	        return false;
 	    }
-	    
 	    $this->responseHttp([
 	        'edit' => true,
 	        'supplierData' => $this->modelSupplier->get($product['identificacion_proveedor']),

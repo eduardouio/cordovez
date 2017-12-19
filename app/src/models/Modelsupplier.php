@@ -154,6 +154,10 @@ class Modelsupplier extends CI_Model
             'where' => [
                 'tipo_provedor' => $location,
             ],
+            'orderby' => [
+                'nombre' => 
+            'ASC'
+            ],
         ]);
         if ((gettype($suppliers) == 'array') && (count($suppliers) > 0)){
             return $suppliers;

@@ -42,7 +42,7 @@ class Modelnationalization extends CI_Model {
                     'nro_pedido' => $order['nro_pedido'],
                 ],
             ]);
-            if ($nationalization == false){
+            if ($nationalization == false || empty($nationalization) ){
                 return 0.0;
             }
             
@@ -51,14 +51,14 @@ class Modelnationalization extends CI_Model {
         } else {
             $valueSum = 0.0;
             $infoInvoices = $this->modelinfoinvoice->get($order['nro_pedido']);
-            if ($infoInvoices == false){
+            if ($infoInvoices == false || empty($nationalization)){
                 return 0.0;
             }
             foreach ($infoInvoices as $item => $myInvoice){
                 if($myInvoice['detailInvoice'] == false){
                     return false;
                 }
-                $valueSum += ($myInvoice['valor'] * $myInvoice['tipo_ambio']);
+                $valueSum += ($myInvoice['valor'] * $myInvoice['tipo_cambio']);
             }
             return $valueSum;
         }

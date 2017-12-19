@@ -3,7 +3,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
  * Controller encargado de manejar los gastos iniciales
- *
  * @package CordovezApp
  * @author Eduardo Villota <eduardouio7@gmail.com>
  * @copyright Copyright (c) 2014, Agencias y Representaciones Cordovez S.A.
@@ -200,13 +199,13 @@ class Gstinicial extends MY_Controller
         if ($status['status']) {
             if (! isset($initExpense['id_gastos_nacionalizacion'])) {
                 $this->db->insert($this->controller, $initExpense);
-                $this->redirectPage('presentOrder', $initExpense['nro_pedido']);
+                $this->redirectPage('validargi', $initExpense['nro_pedido']);
                 return true;
             } else {
                 $initExpense['last_update'] = date('Y-m-d H:i:s');
                 $this->db->where('id_gastos_nacionalizacion', $initExpense['id_gastos_nacionalizacion']);
                 $this->db->update($this->controller, $initExpense);
-                $this->redirectPage('presentOrder', $initExpense['nro_pedido']);
+                $this->redirectPage('validargi', $initExpense['nro_pedido']);
                 return true;
             }
         } else {
@@ -277,7 +276,7 @@ class Gstinicial extends MY_Controller
         $rateExpenses = $this->modelExpenses->getAllRates($order['regimen']);
         $incoterms = $this->modelIncoterms->get($order);
         $invoicesOrder = $this->modelOrder->getInvoices($nroOrder);
-        $initExpenses = $this->myModel->getInitialExpenses($nroOrder);
+        $initExpenses = $this->modelExpenses->getInitialExpenses($nroOrder);
         $minimal = $this->getMinimalParams($order, $initExpenses);
         $minimal['valuesOrder'] = $this->calcValuesOrderItems($order, $invoicesOrder, $initExpenses);
 
@@ -354,7 +353,7 @@ class Gstinicial extends MY_Controller
         }
         
         $order = $this->modelOrder->get($nroOrder);
-        $initExpenses = $this->myModel->getInitialExpenses($nroOrder);
+        $initExpenses = $this->modelExpenses->get($nroOrder);
         
         foreach ($initExpenses as $key => $expense) {
             
@@ -394,9 +393,8 @@ class Gstinicial extends MY_Controller
         }
         
         $order = $this->modelOrder->get($initExpensesInput['nro_pedido']);
-        $order = $order[0];
         $invoicesOrder = $this->modelOrder->getInvoices($initExpensesInput['nro_pedido']);
-        $initExpenses = $this->myModel->getInitialExpenses($initExpensesInput['nro_pedido']);
+        $initExpenses = $this->modelExpenses->get($initExpensesInput['nro_pedido']);
         
         $valuesOrder = $this->calcValuesOrderItems($order, $invoicesOrder, $initExpenses);
         

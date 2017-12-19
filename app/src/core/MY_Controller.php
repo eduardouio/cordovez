@@ -87,9 +87,11 @@ class MY_Controller extends CI_Controller
         $target = [
             'loginForm' =>  'index.php/login/',
             'ordersList' => 'index.php/pedido/listar',
+            'orderInvoicePresent' => 'index.php/pedidofactura/presentar',
             'presentOrder' =>  'index.php/pedido/presentar',
             'paidsList' => 'index.php/facturapagos/listar/',
             'paidPresent' => 'index.php/facturapagos/presentar',
+            'paidDetailNew' => 'index.php/detallefacpago/nuevo/',
             'supplierPresent' => 'index.php/proveedor/presentar',
             'supplierNew' => 'index.php/proveedor/nuevo',
             'suppliersList' => 'index.php/proveedor/listar',

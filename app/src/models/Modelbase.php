@@ -129,4 +129,26 @@ class ModelBase extends CI_Model {
         
       return $resultDb = $resultDb->result_array();
     }
+    
+    
+    /**
+     * Retorna los registros de bodega par aun pedido en R70
+     * @param string $nroOder
+     * @return array | boolean
+     */
+    public function getWarenhouseExpesnes(string $nroOder){
+        $sql = "select * from gastos_nacionalizacion where nro_pedido = '" . 
+                $nroOder . "' and fecha_fin != null";
+        $resultDb = $this->db->query($sql);
+        
+        if (gettype($resultDb) ==  'boolean'){
+            return false;
+        }
+        
+        if (empty($resultDb)) {
+            return false;
+        }
+        
+        return $resultDb = $resultDb->result_array();
+    }
 }

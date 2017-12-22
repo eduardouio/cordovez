@@ -64,5 +64,50 @@ class Modelinfoinvoicedetail extends \CI_Model
         }
         return $detailInfoInvoice;
     }
+    
+    /**
+     * Registra el item de una factura infromativa en la base de datos
+     * @param array $infoInvoiceDetail arreglo del detalle Fac Info
+     * @return boolean | int -> last_insert id
+     */
+    public function create(array $infoInvoiceDetail){
+        if($this->db->insert($this->table, $infoInvoiceDetail)){
+            return $this->db->insert_id();
+        }
+        return false;
+    }
+    
+    
+    /**
+     * Actualiza el detalle de una factura en la db
+     * @param array $infoInvoiceDetail arreglo del detalle de la fac info
+     * @return bool
+     */
+    public function update(array $infoInvoiceDetail):bool
+    {
+        $this->db->where('id_factura_informativa', $infoInvoiceDetail['id_factura_informativa']);
+        if($this->db->update($this->table, $infoInvoiceDetail)){
+            return true;
+        }
+        return false;
+    }
+    
+    
+    
+    /**
+     * Elimina una factura informativa de la db 
+     * @param int $idinfoInvoiceDetail identificador registro db
+     * @return bool
+     */
+    public  function delete(int $idinfoInvoiceDetail):bool
+    {
+        $this->db->where('id_factura_informativa', $infoInvoiceDetail['id_factura_informativa']);
+        if($this->db->delete($this->table)){
+            return true;
+        }
+        return false;
+    }
+    
+    
 }
 

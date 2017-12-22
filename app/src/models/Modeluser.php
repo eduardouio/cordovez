@@ -13,6 +13,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Modeluser extends CI_Model {
     private $table = 'usuario';
+    private $modelBase;
+    
+    
+    function __construct(){
+        parent::__construct();
+        $this->load->model('Modelbase');
+        $this->modelBase = new ModelBase();
+    }
 
     /**
      * Retorna la informacion de un usuario, si no existe retorna false
@@ -21,7 +29,7 @@ class Modeluser extends CI_Model {
      */
     public function get($idUser) 
     {
-        $user = $this->modelbase->get_table([
+        $user = $this->modelBase->get_table([
             'table' => $this->table,
             'where' => [
                 'id_user' => $idUser,
@@ -32,4 +40,47 @@ class Modeluser extends CI_Model {
         }
         return false;
     }
+    
+    
+    /**
+     * Crea un usuario en la base de
+     * @param array $user informacion del usuario
+     * @return bool | int last insert id
+     */
+    public function create(array $user):bool
+    {
+        if($this->db->insert($this->table, $user)){
+            return $this->db->insert_id();
+        }   
+        return false;
+    }
+    
+    /**
+     * Actualiza un ususario en la base de datos
+     * @param array $user informacion del usuario
+     * @return bool
+     */
+    public function update(array $user):bool
+    {
+        $this->db->where('id_user', $user['id_user']);
+        if($this->db->update($this->table, $user)){
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Elimina un usuario de la base de datos
+     * @param int $idUser
+     * @return bool
+     */
+    public function delete(int $idUser):bool
+    {
+        $this->db->where('id_user', $idUser);
+        if($this->db->delete($this->table)){
+            return true;
+        }
+        return false;
+    }
+    
 }

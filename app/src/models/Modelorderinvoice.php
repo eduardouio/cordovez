@@ -11,6 +11,9 @@ class Modelorderinvoice extends CI_Model
         $this->modelBase = new ModelBase();
     }
     
+    
+ 
+    
     /**
      * Retorna el regstro para una factura por id
      * @param int $idInvoice
@@ -88,11 +91,6 @@ class Modelorderinvoice extends CI_Model
             return true;
         }
         return false;
-    }
-    
-    
-    
-    
-    
+    }    
 }
 

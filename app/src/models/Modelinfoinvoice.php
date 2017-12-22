@@ -153,9 +153,37 @@ class Modelinfoinvoice extends CI_Model
         return $result;
     }
     
+    
+    /**
+     * crea una factura informativa en la base de datos
+     * @param array $infoiInvoice informacion factura informativa
+     * @return boolean | int last_insert
+     */
+    public function create(array $infoInvoice){
+        if($this->db->insert($this->table, $infoInvoice)){
+            return $thid->db->insert_id();
+        }
+        return false;
+    }
+    
+    
+    /**
+     * Actualiza el registro de una 
+     * @param array $infoInvoice
+     * @return bool
+     */
+    public function update(array $infoInvoice):bool{
+        $this->db->where('id_factura_informativa', $infoInvoice['id_factura_informativa']);
+        if($this->db->update($this->table, $infoInvoice)){
+            return true;
+        }
+        return false;        
+    }
+    
+    
     /**
      * Retorna la primera factura iformativa de un pedido
-     * 
+     * No recuerdo para que esta definida
      * @param integer $idInfoInvoice
      * @return array | boolean
      */

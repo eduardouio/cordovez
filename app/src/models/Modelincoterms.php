@@ -13,7 +13,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @filesource
  */
 class Modelincoterms extends CI_Model {
-	private $table = 'gastos_nacionalizacion';
+	private $table = 'tarifa_incoterm';
 	private $modelBase;
 	private $modelExpenses;
 
@@ -31,19 +31,63 @@ class Modelincoterms extends CI_Model {
 	    $this->modelBase = new ModelBase();
 	    $this->modelExpenses = new Modelexpenses();
 	}
+	   
 	/**
-		* retorna los valores de FOB y Gastos en Origen para la provision en un 
-		* pedido 
-		*/
-		public function get($order){
-			$intcotermsParams = [
-										'pais_origen' => $order['pais_origen'],
-										'ciudad_origen' => $order['ciudad_origen'],
-										'incoterms' => $order['incoterm']
-													];
-			$incoterms = $this->modelExpenses->getIncotermsParams($intcotermsParams);
+	* retorna los valores de FOB y Gastos en Origen para la provision en un 
+	* pedido 
+	* @param array $incoterm
+	* @return array
+	*/
+	public function getIncotermsOrder($order){
+		$intcotermsParams = [
+									'pais_origen' => $order['pais_origen'],
+									'ciudad_origen' => $order['ciudad_origen'],
+									'incoterms' => $order['incoterm']
+												];
+		$incoterms = $this->modelExpenses->getIncotermsParams($intcotermsParams);
 
-			return $incoterms;			
-		}
+		return $incoterms;			
+	}
+	
+	/**
+	 * crea un nuevo incoterm en la base de datos
+	 * @param array $incoterm arreglo con la informacion de un incoterm
+	 * @return bool | int last insert id
+	 */
+	public function create(array $incoterm)
+	{
+	    if($this->db->insert($this->table, $incoterm)){
+	        return $this->db->insert_id();
+	    }
+	    return false;
+	}
+	
+	/**
+	 * Actualiza el registro de un incoterm
+	 * @param array $incoterm arreglo con la informacion de incorterm
+	 * @return bool
+	 */
+	public function update(array $incoterm):bool
+	{
+	    $this->db->where('id_incoterm', $incoterm['id_incoterm']);
+	    if($this->db->update($this->table, $incoterm)){
+	        return true;
+	    }
+	    return false;
+	}
+	
+	/**
+	 * Elimina un registro de la base de datos 
+	 * @param int $idIncoterm identificador dek registro
+	 * @return bool
+	 */
+	public function delete(int $idIncoterm):bool
+	{
+	    $this->db->where('id_incoterm', $idIncoterm);
+	    if($this->db->delete($this->table)){
+	        return true;
+	    }
+	    return false;
+	}
 
 }

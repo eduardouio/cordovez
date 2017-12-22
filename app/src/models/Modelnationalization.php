@@ -83,4 +83,47 @@ class Modelnationalization extends CI_Model {
         }
         return false;
     }
+    
+    /**
+     * Crea un registro en la tabla de nacionalizacion
+     * @param array $nationalization arreglo de nacionalizacionm
+     * @return bool | int last_insert_id
+     */
+    public function create(array $nationalization)
+    {
+        if($this->db->insert($this->table, $nationalization)){
+            return $this->db->insert_id();
+        }
+        return false;
+    }
+    
+    
+    /**
+     * actualiza un registro de nacionalizacion
+     * @param array $nationalization arreglo de nacionalizacion
+     * @return bool
+     */
+    public function update(array $nationalization):bool
+    {
+        $this->db->where('id_nacionalizacion', $nationalization['id_nacionalizacion']);
+        if($this->db->update($this->table, $nationalization)){
+            return true;
+        }
+        return false;
+    }
+    
+    
+    /**
+     * Elimina un nacionalizacion de la tabla
+     * @param int $idNationalitation identificador de la tabla
+     * @return boolean
+     */
+    public function delete(int $idNationalitation):bool
+    {
+        $this->db->where('id_nacionalizacion', $nationalization['id_nacionalizacion']);
+        if($this->db->delete($this->table)){
+            return true;
+        }
+        return false;
+    }
 }

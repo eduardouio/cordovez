@@ -74,7 +74,6 @@ class Pedido extends MY_Controller
         $this->load->model('modelinfoinvoicedetail');
         $this->load->model('mymodel');
         $this->load->model('modeluser');
-        $this->load->model('modelproductinvoice');
         $this->load->model('modelexpenses');
         $this->load->model('modelorderinvoice');
         $this->load->model('modelorderinvoicedetail');
@@ -88,7 +87,6 @@ class Pedido extends MY_Controller
         $this->modelInfoInvoiceDetail = new Modelinfoinvoicedetail();
         $this->myModel = new Mymodel();
         $this->modelUser = new Modeluser();
-        $this->modelProductInvoice = new Modelproductinvoice();
         $this->modelExpenses = new Modelexpenses();
         $this->modelOrderInvoice = new Modelorderinvoice();
         $this->modelPaidDetail = new Modelpaiddetail();
@@ -171,7 +169,7 @@ class Pedido extends MY_Controller
         
         $order['user'] = $this->modelUser->get($order['id_user']);
         $order['valuesOrder'] = $this->myModel->getValuesOrder($order);
-        $invoicesOrder = $this->modelProductInvoice->getByOrder($nroOrder);
+        $invoicesOrder = $this->modelOrderInvoice->getbyOrder($nroOrder);
         $infoInvoices = $this->modelInfoInvoice->getByOrder($nroOrder);
         $initialExpenses = $this->modelExpenses->get($nroOrder);
         $paidsDetails = $this->modelPaidDetail->getByOrder($nroOrder);

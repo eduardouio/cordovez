@@ -146,7 +146,7 @@ class Login extends CI_Controller {
 	/**
 	 * Desencripta el passwod
 	 * @param string $q
-	 * @return strinf $qDecoded
+	 * @return string $qDecoded
 	 */
 	private function _decryptIt($q){
 	    $qDecoded = rtrim( mcrypt_decrypt( MCRYPT_RIJNDAEL_256, md5(

@@ -82,7 +82,7 @@ class Producto extends MY_Controller {
 
 	/**
 	* Presenta el formulario para regitro de un nuevo producto
-	* @return template
+	* @return string template
 	*/
 	public function nuevo(){
 	    $suppliers = $this->modelSupplier->getByCategory('licores');

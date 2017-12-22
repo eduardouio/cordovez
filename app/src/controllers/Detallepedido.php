@@ -169,8 +169,10 @@ class Detallepedido extends MY_Controller {
 				$invoiceOrderDetail['last_update'] = date('Y-m-d H:i:s');
 				$this->modelOrderInvoiceDetail->update($invoiceOrderDetail);
 				$product = $this->modelProduct->get($invoiceOrderDetail['cod_contable']);
-				$product['costo_caja'] = $invoiceOrderDetail['costo_caja'];
-				$this->modelProduct->update($product['id_producto'], $product);
+				if(gettype($product) == 'array'){
+				    $product['costo_caja'] = $invoiceOrderDetail['costo_caja'];
+				    $this->modelProduct->update($product['id_producto'], $product);
+				}
 				return(
 				    $this->redirectPage('orderInvoicePresent', $invoiceOrderDetail['id_pedido_factura'])
 				    );

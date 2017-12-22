@@ -1,6 +1,5 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
-
 /**
  * Controller encargado de manejar los gastos iniciales
  * @package CordovezApp
@@ -13,7 +12,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
  */
 class Gstinicial extends MY_Controller
 {
-
     private $controller = "gastos_nacionalizacion";
     private $template = '/pages/pageGastoInicial.html';
     private $securePercent = 0.0018;
@@ -104,7 +102,7 @@ class Gstinicial extends MY_Controller
      * 
      * @param (string) $nroOrder
      * @return (array)
-     *
+     
      */
     public function nuevo($nroOrder)
     {
@@ -274,7 +272,7 @@ class Gstinicial extends MY_Controller
         }
         
         $rateExpenses = $this->modelExpenses->getAllRates($order['regimen']);
-        $incoterms = $this->modelIncoterms->get($order);
+        $incoterms = $this->modelIncoterms->getIncotermsOrder($order);
         $invoicesOrder = $this->modelOrder->getInvoices($nroOrder);
         $initExpenses = $this->modelExpenses->getInitialExpenses($nroOrder);
         $minimal = $this->getMinimalParams($order, $initExpenses);

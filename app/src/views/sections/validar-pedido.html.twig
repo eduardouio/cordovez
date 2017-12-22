@@ -1,3 +1,4 @@
+{% set sumExpenses = 0 %}
 <div class="well well-sm">
    <div class="row">
       <div class="col-sm-3">
@@ -55,7 +56,7 @@
       </div>
       <div class="col-sm-2">
          <strong>Creado Por:</strong> 
-         <span>{{createBy[0]['nombres']}}
+         <span>{{createBy['nombres']}}
          </span>
       </div>
    </div>
@@ -137,6 +138,7 @@
                
             </tr>
             {% for expense in minimal.initExpenses %}
+            {% set sumExpenses = sumExpenses + expense.valor_provisionado %}
             <tr>
                <td>{{expense.concepto }}</td>
                {% if expense.concepto == 'GASTO ORIGEN' %}
@@ -182,8 +184,19 @@
                   
                {% endif %}
             </tr>
-
             {% endfor %}
+          <tr>
+          <td> <strong>Total Facturas Provisiones Gastos Iniciales (DOLARES):</strong>
+          <td>
+          	<strong>
+          	{{sumExpenses}}
+          	</strong>
+          </td>
+          <td class="text-center">
+          	---
+          </td>
+
+          </tr>
          </tbody>
       </table>
          {% include 'sections/subsections/table-order-info.html.twig' %}   

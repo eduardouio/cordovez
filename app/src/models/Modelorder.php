@@ -46,8 +46,8 @@ class Modelorder extends CI_Model
 
 
     /**
-     * Obtiene un regsistro completo de la orden
-     * @param (string) $nroOrder
+     * Obtiene un regsistro completo de la orden de una tabla
+     * @param (string) $nroOrder identidicador de la tabla 000-00
      * @return array | false
      */
     public function get($nroOrder)
@@ -198,5 +198,20 @@ class Modelorder extends CI_Model
            return $result;
        }
        return false;
+    }
+    
+    /**
+     * Verifica si una pedido es un regimen 70 si lo es
+     * retorna el pedido sino false
+     * @param string $nroORder
+     * @return boolean
+     */
+    public function isRegimen70($nroOrder)
+    {
+        $order = $this->get($nroOrder);
+        if($order == false || $order['regimen'] == 10){
+            return false;
+        }       
+        return $order;
     }
 }

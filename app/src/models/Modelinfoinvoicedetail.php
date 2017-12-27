@@ -11,19 +11,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @since    Version 1.0.0
  * @filesource
  */
-class Modelinfoinvoicedetail extends \CI_Model
+class Modelinfoinvoicedetail extends CI_Model
 {
     private $table = 'factura_informativa_detalle';
     private $modelBase;
     private $modelProduct;
+    private $modelLog;
 
     public function __construct()
     {
         parent::__construct();
         $this->load->model('modelbase');
         $this->load->model('modelproduct');
+        $this->load->model('modellog');
         $this->modelBase = new ModelBase();
-        $this->modelProduct = new Modelproduct();        
+        $this->modelProduct = new Modelproduct();
+        $this->modelLog = new Modellog();
     }
     
     /**
@@ -51,7 +54,7 @@ class Modelinfoinvoicedetail extends \CI_Model
      * @param int $idInfoDetail
      * @return array | boolean
      */
-    public function  getInfoInvoiceDetail($idInfoDetail)
+    public function  getByFacInformative($idInfoDetail)
     {
         $detailInfoInvoice = $this->modelBase->get_table([
             'table' => $this->table,
@@ -59,10 +62,11 @@ class Modelinfoinvoicedetail extends \CI_Model
                 'id_factura_informativa' => $idInfoDetail,
             ],
         ]);
-        if ($detailInfoInvoice == false ){
-            return false;
+        
+        if (gettype($detailInfoInvoice) == 'array' && count($detailInfoInvoice) > 0){
+            return $detailInfoInvoice;
         }
-        return $detailInfoInvoice;
+        return false;
     }
     
     /**
@@ -76,8 +80,8 @@ class Modelinfoinvoicedetail extends \CI_Model
         }
         return false;
     }
-    
-    
+  
+       
     /**
      * Actualiza el detalle de una factura en la db
      * @param array $infoInvoiceDetail arreglo del detalle de la fac info
@@ -91,9 +95,7 @@ class Modelinfoinvoicedetail extends \CI_Model
         }
         return false;
     }
-    
-    
-    
+       
     /**
      * Elimina una factura informativa de la db 
      * @param int $idinfoInvoiceDetail identificador registro db
@@ -110,4 +112,3 @@ class Modelinfoinvoicedetail extends \CI_Model
     
     
 }
-

@@ -241,6 +241,28 @@ class Mymodel extends CI_Model
             ]
         ];
         
+        $paramsInvoicesEuros = [
+            'select' => [
+                'SUM(valor) AS valInvoicesEuros'
+            ],
+            'table' => 'pedido_factura',
+            'where' => [
+                'nro_pedido' => $order['nro_pedido'],
+                'moneda' => 'EUROS',
+            ]
+        ];
+        
+        $paramsInvoicesDollars = [
+            'select' => [
+                'SUM(valor) AS valInvoicesDollars'
+            ],
+            'table' => 'pedido_factura',
+            'where' => [
+                'nro_pedido' => $order['nro_pedido'],
+                'moneda' => 'DOLARES',
+            ]
+        ];
+        
         $paramsOriginExpenses = [
             'select' => [
                 'valor_provisionado AS valor_provisionado'
@@ -279,11 +301,33 @@ class Mymodel extends CI_Model
         
         $paramsInfoInvoices = [
             'select' => [
-                'SUM( valor ) as infoinvoices'
+                'SUM( valor * tipo_cambio ) as infoinvoices'
             ],
             'table' => 'factura_informativa',
             'where' => [
                 'nro_pedido' => $order['nro_pedido']
+            ]
+        ];
+        
+        $paramsInfoInvoicesEuros = [
+            'select' => [
+                'SUM(valor) as infoinvoicesEuros'
+            ],
+            'table' => 'factura_informativa',
+            'where' => [
+                'nro_pedido' => $order['nro_pedido'],
+                'moneda' => 'EUROS',
+            ]
+        ];
+        
+        $paramsInfoInvoicesDollars = [
+            'select' => [
+                'SUM(valor) as infoinvoicesDollars'
+            ],
+            'table' => 'factura_informativa',
+            'where' => [
+                'nro_pedido' => $order['nro_pedido'],
+                'moneda' => 'DOLARES',
             ]
         ];
         
@@ -299,24 +343,33 @@ class Mymodel extends CI_Model
         
         $multiple = $configIncoterm[$order['incoterm']];
         $valInvoices = $this->modelBase->get_table($paramsInvoices);
+        $valInvoicesEuros = $this->modelBase->get_table($paramsInvoicesEuros);
+        $valInvoicesDollars = $this->modelBase->get_table($paramsInvoicesDollars);
         $originExpenses = $this->modelBase->get_table($paramsOriginExpenses);
         $valSecureExpense = $this->modelBase->get_table($paramsSecureExpenses);
         $valShipExpnese = $this->modelBase->get_table($paramsShipExpenses);
         $infoInvoices = $this->modelBase->get_table($paramsInfoInvoices);
+        $infoInvoicesEuros = $this->modelBase->get_table($paramsInfoInvoicesEuros);
+        $infoInvoicesDollars = $this->modelBase->get_table($paramsInfoInvoicesDollars);
         $localExpenses = $this->modelBase->get_table($paramsLocalExpenses);
         
         return ([
             'multiple' => $multiple,
             'valInvoices' => floatval($valInvoices[0]['valInvoices']),
+            'valInvoicesEuros' => floatval($valInvoicesEuros[0]['valInvoicesEuros']),
+            'valInvoicesDollars' => floatval($valInvoicesDollars[0]['valInvoicesDollars']),
             'originExpenses' => (empty($originExpenses)) ? 0 : floatval($originExpenses[0]['valor_provisionado']),
             'valSecureExpense' => (empty($valSecureExpense)) ? 0 : floatval($valSecureExpense[0]['valor_provisionado']),
             'valShipExpenses' => (empty($valShipExpnese)) ? 0 : floatval($valShipExpnese[0]['valor_provisionado']),
             'infoInvoices' => floatval($infoInvoices[0]['infoinvoices']),
+            'infoInvoicesEuros' => floatval($infoInvoicesEuros[0]['infoinvoicesEuros']),
+            'infoInvoicesDollars' => floatval($infoInvoicesDollars[0]['infoinvoicesDollars']),
             'localExpenses' => floatval($localExpenses[0]['sumexpenses']),
             'localPaidsExpenses' => $this->localPaids($order),
         ]);
     }
 
+    
     /**
      * Retorna las proviciones que se encuentran
      * justificadas en el pedido

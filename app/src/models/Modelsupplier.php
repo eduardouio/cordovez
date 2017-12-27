@@ -66,7 +66,7 @@ class Modelsupplier extends CI_Model
      * @param (string) $supplierId ruc del proveedor
      * @return array | boolean
      */
-    public function get($idSupplier)
+    public function get(string $idSupplier)
     {
         $supplier = $this->modelBase->get_table([
             'table' => $this->table,

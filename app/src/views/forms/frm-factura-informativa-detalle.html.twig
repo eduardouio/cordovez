@@ -1,0 +1,95 @@
+<div class="row">
+   <form action="{{base_url}}facinfdetalle/validar" method="post">
+      <div class="col-md-1">
+      <div class="form-group">
+         <label>Pedido</label>
+         <select id="nro_pedido" autofocus="">
+            <option disabled="" selected=""> Seleccione... </option>
+         </select>
+      </div>
+      </div>
+      <div class="col-md-5">
+         <div class="form-group">
+            <label>Factura Proveedor Extrajero</label>
+            <select id="pedido_factura" style="width: 100%">
+               <option disabled="" selected="">Seleccione...</option>
+            </select>            
+         </div>
+      </div>
+      <div class="col-md-4">
+           <div class="form-group">
+              <label>Producto</label>
+              <select name="detalle_pedido_factura" id="detalle_pedido_factura" style="width: 100%">
+               <option selected="" disabled="">Seleccione...</option>
+              </select>
+           </div>
+      </div>
+   </form>
+</div>
+
+<script type="text/javascript">
+   var stockProducts = {{ stockProducts | raw }};
+   console.dir(stockProducts);
+   /**
+   * Crea la lista de pedidos unicos
+   * @param array stockProducts 
+   * @return array lista filtrada por pedido
+   */
+   function createOrderList(stockProducts){
+      var ordersList = [];
+      $.each(stockProducts, function(key, value){
+         if($.inArray(value.nro_pedido, ordersList) === -1) ordersList.push(value.nro_pedido);
+      });
+      return ordersList;
+   }
+
+   /**
+   * Retotorna las facturas de de un pedido
+   * @param string nro_pedido '000-00'
+   * @return array lista de facturas
+   */
+   function filterInvoiceOrder(nro_pedido){
+      var filterStockProducts = [];
+      $.each(stockProducts, function(key, value){
+         if( value.nro_pedido === nro_pedido ){
+            filterStockProducts.push(value);
+         }
+      });
+      var uniqueInvoices = [];
+      filterStockProducts.filter(function(item){
+         var i = uniqueInvoices.findIndex(x => x.id_pedido_factura == item.id_pedido_factura);
+         if(i <= -1){
+            uniqueInvoices.push(item);
+         }
+      });
+      console.dir(filterStockProducts);
+      return uniqueInvoices;
+   }
+
+   var ordersList = createOrderList(stockProducts);
+   $.each(ordersList, function(key,value){
+      $('#nro_pedido').append($('<option>',{
+            value : value,
+            text : value
+           }));    
+   });
+
+   //filtramos las facturas de ese pedido al seleccionar un pedido
+   $('#nro_pedido').change(function(){
+      $('#pedido_factura option').remove();
+      $('#pedido_factura').append('<option disabled selected="">Seleccione...</option>');
+      var invoicesOrder = filterInvoiceOrder(this.value);
+      $.each(invoicesOrder, function(key, value){
+         var textOption = ('Factura:' +  value.id_factura_proveedor + ' Proveedor:' + value.proveedor);
+         $('#pedido_factura').append($('<option>', {
+            value : value.id_pedido_factura,
+            text : textOption
+         }));
+      });
+   });
+   
+
+
+
+
+</script>

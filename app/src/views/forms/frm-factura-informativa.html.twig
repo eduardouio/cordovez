@@ -1,41 +1,23 @@
-{% set valFob  = 0.0 %}
-{% set valInformativasDolar  = 0.0 %}
-{% set valInformativasEuro  = 0.0 %}
-{% set valorderInvoicesDolar  = 0.0 %}
-{% set valorderInvoicesEuro  = 0.0 %}
-{% set parcials = 0 %}
-{% set valParcials  = 0.0 %}
-{% for invoice in  invoicesOrder %}
-{% if invoice.tipo_cambio == 1 %}
-   {% set valorderInvoicesDolar = valorderInvoicesDolar + (invoice.valor)%}
-{% else %}
-   {% set valorderInvoicesEuro = valorderInvoicesEuro + (invoice.valor) %}   
+{% set saldoEuros  =  (sumsValues.valInvoicesEuros  - sumsValues.infoInvoicesEuros) %}
+{% set saldoDolares  =  (sumsValues.valInvoicesDollars  - sumsValues.infoInvoicesDollars) %}
+{% set fob = (sumsValues.valInvoices) + (sumsValues.originExpenses * sumsValues.multiple) %}
+{% set cif = (fob + sumsValues.valSecureExpense + sumsValues.valSecureExpense + sumsValues.valShipExpnese)  %}
+{% set nacionalizado = 0 %}
+{% if order.regimen == 70  %}
+	{% set nacionalizado = sumsValues.infoInvoices  %}
 {% endif %}
-{%  set valFob = valFob + (
-invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) %}
-{% endfor %}
-{% for infoInvoice in infoInvoices  %}
-{% set parcials = parcials + 1 %}
-{% if infoInvoice.tipo_cambio == 1 %}
-   {% set valInformativasDolar = valInformativasDolar + (infoInvoice.valor)%}
-{% else %}
-   {% set valInformativasEuro = valInformativasEuro + (infoInvoice.valor) %}   
-{% endif %}
-{% set valParcials = valParcials +  (infoInvoice.valor * infoInvoice.tipo_cambio) %}
-{% endfor %}
 <div class="well well-sm">
    <div class="row">
       <div class="col-sm-3">
-         <strong>Total Valor FOB:</strong>
-         <span class="fa fa-usd"></span>
+         <strong>FOB Disponible:</strong>
          <strong class="text-primary">
-         {{(valFob) | number_format(2, '.', ',') }}
+         $ {{fob | number_format(2,',','.')}}
          </strong>  
       </div>
       <div class="col-sm-2">
          <strong>Parciales Anteriores:</strong>
          <span class="text-primary">
-         <strong>{{ parcials }}</strong>
+         <strong>{{ olderPartials | number_format(0) }}</strong>
       </div>
       <div class="col-sm-2">
          <strong>
@@ -63,11 +45,9 @@ invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) 
    </div>
    <div class="row">
       <div class="col-sm-3">
-         <strong>Tiempo Bodega:</strong>
+         <strong>Tiempo Almacenera P&uacute;blica:</strong>
          <span class="text-primary">
-         {{ warehouseDays.years }} años /
-         {{ warehouseDays.mounts }} meses /
-         {{ warehouseDays.days }} días
+         {{ warenHouseDays }} días
          </span>
       </div>
       <div class="col-sm-2">
@@ -104,7 +84,7 @@ invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) 
       <h4 class="text-primary">
          <small>Saldo en $:</small>
          <span id="saldo_dolares">
-            {{ (valorderInvoicesDolar - valInformativasDolar) | number_format(2, '.', ',') }}
+            {{ saldoDolares | number_format(2, '.', ',') }}
          </span>
       </h4>
    </div>
@@ -112,7 +92,7 @@ invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) 
       <h4 class="text-primary">
          <small>Saldo En &euro;:</small>
          <span id="saldo_euros"> 
-            {{ (valorderInvoicesEuro - valInformativasEuro) | number_format(2, '.', ',')}}
+            {{ (saldoEuros) | number_format(2, '.', ',')}}
          </span>
       </h4>
    </div>
@@ -159,6 +139,7 @@ invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) 
                class="form-control" 
                autofocus="autofocus" 
                required="required" 
+               value="{{ infoInvoice.nro_factura_informativa }}" 
                >
          </div>
       </div>
@@ -173,6 +154,7 @@ invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) 
                   required="required" 
                   name="fecha_emision" 
                   class="bootstrap-datepicker" 
+                  value="{{ infoInvoice.fecha_emision | date('m-d-Y') }}" 
                   >
                <div class="input-group-addon">
                   <span class="glyphicon glyphicon-th"></span>
@@ -190,6 +172,7 @@ invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) 
                class="form-control" 
                step="0.01" 
                required="required" 
+               value="{{infoInvoice.seguro_aduana }}" 
                >
          </div>
       </div>
@@ -203,6 +186,7 @@ invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) 
                class="form-control" 
                step="0.01" 
                required="required" 
+               value="{{infoInvoice.flete_aduana}}" 
                >
          </div>
       </div>
@@ -217,6 +201,7 @@ invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) 
                placeholder="000-0000-00-000000"
                class="form-control" 
                maxlength="20" 
+               value="{{infoInvoice.nro_refrendo}}" 
                >
          </div>
       </div>
@@ -227,6 +212,7 @@ invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) 
                class="form-control" 
                type="number" 
                name="valor"
+               value="{{infoInvoice.valor}}" 
                id="valor"
                step="0.01" 
                required="required" 
@@ -281,7 +267,7 @@ invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) 
       <div class="col-md-2">
          <div class="form-group">
             <label>Comentarios</label>
-            <textarea name="comentarios" class="form-control" rows="3" id="comentarios"></textarea>
+            <textarea name="comentarios" class="form-control" rows="3" id="comentarios">{{infoInvoice.comentarios}}</textarea>
          </div>
       </div>
    </div>

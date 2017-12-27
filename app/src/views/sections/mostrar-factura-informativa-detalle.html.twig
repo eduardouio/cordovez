@@ -1,3 +1,44 @@
+<div class="well well-sm">
+  <div class="row">
+    <div class="col-md-3">
+      <strong>Proveedor:</strong> <span>{{ supplier.nombre }}</span>
+    </div>
+    <div class="col-md-2">
+      <strong>Ruc:</strong> <span>{{ supplier.identificacion_proveedor }}</span>
+    </div>
+    <div class="col-md-2">
+      <strong>Fecha:</strong> <span>{{ infoInvoice.fecha_emision  }}</span>
+    </div>
+    <div class="col-md-3">
+      <strong>Comentarios:</strong> <span>{{ infoInvoice.comentarios }}</span>
+    </div>
+    <div class="col-md-2">
+      <strong>Moneda </strong> <span class="text-success"> {{ moneda | raw }}
+        {{ infoInvoice.moneda | upper }}
+      </span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <strong>Valor Factura Informativa{{moneda | raw}}:</strong> <span class="text-primary">{{ infoInvoice.valor | number_format(2,',','.')}}</span>
+    </div>
+    
+    <div class="col-md-2">
+      <strong>Tipo de Cambio:</strong> <span class="text-danger"> $
+        {{ infoInvoice.tipo_cambio | number_format(2,',','.') }}
+      </span>
+    </div>
+    <div class="col-md-2">
+      <strong>Valor:</strong> <span class="text-danger"> $
+        {{ (infoInvoice.tipo_cambio * infoInvoice.valor )| number_format(2,',','.') }}
+      </span>
+    </div>
+    <div class="col-md-3">
+      <strong>Creado Por :</strong> <span>{{ user.nombres }}</span>
+      <span class="text-primary"> [{{ infoInvoice.date_create }}]</span>
+    </div>
+  </div>
+</div>
 <div class="factura_informativa_detalle">
   <br>
   <div class="row">

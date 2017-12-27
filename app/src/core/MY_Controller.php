@@ -101,6 +101,7 @@ class MY_Controller extends CI_Controller
             'home' =>  'index.php/home',
             'ordersList' => 'index.php/pedido/listar',
             'orderInvoicePresent' => 'index.php/pedidofactura/presentar',
+            'infoInvoiceShow' => 'index.php/facinformativa/presentar',
             'presentOrder' =>  'index.php/pedido/presentar',
             'paidsList' => 'index.php/facturapagos/listar/',
             'paidPresent' => 'index.php/facturapagos/presentar',
@@ -220,6 +221,40 @@ class MY_Controller extends CI_Controller
     private function calcValueExpense(string $nroOrder): float
     {
         return 'implementar';
+    }
+    
+    
+    
+    /**
+     * Obtiene el tiempo en dias de un pedido en la bodega inicial
+     * si el pedido se encuentra nacionalizado o tiene una factura
+     * informativa retorna el tiempo que estubo en la bodega inicial
+     *
+     * @param array $order
+     *            pedido a evaluar
+     * @return int
+     */
+    protected function getWarenHouseDaysInitial(array $order): int
+    {
+        if (gettype($order['fecha_salida_bodega_puerto']) == 'NULL') {
+            return (dateDiffInDays($order['fecha_arribo'], date('Y-m-d')));
+        }
+        return (dateDiffInDays($order['fecha_arribo'], $order['fecha_salida_bodega_puerto']));
+    }
+    
+    /**
+     * Retorna el tiempo de dias por el bodegaje de un pedido.
+     *
+     * @param array $order
+     *            arreglo con los detalles de la orden
+     * @return int tiempo en dias de almacenaje
+     */
+    protected function getWarenHouseDaysPartials($order): int
+    {
+        if (gettype($order['fecha_salida_almacenera']) == 'NULL') {
+            return (dateDiffInDays($order['fecha_ingreso_almacenera'], date('Y-m-d')));
+        }
+        return (dateDiffInDays($order['fecha_ingreso_almacenera'], $order['fecha_salida_almacenera']));
     }
     
     

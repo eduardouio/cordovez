@@ -35,6 +35,25 @@ class Modelorderinvoicedetail extends CI_Model
     
     
     /**
+     * retorna los detalles de una factura de pedido
+     * @param int $idOrderInvoice indetificador de tabla padre
+     * @return array | boolean
+     */
+    public function getByOrderInvoice(int $idOrderInvoice){
+        $invoicesOrderDetails = $this->modelBase->get_table([
+            'table' => $this->table,
+            'where' => [
+                'id_pedido_factura' => $idOrderInvoice,
+            ],
+        ]);
+        
+        if (gettype($invoicesOrderDetails) == 'array' && count($invoicesOrderDetails) > 0){
+            return $invoicesOrderDetails;
+        }
+        return false;
+    }
+    
+    /**
      * recupera los productos de una factura de productos
      * @param int $idOrderInvoice identificador de la tabla
      * @return array | boolean
@@ -81,6 +100,7 @@ class Modelorderinvoicedetail extends CI_Model
         }
         return false;
     }
+       
     
     /**
      * Elimina un detalle de una factura 
@@ -95,10 +115,10 @@ class Modelorderinvoicedetail extends CI_Model
         }
         return false;
     }
-    
+      
     
     /**
-     * 
+     * Comprueba si un item que se va a insertar ya esta registrado
      * @param array $newRowParams [
      *                      'id_pedido_factura',
      *                      'cod_contable',
@@ -117,6 +137,45 @@ class Modelorderinvoicedetail extends CI_Model
             ]); 
         if ($existItem){
             return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Retorna el stock de productos en la aduana, para un pedido en especial
+     * @param string $nroOrder identificado de pedido en la tabla
+     * @return array items de los productos que estan disponibles Detalle_pedido_factura
+     */
+    public function getActiveStokProductsByOrder(string $nroOrder):array
+    {
+        $activeStockOrder = $this->modelBase->get_table([
+            'table' => 'stockActiveProductsInCustomsView',
+            'where' =>[
+                'nro_pedido' => $nroOrder,
+            ],
+        ]);   
+        if(gettype($activeStockOrder == 'array') && count($activeStockOrder) > 0){
+            return $activeStockOrder;
+        }
+        return false;
+    }
+    
+    /**
+     * Retorna el listado de stock activo por regimen,
+     * no se ha provado esta function
+     * @param string $regimen 70 0 10
+     * @return array
+     */
+    public function getAllActiveStokProductsRegimen(string $regimen ): array
+    {
+        $activeStockByRegimen = $this->modelBase->get_table([
+            'table' => 'stockActiveProductsInCustomsView',
+            'where' =>[
+                'regimen' => $regimen,
+            ],
+        ]);
+        if(gettype($activeStockByRegimen == 'array') && count($activeStockByRegimen) > 0){
+            return $activeStockByRegimen;
         }
         return false;
     }

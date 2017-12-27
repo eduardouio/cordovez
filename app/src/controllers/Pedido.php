@@ -369,7 +369,7 @@ class Pedido extends MY_Controller
         $detailInfoinvoices = [];
         
         foreach ($infoInvoices as $item => $invoice){
-            $detailInfoInvoice = $this->modelInfoInvoiceDetail->getInfoInvoiceDetail($invoice['id_factura_informativa']);
+            $detailInfoInvoice = $this->modelInfoInvoiceDetail->getByFacInformative($invoice['id_factura_informativa']);
             if (gettype($detailInfoInvoice) == 'array' && count($detailInfoInvoice) > 0){
                 array_push($detailInfoinvoices, $detailInfoInvoice);
             }
@@ -424,38 +424,6 @@ class Pedido extends MY_Controller
         $info['totalOrders'] --;
         $info['activeOrders'] --;
         return $info;
-    }
-    
-    /**
-     * Obtiene el tiempo en dias de un pedido en la bodega inicial
-     * si el pedido se encuentra nacionalizado o tiene una factura
-     * informativa retorna el tiempo que estubo en la bodega inicial
-     *
-     * @param array $order
-     *            pedido a evaluar
-     * @return int
-     */
-    private function getWarenHouseDaysInitial(array $order): int
-    {
-        if (gettype($order['fecha_salida_bodega_puerto']) == 'NULL') {
-            return (dateDiffInDays($order['fecha_arribo'], date('Y-m-d')));
-        }
-        return (dateDiffInDays($order['fecha_arribo'], $order['fecha_salida_bodega_puerto']));
-    }
-    
-    /**
-     * Retorna el tiempo de dias por el bodegaje de un pedido.
-     *
-     * @param array $order
-     *            arreglo con los detalles de la orden
-     * @return int tiempo en dias de almacenaje
-     */
-    private function getWarenHouseDaysPartials($order): int
-    {
-        if (gettype($order['fecha_salida_almacenera']) == 'NULL') {
-            return (dateDiffInDays($order['fecha_ingreso_almacenera'], date('Y-m-d')));
-        }
-        return (dateDiffInDays($order['fecha_ingreso_almacenera'], $order['fecha_salida_almacenera']));
     }
     
     /**

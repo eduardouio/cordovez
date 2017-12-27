@@ -18,7 +18,13 @@ class Facinformativa extends MY_Controller {
 	private $modelOrder;
 	private $modelUser;
 	private $modelSupplier;
+	private $modelOrderInvoice;
+	private $modelOrderInvoiceDetail;
 	private $modelInfoInvoice;
+	private $modelInfoInvoiceDetail;
+	private $modelNationalization;
+	private $modelProduct;
+	private $modelLog;
 	private $myModel;
 
 	/**
@@ -39,12 +45,24 @@ class Facinformativa extends MY_Controller {
 	    $this->load->model('modelorder');
 	    $this->load->model('modeluser');
 	    $this->load->model('modelsupplier');
+	    $this->load->model('modelorderinvoice');
+	    $this->load->model('modelorderinvoicedetail');
 	    $this->load->model('modelinfoinvoice');
+	    $this->load->model('modelinfoinvoicedetail');
+	    $this->load->model('modelnationalization');
+	    $this->load->model('modelproduct');
 	    $this->load->model('mymodel');
-	    $this->modelOrder = new Modelorder();
+	    $this->load->model('modellog');
+	    $this->modelOrder = new  Modelorder();
 	    $this->modelUser = new Modeluser();
 	    $this->modelSupplier = new Modelsupplier();
+	    $this->modelOrderInvoice = new Modelorderinvoice();
+	    $this->modelOrderInvoiceDetail = new Modelorderinvoicedetail();
 	    $this->modelInfoInvoice = new Modelinfoinvoice();
+	    $this->modelInfoInvoiceDetail = new Modelinfoinvoicedetail() ;
+	    $this->modelNationalization = new Modelnationalization();
+	    $this->modelProduct = new Modelproduct();
+	    $this->modelLog = new Modellog();
 	    $this->myModel = new Mymodel();
 	}
 	    
@@ -66,29 +84,22 @@ class Facinformativa extends MY_Controller {
 	public function presentar($idFacInformative){
 	    $infoInvoice = $this->modelInfoInvoice->get($idFacInformative);
 	    if ($infoInvoice == false){
+	        $this->modelLog->redirectLog($this->controller . ',presentar,'. current_url());
 	        $this->index();
 	        return false;
 	    }
 	    $order = $this->modelOrder->get($infoInvoice['nro_pedido']);
 	    $supplier = $this->modelSupplier->get($infoInvoice['identificacion_proveedor']);
-	    print('<pre>');
-	    print print_r([
-	            'show_invoices' => true,
-	            'titleContent' => 'Detalle Factura Informativa [ <small> ' . $infoInvoice['nro_factura_informativa'] .
-	            ' => ' . $supplier['nombre'] . ' </small> ]',
-	            'order' => $order,
-	            'infoInvoice' => $infoInvoice,
-	            'detailInfoinvoice' => $this->modelInfoInvoice->getInvoiceDetail($infoInvoice),
-	            'supplier' => $supplier,
-	            'user' => $this->modelUser->get($infoInvoice['id_user']),
-	        ]);
+	    $orderInvoices = $this->modelOrderInvoice->getbyOrder($order['nro_pedido']);
+	    $infoInvoice['details'] = $this->modelInfoInvoiceDetail->getByFacInformative($idFacInformative);
 	    $this->responseHttp([
-	        'show_invoices' => true,
-	        'titleContent' => 'Detalle Factura Informativa [ <small> ' . $infoInvoice['nro_factura_informativa'] . 
-	                           ' => ' . $supplier['nombre'] . ' </small> ]',
+	        'show'     => true,
+	        'titleContent' => 'Pedido [' . $order['nro_pedido'] . '] ' . 
+	                           ' Detalle Factura Informativa [ <small> ' . 
+	                           $infoInvoice['nro_factura_informativa'] . 
+	                           ' => ' . $supplier['nombre'] . '</small> ]',
 	        'order' => $order,
 	        'infoInvoice' => $infoInvoice,
-	        'detailInfoinvoice' => $this->modelInfoInvoice->getInvoiceDetail($infoInvoice),
 	        'supplier' => $supplier,
 	        'user' => $this->modelUser->get($infoInvoice['id_user']),
 	    ]);
@@ -96,27 +107,55 @@ class Facinformativa extends MY_Controller {
 
 	
 	/**
-	* Presenta el formulario para registrar una nueva factura informativa
+	* Presenta el formulario para registrar una nueva factura informativa 
+	* las facturas informativas solo se usan con regimen 70
 	* @param (string) $nroOrder 
 	* @return void
 	*/
 	public function nuevo($nroOrder){
-		$order = $this->modelOrder->get($nroOrder);
-		if($order == false){
-		    $this->redirectPage('ordersList');
+		$order = $this->modelOrder->isRegimen70($nroOrder);
+		if ($order == false){
+		    $this->modelLog->redirectLog($this->controller . ',nuevo,' . current_url());
+		    $this->index();
 		    return false;
 		}
-        $this->responseHttp([
+		$invoicesOrder = $this->modelOrderInvoice->getbyOrder($nroOrder);
+		$invoicesOrderTemp = [];
+		if($invoicesOrder != false){
+		    foreach ($invoicesOrder as $item => $invoiceOrder){
+		        $invoiceOrder['details'] = $this->modelOrderInvoiceDetail->getByOrderInvoice($invoiceOrder['id_pedido_factura']);
+		        $invoiceOrder['supplier'] = $this->modelSupplier->get($invoiceOrder['identificacion_proveedor']);
+		        $invoiceOrder['user'] = $this->modelUser->get($invoiceOrder['id_user']);
+		        $invoicesOrderTemp[$item] = $invoiceOrder;
+		    }
+		}
+		
+		$infoInvoices = $this->modelInfoInvoice->getByOrder($nroOrder);
+		$olderPartials = 0;
+		$infoInvoicesTemp = [];
+		if($infoInvoices != false){
+		    foreach ($infoInvoices as $item => $infoInvoice){
+		        $infoInvoice['supplier'] = $this->modelSupplier->get($infoInvoice['identificacion_proveedor']);
+		        $infoInvoice['details'] = $this->modelInfoInvoiceDetail->getByFacInformative($infoInvoice['id_factura_informativa']);
+		        $infoInvoice['user'] = $this->modelUser->get($infoInvoice['id_user']);
+		        $infoInvoicesTemp[$item] = $infoInvoice;
+		        $olderPartials += 1;
+		    }
+		}
+				
+        return $this->responseHttp([
             'create_invoice' => true,
             'order' => $order,
-            'invoicesOrder' => $this->modelOrder->getInvoices($nroOrder),
-            'infoInvoices' => $this->modelInfoInvoice->getByOrder($nroOrder),
+            'invoicesOrder' => $invoicesOrderTemp,
+            'infoInvoices' => $infoInvoicesTemp,
             'supplier' =>  $this->modelsupplier->get($this->almaceneraId),
             'haveEuros' => $this->orderHaveEuros($nroOrder),
+            'sumsValues' => $this->myModel->getValuesOrder($order),
+            'warenHouseDays' => $this->getWarenHouseDaysPartials($order),
+            'olderPartials' => $olderPartials,
             'titleContent' => 'Ingreso de Factura Informativa Pedido: ['.
                                                                 $nroOrder . ']',
             'user' => $this->modelUser->get($order['id_user']),
-            'warehouseDays' => warehouseDays($order),
                         ]);
 	}
 	
@@ -130,26 +169,111 @@ class Facinformativa extends MY_Controller {
 	    $infoInvoice =  $this->modelInfoInvoice->get($idFacInformative);
 	    if($infoInvoice == false){
 	        $this->redirectPage('ordersList');
+	        $this->modelLog->redirectLog($this->controller . ',editar,' . current_url());
 	        return false;
 	    }
-	    $order = $this->modelOrder->get($infoInvoice['nro_pedido']);
-	    
-	    $this->responseHttp([
+	    $order = $this->modelOrder->isRegimen70($infoInvoice['nro_pedido']);
+	    $invoicesOrder = $this->modelOrderInvoice->getbyOrder($infoInvoice['nro_pedido']);
+	    $invoicesOrderTemp = [];
+	    if($invoicesOrder != false){
+	        foreach ($invoicesOrder as $item => $invoiceOrder){
+	            $invoiceOrder['details'] = $this->modelOrderInvoiceDetail->getByOrderInvoice($invoiceOrder['id_pedido_factura']);
+	            $invoiceOrder['supplier'] = $this->modelSupplier->get($invoiceOrder['identificacion_proveedor']);
+	            $invoiceOrder['user'] = $this->modelUser->get($invoiceOrder['id_user']);
+	            $invoicesOrderTemp[$item] = $invoiceOrder;
+	        }
+	    }
+	    $infoInvoices = $this->modelInfoInvoice->getByOrder($infoInvoice['nro_pedido']);
+	    $olderPartials = 0;
+	    $infoInvoicesTemp = [];
+	    if($infoInvoices != false){
+	        foreach ($infoInvoices as $item => $infoInvoice){
+	            $infoInvoice['supplier'] = $this->modelSupplier->get($infoInvoice['identificacion_proveedor']);
+	            $infoInvoice['details'] = $this->modelInfoInvoiceDetail->getByFacInformative($infoInvoice['id_factura_informativa']);
+	            $infoInvoice['user'] = $this->modelUser->get($infoInvoice['id_user']);
+	            $infoInvoicesTemp[$item] = $infoInvoice;
+	            $olderPartials += 1;
+	        }
+	    }
+	    return $this->responseHttp([
 	        'edit_invoice' => true,
 	        'order' => $order,
-	        'invoicesOrder' => $this->modelOrder->getInvoices($infoInvoice['nro_pedido']),
-	        'infoInvoices' => $this->modelInfoInvoice->getByOrder($infoInvoice['nro_pedido']),
-	        'infoInvoice' =>$infoInvoice,
-	        'supplier' =>  $this->modelSupplier->get($this->almaceneraId),
+	        'invoicesOrder' => $invoicesOrderTemp,
+	        'infoInvoices' => $infoInvoicesTemp,
+	        'infoInvoice' => $this->modelInfoInvoice->get($idFacInformative),
+	        'supplier' =>  $this->modelsupplier->get($this->almaceneraId),
 	        'haveEuros' => $this->orderHaveEuros($infoInvoice['nro_pedido']),
-	        'titleContent' => 'Editar Factura Informativa Nro ' . $infoInvoice['nro_factura_informativa'] . 
-	        ' Pedido: ['.
+	        'sumsValues' => $this->myModel->getValuesOrder($order),
+	        'warenHouseDays' => $this->getWarenHouseDaysPartials($order),
+	        'olderPartials' => $olderPartials,
+	        'titleContent' => 'Modificar Factura Informativa Pedido: ['.
 	        $infoInvoice['nro_pedido'] . ']',
-	        'user' => $this->modelUser->get($infoInvoice['id_user']),
-	        'warehouseDays' => warehouseDays($order),
+	        'user' => $this->modelUser->get($order['id_user']),
 	    ]);
+	    
 	}
     
+	
+	/**
+	 * Valida y gusrada una factura informativa si no existe redirecciona a pedidos
+	 * @param (array) $inputdata
+	 * @return void
+	 */
+	public function validar(){
+	    if(!$_POST){
+	        $this->modelLog->redirectLog($this->controller . ',validar,' . current_url());
+	        $this->redirectPage('ordersList');
+	        return true;
+	    }
+	    
+	    $infoInvoice = $this->input->post();
+	    $infoInvoice['fecha_emision'] = date('Y-m-d', strtotime($infoInvoice['fecha_emision']));	    
+	    $infoInvoice['id_user'] = $this->session->userdata('id_user');
+	    
+	    if(($this->modelInfoInvoice->existRow($infoInvoice) > 0) && (!isset($infoInvoice['id_factura_informativa']))){
+	        $this->modelLog->errorLog('Registro Duplicado ' . $this->controller . ',validar,' . current_url() );
+	        return(
+	            $this->responseHttp([
+    	            'titleContent' => 'La Factura Informativa [' . $infoInvoice['nro_factura_informativa'] . '] ya se ecuentra Registrada!.',
+	                'viewMessage' => true,
+	                'message' => 'EL Registro que intenta ingresar ya Existe.',
+	                'duplicateRow' => true,
+	                'idInfoInvoice' => $this->modelInfoInvoice->existRow($infoInvoice),	                
+	            ]));
+	    }
+	    
+	    $status = $this->validData($infoInvoice);
+	    if ($status['status']) {
+	        if(!isset($infoInvoice['id_factura_informativa'])){
+	            if($lastId = $this->modelInfoInvoice->create($infoInvoice)){
+	                return ($this->redirectPage('infoInvoiceShow', $lastId));
+	            }
+	        }else{
+	            $infoInvoice['last_update'] = date('Y-m-d H:m:s');
+	            if($this->modelInfoInvoice->update($infoInvoice)){
+	                return ($this->redirectPage('infoInvoiceShow', $infoInvoice['id_factura_informativa']));
+	            }
+	        }
+	    }else{
+	        $order = $this->modelOrder->get($infoInvoice['nro_pedido']);
+	        return($this->responseHttp(
+	            [
+	                'viewMessage' => 'true',
+	                'titleContent' => 'Verifique la información ingresada en el formulario',
+	                'create_invoice' => true,
+	                'order' => $order,
+	                'supplier' =>  $this->modelsupplier->get($this->almaceneraId),
+	                'haveEuros' => $this->orderHaveEuros($order['nro_pedido']),
+	                'sumsValues' => $this->myModel->getValuesOrder($order),
+	                'message' => 'La información de uno de los campos es incorrecta!.',
+	                'warenHouseDays' => $this->getWarenHouseDaysPartials($order),
+	                'user' => $this->modelUser->get($order['id_user']),
+	                'formError' => true,
+	                'data' => $status,
+	                'infoInvoice' => $infoInvoice,
+	            ]));
+	    }
+	}
 	
 	/**
 	 * Elimina una factura informativa de la base de datos, solo si esta
@@ -178,51 +302,7 @@ class Facinformativa extends MY_Controller {
 	    }
 	    
 	}
-
-	/**
-	* Valida y gusrada una factura informativa si no existe redirecciona a pedidos
-	* @param (array) $inputdata
-	* @return void
-	*/
-	public function validar(){
-		if(!$_POST){
-			$this->redirectPage('ordersList');
-		}
-
-		$infoInvoice = $this->input->post();
-		$infoInvoice['fecha_emision'] = date('Y-m-d', strtotime(
-																								$infoInvoice['fecha_emision']));
-		$infoInvoice['id_user'] = $this->session->userdata('id_user');
-		$status = $this->validData($infoInvoice);
-		if ($status['status']) {
-			if(isset($infoInvoice['id_factura_informativa'])){
-			    $infoInvoice['last_update'] = date('Y-m-d H:m:s');
-				$this->db->where('id_factura_informativa', $infoInvoice['id_factura_informativa']);
-				if($this->db->update($this->controller, $infoInvoice)){
-				    $this->redirectPage('presentOrder', $infoInvoice['nro_pedido']);
-				}			
-				
-			}else{
-			if($this->db->insert($this->controller, $infoInvoice)){
-				$this->redirectPage('presentOrder', $infoInvoice['nro_pedido']);
-			}else{
-				print 'algo salio mal';
-				print_r($this->mymodel->lastInfo());
-			}	
-				
-			}
-		}else{
-			$this->responseHttp(
-				[
-						'viewMessage' => 'true',
-						'message' => 'La información de uno de los campos es incorrecta!.',
-						'data' => $status['columns'],
-						'invoice' => $infoInvoice,
-								]
-			);
-		}
-	}
-    
+	
 
 	/**
 	* Verifica si el pedido tiene una factura en euros
@@ -260,7 +340,6 @@ class Facinformativa extends MY_Controller {
 		);
 		return $this->_checkColumnsData($columnsLen, $data);
 	}
-
 
 	/* *
 	* Envia la respuestas html al navegador

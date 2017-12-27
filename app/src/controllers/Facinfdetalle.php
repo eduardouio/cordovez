@@ -17,18 +17,20 @@ class Facinfdetalle extends MY_Controller
     private $template = 'pages/pageFactutaInformativaDetalle.html';
     private $controller = 'factura_informativa_detalle';
     private $modelOrder;
+    private $modelOrderInvoice;
+    private $modelOrderInvoiceDetail;
     private $modelInfoInvoice;
     private $modelInfoInvoiceDetail;
     private $modelSupplier;
     private $modelProduct;
     private $modelUser;
+    private $modelLog;
 
     public function __construct()
     {
         parent::__construct();
         $this->init();       
     }
-    
     
     /**
     * Metodo encargado de iniciar las variables de entorno y modelos
@@ -40,12 +42,18 @@ class Facinfdetalle extends MY_Controller
         $this->load->model('modelproduct');
         $this->load->model('modeluser');
         $this->load->model('modelinfoinvoicedetail');
+        $this->load->model('modellog');
+        $this->load->model('modelorderinvoice');
+        $this->load->model('modelorderinvoicedetail');
         $this->modelOrder = new Modelorder();
         $this->modelInfoInvoice = new Modelinfoinvoice();
         $this->modelSupplier = new Modelsupplier();
         $this->modelProduct = new Modelproduct();
         $this->modelUser = new Modeluser();
         $this->modelInfoInvoiceDetail = new Modelinfoinvoicedetail();
+        $this->modelLog = new Modellog();
+        $this->modelOrderInvoice = new Modelorderinvoice();
+        $this->modelOrderInvoiceDetail = new Modelorderinvoicedetail();
     }
 
     /**
@@ -62,19 +70,54 @@ class Facinfdetalle extends MY_Controller
      * @param int $idinfoDetail
      * @return bool | template
      */
-    public function presentar($idInfoInvDetail){
-        $detail = $this->modelInfoInvoiceDetail->get($idInfoInvDetail);
-        if ($detail == false){
+    public function presentar($idInfoInvoiceDetail){
+        $infoInvoiceDetail = $this->modelInfoInvoiceDetail->get($idInfoInvoiceDetail);
+        if ($infoInvoiceDetail == false){
+            $this->modelLog->redirectLog($this->controller . ',presentar,' . current_url());
             $this->index();
             return false;
         }
-        $infInvoice = $this->modelInfoInvoice->get($detail['id_factura_informativa']);
-        $this->responseHttp([
-            'titleContent' => 'Detalle Factura Informativa [ ' . $infInvoice['nro_factura_informativa']  . ' ]' ,
+        $infoInvoice = $this->modelInfoInvoice->get($infoInvoiceDetail['id_factura_informativa']);
+        $order = $this->modelOrder->get($infoInvoice['nro_pedido']);
+        return ($this->responseHttp([
+            'titleContent' => 'Detalle Factura Informativa [ ' . $infoInvoice['nro_factura_informativa']  . ' ]' . 
+                            'Pedido [' . $order['nro_pedido'] .']' ,
             'show_detail' => true,
-        ]);
+            'order' => $order,
+            'supplier' => $this->modelSupplier->get($infoInvoice['identificacion_proveedor']),
+            'infoInvoice' => $infoInvoice,
+            'invoiceDetail' => $infoInvoiceDetail,
+            'user' => $this->modelUser->get($infoInvoiceDetail['id_user']),
+        ]));       
+    }
+    
+    
+    /**
+     * Muestra el formulario para el registro del detalle de una factura infromativa
+     * si no existe redirecciona a la vista de lista de ordenes
+     * @param $_Post
+     * @return string template
+     */
+    public function nuevo($idFacInformative)
+    {
+      $infoInvoice = $this->modelInfoInvoice->get($idFacInformative);
+      if($infoInvoice == false){
+          $this->modelLog->redirectLog($this->controller . ',nuevo,' . current_url());
+          return($this->index());
+      }
+      $activeStock = $this->modelOrderInvoiceDetail->getAllActiveStokProductsRegimen(70);
+      return($this->responseHttp([
+          'titleContent' => 'Agregar Producto en Factura infromativa [' . 
+                            $infoInvoice['nro_factura_informativa']. '] del Pedido [' . 
+                            $infoInvoice['nro_pedido'] . ']',
+          'create_detail' => true,
+          'stockProducts' => json_encode($activeStock),
+          'infoInvoice' => $infoInvoice,
+          'order' => $this->modelOrder->get($infoInvoice['nro_pedido']),
+      ]));
         
     }
+    
     
      /**
      * Se validan las columnas que debe tener la consulta para que no falle
@@ -92,6 +135,7 @@ class Facinfdetalle extends MY_Controller
         ];
         return $this->_checkColumnsData($columnsLen, $data);
     }
+    
     
     /* *
      * Envia la respuestas html al navegador

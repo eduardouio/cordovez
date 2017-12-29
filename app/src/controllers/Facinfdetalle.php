@@ -78,6 +78,7 @@ class Facinfdetalle extends MY_Controller
             return false;
         }
         $infoInvoice = $this->modelInfoInvoice->get($infoInvoiceDetail['id_factura_informativa']);
+        $orderInvoiceDetail = $this->modelOrderInvoiceDetail->get($infoInvoiceDetail['detalle_pedido_factura']);
         $order = $this->modelOrder->get($infoInvoice['nro_pedido']);
         return ($this->responseHttp([
             'titleContent' => 'Detalle Factura Informativa [ ' . $infoInvoice['nro_factura_informativa']  . ' ]' . 
@@ -86,7 +87,9 @@ class Facinfdetalle extends MY_Controller
             'order' => $order,
             'supplier' => $this->modelSupplier->get($infoInvoice['identificacion_proveedor']),
             'infoInvoice' => $infoInvoice,
-            'invoiceDetail' => $infoInvoiceDetail,
+            'infoInvoiceDetail' => $infoInvoiceDetail,
+            'orderInvoiceDetail' => $orderInvoiceDetail,
+            'product' => $this->modelProduct->get($orderInvoiceDetail['cod_contable']),
             'user' => $this->modelUser->get($infoInvoiceDetail['id_user']),
         ]));       
     }
@@ -105,35 +108,146 @@ class Facinfdetalle extends MY_Controller
           $this->modelLog->redirectLog($this->controller . ',nuevo,' . current_url());
           return($this->index());
       }
-      $activeStock = $this->modelOrderInvoiceDetail->getAllActiveStokProductsRegimen(70);
+      
+      $activeStock = $this->modelOrderInvoiceDetail->getActiveStokProductsByOrder($infoInvoice['nro_pedido']);
+      $orderInvoices = $this->modelOrderInvoice->getbyOrder($infoInvoice['nro_pedido']);
+      $orderInvoicesTemp =[];
+      foreach ($orderInvoices as $item => $val){
+          $val['supplier'] = $this->modelSupplier->get($val['identificacion_proveedor']);
+          $val['products'] = [];
+          foreach ($activeStock as $index => $product){
+              if ($product['id_pedido_factura'] == $val['id_pedido_factura']){
+                  array_push($val['products'], $product);
+              }
+          }
+          $orderInvoicesTemp[$item] = $val;
+      }
+      
+      
       return($this->responseHttp([
           'titleContent' => 'Agregar Producto en Factura infromativa [' . 
                             $infoInvoice['nro_factura_informativa']. '] del Pedido [' . 
                             $infoInvoice['nro_pedido'] . ']',
           'create_detail' => true,
-          'stockProducts' => json_encode($activeStock),
+          'stockProducts' => $activeStock,
+          'orderInvoices' => $orderInvoicesTemp,
           'infoInvoice' => $infoInvoice,
           'order' => $this->modelOrder->get($infoInvoice['nro_pedido']),
       ]));
-        
     }
     
     
-     /**
-     * Se validan las columnas que debe tener la consulta para que no falle
-     * 
-     * @return [array] | [bolean]
+    /**
+     * Muestra el formulario para editar un detalle de factura informativa
+     * @param int $idInfoInvoiceDetail
+     * @return string template
      */
-    private function _validData($data)
+    public function editar(int $idInfoInvoiceDetail){
+        $infoInvoiceDetail = $this->modelInfoInvoiceDetail->get($idInfoInvoiceDetail);
+        if($infoInvoiceDetail == false){
+            $this->modelLog->errorLog('Intenta editar un registro que no existe ' . current_url());
+            return($this->index());
+        }
+        $orderInvoiceDetail = $this->modelOrderInvoiceDetail->get($infoInvoiceDetail['detalle_pedido_factura']);
+        $infoInvoice = $this->modelInfoInvoice->get($infoInvoiceDetail['id_factura_informativa']);
+        $product = $this->modelProduct->get($orderInvoiceDetail['cod_contable']);
+        $activeStock = $this->modelOrderInvoiceDetail->getActiveStokProductsByOrder($infoInvoice['nro_pedido']);
+        $productStock = 0;
+        foreach($activeStock as $item => $val){
+            if ($val['detalle_pedido_factura'] == $infoInvoiceDetail['detalle_pedido_factura']){
+                $productStock = $val['stock'] + $infoInvoiceDetail['nro_cajas'];
+            }
+        }
+        
+        return ($this->responseHttp([
+            'titleContent' => 'Editar Producto ' . $product['nombre'],
+            'edit' => true,
+            'product' => $product,
+            'orderInvoiceDetail' => $orderInvoiceDetail,
+            'productStock' => $productStock,
+            'infoInvoiceDetail' => $infoInvoiceDetail,
+        ]));
+    }
+    
+    /**
+     * Elimina un detalle de la factura inormativa
+     * @param int $idInfoInvoiceDetail
+     * @return string template
+     */
+    public function eliminar($idInfoInvoiceDetail)
     {
-        $columnsLen = [
-            'id_factura_informativa' => 1,
-            'cod_contable' => 20,
-            'nro_cajas' => 1,
-            'id_user' => 1,
-            'grado_alcoholico' => 1,
-        ];
-        return $this->_checkColumnsData($columnsLen, $data);
+        $infoInvoiceDetail = $this->modelInfoInvoiceDetail->get($idInfoInvoiceDetail);
+        if($infoInvoiceDetail == false){
+            $this->modelLog->errorLog('El registro que intenta eliminar no existe ' . current_url());            
+            return($this->index());
+        }
+        
+        if($this->modelInfoInvoiceDetail->delete($idInfoInvoiceDetail)){
+            $this->redirectPage('infoInvoiceShow', $infoInvoiceDetail['id_factura_informativa']);
+        }else{
+            print 'No se puede comunicar con la Base de Datos';
+        }
+    }
+    
+    /**
+     * Valida la informacion enviada por el formulario de detalle factura informativa
+     * @param array $_POST arreglo de detalles factura infotmativa
+     * @return string tmeplate 
+     */
+    public function validar()
+    {
+        if(!$_POST){
+            $this->modelLog->redirectLog('Acceso Invalido a Validar ' . current_url());
+            return($this->index());            
+        }
+        
+        $inputForm = $_POST;
+        $idInfoInvoice = $inputForm['id_factura_informativa'];
+        $infoInvoice = $this->modelInfoInvoice->get($idInfoInvoice);
+        unset($inputForm['id_factura_informativa']);
+        $itemsInvoice = array_chunk($inputForm, 3, true);
+        $errorInsert = false;
+        foreach ($itemsInvoice as $item){
+            $myItemInvoice = [];
+            foreach ($item as $key => $value){
+                $myItemInvoice['id_factura_informativa'] = $idInfoInvoice;
+                $myItemInvoice['id_user'] = $this->session->userdata('id_user');
+                $itemName = explode('-', $key);
+                $myItemInvoice[$itemName[0]] = $value;
+            }
+            if($this->modelInfoInvoiceDetail->isAlreadyExistItem($myItemInvoice) == false && $myItemInvoice['nro_cajas'] > 0){
+                $this->modelInfoInvoiceDetail->create($myItemInvoice);
+            }else{
+             $this->modelLog->errorLog('No se puede anadir un item dos veces key duplicada o con valor cero ' . current_url());
+             $errorInsert = true;
+             
+            }
+        }
+        return($this->redirectPage('infoInvoiceShow', $infoInvoice['id_factura_informativa']));
+    }
+    
+    
+    /**
+     * Realiza la actualizacion que le llega por post
+     * @param $_POST producto a actualizar
+     * @return string template 
+     */
+    public function actualizar()
+    {
+        if(!$_POST){
+            $this->modelLog->redirectLog('Acceso Invalido a Actualizar ' . current_url());
+            return($this->index());
+        }
+        $infoInvoiceDetail = $_POST;
+        $infoInvoiceDetail['last_update'] = date('Y-m-d H:m:s');
+        $infoInvoiceDetail['id_user'] = $this->session->userdata('id_user');
+        if($this->modelInfoInvoiceDetail->update($infoInvoiceDetail)){
+           $this->modelLog->susessLog('Detalle Factura Informativa Actualizada ' .  current_url());
+           return($this->redirectPage('infoInvoiceShow', $infoInvoiceDetail['id_factura_informativa']));
+        }else{
+           $this->modelLog->errorLog('No se puede actualizar detalle factura infromativa ' . current_url());
+           print 'Error con la base de datos';
+        }
     }
     
     
@@ -152,3 +266,5 @@ class Facinfdetalle extends MY_Controller
         return $this->twig->display($this->template, $config);
     }
 }
+
+

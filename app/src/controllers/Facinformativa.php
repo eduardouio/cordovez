@@ -92,6 +92,13 @@ class Facinformativa extends MY_Controller {
 	    $supplier = $this->modelSupplier->get($infoInvoice['identificacion_proveedor']);
 	    $orderInvoices = $this->modelOrderInvoice->getbyOrder($order['nro_pedido']);
 	    $infoInvoice['details'] = $this->modelInfoInvoiceDetail->getByFacInformative($idFacInformative);
+	    if (gettype($infoInvoice['details']) == 'array'){
+	        foreach ($infoInvoice['details'] as $item => $val){
+	            $invoiceOrderDetail = $this->modelOrderInvoiceDetail->get($val['detalle_pedido_factura']);
+	            $infoInvoice['details'][$item]['product'] = $this->modelProduct->get($invoiceOrderDetail['cod_contable']);
+	            $infoInvoice['details'][$item]['oderDetail'] = $invoiceOrderDetail;
+	      }
+	    }
 	    $this->responseHttp([
 	        'show'     => true,
 	        'titleContent' => 'Pedido [' . $order['nro_pedido'] . '] ' . 
@@ -356,3 +363,4 @@ class Facinformativa extends MY_Controller {
 		return $this->twig->display($this->template, $config);
 	}
 }
+

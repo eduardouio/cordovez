@@ -158,13 +158,11 @@ class Pedido extends MY_Controller
     public function presentar($nroOrder)
     {
         if (! isset($nroOrder)) {
-            $this->redirectPage('ordersList');
+            return($this->index());
         }
-        
         $order = $this->modelOrder->get($nroOrder);
         if ($order == false) {
-            $this->redirectPage('orderList');
-            return false;
+            return($this->index());
         }
         
         $order['user'] = $this->modelUser->get($order['id_user']);
@@ -178,7 +176,6 @@ class Pedido extends MY_Controller
             $invoicesOrderTemp = [];
             foreach ($invoicesOrder as $item => $value) {
                 $value['supplier'] = $this->modelSupplier->get($value['identificacion_proveedor']);
-                $value['nationalized'] = $this->checkStockInvoices($value, $infoInvoices);
                 $invoicesOrderTemp[$item] = $value;
             }
             $invoicesOrder = $invoicesOrderTemp;
@@ -201,7 +198,6 @@ class Pedido extends MY_Controller
             }
             $paidsDetails = $paidsDetailsTemp;
         }
-        
         $this->responseHttp([
             'show_order' => true,
             'order' => $order,
@@ -209,7 +205,7 @@ class Pedido extends MY_Controller
             'orderInvoices' => $invoicesOrder,
             'initialExpenses' => $initialExpenses,
             'paidsDetails' => $paidsDetails,
-            'nationalizations' => $this->myModel->getNationalizations($nroOrder),
+            'activeStok' => $this->modelOrderInvoiceDetail->getActiveStokProductsByOrder($nroOrder),
             'invoicesInfo' => $infoInvoices,
             'boxesOrder' => $this->myModel->getBoxesOrder($nroOrder, $order['regimen']),
             'sumsValues' => $this->myModel->getValuesOrder($order),
@@ -351,46 +347,7 @@ class Pedido extends MY_Controller
             return true;
         }
     }
-    
-    
-    /**
-     * Varifica los saldos de las facturas
-     *
-     * @param array $invoiceOrder productos de la factura
-     * @param array $infoInvoices listado facturas informativas del pedido
-     * @return float
-     */
-    private function checkStockInvoices($invoiceOrder, $infoInvoices): float
-    {
-        if ($infoInvoices == false) {
-            return 0.0;
-        }
-        $detailsInvoice = $this->modelOrderInvoiceDetail->getProducts($invoiceOrder['id_pedido_factura']);
-        $detailInfoinvoices = [];
         
-        foreach ($infoInvoices as $item => $invoice){
-            $detailInfoInvoice = $this->modelInfoInvoiceDetail->getByFacInformative($invoice['id_factura_informativa']);
-            if (gettype($detailInfoInvoice) == 'array' && count($detailInfoInvoice) > 0){
-                array_push($detailInfoinvoices, $detailInfoInvoice);
-            }
-        }
-        $nationalizedValue = 0;
-        if ($nationalizedValue != false){
-        foreach ($detailsInvoice as $item => $productOrder){
-            foreach ($detailInfoinvoices  as $productNationalized){
-                if($productOrder['cod_contable'] == $productNationalized[0]['cod_contable']){
-                    $nationalizedValue += (
-                        ($productOrder['nro_cajas'] - $productNationalized['nro_cajas']) *
-                        floatval($productOrder['costo_caja'])
-                        );
-                }
-            }
-        }
-        }
-        return $nationalizedValue;
-    }
-    
-    
     /**
      * retorna las estadisticas de los pedidos para la cabecera de la lista
      *

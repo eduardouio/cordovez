@@ -24,6 +24,7 @@ class Gstinicial extends MY_Controller
     private $modelIncoterms;
     private $modelProducts;
     private $modelUser;
+    private $modelLog;
 
     /**
      * Constructor de la funcion
@@ -47,6 +48,7 @@ class Gstinicial extends MY_Controller
         $this->load->model('modelincoterms');
         $this->load->model('modelproduct');
         $this->load->model('modeluser');
+        $this->load->model('modellog');
         $this->modelOrder = new Modelorder();
         $this->modelSupplier = new Modelsupplier();
         $this->modelBase = new ModelBase();
@@ -55,6 +57,7 @@ class Gstinicial extends MY_Controller
         $this->modelIncoterms = new Modelincoterms();
         $this->modelProducts = new Modelproduct();
         $this->modelUser = new Modeluser();
+        $this->modelLog = new Modellog();
     }
 
     /**
@@ -312,9 +315,11 @@ class Gstinicial extends MY_Controller
             $this->redirectPage('ordersList');
             return false;
         }
-        $incoterms = $this->modelIncoterms->get($order);
+
+        $incoterms = $this->modelExpenses->getIncotermsParams($order);
         
         if ($incoterms == false) {
+            $this->modelLog->warningLog($this->controller . 'No se encuentra incoterms' . current_url());
             $this->redirectPage('presentOrder', $nroOrder);
         }
         

@@ -48,14 +48,13 @@
 			</thead>
 			<tbody>
 				{% for orderInvoice in orderInvoices %}
-				{% set nationalized = orderInvoice.nationalized %}
 				<tr>
 					<td>{{loop.index}}</td>
 
 					<td><span class="fa fa-eye fa-fw"></span> <a
 						href="{{rute_url}}pedidofactura/presentar/{{orderInvoice.id_pedido_factura}}">
 							<small style="font-size: xx-small;">{{ orderInvoice.supplier.nombre | slice(0,18)}}</small>...
-							 &nbsp;F[{{orderInvoice.id_pedido_factura}}]
+							 &nbsp;F[{{orderInvoice.id_factura_proveedor}}]
 					</a>
 				</td>
 					<td class="text-right">{{orderInvoice.fecha_emision}}</td>
@@ -64,10 +63,19 @@
 					<td class="text-right">{{orderInvoice.moneda}}</td>
 					<td class="text-right">{{orderInvoice.valor | number_format(2, '.', ',') }}</td>
 					{% if (order.bg_isclosed) == 1 %}
-						{% set nationalized = orderInvoice.valor %}					
+						{% set nacionalizado = orderInvoice.valor %}					
 				    {% endif %}
-					<td class="text-right">{{nationalized | number_format(2, '.', ',') }}</td>
-					<td class="text-right"> <strong>{{(orderInvoice.valor - nationalized) | number_format(2, '.', ',') }} </strong></td>
+				    {# calculamos el saldo de la factura #}
+				    {% set nacionalizado = 0 %}
+				    {% for item in activeStok %}
+				    	{% if (item.id_pedido_factura == orderInvoice.id_pedido_factura)  %}
+				    		{% set nacionalizado = nacionalizado + ( item.stock * item.costo_caja ) %}
+				    	{% endif %}
+				    {% endfor %}
+
+					<td class="text-right">{{nacionalizado | number_format(2, '.', ',') }}</td>
+
+					<td class="text-right"> <strong>{{(orderInvoice.valor - nacionalizado) | number_format(2, '.', ',') }} </strong></td>
 					<td>
 						<div class="dropdown">
 							<button class="btn btn-sm btn-default" id="dLabel" type="button"

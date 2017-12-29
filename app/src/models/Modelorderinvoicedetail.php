@@ -53,25 +53,6 @@ class Modelorderinvoicedetail extends CI_Model
         return false;
     }
     
-    /**
-     * recupera los productos de una factura de productos
-     * @param int $idOrderInvoice identificador de la tabla
-     * @return array | boolean
-     */
-    public function getProducts(int $idOrderInvoice)
-    {
-        $products = $this->modelBase->get_table([
-            'table' => $this->table,
-            'where' =>[
-                'id_pedido_factura' => $idOrderInvoice,
-            ],
-        ]);
-        
-        if ($products == false){
-            return false;
-        }
-        return $products;
-    }
     
     /**
      * registra el detalle de una factura
@@ -117,6 +98,7 @@ class Modelorderinvoicedetail extends CI_Model
     }
       
     
+    
     /**
      * Comprueba si un item que se va a insertar ya esta registrado
      * @param array $newRowParams [
@@ -133,8 +115,8 @@ class Modelorderinvoicedetail extends CI_Model
                 'cod_contable' => $invoiceOrderDetail['cod_contable'],
                 'id_pedido_factura' => $invoiceOrderDetail['id_pedido_factura'],
                 'grado_alcoholico' => $invoiceOrderDetail['grado_alcoholico'],
-                        ],
-            ]); 
+            ],
+        ]);
         if ($existItem){
             return true;
         }
@@ -146,17 +128,26 @@ class Modelorderinvoicedetail extends CI_Model
      * @param string $nroOrder identificado de pedido en la tabla
      * @return array items de los productos que estan disponibles Detalle_pedido_factura
      */
-    public function getActiveStokProductsByOrder(string $nroOrder):array
+    public function getActiveStokProductsByOrder(string $nroOrder)
     {
         $activeStockOrder = $this->modelBase->get_table([
             'table' => 'stockActiveProductsInCustomsView',
             'where' =>[
                 'nro_pedido' => $nroOrder,
             ],
-        ]);   
+        ]);
         if(gettype($activeStockOrder == 'array') && count($activeStockOrder) > 0){
-            return $activeStockOrder;
+            $activeStockOrderTemp = [];
+            foreach ($activeStockOrder as $index => $value){
+                $value['nro_cajas_nacionalizadas'] = $this->nationalizedBoxesOrderInvoice($value['detalle_pedido_factura']);
+                $value['stock'] = ($value['nro_cajas'] - $value['nro_cajas_nacionalizadas']);
+                if( $value['stock'] > 0){
+                    $activeStockOrderTemp[$index] = $value;
+                }
+            }
+            return $activeStockOrderTemp;
         }
+        
         return false;
     }
     
@@ -166,7 +157,7 @@ class Modelorderinvoicedetail extends CI_Model
      * @param string $regimen 70 0 10
      * @return array
      */
-    public function getAllActiveStokProductsRegimen(string $regimen ): array
+    public function getAllActiveStokProductsRegimen(string $regimen )
     {
         $activeStockByRegimen = $this->modelBase->get_table([
             'table' => 'stockActiveProductsInCustomsView',
@@ -178,6 +169,23 @@ class Modelorderinvoicedetail extends CI_Model
             return $activeStockByRegimen;
         }
         return false;
+    }
+    
+    
+    /**
+     * Retorna el numero de cajas nacionalizadas para un detalle de pedido factura
+     * @param int $invoiceOrderDetail
+     * @return int cantidad de cajas nacionalizadas
+     */
+    private function nationalizedBoxesOrderInvoice(int $invoiceOrderDetail):int
+    {
+        $sql = 'SELECT IFNULL(sum(nro_cajas),0) as nro_cajas_nacionalizadas 
+                FROM factura_informativa_detalle WHERE 
+                detalle_pedido_factura = ' . $invoiceOrderDetail;
+        
+        $result = $this->db->query($sql);
+        $result = $result->result_array();
+        return $result[0]['nro_cajas_nacionalizadas'];        
     }
     
 }

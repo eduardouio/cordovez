@@ -10,7 +10,7 @@
     {% set unidades = unidades + detail.nro_cajas %}
     {% set suma = suma +  detail.total_item %}
     {% endfor %}
-    {% set diferencia =  invoice.valor - suma %}
+    {% set diferencia =  (invoice.valor - suma) | number_format(2) %}
 
 <h4 class="text-info">{{ supplier[0].nombre }}
   {% if diferencia != 0 %}

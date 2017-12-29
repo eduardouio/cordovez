@@ -62,7 +62,6 @@ class Modelinfoinvoicedetail extends CI_Model
                 'id_factura_informativa' => $idInfoDetail,
             ],
         ]);
-        
         if (gettype($detailInfoInvoice) == 'array' && count($detailInfoInvoice) > 0){
             return $detailInfoInvoice;
         }
@@ -89,7 +88,7 @@ class Modelinfoinvoicedetail extends CI_Model
      */
     public function update(array $infoInvoiceDetail):bool
     {
-        $this->db->where('id_factura_informativa', $infoInvoiceDetail['id_factura_informativa']);
+        $this->db->where('id_factura_informativa_detalle', $infoInvoiceDetail['id_factura_informativa_detalle']);
         if($this->db->update($this->table, $infoInvoiceDetail)){
             return true;
         }
@@ -103,8 +102,34 @@ class Modelinfoinvoicedetail extends CI_Model
      */
     public  function delete(int $idinfoInvoiceDetail):bool
     {
-        $this->db->where('id_factura_informativa', $infoInvoiceDetail['id_factura_informativa']);
+        $this->db->where('id_factura_informativa_detalle', $idinfoInvoiceDetail);
         if($this->db->delete($this->table)){
+            $this->modelLog->susessLog('se elimina un registro de factura informativa' . current_url());
+            return true;
+        }
+        return false;
+    }
+    
+    
+    /**
+     * Comprueba si un item que se va a insertar ya esta registrado
+     * @param array $newRowParams [
+     *                      'detalle_pedido_factura',
+     *                      'id_factura_informativa',
+     *                      'grado_alcoholico',
+     *                              ]
+     * @return bool
+     */
+    public function isAlreadyExistItem(array $invoiceInfoDetail): bool{
+        $existItem = $this->modelBase->get_table([
+            'table' => $this->table,
+            'where' => [
+                'detalle_pedido_factura' => $invoiceInfoDetail['detalle_pedido_factura'],
+                'id_factura_informativa' => $invoiceInfoDetail['id_factura_informativa'],
+                'grado_alcoholico' => $invoiceInfoDetail['grado_alcoholico'],
+            ],
+        ]);
+        if ($existItem){
             return true;
         }
         return false;

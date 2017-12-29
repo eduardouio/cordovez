@@ -68,7 +68,6 @@ class Modelexpenses extends CI_Model
     }
     
 
-
     /**
      * Retorna los incoterms en de un pedido, en base a su registro
      *

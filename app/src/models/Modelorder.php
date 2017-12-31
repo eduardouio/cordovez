@@ -19,6 +19,7 @@ class Modelorder extends CI_Model
     private $modelBase;
     private $modelExpenses;
     private $modelProduct;
+    private $modelLog;
     
     public function __construct()
     {
@@ -26,9 +27,11 @@ class Modelorder extends CI_Model
         $this->load->model('modelbase');
         $this->load->model('modelexpenses');
         $this->load->model('modelproduct');
+        $this->load->model('modellog');
         $this->modelBase = new Modelbase();
         $this->modelExpenses = new Modelexpenses();
         $this->modelProduct = new Modelproduct(); 
+        $this->modelLog = new Modellog();
         
     }
 
@@ -83,11 +86,11 @@ class Modelorder extends CI_Model
             return false;
         }
         $result = [];
-
         foreach ($invoices as $key => $value) {
             $value['supplier'] = $this->modelsupplier->get(
                                             $value['identificacion_proveedor']);
             $value['detailInvoice'] = $this->getInvoiceDetail($value);
+            $value['valor'] =  floatval($value['valor']);
             $result[$key] = $value;
         }
         return $result;
@@ -111,7 +114,7 @@ class Modelorder extends CI_Model
         }
 
         $result = [];
-        $valueItem = 0.00;
+        (float)$valueItem = 0.00;
         $countBoxesProduct = 0.00;
 
         foreach ($detailInvoice as $key => $value) {
@@ -135,7 +138,7 @@ class Modelorder extends CI_Model
         }
 
         $result['sums'] = [
-            'valueItems' => $valueItem,
+            'valueItems' =>  floatval(str_replace(',','',number_format($valueItem,2))),
             'money' => $invoice['moneda'],
             'tasa_change' => $invoice['tipo_cambio'],
             'countBoxesProduct' => $countBoxesProduct,
@@ -162,6 +165,7 @@ class Modelorder extends CI_Model
         }
         return false;
     }
+    
     
     
     /**
@@ -213,5 +217,21 @@ class Modelorder extends CI_Model
             return false;
         }       
         return $order;
+    }
+    
+    
+    /**
+     * Actualiza una orden en la base de datos
+     * @param array $order arreglo con datos de la orden
+     * @return bool
+     */
+    public function update(array $order):bool
+    {
+        $this->db->where('nro_pedido', $order['nro_pedido']);
+        if($this->db->update($this->table, $order)){
+            return true;
+        }
+        $this->modelLog->errorLog('No se puede actualizar Pedido ' . $order['nro_pedido'] . ' '. current_url());
+        return false;
     }
 }

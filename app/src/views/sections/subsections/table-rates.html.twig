@@ -1,72 +1,71 @@
 <div class="text-tittle">Provisiones Iniciales Aplicables</div>
-
-                        <form action="{{rute_url}}gstinicial/putInitialExpenses/" method="post">
-                           <input type="hidden" name="nro_pedido" value="{{order.nro_pedido}}">
-                        <table class="table  table-hover table-condensed table-striped">
-                           <thead>
-                              <tr>
-                                 <th>#</th>
-                                 <th>Concepto</th>
-                                 <th>Valor</th>
-                                 <th>Seleccionar</th>
-                              </tr>
-                           </thead>
-                           <tbody>
-                              {% for rateExpense in unusedExpenses %}
-                              <tr>
-                                 <td>{{loop.index}}</td>
-                                 <td>{{rateExpense.concepto}}</td>
-                           {% if minimal.valuesOrder.statusInvoices == true %}
-                              {% if rateExpense.concepto == 'SEGURO' %}
-                                    <td class="text-success">
-                                       <strong>
-                                          {{minimal.valuesOrder.seguro |number_format(2, '.', ',') }}
-                                       </strong>  
-                                    </td>
-                              {% endif %}   
-                              {% if rateExpense.concepto == 'ISD' %}
-                                    <td class="text-success">
-                                       <strong>
-                                          {{minimal.valuesOrder.isd |number_format(2, '.', ',') }}
-                                       </strong>  
-                                    </td>
-                              {% endif %}
-                              {% if rateExpense.concepto != 'SEGURO' %}
-                              {% if rateExpense.concepto != 'ISD' %}
-                                 <td>{{rateExpense.valor |number_format(2, '.', ',') }}</td>  
-                              {% endif %}
-                              {% endif %}
-                           {% else %}
-                             <td>{{rateExpense.valor |number_format(2, '.', ',') }}</td>        
-                           {% endif %}
-
-                                 <td class="text-center">
-                                    <input
-                                    type="radio" 
-                                    name="{{ rateExpense.concepto | replace({' ':''})}}" 
-                                    value="{{rateExpense.id_tarifa_gastos}}"
-                                    id= 'cehck{{loop.index}}'
-                                    onclick = "test('cehck{{loop.index}}')"
-                                    >
-                                 </td>
-                              </tr>
-                              {% endfor %}
-                           </tbody>
-                        </table>
-                              <button
-                                    type= "submit"
-                                    class="btn btn-default btn-sm"
-                                    >
-                                    <span class="fa fa-warning fa-fw"></span>
-                                    Aplicar Gastos Iniciales
-                                    </button>
-                              </a>
-<br>
-<br>
-                        </form>
-
+<form action="{{rute_url}}gstinicial/putInitialExpenses/" method="post">
+   <input type="hidden" name="nro_pedido" value="{{order.nro_pedido}}">
+   <table class="table  table-hover table-condensed table-striped">
+      <thead>
+         <tr>
+            <th>#</th>
+            <th>Concepto</th>
+            <th>Valor</th>
+            <th>Seleccionar</th>
+         </tr>
+      </thead>
+      <tbody>
+         {% for rateExpense in unusedExpenses %}
+         <tr>
+            <td>{{loop.index}}</td>
+            <td>{{rateExpense.concepto}}</td>
+            {% if minimal.valuesOrder.statusInvoices == true %}
+            {% if rateExpense.concepto == 'SEGURO' %}
+            <td class="text-success">
+               <strong>
+               {{minimal.valuesOrder.seguro |number_format(2, '.', ',') }}
+               </strong>  
+            </td>
+            {% endif %}   
+            {% if rateExpense.concepto == 'ISD' %}
+            <td class="text-success">
+               <strong>
+               {{minimal.valuesOrder.isd |number_format(2, '.', ',') }}
+               </strong>  
+            </td>
+            {% endif %}
+            {% if rateExpense.concepto != 'SEGURO' %}
+            {% if rateExpense.concepto != 'ISD' %}
+            <td>{{rateExpense.valor |number_format(2, '.', ',') }}</td>
+            {% endif %}
+            {% endif %}
+            {% else %}
+            <td>{{rateExpense.valor |number_format(2, '.', ',') }}</td>
+            {% endif %}
+            <td class="text-center">
+               <input
+                  type="radio" 
+                  name="{{ rateExpense.concepto | replace({' ':''})}}" 
+                  value="{{rateExpense.id_tarifa_gastos}}"
+                  id= 'cehck{{loop.index}}'
+                  onclick = "test('cehck{{loop.index}}')"
+                  >
+            </td>
+         </tr>
+         {% endfor %}
+      </tbody>
+   </table>
+   <button
+      type= "submit"
+      class="btn btn-default btn-sm"
+      >
+   <span class="fa fa-warning fa-fw"></span>
+   Aplicar Gastos Iniciales
+   </button>
+   <a href="{{rute_url}}gstinicial/validarbodegainicial/{{order.nro_pedido}}" class="pull-right btn btn-sm btn-default">
+   <span class="fa fa-home"></span>
+   <span class="text-primary">Establecer Provisión Alamcenaje Inicial </span>
+   </a>
+   <br>
+   <br>
+</form>
 <script type="text/javascript">
-
    var radioState = false;
    function test(element){
       if(radioState == false){
@@ -77,19 +76,19 @@
          radioState = false;
       }
    }
-
-/**
-* Marca a un radio button como seleccionado
-*/
-function check(element){
+   
+   /**
+   * Marca a un radio button como seleccionado
+   */
+   function check(element){
    document.getElementById(element).checked = true;
-}
-
-/**
-* quita la seleccion a un radio button
-*/
-function uncheck(element){
+   }
+   
+   /**
+   * quita la seleccion a un radio button
+   */
+   function uncheck(element){
    document.getElementById(element).checked = false;
-}
-
+   }
+   
 </script>

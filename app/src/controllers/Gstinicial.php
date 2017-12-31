@@ -65,7 +65,7 @@ class Gstinicial extends MY_Controller
      */
     public function index()
     {
-        $this->redirectPage('ordersList');
+        return($this->redirectPage('ordersList'));
     }
 
     /**
@@ -268,7 +268,6 @@ class Gstinicial extends MY_Controller
     public function validarGI(string $nroOrder)
     {
         $order = $this->modelOrder->get($nroOrder);
-        
         if ($order == false) {
             $this->redirectPage('ordersList');
             return true;
@@ -281,20 +280,20 @@ class Gstinicial extends MY_Controller
         $minimal = $this->getMinimalParams($order, $initExpenses);
         $minimal['valuesOrder'] = $this->calcValuesOrderItems($order, $invoicesOrder, $initExpenses);
 
-        $config = [
+        return($this->responseHttp([
             'validateExpenses' => true,
             'titleContent' => 'Generar Gastos Iniciales Pedido: [' . $nroOrder . '] ' . ' <small>Validar Información</small>',
             'rateExpenses' => $rateExpenses,
             'unusedExpenses' => $this->calcExpensesDiff($rateExpenses, $initExpenses),
+            'warenHouseDays' => $this->getWarenHouseDaysInitial($order),
             'incoterms' => $incoterms,
             'invoicesOrder' => $invoicesOrder,
             'initExpenses' => $initExpenses,
             'order' => $order,
             'minimal' => $minimal,
             'user' => $this->modeluser->get($order['id_user']),
-            'isOk' => searchOrderCeroValues($minimal)
-        ];
-        $this->responseHttp($config);
+            'isOk' => searchOrderCeroValues($minimal),
+            ]));
     }
 
     /**
@@ -315,11 +314,9 @@ class Gstinicial extends MY_Controller
             $this->redirectPage('ordersList');
             return false;
         }
-
         $incoterms = $this->modelExpenses->getIncotermsParams($order);
-        
         if ($incoterms == false) {
-            $this->modelLog->warningLog($this->controller . 'No se encuentra incoterms' . current_url());
+            $this->modelLog->warningLog($this->controller . ' No se encuentra incoterms ' . current_url());
             $this->redirectPage('presentOrder', $nroOrder);
         }
         
@@ -338,9 +335,25 @@ class Gstinicial extends MY_Controller
             ];
             $this->db->insert($this->controller, $initExpense);
         }
-        $this->redirectPage('presentOrder', $nroOrder);
+        return($this->redirectPage('presentOrder', $nroOrder));
     }
+    
+    public function cerrarGastosIniciales($nroOrder){
+        $order = $this->modelOrder->get($nroOrder);
+        if($order == false){
+            $this->modelLog->warningLog('Intentado modificar status gastos iniciales ilegalmente ' . current_url());
+            return($this->index());
+        }
+        $order['bg_haveExpenses'] = 1;
+        if($this->modelOrder->update($order)){
+            if($order['regimen'] == 70){
+                return ($this->redirectPage('infoInvoiceNew', $nroOrder));
+            }
+            return ($this->redirectPage('nationalizationNew', $nroOrder));
+        }
 
+    }
+    
     /**
      * Reemplaza los incoterms cuando un pedido se edita
      * por el momento siempre los cambia
@@ -367,7 +380,73 @@ class Gstinicial extends MY_Controller
         }
         $this->putIncoterms($nroOrder);
     }
-
+    
+    
+    /**
+     * Inicia el asistente para establecer las provisiones de bodega inicial
+     * y las provisiones de demoraje 
+     * @param string $nroOrder
+     */
+    public function validarbodegainicial(string $nroOrder = '')
+    {
+        if ($_POST){
+            if ($this->modelOrder->update([
+                'nro_pedido' =>  $_POST['nro_pedido'],
+                'fecha_arribo' => date('Y-m-d',strtotime($_POST['fecha_arribo'])),
+                'fecha_salida_bodega_puerto' => date('Y-m-d',strtotime($_POST['fecha_salida_bodega_puerto'])),
+                'dias_libres' => $_POST['dias_libres'],
+            ])){
+                $this->modelExpenses->create([
+                    'nro_pedido' => $_POST['nro_pedido'],
+                    'id_nacionalizacion' => 0,
+                    'identificacion_proveedor' => 0,
+                    'concepto' => 'ALMACENAJE INICIAL',
+                    'tipo' => 'INICIAL',
+                    'valor_provisionado' => $_POST['bodegaje_inicial'], 
+                ]);
+                
+                if (isset($_POST['demoraje'])){
+                    $this->modelExpenses->create([
+                        'nro_pedido' => $_POST['nro_pedido'],
+                        'id_nacionalizacion' => 0,
+                        'identificacion_proveedor' => 0,
+                        'concepto' => 'DEMORAJE',
+                        'tipo' => 'INICIAL',
+                        'valor_provisionado' => $_POST['demoraje'],
+                    ]);
+                }
+            }
+            return($this->redirectPage('validargi', $_POST['nro_pedido']));
+        }
+        
+        $order = $this->modelOrder->get($nroOrder);
+        if($order == false){
+            return($this->index());
+        }
+        $expenses = $this->modelExpenses->get($nroOrder);
+        $bodegaInicial  = null;
+        $demoraje = null;
+        if ($expenses){
+            foreach ($expenses as $item => $expense){
+                if($expense['concepto'] == 'ALMACENAJE INICIAL'){
+                    $bodegaInicial = $expense['valor_provisionado'];
+                }elseif($expense['concepto'] == 'DEMORAJE'){
+                    $demoraje = $expense['valor_provisionado'];
+                }
+            }
+        }
+       
+        return($this->responseHttp([
+          'titleContent' =>  'Asistente cálculo de Bodegaje Inicial y Demoraje Pedido ['.
+                                    $order['nro_pedido'] . ']',
+           'validateInitialWarenhouse' => true,
+            'order' => $order,
+            'invoicesOrder' => $this->modelOrder->getInvoices($nroOrder),
+            'bodegajeIncial' => $bodegaInicial,
+            'demoraje' => $demoraje,
+        ]));
+    }
+    
     /**
      * Elimina y Crea gastos iniciales, sin tomar en cuenta FLETE y GASTOS ORIGEN
      * 
@@ -551,6 +630,7 @@ class Gstinicial extends MY_Controller
         }
         return $unusedExpenses;
     }
+    
 
     /**
      * Se validan las columnas que debe tener la consulta para que no falle

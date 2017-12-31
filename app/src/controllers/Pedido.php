@@ -123,9 +123,7 @@ class Pedido extends MY_Controller
         
         if (gettype($pages_links) == 'double') {
             (int) $pages_links = (int) $pages_links + 1;
-        }
-        ;
-        
+        }        
         $orderList = [];
         foreach ($orders as $item => $order) {
             $order['invoices'] = $this->modelOrder->getInvoices($order['nro_pedido']);
@@ -390,7 +388,7 @@ class Pedido extends MY_Controller
      */
     private function validData($pedido)
     {
-        $columnsLen = array(
+        return ($this->_checkColumnsData([
             'nro_pedido' => 6,
             'regimen' => 2,
             'incoterm' => 1,
@@ -398,8 +396,7 @@ class Pedido extends MY_Controller
             'ciudad_origen' => 1,
             'nro_refrendo' => 1,
             'id_user' => 1
-        );
-        return $this->_checkColumnsData($columnsLen, $pedido);
+                                    ], $pedido));
     }
 
     /*
@@ -408,14 +405,14 @@ class Pedido extends MY_Controller
      */
     private function responseHttp($config)
     {
-        $params = [
-            'title' => 'Pedidos',
-            'base_url' => base_url(),
-            'rute_url' => base_url() . 'index.php/',
-            'controller' => $this->controller,
-            'iconTitle' => 'fa-cubes',
-            'content' => 'home'
-        ];
-        return $this->twig->display($this->template, array_merge($config, $params));
+        return(
+            $this->twig->display($this->template, array_merge($config,[
+                        'title' => 'Pedidos',
+                        'base_url' => base_url(),
+                        'rute_url' => base_url() . 'index.php/',
+                        'controller' => $this->controller,
+                        'iconTitle' => 'fa-cubes',
+                        'content' => 'home']))
+            );
     }
 }

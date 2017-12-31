@@ -149,28 +149,28 @@ class Pedidofactura extends MY_Controller
     public function eliminar($idInvoiceOrder)
     {
         $invoiceOrder = $this->modeOrderInvoice->get($idInvoiceOrder);
+        
         if($invoiceOrder == false){
-            return $this->index();
-            return false;
+            return($this->index());
         }
        
         if($this->modeOrderInvoice->delete($idInvoiceOrder)){
-            $this->responseHttp([
+            
+            return($this->responseHttp([
                 'order' => $invoiceOrder['nro_pedido'],
                 'viewMessage' => true,
                 'deleted' => true,
                 'message' => 'Factura Eliminada Exitosamente!',
-            ]);
-            return true;
+            ]));
         }
         
-    $this->responseHttp([
+    return($this->responseHttp([
         'order' => $invoiceOrder['nro_pedido'],
+        'orderInvoice' => $invoiceOrder,
         'viewMessage' => true,
         'message' => 'El Pedido No Puede Ser Eliminado, 
 						 Tiene Dependencias!',
-         ]);
-
+         ]));
     }
 
     /**

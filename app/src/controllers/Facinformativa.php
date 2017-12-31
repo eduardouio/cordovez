@@ -158,7 +158,7 @@ class Facinformativa extends MY_Controller {
             'supplier' =>  $this->modelsupplier->get($this->almaceneraId),
             'haveEuros' => $this->orderHaveEuros($nroOrder),
             'sumsValues' => $this->myModel->getValuesOrder($order),
-            'warenHouseDays' => $this->getWarenHouseDaysPartials($order),
+            'warenHouseDays' => $this->getWarenHouseDaysInitial($order),
             'olderPartials' => $olderPartials,
             'titleContent' => 'Ingreso de Factura Informativa Pedido: ['.
                                                                 $nroOrder . ']',
@@ -260,6 +260,7 @@ class Facinformativa extends MY_Controller {
 	            if($this->modelInfoInvoice->update($infoInvoice)){
 	                return ($this->redirectPage('infoInvoiceShow', $infoInvoice['id_factura_informativa']));
 	            }
+	            return(print ('problemas con la base de datos'));
 	        }
 	    }else{
 	        $order = $this->modelOrder->get($infoInvoice['nro_pedido']);

@@ -1,15 +1,12 @@
 {% set fob = (order.valuesOrder.valInvoices) + (order.valuesOrder.originExpenses * order.valuesOrder.multiple) %}
 {% set cif = (fob + order.valuesOrder.valSecureExpense + order.valuesOrder.valSecureExpense + order.valuesOrder.valShipExpnese)  %}
 {% set nacionalizado = 0 %}
-
 {% if order.bg_isclosed == 1 %}
 	{% set nacionalizado = fob %}
 {% endif %}
-
 {% if order.regimen == 70  %}
 	{% set nacionalizado = order.valuesOrder.infoInvoices  %}
 {% endif %}
-
 <div class="well well-sm">
    <div class="row">
       <div class="col-sm-3">

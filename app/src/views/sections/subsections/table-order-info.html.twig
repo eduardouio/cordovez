@@ -31,7 +31,7 @@ FACTURAS EN DÓLARES
          <td>{{invoice.fecha_emision}}</td>
          <td>{{invoice.detailInvoice.sums.countBoxesProduct | number_format(0,',','.') }}</td>
          {% set totalboxes = totalboxes +  invoice.detailInvoice.sums.countBoxesProduct %}
-         {% set valRegister = (invoice.detailInvoice.sums.valueItems) | number_format(2) %}
+         {% set valRegister = (invoice.detailInvoice.sums.valueItems) %}
          <td class="text-right">$ {{invoice.detailInvoice.sums.valueItems | number_format(2,',','.') }}</td>
          <td class="text-right" >$ {{invoice.valor  | number_format(2,',','.') }}</td>
          {% if valRegister ==  invoice.valor %}

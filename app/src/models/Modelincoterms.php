@@ -44,7 +44,7 @@ class Modelincoterms extends CI_Model {
 									'ciudad_origen' => $order['ciudad_origen'],
 									'incoterms' => $order['incoterm']
 												];
-		$incoterms = $this->modelExpenses->getIncotermsParams($intcotermsParams);
+		$incoterms = $this->modelExpenses->getIncotermsParamsTable($intcotermsParams);
 
 		return $incoterms;			
 	}

@@ -102,6 +102,8 @@ class MY_Controller extends CI_Controller
             'ordersList' => 'index.php/pedido/listar',
             'orderInvoicePresent' => 'index.php/pedidofactura/presentar',
             'infoInvoiceShow' => 'index.php/facinformativa/presentar',
+            'infoInvoiceNew' => 'index.php/facinformativa/nuevo',
+            'nationalizationNew' => 'index.php/nacionalizacion/nuevo',
             'presentOrder' =>  'index.php/pedido/presentar',
             'paidsList' => 'index.php/facturapagos/listar/',
             'paidPresent' => 'index.php/facturapagos/presentar',
@@ -111,7 +113,7 @@ class MY_Controller extends CI_Controller
             'suppliersList' => 'index.php/proveedor/listar',
             'productsList' => 'index.php/producto/listar',
             'productPresent' => 'index.php/producto/presentar',
-            'validargi' =>  'index.php/gstinicial/validargi/',
+            'validargi' =>  'index.php/gstinicial/validargi',
             'replaceIncoterms' =>   'index.php/gstinicial/replaceIncoterms',
             'putIncoterms' => 'index.php/gstinicial/putIncoterms',
             'presentInvoiceOrder' =>  'index.php/pedidofactura/presentar',
@@ -251,10 +253,7 @@ class MY_Controller extends CI_Controller
      */
     protected function getWarenHouseDaysPartials($order): int
     {
-        if (gettype($order['fecha_salida_almacenera']) == 'NULL') {
-            return (dateDiffInDays($order['fecha_ingreso_almacenera'], date('Y-m-d')));
-        }
-        return (dateDiffInDays($order['fecha_ingreso_almacenera'], $order['fecha_salida_almacenera']));
+        return true;
     }
     
     

@@ -16,14 +16,23 @@ class Modelexpenses extends CI_Model
 {
     private $table = 'gastos_nacionalizacion';
     private  $modelBase ;
+    private $modelLog;
 
     function __construct()
     {
         parent::__construct();
-        $this->load->model('modelbase');
-        $this->modelBase = new ModelBase();
+        $this->init();
     }
 
+    /**
+     * Inicia modelos adicionales para la clase
+     */
+    public function init(){
+        $this->load->model('modelbase');
+        $this->load->model('modellog');
+        $this->modelBase = new ModelBase();
+        $this->modelLog = new Modellog();
+    }
 
     /**
      * Obtiene todos los gastos iniciales que se pueden aplicar a un pedido
@@ -75,6 +84,25 @@ class Modelexpenses extends CI_Model
      * @return array | bool
      */
     public function getIncotermsParams($incoterms)
+    {
+        $incoterms = $this->modelBase->get_table([
+            'table' => 'tarifa_incoterm',
+            'where' => [
+                'incoterms' => $incoterms['incoterm'],
+                'pais' => $incoterms['pais_origen'],
+                'ciudad' => $incoterms['ciudad_origen'],
+            ],
+        ]);
+        return $incoterms;
+    }
+    
+    /**
+     * Retorna los incoterms en de un pedido, en base a su registro
+     *
+     * @param (array) $incoterm
+     * @return array | bool
+     */
+    public function getIncotermsParamsTable($incoterms)
     {
         $incoterms = $this->modelBase->get_table([
             'table' => 'tarifa_incoterm',
@@ -169,6 +197,20 @@ class Modelexpenses extends CI_Model
         if(gettype($expenses) == 'array' && count($expenses) > 0){
             return $expenses;
         }
+        return false;
+    }
+    
+    /**
+     * Crea un gasto de nacionalizacion en la tabla
+     * @param array $expense arreglo de gasto nacionalizacion
+     * @return bool | int last_insert
+     */
+    public function create(array $expense)
+    {
+        if($this->db->insert($this->table, $expense)){
+            return($this->db->insert_id());
+        }
+        $this->modelLog->errorLog('No se puede crear un gasto Nacionalizaicon ' . current_url());
         return false;
     }
 }

@@ -23,6 +23,11 @@
 	{% include 'forms/frm-gasto-inicial-edit.html.twig' %}    
 {% endif %}
 
+{% if validateInitialWarenhouse == true %}
+	{% include 'forms/frm-validar-bodega-inicial.html.twig' %}
+{% endif %}
+
+
 
 {% if viewMessage == true %}
 	<div class="well">

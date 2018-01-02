@@ -143,6 +143,28 @@ class Modelinfoinvoice extends CI_Model
     
     
     /**
+     * Obtiene la cantidad de parciales para un pedido
+     * @param string $nroOrder nro de pedido
+     * @return int numero de parciales
+     */
+    public function getPartials(string $nroOrder):int
+    {
+        $result = $this->modelBase->get_table([
+            'select' => ['SUM(*) as parciales'],
+            'table' => $this->table,
+            'where' => [
+                'nro_pedido' => $nroOrder,                
+            ],
+        ]);
+        
+        if( gettype($result) == 'array' && count($result) > 0 ){
+            return ($infoInvoice[0]['parciales']);
+        }
+        return 0;
+    }
+    
+    
+    /**
      * Verifica si un registro ya existe en la base de datos
      * @param array $informativeInvoice
      * @return int cero si no existe

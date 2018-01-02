@@ -66,7 +66,7 @@ class Modelorder extends CI_Model
         }
         return false;
     }
-
+       
 
     /**
      * Obtiene el detalle de las facturas y lo cruza contra el valor total de

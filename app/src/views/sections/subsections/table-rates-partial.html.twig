@@ -1,7 +1,7 @@
-<div class="text-tittle">Provisiones Iniciales Aplicables</div>
-<form action="{{rute_url}}gstinicial/putInitialExpenses/" method="post">
-   <input type="hidden" name="nro_pedido" value="{{order.nro_pedido}}">
-   <table class="table table-hover table-condensed table-striped">
+<div class="text-tittle">Provisiones Aplicables Al Parcial</div>
+<form action="{{rute_url}}gstnacionalizacion/putExpenses/" method="post">
+   <input type="hidden" name="id_factura_informativa" value="{{infoInvoice.id_factura_informativa}}">
+   <table class="table  table-hover table-condensed table-striped">
       <thead>
          <tr>
             <th>#</th>
@@ -11,33 +11,11 @@
          </tr>
       </thead>
       <tbody>
-         {% for rateExpense in unusedExpenses %}
+      {% for rateExpense in rateExpenses %}
          <tr>
             <td>{{loop.index}}</td>
-            <td>{{rateExpense.concepto}}</td>
-            {% if minimal.valuesOrder.statusInvoices == true %}
-            {% if rateExpense.concepto == 'SEGURO' %}
-            <td class="text-success">
-               <strong>
-               {{minimal.valuesOrder.seguro |number_format(2, '.', ',') }}
-               </strong>  
-            </td>
-            {% endif %}   
-            {% if rateExpense.concepto == 'ISD' %}
-            <td class="text-success">
-               <strong>
-               {{minimal.valuesOrder.isd |number_format(2, '.', ',') }}
-               </strong>  
-            </td>
-            {% endif %}
-            {% if rateExpense.concepto != 'SEGURO' %}
-            {% if rateExpense.concepto != 'ISD' %}
+            <td>{{rateExpense.concepto | raw }}</td>
             <td>{{rateExpense.valor |number_format(2, '.', ',') }}</td>
-            {% endif %}
-            {% endif %}
-            {% else %}
-            <td>{{rateExpense.valor |number_format(2, '.', ',') }}</td>
-            {% endif %}
             <td class="text-center">
                <input
                   type="radio" 
@@ -56,11 +34,11 @@
       class="btn btn-default btn-sm"
       >
    <span class="fa fa-warning fa-fw"></span>
-   Aplicar Gastos Iniciales
+   Aplicar Gastos Al Parcial
    </button>
-   <a href="{{rute_url}}gstinicial/validarbodegainicial/{{order.nro_pedido}}" class="pull-right btn btn-sm btn-default">
+   <a href="{{rute_url}}gstnacionalizacion/validarbodegaparcial/{{ infoInvoice.id_factura_informativa }}" class="pull-right btn btn-sm btn-default">
    <span class="fa fa-home"></span>
-   <span class="text-primary">Provisión Alamcenaje Inicial </span>
+   <span class="text-primary">Provisión Alamcenaje Parcial </span>
    </a>
    <br>
    <br>

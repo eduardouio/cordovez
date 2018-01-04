@@ -2,7 +2,19 @@
 {% include 'base/navbarheader.html.twig' %}
 {% include 'base/navbarleft.html.twig' %}
 {% include 'base/content.html.twig' %}
+
+{% if edit == true %}
+	{% include 'forms/frm-gasto-nacionalizacion-edit.html.twig' %}
+{% endif %}
+
+{% if showExpenses == true %}
 	{% include 'sections/validar-factura-informativa.html.twig' %}
+{% endif %}
+
+{% if validWarenHouse == true %}
+	{% include 'forms/frm-validar-bodega-parcial.html.twig' %}
+{% endif %}
+	
 {% include 'base/content_close.html.twig' %}
 {% include 'base/signaturefoot.html.twig' %}
 {% include 'base/footer.html.twig' %}

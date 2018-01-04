@@ -226,7 +226,7 @@ class Modelorder extends CI_Model
      * @return bool
      */
     public function update(array $order):bool
-    {
+    {   
         $this->db->where('nro_pedido', $order['nro_pedido']);
         if($this->db->update($this->table, $order)){
             return true;

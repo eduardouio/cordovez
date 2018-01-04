@@ -254,7 +254,27 @@ class Pedido extends MY_Controller
         ];
         $this->responseHttp($config);
     }
-
+    
+    
+    /**
+     * Actualiza la fecha de entrada a la almacenera de un pedido
+     */
+    public function ingresoAlmacenera()
+    {
+        if (! $_POST) {
+            $this->redirectPage('ordersList');
+        }
+        
+        $order = $_POST;
+        $order['fecha_ingreso_almacenera'] = date('Y-m-d' , strtotime($order['fecha_ingreso_almacenera']));
+        $pedido['last_update'] = date('Y-m-d H:i:s');
+        if($this->modelOrder->update($order)){
+            print $order['nro_pedido'];
+            return($this->redirectPage('closeInitExpenses', $order['nro_pedido']));
+        }
+        return (print 'Error en Aplicacion');
+    }
+    
     /**
      * elimina un pedido de la tabla, solo lo elimina sino tiene parciales
      */

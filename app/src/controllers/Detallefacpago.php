@@ -234,7 +234,8 @@ class Detallefacpago extends \MY_Controller
             return false;
         }
         $document = $this->modelPaid->getDocument($detail['id_documento_pago']);
-        $this->responseHttp([
+       
+        return($this->responseHttp([
             'titleContent' => 'Detalle Justificación de Provision',
             'show' => true,
             'detail' => $detail,
@@ -242,7 +243,8 @@ class Detallefacpago extends \MY_Controller
             'provision' => $this->modelExpenses->getExpense($detail['id_gastos_nacionalizacion']),
             'document' => $document,
             'supplier' => $this->modelSupplier->get($document['identificacion_proveedor']),
-        ]);
+        ]));
+        
     }
     
     

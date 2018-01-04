@@ -178,6 +178,29 @@ class Modelexpenses extends CI_Model
         return false;
     }
     
+    
+    /**
+     * Retorna los gastos de nacionalizacion para una factura infromativa
+     * @param int $idInfoInvoice
+     * @return array | boolean
+     */
+    public function getPartialExpenses(int $idInfoInvoice)
+    {
+        $partialExpenses = $this->modelBase->get_table([
+            'table' => $this->table,
+            'where' => [
+                'id_factura_informativa' => $idInfoInvoice, 
+            ],
+        ]);
+        
+        if(gettype($partialExpenses) == 'array' && count($partialExpenses) > 0){
+            return $partialExpenses;
+        }
+        
+        return false;
+    }
+    
+    
   
     /**
      * Obtiene todos los gastos iniciales activos, sin justificar
@@ -200,6 +223,24 @@ class Modelexpenses extends CI_Model
         return false;
     }
     
+    
+    
+    /**
+     * Actualiza el registro para un gasto nacionalizacion
+     * @param array $expense arregli de gasto nacionalizacion
+     * @return bool
+     */
+    public function update(array $expense):bool
+    {
+        $this->db->where('id_gastos_nacionalizacion', $expense['id_gastos_nacionalizacion']);
+        if($this->db->update($this->table, $expense)){
+            return true;
+        }
+        $this->modelLog->errorLog('No se puede acceder a la base');
+        $this->modelLog->errorLog($this->db->last_query());
+        return false;
+    }
+        
     /**
      * Crea un gasto de nacionalizacion en la tabla
      * @param array $expense arreglo de gasto nacionalizacion
@@ -211,6 +252,8 @@ class Modelexpenses extends CI_Model
             return($this->db->insert_id());
         }
         $this->modelLog->errorLog('No se puede crear un gasto Nacionalizaicon ' . current_url());
+        $this->modelLog->errorLog($this->db->last_query());
         return false;
     }
 }
+

@@ -156,7 +156,6 @@ class Modelinfoinvoice extends CI_Model
                 'nro_pedido' => $nroOrder,                
             ],
         ]);
-        
         if( gettype($result) == 'array' && count($result) > 0 ){
             return ($infoInvoice[0]['parciales']);
         }

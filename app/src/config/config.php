@@ -24,7 +24,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 #$config['base_url'] = 'http://192.168.0.82/app'; #VINESA
-#$config['base_url'] = 'http://179.49.60.158:8888/app'; #PRODUCCION
+#$config['base_url'] = 'http://179.49.60.158:8888'; #PRODUCCION
 #$config['base_url'] = 'http://192.168.0.28/app'; #OFICINA
 #$config['base_url'] = 'http://192.168.100.194/app'; #CASA
 $config['base_url'] = 'http://localhost/app/'; #LOCAL

@@ -250,7 +250,7 @@ class Gstinicial extends MY_Controller
                 'orderDetail' => $detail[0]['id_pedido_factura'],
                 'viewMessage' => true,
                 'message' => 'El registro no puede ser Eliminado, 
-																												 tiene dependencias!'
+					           tiene dependencias!'
             ];
             $this->responseHttp($config);
             $this->db->where('id_gastos_nacionalizacion', $idInitExpense);
@@ -456,8 +456,7 @@ class Gstinicial extends MY_Controller
     public function putInitialExpenses()
     {
         if (! $_POST) {
-            $this->redirectPage('ordersList');
-            return true;
+            return ($this->redirectPage('ordersList'));
         }
         $initExpensesInput = $this->input->post();
         $initExpensesRates = [];

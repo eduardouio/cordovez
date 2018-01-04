@@ -30,7 +30,6 @@ class MY_Controller extends CI_Controller
         $this->_checkSession();
         $this->load->model('modelbase');
         $this->modelBase = new ModelBase();
-        $this->checkOpenOrders();
     }
 
     /**
@@ -117,6 +116,8 @@ class MY_Controller extends CI_Controller
             'replaceIncoterms' =>   'index.php/gstinicial/replaceIncoterms',
             'putIncoterms' => 'index.php/gstinicial/putIncoterms',
             'presentInvoiceOrder' =>  'index.php/pedidofactura/presentar',
+            'closeInitExpenses' =>  'index.php/gstinicial/cerrarGastosIniciales',
+            'validar70' =>  'index.php/gstnacionalizacion/validar70',
         ];
 
         header('Status: 301 Moved Permanently', false, 301);
@@ -128,105 +129,7 @@ class MY_Controller extends CI_Controller
     }
     
     
-    /**
-     * comprueba si se ha generado un nuevo peiodo de bodegaje
-     * si exite crea un nuevo gasto de nacionalizacion
-     * return boolean
-     */
-    private function checkOpenOrders(){
-        $openOrders = $this->modelBase->get_table([
-            'select' => ['nro_pedido', 'fecha_ingreso_almacenera'],
-            'table' => 'pedido',
-            'where' => [
-                'bg_haveExpenses' => 1,
-                'bg_isclosed' => 0,
-                'regimen' => 70,
-            ],
-            'orderby' => [
-                'nro_pedido' => 'DESC',
-            ],
-        ]);
         
-        if ($openOrders == false){
-            error_log("\n[Error][" . date("D, d M Y H:i:s") . "] No se encontraron pedidos que coincidan con la busqueda ", 3 , "/var/www/html/app/src/logs/app.log");
-            return false; 
-        }
-        foreach ($openOrders as $item => $order){
-            if($order['fecha_ingreso_almacenera'] == null ){
-                error_log("\n[Alerta][" . date("D, d M Y H:i:s") . "] Pedido mal cerrado [" . $order['nro_pedido'] .  "]", 3 , "/var/www/html/app/src/logs/app.log");
-                return false;
-            }
-             $this->checkWarenhosePeriodOrder($order);
-        }
-        return true;
-    }
-    
-    
-    /**
-     * Calcula la fecha y crea un regiostro de gasto gasto nacionalizacion
-     * select * from gastos_nacionalizacion where nro_pedido = '000-00' and fecha_fin != null;
-     * @param array $nroOrder [
-     *                       nro_pedido,
-     *                       fecha_ingreso_almacenera
-     *                      ] 
-     * @return boolean
-     */
-    private function checkWarenhosePeriodOrder($nroOrder){
-        error_log("\n[Debug][" . date("D, d M Y H:i:s") . " Calculando Bodega Para Pedido ", 3 , "/var/www/html/app/src/logs/app.log");
-        $oldRecods = $this->modelBase->get_table([
-            'table' => 'gastos_nacionalizacion',
-            'where' => [
-                'nro_pedido' => $nroOrder['nro_pedido'],
-            ],
-        ]);       
-        
-        $expensesWarenhouse = $this->modelBase->getWarenhouseExpesnes($nroOrder['nro_pedido']);
-        
-        print '<pre>';
-        print_r($nroOrder);
-        print '</pre>';
-        
-        if($expensesWarenhouse == false){
-            error_log("\n[Debug][" . date("D, d M Y H:i:s") . " No se encuentran registros anteriores para bodega del pedido" . $nroOrder['nro_pedido'] , 3 , "/var/www/html/app/src/logs/app.log");
-            $newExpenseWarenhouse = [
-                'nro_pedido' => $nroOrder['nro_pedido'],
-                'id_nacionalizacion_fac_info' => 1,
-                'identificacion_proveedor' => '0',
-                'concepto' => $this->getConceptExpense($nroOrder['fecha_ingreso_almacenera']),
-                'tipo' => 'NACIONALIZACION',
-                'valor_provisionado' => $this->calcValueExpense($nroOrder['nro_pedido']),
-            ];
-            
-            if($this->db->insert('gastos_nacionalizacion', $newExpenseWarenhouse)){
-                error_log("\n[Error][" . date("D, d M Y H:i:s") . " Se registra un expense warenhouse pedido" . $nroOrder['nro_pedido']);
-            }else{
-                error_log("\n[Error][" . date("D, d M Y H:i:s") . " Problemas al registrar un expense warenhouse ");
-            }
-            return true;
-        }
-        error_log("\n[Debug][" . date("D, d M Y H:i:s") . " Se encuentran " . count($expensesWarenhouse) . " registros anteriores para bodega del pedido" . $nroOrder , 3 , "/var/www/html/app/src/logs/app.log");
-        
-        return true;
-    }
-    
-    
-    /**
-     * retorna el concepto del bodegaje para un gasto inicial
-     * @param string $dateOrigin
-     * @return string
-     */
-    private function getConceptExpense( string $dateOrigin):string
-    {
-        return 'Implementar';    
-    }
-    
-    private function calcValueExpense(string $nroOrder): float
-    {
-        return 'implementar';
-    }
-    
-    
-    
     /**
      * Obtiene el tiempo en dias de un pedido en la bodega inicial
      * si el pedido se encuentra nacionalizado o tiene una factura
@@ -243,19 +146,6 @@ class MY_Controller extends CI_Controller
         }
         return (dateDiffInDays($order['fecha_arribo'], $order['fecha_salida_bodega_puerto']));
     }
-    
-    /**
-     * Retorna el tiempo de dias por el bodegaje de un pedido.
-     *
-     * @param array $order
-     *            arreglo con los detalles de la orden
-     * @return int tiempo en dias de almacenaje
-     */
-    protected function getWarenHouseDaysPartials($order): int
-    {
-        return true;
-    }
-    
     
     
 }

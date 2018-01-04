@@ -42,7 +42,7 @@ if (!function_exists('searchOrderCeroValues')) {
  */
 if (! function_exists('dateDiffInDays')){
     function dateDiffInDays(string $dateBegin, string $dateEndUp  ) : int
-    {   
+    {  
         if($dateBegin == $dateEndUp){
             return 1;
         }

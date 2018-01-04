@@ -131,7 +131,7 @@
                {% else %}
                   <td>{{ order.dias_libres }} </td>
                   <td class="success">OK
-                  <a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}"><span class="fa fa-pencil"></span>Editar</a>
+                  <a href="{{rute_url}}pedido/editar/{{ order.nro_pedido }}"><span class="fa fa-pencil"></span>Editar</a>
                   </td>
                {% endif %}
             </tr>
@@ -240,21 +240,37 @@
             solo se prodrá justificarlas. 
             <br>
             <br>
-            Cualquier justificación que no tenga provision quedará como gasto no provisionado.
+            Cualquier justificación que no tenga provisión quedará como gasto no provisionado.
          </p>
+         <form action="{{rute_url}}pedido/ingresoAlmacenera" method="post">
+           <input type="hidden" name="nro_pedido" value="{{order.nro_pedido}}">
+           <div class="form-group">
+           <label>Feha Ingreso Almacenera Pública del Pedido {{order.nro_pedido}} :</label>
+                 <div class="input-group date" data-provide="datepicker">
+            <input 
+               type="text" 
+               class="form-control" 
+               name="fecha_ingreso_almacenera" 
+               class="bootstrap-datepicker" 
+               required="" 
+               >
+            <div class="input-group-addon">
+               <span class="glyphicon glyphicon-th"></span>
+            </div>
+         </div>
+         <br>
+            <button class="btn btn-sm btn-primary"><span class="fa fa-save"></span> Registrar y Continuar</button>
+           </div>
+         </form>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-sm btn-default" data-dismiss="modal"> <span class="fa fa-ban"></span> 
-        Close</button>
-        {% if order.regimen  == 70 %}
-        <a href="{{rute_url}}gstinicial/cerrarGastosIniciales/{{order.nro_pedido}}" class="btn btn-sm btn-default"> <span class="fa fa-file"></span> Generar Factura Informativa</a>
-        {% else %}
+        Cancelar y Cerrar</button>
+        {% if order.regimen  == 10 %}
            <a  href="{{rute_url}}gstinicial/cerrarGastosIniciales/{{order.nro_pedido}}" class="btn btn-sm btn-default"> <span class="fa fa-money"></span> Nacionalizar Pedido</a>
         {% endif %}
       </div>
     </div>
   </div>
 </div>
-
-   

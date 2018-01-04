@@ -101,4 +101,25 @@ class Modelrateexpenses extends CI_Model {
         }
         return false;
     }
+    
+    /**
+     * retorna las taifas de gastos para los gastos de nacionalizacion de un parcial
+     * solo aplica para regimen 70
+     * @return array | boolean
+     */
+    public function getPartialRates()
+    {
+        $rateExpenses = $this->modelBase->get_table([
+            'table' => $this->table,
+            'where' => [
+                'tipo_gasto' => 'GASTO NACIONALIZACION',
+            ],
+            'orderby' => ['concepto' => 'DESC',],
+        ]);    
+        
+        if(gettype($rateExpenses) == 'array' && count($rateExpenses) > 0){
+            return $rateExpenses;
+        }
+        return false;
+    }
 }

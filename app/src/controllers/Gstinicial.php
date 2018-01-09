@@ -472,7 +472,6 @@ class Gstinicial extends MY_Controller
                 array_push($initExpensesRates, $rates[0]);
             }
         }
-        
         $order = $this->modelOrder->get($initExpensesInput['nro_pedido']);
         $invoicesOrder = $this->modelOrder->getInvoices($initExpensesInput['nro_pedido']);
         $initExpenses = $this->modelExpenses->get($initExpensesInput['nro_pedido']);
@@ -482,7 +481,7 @@ class Gstinicial extends MY_Controller
         foreach ($initExpensesRates as $key => $value) {
             $insertExpense = [
                 'nro_pedido' => $initExpensesInput['nro_pedido'],
-                'id_nacionalizacion' => 0,
+                'id_factura_informativa' => 0,
                 'identificacion_proveedor' => 0,
                 'concepto' => $value['concepto'],
                 'valor_provisionado' => $value['valor'],
@@ -496,7 +495,13 @@ class Gstinicial extends MY_Controller
                 $insertExpense['valor_provisionado'] = $valuesOrder['seguro'];
             }
             
-            $this->db->insert($this->controller, $insertExpense);
+            if($this->db->insert($this->controller, $insertExpense)){
+             $this->modelLog->susessLog('Gasto Inicial Insertado, ' . current_url());   
+            }else{
+                $this->modelLog->warningLog('No se puede Aplicar Gasto Inicial' . current_url());
+                $this->modelLog->errorLog($this->db->last_query());
+            }
+            
         }
         $this->redirectPage('validargi', $initExpensesInput['nro_pedido']);
     }

@@ -1,192 +1,209 @@
 {% if order.fecha_ingreso_almacenera != null %}
-   {% set fecha_ingreso_almacenera = order.fecha_ingreso_almacenera | date('m/d/Y') %}
+	{% if startWarenhouse == false %}
+			{% set fecha_ingreso_almacenera = order.fecha_ingreso_almacenera | date('m/d/Y') %}
+	{% else %}
+			{% set fecha_ingreso_almacenera = startWarenhouse.fecha_fin | raw %}
+	{% endif %}
 {% endif %}
-    <form action="{{rute_url}}gstinicial/validarbodegainicial" method="post">
-<div class="row">
-  <div class="col-md-12">
-    <div class="alert alert-info alert-dismissable fade in">
-      <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-      <strong><span class="fa fa-warning"></span> Atención!</strong> 
-      Es presentre asistente, le ayudará con el cálculo de provisiones de bodegaje demoraje incial
-    </div>
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-2">&nbsp;</div>
-  <div class="col-md-8">
-    <h4>Ingrese La Fecha Nacionalizacion del Parcial Para el Pedido <strong>{{ order.nro_pedido }}</strong></h4>
-    <br>
-    	<input type="hidden" name="nro_pedido" value="{{order.nro_pedido}}">
-      <div class="col-md-3">
-        <div class="form-group">
-          {% if infoInvoicesOrder == false %}
-          <label>Fecha de Ingreso Almacenera</label>
-          {% else %}
-              <label>Ultima Fecha Salida</label>
-          	{% endif %}
-            <div class="input-group date" data-provide="datepicker">
-            <input 
-               type="text" 
-               class="form-control" 
-               id="fecha_ingreso_almacenera" 
-               required="" 
-               name="fecha_ingreso_almacenera" 
-               value="{{fecha_ingreso_almacenera}}" 
-               class="bootstrap-datepicker" 
-               >
-            <div class="input-group-addon">
-               <span class="glyphicon glyphicon-th"></span>
+   <div class="row">
+      <div class="col-md-12">
+         <div class="alert alert-info alert-dismissable fade in">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong><span class="fa fa-warning"></span> Atención!</strong> 
+            Es presentre asistente, le ayudará con el cálculo de provisiones de bodegaje demoraje incial
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-md-2">&nbsp;</div>
+      <div class="col-md-8">
+         <h4>Ingrese La Fecha Nacionalizacion del Parcial Para el Pedido <strong>{{ order.nro_pedido }}</strong></h4>
+         <br>
+         <input type="hidden" name="nro_pedido" value="{{order.nro_pedido}}">
+         <div class="col-md-3">
+            <div class="form-group">
+               {% if startWarenhouse == false %}
+               <label>Ingreso Almacenera</label>
+               {% else %}
+               <label>Salida Último Parcial</label>
+               {% endif %}
+               <div class="input-group date" data-provide="datepicker">
+                  <input 
+                     type="text" 
+                     class="form-control" 
+                     id="fecha_ingreso_almacenera" 
+                     required="" 
+                     name="fecha_ingreso_almacenera" 
+                     value="{{fecha_ingreso_almacenera}}" 
+                     class="bootstrap-datepicker" 
+                     >
+                  <div class="input-group-addon">
+                     <span class="glyphicon glyphicon-th"></span>
+                  </div>
+               </div>
             </div>
          </div>
-        </div>
-        </div>
-      <div class="col-md-3">
-        <div class="form-group">
-          <label>Fecha Nacionalización Parcial</label>
-                   <div class="input-group date" data-provide="datepicker">
-            <input 
-               type="text" 
-               class="form-control" 
-               id="fecha_nacionalizacion_parcial" 
-               required="" 
-               name="fecha_nacionalizacion_parcial" 
-               class="bootstrap-datepicker" 
-               value="{{ fecha_nacionalizacion_parcial }}" 
-               >
-            <div class="input-group-addon">
-               <span class="glyphicon glyphicon-th"></span>
+         <div class="col-md-3">
+            <div class="form-group">
+               <label>Nacionalización Parcial</label>
+               <div class="input-group date" data-provide="datepicker">
+                  <input 
+                     type="text" 
+                     class="form-control" 
+                     id="fecha_nacionalizacion_parcial" 
+                     required="" 
+                     name="fecha_nacionalizacion_parcial" 
+                     class="bootstrap-datepicker" 
+                     value="{{ fecha_nacionalizacion_parcial }}" 
+                     >
+                  <div class="input-group-addon">
+                     <span class="glyphicon glyphicon-th"></span>
+                  </div>
+               </div>
             </div>
          </div>
-        </div>
+         <div class="col-md-3">
+            <div class="form-group">
+               <label>Dias Parcial</label>
+               <input 
+                  class="form-control" 
+                  type="number" 
+                  id="dias_bodega" 
+                  disabled="" >
+            </div>
+         </div>
+         <div class="col-md-3">
+            <div id="alerta"></div>
+         </div>
       </div>
-      <div class="col-md-3">
-        <div class="form-group">
-          <label>Dias Parcial</label>
-          <input 
-          	class="form-control" 
-          	type="number" 
-          	id="dias_bodega" 
-          	disabled="" >
-        </div>
+      <div class="col-md-2">&nbsp;</div>
+   </div>
+   <div class="row">
+   	<div class="col-md-2">&nbsp;</div>
+            <div class="col-md-2">
+               <button class="btn btn-default btn-sm" id="enviarFormulario" disabled=""> <span class="fa fa-save"></span> Registrar Valores</button>
+            </div>
+            <div class="col-md-2">
+               <a href="{{rute_url}}gstnacionalizacion/validar70/{{infoInvoice.id_factura_informativa}}" 
+               class="btn btn-warning btn-sm"> 
+               <span class="fa fa-arrow-left"></span> Volver Gastos [{{ order.nro_pedido }}]</a>
+            </div>
+         </div>
       </div>
-      <div class="col-md-3">
-      	<div id="alerta"></div>
-      </div>
-  </div>
-  <div class="col-md-2">&nbsp;</div>
-</div>
-<div class="row">
-  <div class="col-md-1">&nbsp;</div>
-  <div class="col-md-8">
-    <div class="well well-sm">
-      <div class="text-tittle"> 
-        provisiones aplicables
-      </div>
-      <table class="table table-striped table-condensed">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Periodo</th>
-            <th>Concepto</th>
-            <th>Días</th>
-            <th>Valor</th>
-            <th>Opcion</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="text-right">1</td>
-            <td class="text-right">2017-12-31 hasta 2017-01-30</td>
-            <td class="text-right">Bodegaje Dic31-Ene30</td>
-            <td class="text-right">21</td>
-            <td class="text-right">30.00</td>
-            <td class="text-right"><input type="checkbox" name=""></td>
-          </tr>
-        </tbody>
-      </table>
-      <br><br><br>
-      <br>
-      <div class="col-md-3">
-      <button class="btn btn-default btn-sm" type="submit"> <span class="fa fa-save"></span> Registrar Valores</button>
-      </div>
-      <div class="col-md-3">
-      <a href="{{rute_url}}gstinicial/validargi/{{order.nro_pedido}}" class="btn btn-warning btn-sm"> 
-         <span class="fa fa-arrow-left"></span> Volver</a>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-1">&nbsp;</div>
-</div>
-</form>
-
+      <div class="col-md-1">&nbsp;</div>
+   </div>
+   </div>
 <script type="text/javascript">
-
-	Date.isLeapYear = function (year) { 
-    	return (((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0)); 
-	};
-
-	Date.getDaysInMonth = function (year, month) {
-	    return [31, (Date.isLeapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];
-	};
-
-	Date.prototype.isLeapYear = function () { 
-	    return Date.isLeapYear(this.getFullYear()); 
-	};
-
-	Date.prototype.getDaysInMonth = function () { 
-	    return Date.getDaysInMonth(this.getFullYear(), this.getMonth());
-	};
-
-	Date.prototype.addMonths = function (value) {
-	    var n = this.getDate();
-	    this.setDate(1);
-	    this.setMonth(this.getMonth() + value);
-	    this.setDate(Math.min(n, this.getDaysInMonth()));
-	    return this;
-	};
-
+   Date.isLeapYear = function (year) { 
+      	return (((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0)); 
+   };
+   
+   Date.getDaysInMonth = function (year, month) {
+       return [31, (Date.isLeapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];
+   };
+   
+   Date.prototype.isLeapYear = function () { 
+       return Date.isLeapYear(this.getFullYear()); 
+   };
+   
+   Date.prototype.getDaysInMonth = function () { 
+       return Date.getDaysInMonth(this.getFullYear(), this.getMonth());
+   };
+   
+   Date.prototype.addMonths = function (value) {
+       var n = this.getDate();
+       this.setDate(1);
+       this.setMonth(this.getMonth() + value);
+       this.setDate(Math.min(n, this.getDaysInMonth()));
+       return this;
+   };
+   
 </script>
-
 <script type="text/javascript">
-	var monthNames = ["Ene",
-					 "Feb",
-					 "Mar",
-					 "Abr",
-					 "May",
-					 "Jun",
-					 "Jul",
-					 "Ago",
-					 "Sep",
-					 "Oct",
-					 "Nov",
-					 "Dic"
-					];
+   var arrayAlmacenaje = [];
+   var monthNames = ["Ene",
+   				 "Feb",
+   				 "Mar",
+   				 "Abr",
+   				 "May",
+   				 "Jun",
+   				 "Jul",
+   				 "Ago",
+   				 "Sep",
+   				 "Oct",
+   				 "Nov",
+   				 "Dic"
+   				];
+   
+    /**
+    * Calcula la diferencia en meses
+    */
+   function monthDiff(dateStart, dateEnd){
+   	var months = 0;
+   	months = (dateEnd.getFullYear() - dateStart.getFullYear()) * 12;
+   	months -= dateStart.getMonth() + 1;
+   	months += dateEnd.getMonth();
+   	return months <= 0 ? 0 : months + 1;
+   }
+   
+    /**
+    * Calcula el numero de meses que tiene un periodo y setea el intervalo
+    */
+   $('#fecha_nacionalizacion_parcial').change(function(){
+   	var dateStart = new Date($('#fecha_ingreso_almacenera').val());
+   	var dateEnd = new Date($('#fecha_nacionalizacion_parcial').val());
+   	calcDiffDays(dateStart, dateEnd);
+   	var months =  (monthDiff(dateStart, dateEnd)) == 0 ? 1 :  monthDiff(dateStart, dateEnd) ;
+      for (i = 1; i < (months + 2); i++ ){
+   	  setInterval(dateStart, 1);
+      }
+     $('#enviarFormulario').prop('disabled' , false);
+   });
+   
+   /**
+    * Establece el concepto del itervalo con un mes de adelanto
+    */
+    function setInterval(date, months){
+    var intervalo = {
+    	'fecha' : (date.getFullYear()) + '-' +  (date.getMonth() + 1) + '-' +  (date.getDate()),
+   		'fecha_fin' : null,
+   		'concepto' : 'Almaceneaje ' + (date.getFullYear()) + monthNames[date.getMonth()] ,
+   		'valor_provisionado' : 0,
+   		'tipo' : 'NACIONALIZACION',
+   		'nro_pedido' : '000-00',
+   		'identificacion_proveedor' : 0, 
+    };
+ 
+   	date = date.addMonths(1);
+   	date.setDate(date.getDate() -1 );
+   	intervalo.fecha_fin = (date.getFullYear()) + '-' + (date.getMonth() + 1) + '-' + (date.getDate());
+   	intervalo.concepto +=  '-' + (date.getFullYear()) + monthNames[date.getMonth()] ;
+   	date.setDate(date.getDate() + 1 );
+   	arrayAlmacenaje.push(intervalo);
+   }
 
-	function monthDiff(dateStart, dateEnd){
-		var months = 0;
-		months = (dateEnd.getFullYear() - dateStart.getFullYear()) * 12;
-		months -= dateStart.getMonth() + 1;
-		months += dateEnd.getMonth();
-		return months <= 0 ? 0 : months + 1;
-	}
-
-	function calcPeriod(){
-		var dateStart = new Date($('#fecha_ingreso_almacenera').val());
-		var dateEnd = new Date($('#fecha_nacionalizacion_parcial').val());
-		var months = monthDiff(dateStart, dateEnd);
-		setInterval(dateStart);
-		
-	}
-
-	function setInterval(date){
-		var start = date;
-		var desde = 'Almacenaje ' + (date.getDate()) + (monthNames[start.getMonth()]) + (date.getFullYear());
-		date.addMonths(1);
-		var hasta = (date.getDate() -1 ) + (monthNames[start.getMonth()]) + (date.getFullYear());
-
-		console.dir(desde + '-'+ hasta);
-
-
-	}
-
+   /**
+   * Calcula la diferencia de fechas en dias, se suma uno por el dia actual
+   */
+   function calcDiffDays( dateStart, dateEnd){
+      var dateStart =  new Date(dateStart);
+      var dateEnd = new Date(dateEnd);
+      var timeDiff = Math.abs(dateEnd.getTime() - dateStart.getTime());
+      var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+      diasBodegaje = diffDays;
+      $('#dias_bodega').val(diffDays);
+   }
+ 	
+ 	/**
+ 	* envia el arreglo por post
+ 	* url gstnacionalizacion/validaBodega/
+ 	*/
+ 	$('#enviarFormulario').click(function(){
+ 		$.post('{{rute_url}}gstnacionalizacion/putWarenhouseExpense', 
+ 													{ 
+ 													  	'id_factura_informativa' : {{infoInvoice.id_factura_informativa}},
+ 														'periodo' : arrayAlmacenaje , 
+ 													 });
+ 		window.location.href = '{{rute_url}}gstnacionalizacion/validar70/{{infoInvoice.id_factura_informativa}}';
+ 	});
 </script>

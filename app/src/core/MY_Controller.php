@@ -142,7 +142,7 @@ class MY_Controller extends CI_Controller
     protected function getWarenHouseDaysInitial(array $order): int
     {
         if (gettype($order['fecha_salida_bodega_puerto']) == 'NULL') {
-            return (dateDiffInDays($order['fecha_arribo'], date('Y-m-d')));
+            return (dateDiffInDays(strtotime($order['fecha_arribo']), date('Y-m-d')));
         }
         return (dateDiffInDays($order['fecha_arribo'], $order['fecha_salida_bodega_puerto']));
     }

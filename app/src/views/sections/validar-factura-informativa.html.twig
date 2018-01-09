@@ -78,40 +78,23 @@
          <tbody>
             <tr style="background-color: #fff;">
                <th class="text-center">CONCEPTO</th>
+               <th class="text-center">F. Inicio</th>
+               <th class="text-center">F. Fin</th>
                <th class="text-center">VALOR</th>
                <th class="text-center">ESTADO</th>
             </tr>            
+            {% set isOk = true %}
             {% for expense in expenses  %}
             {% set sumExpenses = sumExpenses + expense.valor_provisionado %}
             <tr>
                <td>{{expense.concepto }}</td>
-               {% if expense.concepto == 'GASTO ORIGEN' %}
-                  {% if minimal.statusOrder.have_gasto_origen != false %}
-                     <td>
-                        {{expense.valor_provisionado}}
-                     </td>
-                     {% if expense.valor_provisionado > 0 %}
-                        <td class="success">OK
-                        <a href="{{rute_url}}gstnacionalizacion/editar/{{expense.id_gastos_nacionalizacion}}">
-                     <span class="fa fa-pencil"></span> Editar
-                     </a>
-                        </td>
-                        
-                        {%else %}       
-                        <td class="danger">                 
-                        <a href="{{rute_url}}gstnacionalizacion/editar/{{expense.id_gastos_nacionalizacion}}">
-                     Registrar                           
-                        </a>
-                        </td>
-
-                     {% endif %}                  
-                     
-                     {% else %}
-                     <td>No Requerido</td>
-                     <td class="success">OK</td>
-                  {% endif %}
+               <td>{{ expense.fecha }}</td>
+               {% if expense.fecha_fin == null %}
+               <td class="text-center"> --- </td>
                {% else %}
-                  <td>{{expense.valor_provisionado}}</td>
+                  <td>{{ expense.fecha_fin }}</td>
+               {% endif %}
+               <td>{{expense.valor_provisionado}}</td>
                   {% if expense.valor_provisionado > 0 %}
                      <td class="success">
                      OK <a href="{{rute_url}}gstnacionalizacion/editar/{{expense.id_gastos_nacionalizacion}}">
@@ -119,14 +102,13 @@
                      </a>
                      </td>
                   {% else %}
+                  {% set isOk = false %}
                      <td class="danger">
                         <a href="{{rute_url}}gstnacionalizacion/editar/{{expense.id_gastos_nacionalizacion}}">
                      Registrar                           
                         </a>
                   </td>
                   {% endif %}
-                  
-               {% endif %}
             </tr>
             {% endfor %}
           <tr>
@@ -142,12 +124,19 @@
           </tr>
          </tbody>
       </table>
-         {% include 'sections/subsections/table-order-info.html.twig' %}   
+         {% include 'sections/subsections/table-infoinvoice-info.html.twig' %}   
          <br><br><br><br><p>
-         <a href="{{rute_url}}pedido/presentar/{{order.nro_pedido}}" class="btn btn-default btn-sm">
+         <a href="{{rute_url}}facinformativa/presentar/{{infoInvoice.id_factura_informativa}}" class="btn btn-default btn-sm">
          <span class="fa fa-arrow-left fa-fw"></span>
-         Volver Al Pedido [{{order.nro_pedido}}]
+         Volver A Factura Informativa [{{infoInvoice.nro_factura_informativa}}]
          </a>
+         &nbsp;&nbsp;&nbsp;&nbsp;
+         {% if isOk == true %}
+         <a href="{{rute_url}}gstnacionalizacion/impuestosFI/{{infoInvoice.id_factura_informativa}}" class="btn btn-primary btn-sm">
+         <span class="fa fa-gears fa-fw"></span>
+         Generar Impuestos Factura Informativa [{{infoInvoice.nro_factura_informativa}}]
+      </a>
+         {% endif %}
       </p>
       </div>
       <div class="col-sm-5 div-bordered">

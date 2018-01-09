@@ -45,7 +45,7 @@
 	</div>
 <div class="col-sm-2">
 		<div class="form-group">
-			<label>Fecha</label>
+			<label>Fecha (desde)</label>
 			         <div class="input-group date" data-provide="datepicker">
             <input 
                type="text" 
@@ -65,7 +65,26 @@
 </div>
 
 <div class="row">
-	<div id="hasta" style="display: none;">	</div>
+<div class="col-sm-2">
+		<div class="form-group">
+			<label>Fecha (hasta)</label>
+			         <div class="input-group date" data-provide="datepicker">
+            <input 
+               type="text" 
+               class="form-control" 
+               id="fecha" 
+               required="required" 
+               name="fecha_fin" 
+               class="bootstrap-datepicker" 
+               value="{{ expense.fecha_fin | date ('d/m/Y')}}" 
+               >
+            <div class="input-group-addon">
+               <span class="glyphicon glyphicon-th"></span>
+            </div>
+         </div>
+		</div>
+	</div>
+	
 	<div class="col-sm-2">
 		<div class="form-group">
 			<label>Provisión (USD)</label>

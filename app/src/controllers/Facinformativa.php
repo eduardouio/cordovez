@@ -18,6 +18,7 @@ class Facinformativa extends MY_Controller {
 	private $modelOrder;
 	private $modelUser;
 	private $modelSupplier;
+	private $modelExpenses;
 	private $modelOrderInvoice;
 	private $modelOrderInvoiceDetail;
 	private $modelInfoInvoice;
@@ -45,6 +46,7 @@ class Facinformativa extends MY_Controller {
 	    $this->load->model('modelorder');
 	    $this->load->model('modeluser');
 	    $this->load->model('modelsupplier');
+	    $this->load->model('modelexpenses');
 	    $this->load->model('modelorderinvoice');
 	    $this->load->model('modelorderinvoicedetail');
 	    $this->load->model('modelinfoinvoice');
@@ -56,6 +58,7 @@ class Facinformativa extends MY_Controller {
 	    $this->modelOrder = new  Modelorder();
 	    $this->modelUser = new Modeluser();
 	    $this->modelSupplier = new Modelsupplier();
+	    $this->modelExpenses = new Modelexpenses();
 	    $this->modelOrderInvoice = new Modelorderinvoice();
 	    $this->modelOrderInvoiceDetail = new Modelorderinvoicedetail();
 	    $this->modelInfoInvoice = new Modelinfoinvoice();
@@ -99,6 +102,14 @@ class Facinformativa extends MY_Controller {
 	            $infoInvoice['details'][$item]['oderDetail'] = $invoiceOrderDetail;
 	      }
 	    }
+	    $expenses = $this->modelExpenses->getByInfoInvoice($idFacInformative);
+	    if($expenses != false){
+	        foreach ($expenses as $index => $expense){
+	            $expense['supplier'] = $this->modelSupplier->get($expense['identificacion_proveedor']);
+	            $expenses[$index] = $expense;
+	        }
+	    }
+	    
 	    $this->responseHttp([
 	        'show'     => true,
 	        'titleContent' => 'Pedido [' . $order['nro_pedido'] . '] ' . 
@@ -107,6 +118,7 @@ class Facinformativa extends MY_Controller {
 	                           ' => ' . $supplier['nombre'] . '</small> ]',
 	        'order' => $order,
 	        'infoInvoice' => $infoInvoice,
+	        'expenses' => $expenses,
 	        'supplier' => $supplier,
 	        'user' => $this->modelUser->get($infoInvoice['id_user']),
 	    ]);

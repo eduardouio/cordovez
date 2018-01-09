@@ -137,6 +137,28 @@ class Modelexpenses extends CI_Model
         return $expenses;
     }
     
+    
+    
+    /**
+     * Retorna el valor inicial de CIF para una orden  
+     * @param string $nroORder
+     * @return array arreglo SEFGURO, FLETE
+     */
+    public function initialCIFValue(string $nroOrder):array
+    {
+        $sql = "SELECT 
+                    concepto, valor_provisionado  
+                FROM 
+                    gastos_nacionalizacion 
+                WHERE 
+                (concepto = 'FLETE' OR concepto = 'SEGURO') 
+                AND
+                nro_pedido = '$nroOrder'";
+        $resultDb = $this->db->query($sql);
+        return ($resultDb->result_array());
+    }
+    
+    
     /**
      * Retorna todos los gastos inicales de un pedido
      * @param (string) $nroOrder
@@ -224,6 +246,27 @@ class Modelexpenses extends CI_Model
     }
     
     
+    /**
+     * Retorna los gastos de nacionalizacionde la ultima factura informativa
+     * @param int $idInfoInvoice
+     * @return array
+     */
+    public function getByInfoInvoice(int $idInfoInvoice)
+    {
+        $expenses = $this->modelBase->get_table([
+            'table' => $this->table,
+            'where' => [
+                'id_factura_informativa' => $idInfoInvoice,
+            ],
+        ]);
+        if(count($expenses) > 0){
+            return $expenses;
+        }
+        $this->modelLog->errorLog('Existe un pedido sin gastos de nacionalizacion' .  current_url());
+        return false;
+    }
+    
+    
     
     /**
      * Actualiza el registro para un gasto nacionalizacion
@@ -252,6 +295,22 @@ class Modelexpenses extends CI_Model
             return($this->db->insert_id());
         }
         $this->modelLog->errorLog('No se puede crear un gasto Nacionalizaicon ' . current_url());
+        $this->modelLog->errorLog($this->db->last_query());
+        return false;
+    }
+    
+    
+    /**
+     * Elimina un gasto de nacionalizacion
+     * @param int $idExpense
+     * @return boolean
+     */
+    public function delete(int $idExpense): bool{
+        $this->db->where('id_gastos_nacionalizacion', $idExpense);
+        if($this->db->delete($this->table)){
+            return true;
+        }
+        $this->modelLog->errorLog('No se puede eliminar un gasto de nacionalizacion ' . current_url());
         $this->modelLog->errorLog($this->db->last_query());
         return false;
     }

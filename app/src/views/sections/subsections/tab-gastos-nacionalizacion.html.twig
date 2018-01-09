@@ -10,10 +10,10 @@
             </div>
             {% set cantidad = 0 %}
             {% set provisionado = 0.0 %}
-            {% set convalidado = 0.0 %}
-            {% for expense in expenses %}
+            {% set convalidado = order.valuesOrder.localPaidsExpenses %}
+            {% for initialExpense in initialExpenses %}
             {% set cantidad = cantidad + 1 %}
-            {% set provisionado = provisionado + expense.valor_provisionado %}
+            {% set provisionado = provisionado + initialExpense.valor_provisionado %}
             {% endfor %}
             <div class="col-sm-2">
                <h5 class="text-primary"> <small>Cantidad: </small> <span id="suma"> {{ cantidad | number_format(0, '.', ',') }} </span></h5>
@@ -42,12 +42,12 @@
                      </tr>
                   </thead>
                   <tbody>
-                     {% for initialExpense in initialExpenses %}
+                     {% for initialExpense in expenses %}
                      <tr>
                         <td>{{loop.index}}</td>
                         <td>
                         <span class="fa fa-eye"></span>
-                           <a href="{{rute_url}}gstinicial/presentar/{{initialExpense.id_gastos_nacionalizacion}}">
+                           <a href="{{rute_url}}gstnacionalizacion/presentar/{{initialExpense.id_gastos_nacionalizacion}}">
                            {{initialExpense.concepto}}
                            </a>
                         </td>
@@ -56,8 +56,8 @@
                         </td>
                         <td>
                         <span class="fa fa-pencil"></span>
-                        {% if order.bg_haveExpenses == 0 %}
-                           <a href="{{rute_url}}gstinicial/editar/{{initialExpense.id_gastos_nacionalizacion}}">
+                        {% if infoInvoice.bg_isclosed == 0 %}
+                           <a href="{{rute_url}}gstnacionalizacion/editar/{{initialExpense.id_gastos_nacionalizacion}}">
                             <small>{{initialExpense.supplier.nombre}}</small>
                            </a>
                        {% else  %}
@@ -75,20 +75,20 @@
                               </button>
                               <ul class="dropdown-menu" aria-labelledby="dLabel">
                                  <li> 
-                                    <a href="{{rute_url}}gstinicial/presentar/{{initialExpense.id_gastos_nacionalizacion}}">
+                                    <a href="{{rute_url}}gstnacionalizacion/presentar/{{initialExpense.id_gastos_nacionalizacion}}">
                                     <span class="fa fa-eye fa-fw"></span>
                                     Detalle Gasto Inicial
                                     </a> 
                                  </li>
-                                 {% if order.bg_haveExpenses == 0 %}
+                                 {% if  infoInvoice.bg_isclosed == 0 %}
                                  <li> 
-                                    <a href="{{rute_url}}gstinicial/editar/{{initialExpense.id_gastos_nacionalizacion}}">
+                                    <a href="{{rute_url}}gstnacionalizacion/editar/{{initialExpense.id_gastos_nacionalizacion}}">
                                     <span class="fa fa-pencil fa-fw"></span>
                                     Editar Gasto Inicial
                                     <span class="label label-success"> {{initialExpense.id_gastos_nacionalizacion}}</span></a> 
                                  </li>
                                  <li>
-                                    <a href="{{rute_url}}gstinicial/eliminar/{{initialExpense.id_gastos_nacionalizacion}}">
+                                    <a href="{{rute_url}}gstnacionalizacion/eliminar/{{initialExpense.id_gastos_nacionalizacion}}">
                                     <span class="text-danger fa fa-trash fa-fw"></span>
                                     Elminar Gasto Inicial
                                     <span class="label label-danger">

@@ -21,13 +21,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 | If you need to allow multiple domains, remember that this file is still
 | a PHP script and you can easily do that on your own.
-|
 */
+
 #$config['base_url'] = 'http://192.168.0.82/app'; #VINESA
 #$config['base_url'] = 'http://179.49.60.158:8888'; #PRODUCCION
-#$config['base_url'] = 'http://192.168.0.28/app'; #OFICINA
+#$config['base_url'] = 'http://192.168.0.11/app'; #OFICINA
 #$config['base_url'] = 'http://192.168.100.194/app'; #CASA
 $config['base_url'] = 'http://localhost/app/'; #LOCAL
+
 /*
 |--------------------------------------------------------------------------
 | Index File
@@ -38,8 +39,7 @@ $config['base_url'] = 'http://localhost/app/'; #LOCAL
 | variable so that it is blank.
 |
 */
-$config['index_page'] = 'index.php';
-
+$config['index_page'] = 'index.php';;
 /*
 |--------------------------------------------------------------------------
 | URI PROTOCOL

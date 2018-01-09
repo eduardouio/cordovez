@@ -201,12 +201,10 @@
          <a href="{{rute_url}}pedido/presentar/{{order.nro_pedido}}" class="btn btn-default btn-sm">
          <span class="fa fa-arrow-left fa-fw"></span>
          Volver Al Pedido [{{order.nro_pedido}}]
-         </a>
+         </a>  
          {% if isOk == true %}
          
          {% if order.regimen == '70' %}
-
-
          <button data-toggle="modal" data-target="#myModal" class="btn btn-primary btn-sm pull-right">
          <span class="fa fa-file fa-fw"></span>
          Generar Factura Informativa [{{order.nro_pedido}}]

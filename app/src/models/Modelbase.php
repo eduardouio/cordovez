@@ -114,7 +114,7 @@ class ModelBase extends CI_Model {
         }
         
         if(isset($paramsQuery['limit'])){
-            $sql .= ' ' . $paramsQuery['limit'];
+            $sql .= ' limit ' . $paramsQuery['limit'];
         }
 
         $resultDb = $this->db->query($sql);

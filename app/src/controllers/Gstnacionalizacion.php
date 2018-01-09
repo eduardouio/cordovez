@@ -117,7 +117,7 @@ class Gstnacionalizacion extends MY_Controller
                 'id_factura_informativa' => $iInfoInvoice,
                 'identificacion_proveedor' => $expenseRate['identificacion_proveedor'],
                 'concepto' => $expenseRate['concepto'],
-                'tipo' => 'GASTO NACIONALIZACION',
+                'tipo' => 'NACIONALIZACION',
                 'valor_provisionado' => $expenseRate['valor'],
                 'fecha' => date('Y-m-d'),
                 'date_create' => date('Y-m-d H:m:s'),
@@ -369,13 +369,13 @@ class Gstnacionalizacion extends MY_Controller
         if (! $_POST) {
             return ($this->index());
         }
-        
         $expense = $_POST;
         $expense['fecha'] = date('Y-m-d', strtotime($expense['fecha']));
+        $expense['fecha_fin'] = date('Y-m-d', strtotime($expense['fecha_fin']));
         $expense['id_user'] = $this->session->userdata('id_user');
+        $expense['tipo'] = 'NACIONALIZACION';
         $expense['valor_provisionado'] = floatval($expense['valor_provisionado']);
         $expense['last_update'] = date('Y-m-d H:m:s');
-        
         if ($this->modelExpenses->update($expense)) {
             return ($this->redirectPage('validar70', $expense['id_factura_informativa']));
         }

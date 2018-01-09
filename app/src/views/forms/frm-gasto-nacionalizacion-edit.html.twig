@@ -54,7 +54,7 @@
                required="required" 
                name="fecha" 
                class="bootstrap-datepicker" 
-               value="{{ expense.fecha | date ('d/m/Y')}}" 
+               value="{{ expense.fecha | date ('m/d/Y')}}" 
                >
             <div class="input-group-addon">
                <span class="glyphicon glyphicon-th"></span>
@@ -63,7 +63,6 @@
 		</div>
 	</div>	
 </div>
-
 <div class="row">
 <div class="col-sm-2">
 		<div class="form-group">
@@ -76,7 +75,7 @@
                required="required" 
                name="fecha_fin" 
                class="bootstrap-datepicker" 
-               value="{{ expense.fecha_fin | date ('d/m/Y')}}" 
+               value="{{ expense.fecha_fin | date ('m/d/Y')}}" 
                >
             <div class="input-group-addon">
                <span class="glyphicon glyphicon-th"></span>

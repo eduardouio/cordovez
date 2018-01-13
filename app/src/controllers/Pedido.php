@@ -20,45 +20,30 @@ class Pedido extends MY_Controller
 {
     
     private $controller = 'pedido';
-    
     private $listPerPage = 12;
-    
     private $seguroVal = 2.2;
-    
     private $template = '/pages/pagePedido.html';
-    
     private $modelOrder;
-    
     private $modelSupplier;
-    
     private $modelNationalization;
-    
     private $modelProduct;
-    
     private $modelInfoInvoice;
-    
     private $modelInfoInvoiceDetail;
-    
     private $modelBase;
-    
     private $myModel;
-    
+    private $modelLog;
     private $modelUser;
-    
     private $modelProductInvoice;
-    
     private $modelExpenses;
-    
     private $modelOrderInvoice;
-    
     private $modelOrderInvoiceDetail;
-    
     private $modelPaidDetail;
     
     public function __construct()
     {
         parent::__construct();
         $this->init();
+        $this->modelLog->generalLog('Se inicia la clase pedido');
     }
     
     /**
@@ -73,6 +58,7 @@ class Pedido extends MY_Controller
         $this->load->model('modelinfoinvoice');
         $this->load->model('modelinfoinvoicedetail');
         $this->load->model('mymodel');
+        $this->load->model('modellog');
         $this->load->model('modeluser');
         $this->load->model('modelexpenses');
         $this->load->model('modelorderinvoice');
@@ -86,6 +72,7 @@ class Pedido extends MY_Controller
         $this->modelInfoInvoice = new Modelinfoinvoice();
         $this->modelInfoInvoiceDetail = new Modelinfoinvoicedetail();
         $this->myModel = new Mymodel();
+        $this->modelLog = new Modellog();
         $this->modelUser = new Modeluser();
         $this->modelExpenses = new Modelexpenses();
         $this->modelOrderInvoice = new Modelorderinvoice();
@@ -219,14 +206,13 @@ class Pedido extends MY_Controller
      */
     public function nuevo()
     {
-        $config['incoterms'] = json_encode($this->modelBase->get_table([
-            'table' => 'tarifa_incoterm'
+        return($this->responseHttp([
+            'incoterms' => json_encode($this->modelBase->get_table([
+                                    'table' => 'tarifa_incoterm'])),
+            'titleContent' => 'Registro de nuevo Pedido',
+            'countries' => $this->myModel->getCountries(),
+            'create_order' => true,
         ]));
-        $config['new_active'] = 'class="active"';
-        $config['create_order'] = true;
-        $config['countries'] = $this->myModel->getCountries();
-        $config['titleContent'] = 'Registro de nuevo Pedido';
-        $this->responseHttp($config);
     }
     
     /**
@@ -234,26 +220,19 @@ class Pedido extends MY_Controller
      */
     public function editar($nroOrder)
     {
-        $order = $this->modelBase->get_table([
-            'table' => $this->controller,
-            'where' => [
-                'nro_pedido' => $nroOrder
-            ]
-        ]);
-        if ($order == false) {
-            $this->redirectPage('ordersList');
-            return false;
+        $order = $this->modelOrder->get($nroOrder);
+        if($order == false){
+            return($this->listar());
         }
-        
-        $config = [
-            'edit_order' => true,
-            'order' => $order[0],
-            'incoterms' => json_encode($this->modelBase->get_table([
-                'table' => 'tarifa_incoterm'
-            ])),
-            'titleContent' => 'Se Encuentra Editando El Pedido &nbsp &nbsp <b>' . $nroOrder . '</b>'
-        ];
-        $this->responseHttp($config);
+        return($this->responseHttp([
+            'edit_order'    => true,
+            'order'         => $order,
+            'incoterms'     => json_encode($this->modelBase->get_table([
+                                                   'table' => 'tarifa_incoterm'
+                                ])),
+            'titleContent'  => 'Se Encuentra Editando El Pedido [<b>' 
+                                                            . $nroOrder . ']</b>',
+        ]));
     }
     
     
@@ -267,7 +246,9 @@ class Pedido extends MY_Controller
         }
         
         $order = $_POST;
-        $order['fecha_ingreso_almacenera'] = date('Y-m-d' , strtotime($order['fecha_ingreso_almacenera']));
+        print strtotime($order['fecha_ingreso_almacenera']);
+        $order['fecha_ingreso_almacenera'] = date('d-m-Y' , strtotime($order['fecha_ingreso_almacenera']));
+        exit();
         $pedido['last_update'] = date('Y-m-d H:i:s');
         if($this->modelOrder->update($order)){
             print $order['nro_pedido'];
@@ -281,20 +262,21 @@ class Pedido extends MY_Controller
      */
     public function eliminar($nroOrder)
     {
-        $this->db->where('nro_pedido', $nroOrder);
-        if ($this->db->delete($this->controller)) {
-            $config['order'] = $nroOrder;
-            $config['viewMessage'] = true;
-            $config['deleted'] = true;
-            $config['message'] = 'El Pedido fue eliminado Exitosamente!';
-            $this->responseHttp($config);
-        } else {
-            $config['order'] = $nroOrder;
-            $config['viewMessage'] = true;
-            $config['message'] = 'El pedido no puede ser Eliminado,
-                             tiene dependencias!';
-            $this->responseHttp($config);
-        }
+        if($this->modelOrder->delete($nroOrder)){
+            return($this->responseHttp([
+                'order' => $nroOrder,
+                'viewMessage' => true,
+                'deleted' => true,
+                'message' => 'El Pedido fue eliminado Exitosamente!',
+            ]));
+        }else{
+            return($this->responseHttp([
+                'order' => $nroOrder,
+                'viewMessage' => true,
+                'message' => 'El pedido no puede ser Eliminado,
+                             tiene dependencias!',
+            ]));
+        }        
     }
     
     /**
@@ -308,11 +290,12 @@ class Pedido extends MY_Controller
             $this->redirectPage('ordersList');
         }
         
-        $pedido = $this->input->post();
+        $pedido = $_POST;
         $pedido['id_user'] = $this->session->userdata('id_user');
         if ($pedido['fecha_arribo'] == '') {
             unset($pedido['fecha_arribo']);
         } else {
+            $pedido['fecha_arribo'] = str_replace( '/', '-', $pedido['fecha_arribo']); 
             $pedido['fecha_arribo'] = date('Y-m-d', strtotime($pedido['fecha_arribo']));
         }
         if (! isset($pedido['id_pedido'])) {

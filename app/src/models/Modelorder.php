@@ -474,4 +474,22 @@ class Modelorder extends CI_Model
     }
     
     
+    /**
+     * Intenta eliminar un pedido de la base de datos
+     * @param string $nroOrder nro_pedido
+     * @return bool si se elimina o no
+     */
+    public function delete(string $nroOrder):bool
+    {
+        $this->db->where('nro_pedido', $nroOrder);
+        if($this->db->delete($this->table)){
+            $this->modelLog->warningLog('Pedido Eliminado de la base de datos', $this->db->last_query());
+            return true;
+        }else{
+            $this->modelLog->warningLog('Se intenta eliminar un pedido con dependencias');
+            return false;
+        }
+    }
+    
+    
 }

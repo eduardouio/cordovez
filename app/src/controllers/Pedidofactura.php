@@ -17,17 +17,12 @@ class Pedidofactura extends MY_Controller
 {
 
     private $controller = "pedido_factura";
-
     private $template = '/pages/pagePedidoFactura.html';
-
     private $modelSupplier;
-
     private $modelOrder;
-    
     private $modelUser;
-    
+    private $modelLog;
     private $modeOrderInvoice;
-    
     private $modeOrderInvoiceDetail;
 
     /**
@@ -37,6 +32,7 @@ class Pedidofactura extends MY_Controller
     {
         parent::__construct();
         $this->init();
+        $this->modelLog->generalLog('Se carga la clase Pedido Factura');
     }
 
     /**
@@ -49,11 +45,13 @@ class Pedidofactura extends MY_Controller
         $this->load->model('modelsupplier');
         $this->load->model('modelorderinvoice');
         $this->load->model('modelorderinvoicedetail');
+        $this->load->model('modellog');
         $this->modelOrder = new Modelorder();
         $this->modelUser = new Modeluser();
         $this->modelSupplier = new Modelsupplier();
         $this->modeOrderInvoice = new Modelorderinvoice();
         $this->modeOrderInvoiceDetail = new Modelorderinvoicedetail();
+        $this->modelLog = new Modellog();
     }
 
     /**
@@ -74,8 +72,7 @@ class Pedidofactura extends MY_Controller
     {
         $invoiceOrder = $this->modeOrderInvoice->get($idInvoiceOrder);
         if ($invoiceOrder == false ){
-            $this->index();
-            return false;
+            return($this->index());
         }
         $invoiceDetail = $this->modelOrder->getInvoiceDetail($invoiceOrder);
         $sums = false;
@@ -86,7 +83,7 @@ class Pedidofactura extends MY_Controller
             $config['invoiceDetail'] = $invoiceDetail;
         }
         
-        $this->responseHttp([
+        return ($this->responseHttp([
             'titleContent' => 'Detalle Factura [ # ' .
                                       $invoiceOrder['id_factura_proveedor'] .
                                      ' ] Pedido [ ' . $invoiceOrder['nro_pedido'] . ' ]',
@@ -96,7 +93,7 @@ class Pedidofactura extends MY_Controller
             'invoiceDetail' => $invoiceDetail,
             'sums' => $sums,
             'supplier' => $this->modelSupplier->get($invoiceOrder['identificacion_proveedor']),
-       ]);
+       ]));
     }
 
     /**
@@ -109,16 +106,16 @@ class Pedidofactura extends MY_Controller
         $order = $this->modelOrder->get($nroOrder);
         
         if ($order == false) {
-            $this->index();
-            return false;
+            $this->modelLog->warningLog('Acceso directo, Redireccionamiento ', current_url());
+            return($this->index());
         }
         $suppliers = $this->modelSupplier->getByLocation('INTERNACIONAL');
-        $this->responseHttp([
+        return($this->responseHttp([
             'create_invoice' => true,
             'order' => $order,
             'suppliers' => $suppliers,
-            'titleContent' => 'Ingreso de Factura Pedido: [' . $nroOrder . ']'
-        ]);
+            'titleContent' => 'Ingreso de Factura Pedido: [' . $nroOrder . ']',
+        ]));
     }
 
     /**
@@ -130,15 +127,15 @@ class Pedidofactura extends MY_Controller
     {
         $invoiceOrder = $this->modeOrderInvoice->get($idInvoice);
         if($invoiceOrder == false){
-            $this->index();
-            return true;
+            $this->modelLog->warningLog('acceso directo, aviso redireccionamiento', current_url());
+            return($this->index());
         }
-        $this->responseHttp([
+        return($this->responseHttp([
             'titleContent' => 'Editando Pedido Factura',
             'edit_invoice' => true,
             'invoice' => $invoiceOrder,
             'supplier' => $this->modelSupplier->get($invoiceOrder['identificacion_proveedor']),
-        ]);
+        ]));
     }
 
     /**
@@ -151,6 +148,7 @@ class Pedidofactura extends MY_Controller
         $invoiceOrder = $this->modeOrderInvoice->get($idInvoiceOrder);
         
         if($invoiceOrder == false){
+            $this->modelLog->warningLog('Intentando eliminar directamente', current_url());
             return($this->index());
         }
        
@@ -185,6 +183,29 @@ class Pedidofactura extends MY_Controller
         }
         
         $orderInvoice = $this->input->post();
+        
+        if($orderInvoice['fecha_emision'] == ''){
+            unset($orderInvoice['fecha_emision']);
+        }else{
+            $orderInvoice['fecha_emision'] = str_replace( '/', '-', $orderInvoice['fecha_emision']);
+            $orderInvoice['fecha_emision'] = date('Y-m-d', strtotime($orderInvoice['fecha_emision']));
+        }
+        
+        if($orderInvoice['vencimiento_pago'] == ''){
+            unset($orderInvoice['vencimiento_pago']);
+        }else{
+            $orderInvoice['vencimiento_pago'] = str_replace( '/', '-', $orderInvoice['vencimiento_pago']);
+            $orderInvoice['vencimiento_pago'] = date('Y-m-d', strtotime($orderInvoice['vencimiento_pago']));
+        }
+        
+        
+        if($orderInvoice['fecha_pago'] == ''){
+            unset($orderInvoice['fecha_pago']);
+        }else{
+            $orderInvoice['fecha_pago'] = str_replace( '/', '-', $orderInvoice['fecha_pago']);
+            $orderInvoice['fecha_pago'] = date('Y-m-d', strtotime($orderInvoice['fecha_pago']));
+        }
+        
         $orderInvoice['id_user'] = $this->session->userdata('id_user');
         
         if (! isset($orderInvoice['id_pedido_factura'])) {
@@ -203,9 +224,6 @@ class Pedidofactura extends MY_Controller
             }
         }
         
-        $orderInvoice['vencimiento_pago'] = date('Y-m-d', strtotime($orderInvoice['vencimiento_pago']));
-        $orderInvoice['fecha_emision'] = date('Y-m-d', strtotime($orderInvoice['fecha_emision']));
-        $orderInvoice['fecha_pago'] = date('Y-m-d', strtotime($orderInvoice['fecha_pago']));
         $status = $this->_validData($orderInvoice);
         
         if ($status['status']) {
@@ -220,11 +238,11 @@ class Pedidofactura extends MY_Controller
                 return true;
             }
         } else {
-            $config['viewMessage'] = true;
-            $config['message'] = 'La información de uno de los campos es incorrecta!';
-            $config['data'] = $status['columns'];
-            $this->responseHttp($config);
-            return true;
+            return($this->responseHttp([
+                'viewMessage' => true,
+                'message' => 'La información de uno de los campos es incorrecta!',
+                'data' => $status['columns'],                
+                ]));
         }
     }
 
@@ -239,11 +257,9 @@ class Pedidofactura extends MY_Controller
             'nro_pedido' => 6,
             'id_factura_proveedor' => 0,
             'identificacion_proveedor' => 0,
-            'fecha_emision' => 10,
             'valor' => 1,
             'moneda' => 1,
             'tipo_cambio' => 1,
-            'vencimiento_pago' => 10,
             'id_user' => 1
         );
         return $this->_checkColumnsData($columnsLen, $data);

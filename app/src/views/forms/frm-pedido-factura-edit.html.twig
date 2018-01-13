@@ -52,7 +52,9 @@
                required="required" 
                readonly="" 
                name="fecha_emision" 
-               value="{{invoice.fecha_emision | date('m/d/Y') }}" 
+               {% if invoice.fecha_emision != null %}
+                    value="{{invoice.fecha_emision | date('m/d/Y') }}" 
+               {% endif %}
                >
             <div class="input-group-addon">
                <span class="glyphicon glyphicon-th"></span>
@@ -67,10 +69,11 @@
             <input 
                type="text" 
                class="form-control fecha" 
-               required="required" 
                readonly="" 
                name="vencimiento_pago" 
-               value="{{invoice.vencimiento_pago | date('m/d/Y') }}" 
+              {% if invoice.vencimiento_pago != null %}
+                value="{{invoice.vencimiento_pago | date('d/m/Y') }}" 
+              {% endif %}
                >
             <div class="input-group-addon">
                <span class="glyphicon glyphicon-th"></span>
@@ -87,7 +90,9 @@
                readonly="" 
                class="form-control fecha" 
                name="fecha_pago" 
-               value="{{ invoice.fecha_pago | date('m/d/Y')}}"
+              {% if invoice.fecha_pago != null %}
+               value="{{ invoice.fecha_pago | date('d/m/Y')}}"              
+              {% endif %}              
                >
             <div class="input-group-addon">
                <span class="glyphicon glyphicon-th"></span>

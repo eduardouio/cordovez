@@ -20,7 +20,7 @@
     class="form-control"
     required = "required"
     > 
-    <option selected disabled >Seleccione...</option>
+    <option selected disabled  value="">Seleccione...</option>
     {% for supplier in suppliers %}
       <option value="{{supplier.identificacion_proveedor}}"> {{supplier.nombre}} </option>
     {% endfor %}
@@ -60,8 +60,8 @@
     <div class="col-md-1">
     <div class="form-group">
     <label>Plazo:</label>
-    	<select id="plazoDias" class="form-control" disabled>
-    		<option selected="selected" disabled="disabled"> Seleccione... </option>
+    	<select id="plazoDias" class="form-control">
+    		<option selected="selected" disabled="disabled" value=""> Seleccione... </option>
     		<option  value="30"> 30 días</option>
     		<option  value="60"> 60 días</option>
     		<option  value="90"> 90 días</option>
@@ -76,7 +76,6 @@
           <div class="input-group">
             <input 
                type="text" 
-               disabled="disabled" 
                readonly="readonly"
                class="form-control fecha" 
                required="required" 
@@ -202,25 +201,21 @@
 //<!--Actualiza la fecha de vencimiento para el pago de una factura de proveedo//-->
 var dateString = '';
 $('#fecha_emision').change(function(){
-	dateString = this.value; 
-	$('#plazoDias').removeAttr('disabled');
+
+	dateString = this.value.split('/'); 
 });
 
 $('#plazoDias').change(function(){
-	$('#vencimiento_pago').removeAttr('disabled');
-	
 	if(this.value === 'definir'){
-		$('#vencimiento_pago').removeAttr('readonly');
 		$('#vencimiento_pago').focus();
 	}else{
-		    var date = new Date(dateString);
+		    var date = new Date(dateString[2] , dateString[1] - 1, dateString[0]);
 		    var newdate = new Date(date);
 		    newdate.setDate(newdate.getDate() + parseInt(this.value));
-		    
 		    var dd = newdate.getDate();
 		    var mm = newdate.getMonth() + 1;
 		    var y = newdate.getFullYear();
-		    var someFormattedDate = mm + '/' + dd + '/' + y;
+		    var someFormattedDate = dd + '/' + mm + '/' + y;
 		    document.getElementById('vencimiento_pago').value = someFormattedDate;
 			}
 });

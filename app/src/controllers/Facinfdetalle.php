@@ -110,15 +110,18 @@ class Facinfdetalle extends MY_Controller
       }
       
       $activeStock = $this->modelOrderInvoiceDetail->getActiveStokProductsByOrder($infoInvoice['nro_pedido']);
+      print $this->db->last_query();
       $orderInvoices = $this->modelOrderInvoice->getbyOrder($infoInvoice['nro_pedido']);
       $orderInvoicesTemp =[];
       foreach ($orderInvoices as $item => $val){
           $val['supplier'] = $this->modelSupplier->get($val['identificacion_proveedor']);
           $val['products'] = [];
+          if ($activeStock != false){
           foreach ($activeStock as $index => $product){
               if ($product['id_pedido_factura'] == $val['id_pedido_factura']){
                   array_push($val['products'], $product);
               }
+          }
           }
           $orderInvoicesTemp[$item] = $val;
       }

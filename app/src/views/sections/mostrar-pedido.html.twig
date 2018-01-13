@@ -1,3 +1,4 @@
+
 {% set fob = (order.valuesOrder.valInvoices) + (order.valuesOrder.originExpenses * order.valuesOrder.multiple) %}
 {% set cif = (fob + order.valuesOrder.valSecureExpense + order.valuesOrder.valSecureExpense + order.valuesOrder.valShipExpnese)  %}
 {% set nacionalizado = 0 %}
@@ -7,6 +8,14 @@
 {% if order.regimen == 70  %}
 	{% set nacionalizado = order.valuesOrder.infoInvoices  %}
 {% endif %}
+
+{% set justificado = 0 %}
+
+{% for paid in paidsDetails %}
+   {% set justificado = justificado + paid.valor %}
+{% endfor %}
+
+
 <div class="well well-sm">
    <div class="row">
       <div class="col-sm-3">
@@ -55,15 +64,15 @@
          </span>
       </div>
       <div class="col-sm-2">
-         <strong>Justificado en Fact</strong> 
+         <strong>Justificado Fact</strong> 
          <span class="text-primary">
-         {{ order.valuesOrder.localPaidsExpenses | number_format(0, '.', ',') }}
+         {{ justificado | number_format(0, '.', ',') }}
          </span>
       </div>
       <div class="col-sm-2">
          <strong>Saldo:</strong> 
          <span class="text-danger" style="font-weight: bold;">
-         {{ (order.valuesOrder.localExpenses - order.valuesOrder.localPaidsExpenses) | number_format(0, '.', ',') }}
+         {{ (order.valuesOrder.localExpenses - justificado ) | number_format(0, '.', ',') }}
          </span>
       </div>
       <div class="col-sm-3">

@@ -147,14 +147,13 @@
       <div class="col-md-2">
          <div class="form-group">
             <label>Fecha Emisión</label>
-            <div class="input-group date" data-provide="datepicker">
+            <div class="input-group">
                <input 
                   type="text" 
-                  class="form-control" 
+                  class="form-control fecha" 
                   id="fecha_emision" 
                   required="required" 
                   name="fecha_emision" 
-                  class="bootstrap-datepicker" 
                   value="{{ infoInvoice.fecha_emision | date('m-d-Y') }}" 
                   >
                <div class="input-group-addon">
@@ -199,6 +198,7 @@
             <input 
                type="text" 
                name = "nro_refrendo"
+               id = "nro_refrendo"
                placeholder="000-0000-00-000000"
                class="form-control" 
                maxlength="20" 
@@ -311,3 +311,6 @@
 });
 </script>
 
+  <script type="text/javascript">
+       $('#nro_refrendo').mask('999-9999-99-009999999');
+   </script>

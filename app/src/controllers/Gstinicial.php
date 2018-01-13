@@ -104,8 +104,7 @@ class Gstinicial extends MY_Controller
      * Muestra el formulario para regostrar un nuevo gasto inicial
      * 
      * @param (string) $nroOrder
-     * @return (array)
-     
+     * @return (array)     
      */
     public function nuevo($nroOrder)
     {
@@ -126,7 +125,8 @@ class Gstinicial extends MY_Controller
             'rateExpenses' => $rateExpenses,
             'usedExpenses' => $usedExpenses,
             'unusedExpenses' => $unusedExpenses,
-            'titleContent' => 'Registro De Gasto Inicial Provisionado ' . '[ Pedido ' . $nroOrder . ']'
+            'titleContent' => 'Registro De Gasto Inicial Provisionado ' . 
+                              '[ Pedido ' . $nroOrder . ']'
         ]);
     }
 
@@ -274,7 +274,6 @@ class Gstinicial extends MY_Controller
         }
         
         $rateExpenses = $this->modelExpenses->getAllRates($order['regimen']);
-        $incoterms = $this->modelIncoterms->getIncotermsOrder($order);
         $invoicesOrder = $this->modelOrder->getInvoices($nroOrder);
         $initExpenses = $this->modelExpenses->getInitialExpenses($nroOrder);
         $minimal = $this->getMinimalParams($order, $initExpenses);
@@ -286,7 +285,6 @@ class Gstinicial extends MY_Controller
             'rateExpenses' => $rateExpenses,
             'unusedExpenses' => $this->calcExpensesDiff($rateExpenses, $initExpenses),
             'warenHouseDays' => $this->getWarenHouseDaysInitial($order),
-            'incoterms' => $incoterms,
             'invoicesOrder' => $invoicesOrder,
             'initExpenses' => $initExpenses,
             'order' => $order,
@@ -325,7 +323,7 @@ class Gstinicial extends MY_Controller
         foreach ($incoterms as $key => $value) {
             $initExpense = [
                 'nro_pedido' => $nroOrder,
-                'id_nacionalizacion' => 0,
+                'id_factura_informativa' => 0,
                 'identificacion_proveedor' => 0,
                 'concepto' => $value['tipo'],
                 'valor_provisionado' => $value['tarifa'],
@@ -349,6 +347,8 @@ class Gstinicial extends MY_Controller
             if($order['regimen'] == 70){
                 return ($this->redirectPage('infoInvoiceNew', $nroOrder));
             }
+            $this->modellog->error_log('No se puede cambiar el estado del pedido');
+            $this->modelLog->error_log($this->db->last_query());
             return ($this->redirectPage('nationalizationNew', $nroOrder));
         }
 
@@ -398,7 +398,7 @@ class Gstinicial extends MY_Controller
             ])){
                 $this->modelExpenses->create([
                     'nro_pedido' => $_POST['nro_pedido'],
-                    'id_nacionalizacion' => 0,
+                    'id_factura_informativa' => 0,
                     'identificacion_proveedor' => 0,
                     'concepto' => 'ALMACENAJE INICIAL',
                     'tipo' => 'INICIAL',
@@ -408,7 +408,7 @@ class Gstinicial extends MY_Controller
                 if (isset($_POST['demoraje'])){
                     $this->modelExpenses->create([
                         'nro_pedido' => $_POST['nro_pedido'],
-                        'id_nacionalizacion' => 0,
+                        'id_factura_informativa' => 0,
                         'identificacion_proveedor' => 0,
                         'concepto' => 'DEMORAJE',
                         'tipo' => 'INICIAL',
@@ -579,12 +579,14 @@ class Gstinicial extends MY_Controller
         return $valuesOrder;
     }
 
+
+    
     /**
      * Obtiene el numero minimo de parametros que debe tener una oren de compra
-     * 
+     *
      * @param
      *            $nroOrder
-     *            
+     *
      * @return array
      */
     private function getMinimalParams($order, $initExpenses)
@@ -599,7 +601,6 @@ class Gstinicial extends MY_Controller
         ];
         
         $minimal['statusOrder']['fecha_arribo'] = ($order['fecha_arribo']) ? $order['fecha_arribo'] : false;
-        
         $minimal['statusOrder']['dias_libres'] = ($order['dias_libres'] > 0) ? $order['dias_libres'] : false;
         
         if (($order['incoterm'] == 'FOB') || $order['incoterm'] == 'CFR') {
@@ -607,6 +608,9 @@ class Gstinicial extends MY_Controller
         }
         return $minimal;
     }
+    
+    
+    
 
     /**
      * Calcula la diferencia entre los gastos iniciales
@@ -615,7 +619,7 @@ class Gstinicial extends MY_Controller
      *            Gastos iniciales parametrisados
      * @param $usesExpenses =>
      *            Gastos iniciales registrados
-     * @return array @unusedExpenses => gastos inciales libres
+     * @return array unusedExpenses => gastos inciales libres
      */
     private function calcExpensesDiff($rateExpenses, $usedExpenses)
     {
@@ -629,7 +633,6 @@ class Gstinicial extends MY_Controller
                 if ($value['concepto'] == $val['concepto']) {
                     unset($unusedExpenses[$key]);
                 }
-                ;
             }
         }
         return $unusedExpenses;

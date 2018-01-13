@@ -12,18 +12,25 @@ if (!function_exists('searchOrderCeroValues')) {
         if (gettype($dataArray) == 'boolean'){
             return false;
         }
+        $statusOrder = $dataArray['statusOrder'];
+        
+        if (!$statusOrder['have_gasto_origen']){
+            unset($dataArray['valuesOrder']['gastos_origen']);
+        }
+        
         unset($dataArray['statusOrder']['have_gasto_origen']);
         foreach ($dataArray as $key) {
             if ($key == false){
                 return false;
             }
+            
             foreach ($key as $item) {
                 if (gettype($item) == 'array') {
                     if ($item['valor_provisionado'] == 0.0) {
                         return false;
                     };
-                } else {
-                    if (($item == false) || ($item == 0) && (gettype($item) != 'string')) {
+                }else{
+                    if(!$item){
                         return false;
                     }
                 }

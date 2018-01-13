@@ -43,14 +43,13 @@
 <div class="col-sm-2">
 		<div class="form-group">
 			<label>Fecha</label>
-			         <div class="input-group date" data-provide="datepicker">
+			         <div class="input-group">
             <input 
                type="text" 
-               class="form-control" 
+               class="form-control fecha" 
                id="fecha" 
                required="required" 
                name="fecha" 
-               class="bootstrap-datepicker" 
                value="{{ initExpense.fecha | date ('d/m/Y')}}" 
                >
             <div class="input-group-addon">

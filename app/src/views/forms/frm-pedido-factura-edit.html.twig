@@ -44,15 +44,15 @@
         <div class="col-md-2">
       <div class="form-group">
         <label>Fecha Emisión</label>
-        <div class="input-group date" data-provide="datepicker">
+        <div class="input-group">
             <input 
                type="text" 
-               class="form-control" 
+               class="form-control fecha" 
                id="fecha_emision" 
                required="required" 
+               readonly="" 
                name="fecha_emision" 
-               class="bootstrap-datepicker" 
-               value="{{invoice.fecha_emision}}" 
+               value="{{invoice.fecha_emision | date('m/d/Y') }}" 
                >
             <div class="input-group-addon">
                <span class="glyphicon glyphicon-th"></span>
@@ -63,14 +63,14 @@
         <div class="col-md-2">
       <div class="form-group">
         <label>Vencimiento Pago</label>
-          <div class="input-group date" data-provide="datepicker">
+          <div class="input-group">
             <input 
                type="text" 
-               class="form-control" 
+               class="form-control fecha" 
                required="required" 
+               readonly="" 
                name="vencimiento_pago" 
-               class="bootstrap-datepicker" 
-               value="{{invoice.vencimiento_pago}}" 
+               value="{{invoice.vencimiento_pago | date('m/d/Y') }}" 
                >
             <div class="input-group-addon">
                <span class="glyphicon glyphicon-th"></span>
@@ -81,13 +81,13 @@
                 <div class="col-md-2">
       <div class="form-group">
         <label>Fecha Pago</label>
-          <div class="input-group date" data-provide="datepicker">
+          <div class="input-group">
             <input 
                type="text" 
-               class="form-control" 
+               readonly="" 
+               class="form-control fecha" 
                name="fecha_pago" 
-               class="bootstrap-datepicker" 
-               value="{{ invoice.fecha_pago }}"
+               value="{{ invoice.fecha_pago | date('m/d/Y')}}"
                >
             <div class="input-group-addon">
                <span class="glyphicon glyphicon-th"></span>

@@ -27,15 +27,15 @@
       <div class="col-md-3">
         <div class="form-group">
           <label>Fecha Arribo Puerto</label>
-            <div class="input-group date" data-provide="datepicker">
+            <div class="input-group">
             <input 
                type="text" 
-               class="form-control" 
+               class="form-control fecha" 
                id="fecha_arribo" 
                required="" 
+               readonly="" 
                name="fecha_arribo" 
-               value="{{fecha_arribo}}" 
-               class="bootstrap-datepicker" 
+               value="{{fecha_arribo | date('d/m/Y')}}" 
                >
             <div class="input-group-addon">
                <span class="glyphicon glyphicon-th"></span>
@@ -46,15 +46,15 @@
       <div class="col-md-3">
         <div class="form-group">
           <label>Fecha Entrega Contenedor</label>
-                   <div class="input-group date" data-provide="datepicker">
+                   <div class="input-group">
             <input 
                type="text" 
-               class="form-control" 
+               class="form-control fecha" 
                id="fecha_salida_bodega_puerto" 
                required="" 
+               readonly="" 
                name="fecha_salida_bodega_puerto" 
-               class="bootstrap-datepicker" 
-               value="{{ fecha_salida_bodega_puerto }}" 
+               value="{{ fecha_salida_bodega_puerto | date('d/m/Y')}}" 
                >
             <div class="input-group-addon">
                <span class="glyphicon glyphicon-th"></span>

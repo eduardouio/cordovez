@@ -15,6 +15,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Modelproduct extends CI_Model{
 
     private $table = 'producto';
+    private $modelLog;
     private $modelBase;
     private $myModel;
 
@@ -22,6 +23,8 @@ class Modelproduct extends CI_Model{
         parent::__construct();
         $this->load->model('Modelbase');
         $this->load->model('Mymodel');
+        $this->load->model('Modellog');
+        $this->modelLog = new Modellog();
         $this->modelBase = new  ModelBase();
         $this->myModel = new  Mymodel();
     }
@@ -93,7 +96,7 @@ class Modelproduct extends CI_Model{
                 'identificacion_proveedor' => $idSupplier,
             ],
             'orderby' => [
-                'nombre' => 'DESC',
+                'nombre' => 'ASC',
             ],
         ]);
         if((gettype($products) == 'array') && (count($products) > 0)){
@@ -109,11 +112,13 @@ class Modelproduct extends CI_Model{
      * @param array $product arreglo del producto
      * @return boolean
      */
-    public  function update(int $idProduct, array $product){
-        $this->db->where('id_producto', $idProduct);
+    public  function update(array $product) : bool{
+        $this->db->where('id_producto', $product['id_producto']);
         if($this->db->update($this->table, $product)){
+            $this->modelLog->warningLog('producto modificado', $this->db->last_query());
             return true;
         }
+        $this->modelLog->errorLog('No se puede actualizar un producto', $this->db->last_query());
         return false;
     }
     

@@ -11,6 +11,16 @@
          </tr>
       </thead>
       <tbody>
+         <tr>
+            <td>0</td>
+            <td>Provision Almacenaje Inicial</td>
+            <td>0.00</td>
+            <td>
+               <a href="{{rute_url}}gstinicial/validarbodegainicial/{{order.nro_pedido}}">
+   <span class="text-primary"> Provisionar </span>
+   </a>
+            </td>
+         </tr>
          {% for rateExpense in unusedExpenses %}
          <tr>
             <td>{{loop.index}}</td>
@@ -58,10 +68,6 @@
    <span class="fa fa-warning fa-fw"></span>
    Aplicar Gastos Iniciales
    </button>
-   <a href="{{rute_url}}gstinicial/validarbodegainicial/{{order.nro_pedido}}" class="pull-right btn btn-sm btn-default">
-   <span class="fa fa-home"></span>
-   <span class="text-primary">Provisión Alamcenaje Inicial </span>
-   </a>
    <br>
    <br>
 </form>

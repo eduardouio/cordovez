@@ -3,12 +3,16 @@ class Modelorderinvoice extends CI_Model
 {   
     private $table = 'pedido_factura';
     private $modelBase;
+    private $modelLog;
 
     public function __construct()
     {
         parent::__construct();
         $this->load->model('modelbase');
+        $this->load->model('modellog');
         $this->modelBase = new ModelBase();
+        $this->modelLog = new Modellog();
+        
     }
     
     
@@ -28,7 +32,9 @@ class Modelorderinvoice extends CI_Model
         ]);
         if(gettype($invoice) == 'array' && count($invoice) > 0){
             return $invoice[0];
-        }   
+        }
+        $this->modelLog->warningLog('La consulta ha retorna un valor vacio ' .
+                                                                current_url() );     
         return false;
     }
     
@@ -44,10 +50,39 @@ class Modelorderinvoice extends CI_Model
                 'nro_pedido' => $nroOrder,
             ],
         ]);
-        if(gettype($invoicesOrder) == 'array' && count($invoicesOrder) > 0){
+        if(gettype( $invoicesOrder) == 'array' && count($invoicesOrder) > 0){
             return $invoicesOrder;
         }
         return false;
+    }
+    
+    
+    /**
+     * Retorna los valores CIF de un pedido
+     * 
+     * @param string $nroOrder numero de la order
+     * @return float valor del Fob
+     */
+    public function getFOBValue(string $nroOrder) : float
+    {
+        $orderInvoices = $this->modelBase->get_table([
+            'select' => [
+                'SUM(valor) as fob'
+            ],
+            'table' => $this->table,
+            'where' => [
+                'nro_pedido' => $nroOrder,
+            ],
+        ]);
+        
+        if(gettype($orderInvoices == 'array') && count($orderInvoices)> 0){
+            return(floatval($orderInvoices[0]['fob']));
+        }
+        
+        $this->modelLog->errorLog('Pedido sin Facturas');
+        $this->modelLog->errorLog($this->db->last_query);
+        return  false;
+        
     }
     
     
@@ -91,6 +126,7 @@ class Modelorderinvoice extends CI_Model
             return true;
         }
         return false;
-    }    
+    }
+    
 }
 

@@ -15,8 +15,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Modelincoterms extends CI_Model {
 	private $table = 'tarifa_incoterm';
 	private $modelBase;
-	private $modelExpenses;
-
+	private $modelLog;
+	
 	function __construct(){
 		parent::__construct();
 		$this->init();
@@ -25,29 +25,14 @@ class Modelincoterms extends CI_Model {
 	/**
 	 * Carga e inicia los modelos de la clase
 	 */
-	private function init(){
+	private function init()
+	{
 	    $this->load->model('modelbase');
-	    $this->load->model('modelexpenses');
+	    $this->load->model('modellog');
 	    $this->modelBase = new ModelBase();
-	    $this->modelExpenses = new Modelexpenses();
+	    $this->modelLog = new Modellog();
 	}
 	   
-	/**
-	* retorna los valores de FOB y Gastos en Origen para la provision en un 
-	* pedido 
-	* @param array $incoterm
-	* @return array
-	*/
-	public function getIncotermsOrder($order){
-		$intcotermsParams = [
-									'pais_origen' => $order['pais_origen'],
-									'ciudad_origen' => $order['ciudad_origen'],
-									'incoterms' => $order['incoterm']
-												];
-		$incoterms = $this->modelExpenses->getIncotermsParamsTable($intcotermsParams);
-
-		return $incoterms;			
-	}
 	
 	/**
 	 * crea un nuevo incoterm en la base de datos

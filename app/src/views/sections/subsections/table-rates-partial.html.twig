@@ -11,6 +11,14 @@
          </tr>
       </thead>
       <tbody>
+         <tr>
+            <td>0</td>
+            <td>ALMACENAJE PARCIAL</td>
+            <td>0</td>
+            <td class="text-right"><a href="{{rute_url}}gstnacionalizacion/validarbodegaparcial/{{ infoInvoice.id_factura_informativa }}" >
+   <span class="text-primary">Provisionar</span>
+   </a></td>
+         </tr>
       {% for rateExpense in rateExpenses %}
          <tr>
             <td>{{loop.index}}</td>
@@ -36,10 +44,6 @@
    <span class="fa fa-warning fa-fw"></span>
    Aplicar Gastos Al Parcial
    </button>
-   <a href="{{rute_url}}gstnacionalizacion/validarbodegaparcial/{{ infoInvoice.id_factura_informativa }}" class="pull-right btn btn-sm btn-default">
-   <span class="fa fa-home"></span>
-   <span class="text-primary">Provisión Alamcenaje Parcial </span>
-   </a>
    <br>
    <br>
 </form>

@@ -147,17 +147,7 @@ class Detallepedido extends MY_Controller {
 	    }
 		$invoiceOrderDetail =  $this->input->post();
 		$invoiceOrderDetail['id_user'] = $this->session->userdata('id_user');
-	
-	    if ($this->modelOrderInvoiceDetail->isAlreadyExistItem($invoiceOrderDetail) && !isset($invoiceOrderDetail['detalle_pedido_factura'])){
-	        return ($this->responseHttp([
-	            'titleContent' => 'El registro que intenta ingresar ya existe en la factura',
-	            'orderInvoice' => $this->modelOrderInvoice->get($invoiceOrderDetail['id_pedido_factura']),
-	            'viewMessage' => true,
-	            'fail' => true,
-	            'orderDetail' => $invoiceOrderDetail['id_pedido_factura'],
-	            'message' => 'Este producto ya esta en la factura!',
-	        ])); 
-	    }   
+   
 	    $status = $this->_validData($invoiceOrderDetail);
 	    if ($status['status']){
 			if (!isset($invoiceOrderDetail['detalle_pedido_factura'])){
@@ -171,7 +161,7 @@ class Detallepedido extends MY_Controller {
 				$product = $this->modelProduct->get($invoiceOrderDetail['cod_contable']);
 				if(gettype($product) == 'array'){
 				    $product['costo_caja'] = $invoiceOrderDetail['costo_caja'];
-				    $this->modelProduct->update($product['id_producto'], $product);
+				    $this->modelProduct->update($product);
 				}
 				return(
 				    $this->redirectPage('orderInvoicePresent', $invoiceOrderDetail['id_pedido_factura'])

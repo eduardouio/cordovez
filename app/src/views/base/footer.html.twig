@@ -17,4 +17,18 @@ $('#selector-fecha').datepicker({
 <!-- Bootstrap Core JavaScript -->
 <script src="{{base_url}}vendor/bootstrap/js/bootstrap.min.js">
 </script>
+
+<script type="text/javascript">
+
+	$('.fecha').datepicker({
+    format: "dd/mm/yyyy",
+    maxViewMode: 3,
+    todayBtn: "linked",
+    language: "es",
+    autoclose: true,
+    todayHighlight: true,
+    daysOfWeekHighlighted: "0,6",    
+});
+
+</script>
 </html>

@@ -76,6 +76,8 @@ class Modelexpenses extends CI_Model
         return $result;
     }
     
+    
+     
 
     /**
      * Retorna los incoterms en de un pedido, en base a su registro
@@ -96,25 +98,6 @@ class Modelexpenses extends CI_Model
         return $incoterms;
     }
     
-    /**
-     * Retorna los incoterms en de un pedido, en base a su registro
-     *
-     * @param (array) $incoterm
-     * @return array | bool
-     */
-    public function getIncotermsParamsTable($incoterms)
-    {
-        $incoterms = $this->modelBase->get_table([
-            'table' => 'tarifa_incoterm',
-            'where' => [
-                'incoterms' => $incoterms['incoterms'],
-                'pais' => $incoterms['pais_origen'],
-                'ciudad' => $incoterms['ciudad_origen'],
-            ],
-        ]);
-        return $incoterms;
-    }
-
     /**
      * Retorna todos los gastos de un pedido
      * @param (string) $nroOrder
@@ -137,6 +120,33 @@ class Modelexpenses extends CI_Model
         return $expenses;
     }
     
+    
+    
+    /**
+     * retorna el valor de un gasto incicial 
+     * @param string $nroOrder nro_pedido
+     * @return float valor del gasto
+     */
+    public function getValueByName(string $nroOrder, string $detailName): float
+    {
+        $expense = $this->modelBase->get_table([
+            'select' => [
+                'valor_provisionado',
+            ],
+            'table' => $this->table,
+            'where' => [
+                'nro_pedido' => $nroOrder,
+                'concepto' => $detailName,
+            ],
+        ]);
+        
+        if((gettype($expense))&&(count($expense) > 0)){
+            return (floatval($expense[0]['valor_provisionado']));
+        }
+        $this->modelLog->warningLog('El concepto de Gasto no esta Registrado');
+        $this->modelLog->warningLog($this->db->last_query());
+        return false;
+    }
     
     
     /**

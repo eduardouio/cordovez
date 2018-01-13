@@ -14,53 +14,53 @@ defined('BASEPATH') or exit('No direct script access allowed');
  *             var $listPerPage => Nro de registros por pagina
  *             var $seguroVal => Valor por el que se multiplica FOB + FLETE
  *             var $template => ubicacion de la plantilla
- *            
+ *
  */
 class Pedido extends MY_Controller
 {
-
+    
     private $controller = 'pedido';
-
+    
     private $listPerPage = 12;
-
+    
     private $seguroVal = 2.2;
-
+    
     private $template = '/pages/pagePedido.html';
-
+    
     private $modelOrder;
-
+    
     private $modelSupplier;
-
+    
     private $modelNationalization;
-
+    
     private $modelProduct;
-
+    
     private $modelInfoInvoice;
     
     private $modelInfoInvoiceDetail;
-
+    
     private $modelBase;
-
+    
     private $myModel;
-
+    
     private $modelUser;
-
+    
     private $modelProductInvoice;
-
+    
     private $modelExpenses;
-
+    
     private $modelOrderInvoice;
     
     private $modelOrderInvoiceDetail;
     
     private $modelPaidDetail;
-
+    
     public function __construct()
     {
         parent::__construct();
         $this->init();
     }
-
+    
     /**
      * Carga e inicia los modelos usados por la clase
      */
@@ -92,10 +92,10 @@ class Pedido extends MY_Controller
         $this->modelPaidDetail = new Modelpaiddetail();
         $this->modelOrderInvoiceDetail = new Modelorderinvoicedetail();
     }
-
+    
     /**
      * redirecciona a la lista de proveedores
-     * 
+     *
      * @return void
      */
     public function index()
@@ -103,11 +103,11 @@ class Pedido extends MY_Controller
         $this->redirectPage('ordersList');
         return true;
     }
-
+    
     /**
      * Presenta la lista de los pedidos, y las acciones para cada
      * uno de ellos
-     * 
+     *
      * @param int $offset
      *            limite inferior de la lista
      * @return string template plantilla de la pagina
@@ -123,7 +123,7 @@ class Pedido extends MY_Controller
         
         if (gettype($pages_links) == 'double') {
             (int) $pages_links = (int) $pages_links + 1;
-        }        
+        }
         $orderList = [];
         foreach ($orders as $item => $order) {
             $order['invoices'] = $this->modelOrder->getInvoices($order['nro_pedido']);
@@ -146,10 +146,10 @@ class Pedido extends MY_Controller
             'pagination_url' => base_url() . 'index.php/pedido/listar/'
         ]);
     }
-
+    
     /**
      * show a complete order information
-     * 
+     *
      * @param string $nroOrder
      * @return void
      */
@@ -170,6 +170,7 @@ class Pedido extends MY_Controller
         $initialExpenses = $this->modelExpenses->get($nroOrder);
         $paidsDetails = $this->modelPaidDetail->getByOrder($nroOrder);
         
+        
         if (gettype($invoicesOrder) == 'array' && count($invoicesOrder) > 0) {
             $invoicesOrderTemp = [];
             foreach ($invoicesOrder as $item => $value) {
@@ -179,7 +180,7 @@ class Pedido extends MY_Controller
             $invoicesOrder = $invoicesOrderTemp;
         }
         
-        if(gettype($initialExpenses) == 'array' && count($initialExpenses) > 0){            
+        if(gettype($initialExpenses) == 'array' && count($initialExpenses) > 0){
             $initialExpensesTemp = [];
             foreach ($initialExpenses as $row => $expense){
                 $expense['supplier'] = $this->modelSupplier->get($expense['identificacion_proveedor']);
@@ -188,7 +189,7 @@ class Pedido extends MY_Controller
             $initialExpenses = $initialExpensesTemp;
         }
         
-        if(gettype($paidsDetails) == 'array' && count($paidsDetails) > 0){   
+        if(gettype($paidsDetails) == 'array' && count($paidsDetails) > 0){
             $paidsDetailsTemp = [];
             foreach ($paidsDetails as $item => $detail){
                 $detail['supplier'] = $this->modelSupplier->get($detail['identificacion_proveedor']);
@@ -211,8 +212,8 @@ class Pedido extends MY_Controller
             'titleContent' => 'Detalle De Pedido [ ' . $nroOrder . '] [' . $order['incoterm'] . '] [Regimen ' . $order['regimen'] . ']'
         ]);
     }
-
-
+    
+    
     /**
      * Muestra el formulario para crear un pedido
      */
@@ -227,7 +228,7 @@ class Pedido extends MY_Controller
         $config['titleContent'] = 'Registro de nuevo Pedido';
         $this->responseHttp($config);
     }
-
+    
     /**
      * Muestra el formulario de edicion
      */
@@ -290,15 +291,15 @@ class Pedido extends MY_Controller
         } else {
             $config['order'] = $nroOrder;
             $config['viewMessage'] = true;
-            $config['message'] = 'El pedido no puede ser Eliminado, 
+            $config['message'] = 'El pedido no puede ser Eliminado,
                              tiene dependencias!';
             $this->responseHttp($config);
         }
     }
-
+    
     /**
      * crea y/o modifica un pedido
-     * 
+     *
      * @return array (response) JsonSerializable
      */
     public function validar()
@@ -365,7 +366,7 @@ class Pedido extends MY_Controller
             return true;
         }
     }
-        
+    
     /**
      * retorna las estadisticas de los pedidos para la cabecera de la lista
      *
@@ -403,7 +404,7 @@ class Pedido extends MY_Controller
     
     /**
      * se validan los datos que deben estar para que la consulta no falle
-     * 
+     *
      * @return [array] | [bolean]
      */
     private function validData($pedido)
@@ -416,9 +417,9 @@ class Pedido extends MY_Controller
             'ciudad_origen' => 1,
             'nro_refrendo' => 1,
             'id_user' => 1
-                                    ], $pedido));
+        ], $pedido));
     }
-
+    
     /*
      * Redenderiza la informacion y la envia al navegador
      * @param array $config informacion de la plantilla
@@ -427,12 +428,12 @@ class Pedido extends MY_Controller
     {
         return(
             $this->twig->display($this->template, array_merge($config,[
-                        'title' => 'Pedidos',
-                        'base_url' => base_url(),
-                        'rute_url' => base_url() . 'index.php/',
-                        'controller' => $this->controller,
-                        'iconTitle' => 'fa-cubes',
-                        'content' => 'home']))
+                'title' => 'Pedidos',
+                'base_url' => base_url(),
+                'rute_url' => base_url() . 'index.php/',
+                'controller' => $this->controller,
+                'iconTitle' => 'fa-cubes',
+                'content' => 'home']))
             );
     }
 }

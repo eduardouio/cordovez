@@ -67,6 +67,7 @@
             <input 
                type="text" 
                name = "nro_refrendo"
+               id = "nro_refrendo"
                placeholder="000-0000-00-000000"
                class="form-control" 
                maxlength="20" 
@@ -77,24 +78,23 @@
    </div>
    <div class="row">
       <div class="col-md-2">
-         <label>Fecha Arribo <span class="label label-info">BODEGA</span></label>
-         <div class="input-group date" data-provide="datepicker">
+         <label>Fecha Arribo </label>
+         <div class="input-group">
             <input 
                type="text" 
-               class="form-control" 
+               class="form-control fecha" 
                id="fecha_arribo" 
                name="fecha_arribo" 
-               class="bootstrap-datepicker" 
-               value="{{order.fecha_arribo}}" 
+               value="{{order.fecha_arribo | date('d/m/Y')}}" 
                >
-            <div class="input-group-addon">
+                <div class="input-group-addon">
                <span class="glyphicon glyphicon-th"></span>
             </div>
          </div>
       </div>
           <div class="col-md-2">
          <div class="form-group">
-            <label>Días Libres <span class="label label-info ">DEMORAJE</span></label>
+            <label>Días Libres En Puerto</label>
             <input 
             class="form-control" 
             type="number" 
@@ -133,4 +133,8 @@
    </div>
    <script type="text/javascript">
       var incotermsDb = {{ incoterms | raw }} ;
+   </script>
+
+   <script type="text/javascript">
+   	 $('#nro_refrendo').mask('999-9999-99-009999999');
    </script>

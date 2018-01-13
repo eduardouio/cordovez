@@ -203,7 +203,6 @@
          Volver Al Pedido [{{order.nro_pedido}}]
          </a>  
          {% if isOk == true %}
-         
          {% if order.regimen == '70' %}
          <button data-toggle="modal" data-target="#myModal" class="btn btn-primary btn-sm pull-right">
          <span class="fa fa-file fa-fw"></span>
@@ -236,20 +235,24 @@
          <p>
             Esta acción cerrará los gastos iniciales, <strong>No va a ser posible generar más provisiones iniciales </strong>,
             solo se prodrá justificarlas. 
-            <br>
-            <br>
+            <hr>
+            <p>
+              Lista de Gastos Iniciales no provisionados:
+              {% include 'sections/subsections/table-rates.html.twig' %}            
+            </p>
+            <hr>
             Cualquier justificación que no tenga provisión quedará como gasto no provisionado.
          </p>
          <form action="{{rute_url}}pedido/ingresoAlmacenera" method="post">
            <input type="hidden" name="nro_pedido" value="{{order.nro_pedido}}">
            <div class="form-group">
            <label>Feha Ingreso Almacenera Pública del Pedido {{order.nro_pedido}} :</label>
-                 <div class="input-group date" data-provide="datepicker">
+                 <div class="input-group">
             <input 
                type="text" 
-               class="form-control" 
+               class="form-control fecha" 
                name="fecha_ingreso_almacenera" 
-               class="bootstrap-datepicker" 
+               readonly="" 
                required="" 
                >
             <div class="input-group-addon">
@@ -257,18 +260,20 @@
             </div>
          </div>
          <br>
-            <button class="btn btn-sm btn-primary"><span class="fa fa-save"></span> Registrar y Continuar</button>
+            
            </div>
-         </form>
         </div>
       </div>
       <div class="modal-footer">
+        
+        <button class="btn btn-sm btn-primary"><span class="fa fa-save"></span> Registrar y Continuar</button>
         <button type="button" class="btn btn-sm btn-default" data-dismiss="modal"> <span class="fa fa-ban"></span> 
         Cancelar y Cerrar</button>
-        {% if order.regimen  == 10 %}
+        {% if order.regimen  == 10 %} 
            <a  href="{{rute_url}}gstinicial/cerrarGastosIniciales/{{order.nro_pedido}}" class="btn btn-sm btn-default"> <span class="fa fa-money"></span> Nacionalizar Pedido</a>
         {% endif %}
       </div>
+         </form>
     </div>
   </div>
 </div>

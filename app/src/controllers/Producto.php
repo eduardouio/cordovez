@@ -113,7 +113,7 @@ class Producto extends MY_Controller {
 		$status = $this->_validData($product);
 			if ($status['status']){
 				if (isset($product['id_producto'])){
-				    if($this->modelProduct->update($product['id_producto'], $product)){
+				    if($this->modelProduct->update($product)){
 				       $this->redirectPage('productPresent', $product['cod_contable']);
 				       return true;
 				    }else{

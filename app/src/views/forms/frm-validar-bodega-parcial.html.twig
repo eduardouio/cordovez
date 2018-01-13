@@ -27,15 +27,15 @@
                {% else %}
                <label>Salida Último Parcial</label>
                {% endif %}
-               <div class="input-group date" data-provide="datepicker">
+               <div class="input-group">
                   <input 
                      type="text" 
                      class="form-control" 
                      id="fecha_ingreso_almacenera" 
                      required="" 
+                     readonly="" 
                      name="fecha_ingreso_almacenera" 
-                     value="{{fecha_ingreso_almacenera}}" 
-                     class="bootstrap-datepicker" 
+                     value="{{fecha_ingreso_almacenera | date('d/m/Y')}}" 
                      >
                   <div class="input-group-addon">
                      <span class="glyphicon glyphicon-th"></span>
@@ -43,18 +43,18 @@
                </div>
             </div>
          </div>
-         <div class="col-md-3">
+         <div class="col-md-4">
             <div class="form-group">
-               <label>Nacionalización Parcial</label>
-               <div class="input-group date" data-provide="datepicker">
+               <label>Fecha Real de Movimiento del Parcial</label>
+               <div class="input-group">
                   <input 
                      type="text" 
-                     class="form-control" 
+                     class="form-control fecha" 
                      id="fecha_nacionalizacion_parcial" 
                      required="" 
+                     readonly="" 
                      name="fecha_nacionalizacion_parcial" 
-                     class="bootstrap-datepicker" 
-                     value="{{ fecha_nacionalizacion_parcial }}" 
+                     value="{{ fecha_nacionalizacion_parcial | date('d/m/Y') }}" 
                      >
                   <div class="input-group-addon">
                      <span class="glyphicon glyphicon-th"></span>

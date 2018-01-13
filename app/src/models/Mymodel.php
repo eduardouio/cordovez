@@ -5,7 +5,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * Modulo de mapeo de la base de datos, escaneo de tabla y preparado de
  * consultas, se reciben arreglos y se arma la consulta de entrada a la base
  * de datos
- * 
+ *
  * @package CordovezApp
  * @author Eduardo Villota <eduardouio7@gmail.com>
  * @copyright Copyright (c) 2014, Agencias y Representaciones Cordovez S.A.
@@ -16,9 +16,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
  */
 class Mymodel extends CI_Model
 {
-
+    
     private $modelBase;
-
+    private $modelLog;
+    
     /**
      * contructor de la clase
      */
@@ -34,10 +35,12 @@ class Mymodel extends CI_Model
      */
     private function init(){
         $this->load->model('modelbase');
+        $this->load->model('modellog');
         $this->modelBase = new ModelBase();
+        $this->modelLog = new Modellog();
         
     }
-
+    
     /**
      * Obtiene la lista de paises y ciudades de la tabla
      */
@@ -57,10 +60,10 @@ class Mymodel extends CI_Model
         }
         return $countries;
     }
-
+    
     /**
      * Obtiene las nacionalizaciones de un pedido
-     * 
+     *
      * @param (str) $orderId
      * @return (array) resul array() | false
      */
@@ -77,10 +80,10 @@ class Mymodel extends CI_Model
         }
         return $nationalizations;
     }
-
+    
     /**
      * Get last importan from database
-     * 
+     *
      * @return (array)
      */
     public function lastInfo()
@@ -89,7 +92,7 @@ class Mymodel extends CI_Model
         $lastData["lastInsertId"] = $this->db->insert_id();
         return $lastData;
     }
-
+    
     /**
      * Realiza una busqueda en la base de datos de aeurdo a las soguientes condiciones
      *
@@ -131,7 +134,7 @@ class Mymodel extends CI_Model
         }
         return ($result->result_array());
     }
-
+    
     /**
      * Obtiene la cantidad de cajas de tiene un pedido, en cuanto al stock
      * solo se usa para el regimen 70, el 10 no tiene parciales
@@ -206,7 +209,7 @@ class Mymodel extends CI_Model
         }
         return $result;
     }
-
+    
     /**
      * Retorna los valores de sumatorias para
      * FOB -> para calcular el valor FOB se una el incoterm,
@@ -218,7 +221,7 @@ class Mymodel extends CI_Model
      * VALOR PRODUCTOS
      * Sumatoria FOB de las facturas de un Pedido
      * Lo Nacionalizado del Pedido
-     * 
+     *
      * @param $order ->
      *            registro del pedido
      */
@@ -365,56 +368,7 @@ class Mymodel extends CI_Model
             'infoInvoicesEuros' => floatval($infoInvoicesEuros[0]['infoinvoicesEuros']),
             'infoInvoicesDollars' => floatval($infoInvoicesDollars[0]['infoinvoicesDollars']),
             'localExpenses' => floatval($localExpenses[0]['sumexpenses']),
-            'localPaidsExpenses' => $this->localPaids($order),
         ]);
     }
-
     
-    /**
-     * Retorna las proviciones que se encuentran
-     * justificadas en el pedido
-     * 
-     * @param array $order
-     * @return float
-     */
-    private function localPaids(array $order)
-    {
-        $expenses = $this->modelBase->get_table([
-            'table' => 'gastos_nacionalizacion',
-            'where' => [
-                'nro_pedido' => $order['nro_pedido'],
-            ],
-        ]);
-        if ($expenses == false) {
-            return 0;
-        }
-        
-        $localPaids = 0;
-        foreach ($expenses as $item){
-            $localPaids =+ $this->seacrhLocalPaids($item['id_gastos_nacionalizacion']);
-        }
-        return 200;
-    }
-    
-    /**
-     * Retorna el valor justificado de una provision
-     * @param int $idExpense
-     * @return float
-     */
-    private function seacrhLocalPaids(int $idExpense): float
-    {
-        $localPaid = $this->modelBase->get_table([
-            'table' => 'detalle_documento_pago',
-            'where'=> [
-                'id_gastos_nacionalizacion' => $idExpense,
-            ],
-        ]);
-        
-        if ($localPaid == false) {
-            return 0;
-        }
-        
-        return  $localPaid[0]['valor'];
-        
-    } 
-} 
+}

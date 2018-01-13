@@ -136,6 +136,11 @@ class Modelorderinvoicedetail extends CI_Model
                 'nro_pedido' => $nroOrder,
             ],
         ]);
+        
+        if ($activeStockOrder == false){
+            return false;
+        }
+        
         if(gettype($activeStockOrder == 'array') && count($activeStockOrder) > 0){
             $activeStockOrderTemp = [];
             foreach ($activeStockOrder as $index => $value){
@@ -148,7 +153,6 @@ class Modelorderinvoicedetail extends CI_Model
             return $activeStockOrderTemp;
         }
         
-        return false;
     }
     
     /**

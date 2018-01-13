@@ -96,17 +96,23 @@
                {% endif %}
                <td>{{expense.valor_provisionado}}</td>
                   {% if expense.valor_provisionado > 0 %}
-                     <td class="success">
+                     <td class="success pull-rigth" style=" width: 1px; white-space: nowrap;">
                      OK <a href="{{rute_url}}gstnacionalizacion/editar/{{expense.id_gastos_nacionalizacion}}">
                      <span class="fa fa-pencil"></span> Editar
+                     </a>
+                     <a href="{{rute_url}}gstnacionalizacion/eliminar/{{expense.id_gastos_nacionalizacion}}" class="text-danger">
+                     <span class="fa fa-trash"></span> Eliminar
                      </a>
                      </td>
                   {% else %}
                   {% set isOk = false %}
-                     <td class="danger">
+                     <td class="danger" style=" width: 1px; white-space: nowrap;">
                         <a href="{{rute_url}}gstnacionalizacion/editar/{{expense.id_gastos_nacionalizacion}}">
                      Registrar                           
                         </a>
+                        <a href="{{rute_url}}gstnacionalizacion/eliminar/{{expense.id_gastos_nacionalizacion}}" class="text-danger">
+                     <span class="fa fa-trash"></span> Eliminar
+                     </a>
                   </td>
                   {% endif %}
             </tr>

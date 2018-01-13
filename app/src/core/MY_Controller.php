@@ -102,6 +102,7 @@ class MY_Controller extends CI_Controller
             'orderInvoicePresent' => 'index.php/pedidofactura/presentar',
             'infoInvoiceShow' => 'index.php/facinformativa/presentar',
             'infoInvoiceNew' => 'index.php/facinformativa/nuevo',
+            'newProductInfoInvoice' => 'index.php/facinfdetalle/nuevo',
             'nationalizationNew' => 'index.php/nacionalizacion/nuevo',
             'presentOrder' =>  'index.php/pedido/presentar',
             'paidsList' => 'index.php/facturapagos/listar/',
@@ -119,7 +120,6 @@ class MY_Controller extends CI_Controller
             'closeInitExpenses' =>  'index.php/gstinicial/cerrarGastosIniciales',
             'validar70' =>  'index.php/gstnacionalizacion/validar70',
         ];
-
         header('Status: 301 Moved Permanently', false, 301);
         if ($id) {
             header('Location: ' . base_url() . $target[$page] . '/' . $id);

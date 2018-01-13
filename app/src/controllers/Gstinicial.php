@@ -219,42 +219,28 @@ class Gstinicial extends MY_Controller
     }
 
     /**
-     * Elimina un Gasto inicial
+     * Elimina un Gasto inicial de la tabla
      * 
      * @param $idInitiExpense =>
      *            identificador del registro a eliminar
      * @return void
      */
     public function eliminar($idInitExpense)
-    {
-        if (! isset($idInitExpense)) {
-            $this->redirectPage('ordersList');
+    {   
+        $initialExpense = $this->modelExpenses->getExpense($idInitExpense);
+        
+        if ($initialExpense == false) {
+            $this->modelLog->warningLog('Intendo de Eliminar un gasto inicial directamente', 
+                                                                    $this->db->last_query());
+            return($this->redirectPage('ordersList'));
         }
         
-        $this->db->where('id_gastos_nacionalizacion', $idInitExpense);
-        $resultDb = $this->db->get($this->controller);
-        $detail = $resultDb->result_array();
-        
-        $this->db->where('id_gastos_nacionalizacion', $idInitExpense);
-        if ($this->db->delete($this->controller)) {
-            $config = [
-                'order' => $detail[0]['nro_pedido'],
-                'viewMessage' => true,
-                'deleted' => true,
-                'message' => 'Gasto Inicial Eliminado Exitosamente!'
-            ];
-            $this->responseHttp($config);
-            return true;
-        } else {
-            $config = [
-                'orderDetail' => $detail[0]['id_pedido_factura'],
-                'viewMessage' => true,
-                'message' => 'El registro no puede ser Eliminado, 
-					           tiene dependencias!'
-            ];
-            $this->responseHttp($config);
-            $this->db->where('id_gastos_nacionalizacion', $idInitExpense);
+        if($this->modelExpenses->delete($idInitExpense)){
+         return($this->redirectPage('validargi', $initialExpense['nro_pedido']));   
         }
+        $this->modelLog->errorLog('Error al eliminar un gasto Inicial, ya se encuentra justificado', 
+                                                        $this->db->last_query());
+        return($this->redirectPage('validargi', $initialExpense['nro_pedido']));
     }
 
     /**

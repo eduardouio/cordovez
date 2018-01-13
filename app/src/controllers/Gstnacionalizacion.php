@@ -393,10 +393,10 @@ class Gstnacionalizacion extends MY_Controller
         $expense = $this->modelExpenses->getExpense($idNationalizationExpense);
         if ($expense) {
             $this->modelExpenses->delete($idNationalizationExpense);
-            return ($this->redirectPage('infoInvoiceShow', $expense['id_factura_informativa']));
+            return ($this->redirectPage('validar70', $expense['id_factura_informativa']));
         }
         
-        $this->modelLog->errorLog('Intenta Elimnar gasto no existente');
+        $this->modelLog->errorLog('Intenta Elimnar gasto no existente', $this->db->last_query());
         return ($this->index());
     }
 

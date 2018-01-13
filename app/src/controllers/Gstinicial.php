@@ -18,6 +18,7 @@ class Gstinicial extends MY_Controller
     private $isdPer = 0.05;
     private $modelBase;
     private $modelOrder;
+    private $ModelOrderInvoiceDetail;
     private $modelSupplier;
     private $modelExpenses;
     private $myModel;
@@ -49,6 +50,7 @@ class Gstinicial extends MY_Controller
         $this->load->model('modelproduct');
         $this->load->model('modeluser');
         $this->load->model('modellog');
+        $this->load->model('Modelorderinvoicedetail');
         $this->modelOrder = new Modelorder();
         $this->modelSupplier = new Modelsupplier();
         $this->modelBase = new ModelBase();
@@ -58,6 +60,7 @@ class Gstinicial extends MY_Controller
         $this->modelProducts = new Modelproduct();
         $this->modelUser = new Modeluser();
         $this->modelLog = new Modellog();
+        $this->ModelOrderInvoiceDetail = new Modelorderinvoicedetail();
     }
 
     /**
@@ -130,35 +133,33 @@ class Gstinicial extends MY_Controller
         ]);
     }
 
+    
+    
     /**
-     * Edita un gasto inicial
+     * Presenta el formulario con los datos del gasto inicial 
+     * @param int $idInitExpense
+     * @return void | string
      */
-    public function editar($idInitExpense)
+    public function editar(int $idInitExpense)
     {
-        $this->db->where('id_gastos_nacionalizacion', $idInitExpense);
-        $resultDb = $this->db->get($this->controller);
-        $initExpense = $resultDb->result_array();
-        $this->db->where('identificacion_proveedor', $initExpense[0]['identificacion_proveedor']);
-        $resultDb = $this->db->get('proveedor');
-        $supplier = $resultDb->result_array();
+        $initExpense = $this->modelExpenses->getExpense($idInitExpense);
         
-        $resultDb = $this->db->get('proveedor');
-        $suppliers = $resultDb->result_array();
-        $this->db->where('nro_pedido', $initExpense[0]['nro_pedido']);
+        if ($initExpense  == false){
+            $this->modelLog->redirectLog('Acceso dirtecto a editar', current_url());
+            return($this->index());
+        }
         
-        $resultDb = $this->db->get('pedido');
-        $order = $resultDb->result_array();
+        $order = $this->modelOrder->get($initExpense['nro_pedido']);
         
-        $config = array(
-            'order' => $order[0],
-            'initExpense' => $initExpense[0],
-            'supplier' => $supplier[0],
-            'suppliers' => $suppliers,
-            'createBy' => $this->session->userdata(),
-            'titleContent' => 'Descripción De Gasto Incial Pedido:' . $order[0]['nro_pedido'],
-            'edit' => true
-        );
-        $this->responseHttp($config);
+        return($this->responseHttp([
+            'order' => $order,
+            'initExpense' => $initExpense,
+            'supplier' => $this->modelSupplier->get($initExpense['identificacion_proveedor']),
+            'suppliers' => $this->modelSupplier->getAll(),
+            'createBy' => $this->modelUser->get($initExpense['id_user']),
+            'titleContent' => 'Descripción De Gasto Incial Pedido:' . $order['nro_pedido'],
+            'edit' => true,
+        ]));
     }
 
     /**
@@ -524,7 +525,8 @@ class Gstinicial extends MY_Controller
             'flete' => 0.0,
             'fob' => 0.0,
             'seguro' => 0.0,
-            'isd' => 0.0
+            'isd' => 0.0,
+            'tasa_de_servicio_aduanero' => 0.0,
         ];
         
         if ($invoicesOrder) {
@@ -561,6 +563,13 @@ class Gstinicial extends MY_Controller
         
         if (($order['incoterm'] == 'CFR') || ($order['incoterm'] == 'FOB')) {
             unset($valuesOrder['gastos_origen']);
+        }
+        
+        $initialStockProducts = $this->ModelOrderInvoiceDetail->getActiveStokProductsByOrder($order['nro_pedido']);
+        if($initialStockProducts != false){
+            foreach ($initialStockProducts as $item => $product){
+               $valuesOrder['tasa_de_servicio_aduanero'] += (((intval($product['capacidad_ml'])/ 2000) * 0.10) * ($product['nro_cajas'] * $product['cantidad_x_caja']) );
+               }
         }
         return $valuesOrder;
     }

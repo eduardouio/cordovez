@@ -26,6 +26,7 @@
             <td>{{loop.index}}</td>
             <td>{{rateExpense.concepto}}</td>
             {% if minimal.valuesOrder.statusInvoices == true %}
+
             {% if rateExpense.concepto == 'SEGURO' %}
             <td class="text-success">
                <strong>
@@ -33,6 +34,7 @@
                </strong>  
             </td>
             {% endif %}   
+
             {% if rateExpense.concepto == 'ISD' %}
             <td class="text-success">
                <strong>
@@ -40,9 +42,21 @@
                </strong>  
             </td>
             {% endif %}
+
+            {% if rateExpense.concepto  == 'TASA DE SERVICIO ADUANERO' %}
+            	<td class="text-success">
+               <strong>
+               {{minimal.valuesOrder.tasa_de_servicio_aduanero |number_format(2, '.', ',') }}
+               </strong>  
+            </td>
+            {% endif %}
+            
+
             {% if rateExpense.concepto != 'SEGURO' %}
             {% if rateExpense.concepto != 'ISD' %}
+            {% if rateExpense.concepto != 'TASA DE SERVICIO ADUANERO' %}
             <td>{{rateExpense.valor |number_format(2, '.', ',') }}</td>
+            {% endif %}
             {% endif %}
             {% endif %}
             {% else %}

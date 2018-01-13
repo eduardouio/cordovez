@@ -246,12 +246,11 @@ class Pedido extends MY_Controller
         }
         
         $order = $_POST;
-        print strtotime($order['fecha_ingreso_almacenera']);
+        $order['fecha_ingreso_almacenera'] = str_replace('/', '-', $order['fecha_ingreso_almacenera']);
         $order['fecha_ingreso_almacenera'] = date('d-m-Y' , strtotime($order['fecha_ingreso_almacenera']));
-        exit();
         $pedido['last_update'] = date('Y-m-d H:i:s');
         if($this->modelOrder->update($order)){
-            print $order['nro_pedido'];
+            $this->modelLog->susessLog('Pedido Actualizado Correctamente', $this->db->last_query());
             return($this->redirectPage('closeInitExpenses', $order['nro_pedido']));
         }
         return (print 'Error en Aplicacion');

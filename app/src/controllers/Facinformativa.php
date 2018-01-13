@@ -281,7 +281,7 @@ class Facinformativa extends MY_Controller
         if ($status['status']) {
             if (! isset($infoInvoice['id_factura_informativa'])) {
                 if ($lastId = $this->modelInfoInvoice->create($infoInvoice)) {
-                    return ($this->redirectPage('infoInvoiceShow', $lastId));
+                    return ($this->redirectPage('newProductInfoInvoice', $lastId));
                 }
             } else {
                 $infoInvoice['last_update'] = date('Y-m-d H:m:s');

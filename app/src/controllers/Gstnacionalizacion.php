@@ -246,6 +246,7 @@ class Gstnacionalizacion extends MY_Controller
         unset($partialPost['id_factura_informativa']);
         foreach ($partialPost['periodo'] as $item => $warenHouse) {
             $warenHouse['id_factura_informativa'] = $idInfoInvoice;
+            $warenHouse['valor_provisionado'] = $this->getWarenhousePartialValue($idInfoInvoice);
             $warenHouse['id_user'] = $this->session->userdata('id_user');
             if ($this->modelExpenses->create($warenHouse)) {
                 $this->modelLog->susessLog('Periodo Bodega Registrado Correctamete');
@@ -256,6 +257,22 @@ class Gstnacionalizacion extends MY_Controller
             }
         }
     }
+    
+    
+    
+    /**
+     * retorna el costo de la bodega para el parcial, aplicando una formula
+     * @param int $idInfoInvoice
+     * @return float
+     */
+    private function getWarenhousePartialValue(int $idInfoInvoice):float
+    {   
+        $infoInvoice = $this->modelInfoInvoice->get($idInfoInvoice);
+        $order = $this->modelOrder->get($infoInvoice['nro_pedido']);
+        
+    }
+    
+    
 
     /**
      * Retorna los parametros de tarifas para gastos de nacionalizacion

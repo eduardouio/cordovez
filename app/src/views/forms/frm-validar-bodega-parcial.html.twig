@@ -32,10 +32,9 @@
                      type="text" 
                      class="form-control" 
                      id="fecha_ingreso_almacenera" 
-                     required="" 
                      readonly="" 
                      name="fecha_ingreso_almacenera" 
-                     value="{{fecha_ingreso_almacenera | date('d/m/Y')}}" 
+                     value="{{fecha_ingreso_almacenera | date('d/m/Y') }}" 
                      >
                   <div class="input-group-addon">
                      <span class="glyphicon glyphicon-th"></span>
@@ -150,8 +149,15 @@
     * Calcula el numero de meses que tiene un periodo y setea el intervalo
     */
    $('#fecha_nacionalizacion_parcial').change(function(){
-   	var dateStart = new Date($('#fecha_ingreso_almacenera').val());
-   	var dateEnd = new Date($('#fecha_nacionalizacion_parcial').val());
+
+    strDateStart = $('#fecha_ingreso_almacenera').val().split('/');
+    strDateEnd = $('#fecha_nacionalizacion_parcial').val().split('/');
+
+
+
+   	var dateStart = new Date(strDateStart[2], strDateStart[1] - 1, strDateStart[0]);
+   	var dateEnd = new Date(strDateEnd[2], strDateEnd[1] - 1, strDateEnd[0]);
+
    	calcDiffDays(dateStart, dateEnd);
    	var months =  (monthDiff(dateStart, dateEnd)) == 0 ? 1 :  monthDiff(dateStart, dateEnd) ;
       for (i = 1; i < (months + 2); i++ ){

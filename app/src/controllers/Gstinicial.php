@@ -568,7 +568,12 @@ class Gstinicial extends MY_Controller
         $initialStockProducts = $this->ModelOrderInvoiceDetail->getActiveStokProductsByOrder($order['nro_pedido']);
         if($initialStockProducts != false){
             foreach ($initialStockProducts as $item => $product){
-               $valuesOrder['tasa_de_servicio_aduanero'] += (((intval($product['capacidad_ml'])/ 2000) * 0.10) * ($product['nro_cajas'] * $product['cantidad_x_caja']) );
+                    if ($valuesOrder['tasa_de_servicio_aduanero'] < 700.01){
+                   $valuesOrder['tasa_de_servicio_aduanero'] += (((
+                                                                    intval($product['capacidad_ml'])/ 2000) * 0.10) * 
+                                                                    ($product['nro_cajas'] * $product['cantidad_x_caja']
+                                                                 ));
+                }
                }
         }
         return $valuesOrder;

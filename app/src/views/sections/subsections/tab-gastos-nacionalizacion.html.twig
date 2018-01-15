@@ -65,7 +65,7 @@
                        {% endif %}
                         </td>
                         <td><small>{{initialExpense.comentarios |raw }}</small></td>
-                        <td>{{initialExpense.fecha | date("m/d/Y") }}</td>
+                        <td>{{initialExpense.fecha | date("d/m/Y") }}</td>
                         <td>{{initialExpense.valor_provisionado | number_format(2, '.', ',')}}</td>
                         <td>
                            <div class="dropdown">

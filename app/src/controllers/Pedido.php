@@ -247,7 +247,7 @@ class Pedido extends MY_Controller
         
         $order = $_POST;
         $order['fecha_ingreso_almacenera'] = str_replace('/', '-', $order['fecha_ingreso_almacenera']);
-        $order['fecha_ingreso_almacenera'] = date('d-m-Y' , strtotime($order['fecha_ingreso_almacenera']));
+        $order['fecha_ingreso_almacenera'] = date('Y-m-d' , strtotime($order['fecha_ingreso_almacenera']));
         $pedido['last_update'] = date('Y-m-d H:i:s');
         if($this->modelOrder->update($order)){
             $this->modelLog->susessLog('Pedido Actualizado Correctamente', $this->db->last_query());

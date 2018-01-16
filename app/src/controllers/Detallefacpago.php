@@ -16,21 +16,13 @@ class Detallefacpago extends \MY_Controller
 {
 
     private $template = "/pages/pageFacturasDetalles.html";
-
     private $controller = 'detalle_documento_pago';
-
     private $modelOrder;
-
     private $modelPaid;
-    
     private $modelPaidDetail;
-
     private $modelUser;
-
     private $modelExpenses;
-    
     private $modelSupplier;
-    
     private $myModel;
 
     /**

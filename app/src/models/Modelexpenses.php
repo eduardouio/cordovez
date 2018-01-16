@@ -242,6 +242,8 @@ class Modelexpenses extends CI_Model
      */
     public function getActiveExpenses($nroOrder)
     {
+            
+        $nroOrder = '100-17' ;
         $expenses = $this->modelBase->get_table([
             'table' => $this->table,
             'where' => [
@@ -249,7 +251,31 @@ class Modelexpenses extends CI_Model
                 'bg_closed' => 0,
             ],
         ]);
-        if(gettype($expenses) == 'array' && count($expenses) > 0){
+
+        $infoInvoices = $this->modelBase->get_table([
+            'table' => 'factura_informativa',
+            'where' => [
+                'nro_pedido' => $nroOrder,
+            ],
+        ]);
+        
+        if(gettype($expenses) == 'array' && !empty($expenses)){
+            if( gettype($infoInvoices) == 'array' && !empty($infoInvoices)){
+                foreach ($infoInvoices as $key => $value) {
+                    $nationalizationExpense = $this->modelBase->get_table([
+                        'table' => $this->table,
+                        'where' => [
+                            'id_factura_informativa' => $value['id_factura_informativa'],
+                        ],
+                    ]);
+                    if (is_array($nationalizationExpense)){
+                    foreach ($nationalizationExpense as $idex => $val){
+                        array_push($expenses, $val);
+                    }                        
+                    }
+                }
+            }
+            
             return $expenses;
         }
         return false;

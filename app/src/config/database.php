@@ -73,13 +73,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $active_group = 'pruebas';
 #$active_group = 'produccion';
 $query_builder = TRUE;
-
 $db['pruebas'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
 	'username' => 'root',
 	'password' => 'elian.2011',
-	'database' => 'cordovezApp',
+	'database' => 'crodovezApp',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,

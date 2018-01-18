@@ -1,6 +1,5 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
-
 /**
  * Modulo encargado de manejar los pedidos, CRUD y validaciones
  *
@@ -157,6 +156,12 @@ class Pedido extends MY_Controller
         $initialExpenses = $this->modelExpenses->get($nroOrder);
         $paidsDetails = $this->modelPaidDetail->getByOrder($nroOrder);
         
+        if(is_array($infoInvoices)){
+            foreach ($infoInvoices as $item => $infoInvoice){
+                $infoInvoice['supplier'] = $this->modelSupplier->get($infoInvoice['identificacion_proveedor']);
+                $infoInvoices[$item] = $infoInvoice;
+            }
+        }
         
         if (gettype($invoicesOrder) == 'array' && count($invoicesOrder) > 0) {
             $invoicesOrderTemp = [];
@@ -187,6 +192,7 @@ class Pedido extends MY_Controller
         $this->responseHttp([
             'show_order' => true,
             'order' => $order,
+            'ubicacion' => $this->whereIsOrder($order),
             'warenHouseDays' => $this->getWarenHouseDaysInitial($order),
             'orderInvoices' => $invoicesOrder,
             'initialExpenses' => $initialExpenses,
@@ -248,12 +254,13 @@ class Pedido extends MY_Controller
         $order = $_POST;
         $order['fecha_ingreso_almacenera'] = str_replace('/', '-', $order['fecha_ingreso_almacenera']);
         $order['fecha_ingreso_almacenera'] = date('Y-m-d' , strtotime($order['fecha_ingreso_almacenera']));
+        $order['bg_haveExpenses'] = '1';
         $pedido['last_update'] = date('Y-m-d H:i:s');
         if($this->modelOrder->update($order)){
-            $this->modelLog->susessLog('Pedido Actualizado Correctamente', $this->db->last_query());
+            $this->modelLog->warningLog('Pedido Actualizado Correctamente', $this->db->last_query());
             return($this->redirectPage('closeInitExpenses', $order['nro_pedido']));
         }
-        return (print 'Error en Aplicacion');
+        $this->modelLog->errorLog('Error al intentar acrtualizar un Pedido ' . current_url() , $this->db->last_query());
     }
     
     /**
@@ -383,6 +390,80 @@ class Pedido extends MY_Controller
         $info['activeOrders'] --;
         return $info;
     }
+    
+    
+    
+    /**
+     * Retorna un arreglo indicando el lugar donde se encuentra el pedido
+     * barco
+     * bodega puerto
+     * almacenera
+     * u cordovez
+     * @param string $nroOrder
+     * @return array
+     */
+    private function whereIsOrder(array $order):array
+    {
+        $localtions = [
+            'buque' => false,
+            'puerto' => false,
+            'almacenera' => false,
+            'cordovez' => false,
+        ];
+           
+        if($order['fecha_arribo'] == null){
+                $localtions['buque'] = 'active';
+                return $localtions;
+        }  
+        
+        if( 
+            ($order['fecha_arribo'] != null) &&
+            ($order['fecha_salida_bodega_puerto'] == null)
+            ){
+                $localtions['puerto'] = 'active';
+                return $localtions;
+        }
+        
+        if( 
+            ($order['fecha_arribo'] != null) &&
+            ($order['fecha_salida_bodega_puerto'] != null) &&
+            ($order['fecha_ingreso_almacenera'] == null) &&
+            ($order['regimen'] == 70)            
+            ){
+                $localtions['transporte'] = 'active';
+                return $localtions;
+        }
+        
+        if( 
+            ($order['fecha_arribo'] != null) &&
+            ($order['fecha_ingreso_almacenera'] != null) &&
+            ($order['fecha_salida_almacenera'] == null)&&
+            ($order['regimen'] == 70)
+            ){
+                $localtions['almacenera'] = 'active';
+                return $localtions;
+        }
+        
+        if( ($order['fecha_arribo'] != null) &&
+            ($order['fecha_salida_bodega_puerto'] != null) &&
+            ($order['fecha_ingreso_almacenera'] != null) &&
+            ($order['fecha_salida_almacenera'] != null)&&
+            ($order['regimen'] == 70)
+            ){
+                $localtions['cordovez'] = 'active';
+                return $localtions;
+        }
+        
+        if( ($order['fecha_arribo'] != null) &&
+            ($order['fecha_salida_bodega_puerto'] != null) &&
+            ($order['regimen'] == 10)
+            ){
+                $localtions['cordovez'] = 'active';
+                return $localtions;
+        }
+        return $localtions;
+    }
+    
     
     /**
      * se validan los datos que deben estar para que la consulta no falle

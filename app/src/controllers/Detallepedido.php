@@ -22,7 +22,7 @@ class Detallepedido extends MY_Controller {
 	private $modelOrderInvoiceDetail;
 	private $modelOrderInvoice;
 	private $modelOrder;
-	
+	private $modelLog;
 
 	/**
 	 * Constructor de la funcion
@@ -43,12 +43,14 @@ class Detallepedido extends MY_Controller {
 	    $this->load->model('modelorderinvoicedetail');
 	    $this->load->model('modelorderinvoice');
 	    $this->load->model('modelorder');
+	    $this->load->model('modellog');
 	    $this->modelSupplier = new Modelsupplier();
 	    $this->modelUser = new Modeluser();
 	    $this->modelProduct = new Modelproduct();
 	    $this->modelOrderInvoiceDetail = new Modelorderinvoicedetail();
 	    $this->modelOrderInvoice = new Modelorderinvoice();
 	    $this->modelOrder = new Modelorder();
+	    $this->modelLog = new Modellog();
 	}
 
 
@@ -152,6 +154,10 @@ class Detallepedido extends MY_Controller {
 	    if ($status['status']){
 			if (!isset($invoiceOrderDetail['detalle_pedido_factura'])){
 			    $lastId = $this->modelOrderInvoiceDetail->create($invoiceOrderDetail);
+			    $product = $this->modelProduct->get($invoiceOrderDetail['cod_contable']);
+			    $product['costo_caja'] = $invoiceOrderDetail['costo_caja'];
+			    $this->modelProduct->update($product);
+			    $this->modelLog->generalLog('Actualizando producto', $this->db->last_query());
 			    return(
 			        $this->redirectPage('orderInvoicePresent', $invoiceOrderDetail['id_pedido_factura'])
 			        );
@@ -162,6 +168,7 @@ class Detallepedido extends MY_Controller {
 				if(gettype($product) == 'array'){
 				    $product['costo_caja'] = $invoiceOrderDetail['costo_caja'];
 				    $this->modelProduct->update($product);
+				    $this->modelLog->generalLog('Actualizando producto', $this->db->last_query());
 				}
 				return(
 				    $this->redirectPage('orderInvoicePresent', $invoiceOrderDetail['id_pedido_factura'])
@@ -176,7 +183,6 @@ class Detallepedido extends MY_Controller {
 			]));
 		}	
 	}
-
 
 
 	/**

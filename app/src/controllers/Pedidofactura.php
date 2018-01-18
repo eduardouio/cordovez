@@ -91,6 +91,7 @@ class Pedidofactura extends MY_Controller
             'user' => $this->modelUser->get($invoiceOrder['id_user']),
             'invoice' => $invoiceOrder,
             'invoiceDetail' => $invoiceDetail,
+            'order' => $this->modelOrder->get($invoiceOrder['nro_pedido']),
             'sums' => $sums,
             'supplier' => $this->modelSupplier->get($invoiceOrder['identificacion_proveedor']),
        ]));
@@ -183,21 +184,22 @@ class Pedidofactura extends MY_Controller
         }
         
         $orderInvoice = $this->input->post();
+   
         
         if($orderInvoice['fecha_emision'] == ''){
             unset($orderInvoice['fecha_emision']);
         }else{
             $orderInvoice['fecha_emision'] = str_replace( '/', '-', $orderInvoice['fecha_emision']);
-            $orderInvoice['fecha_emision'] = date('Y-m-d', strtotime($orderInvoice['fecha_emision']));
+            $orderInvoice['fecha_emision'] = date('d-m-Y', strtotime($orderInvoice['fecha_emision']));
         }
-        
+   
+     
         if($orderInvoice['vencimiento_pago'] == ''){
             unset($orderInvoice['vencimiento_pago']);
         }else{
             $orderInvoice['vencimiento_pago'] = str_replace( '/', '-', $orderInvoice['vencimiento_pago']);
             $orderInvoice['vencimiento_pago'] = date('Y-m-d', strtotime($orderInvoice['vencimiento_pago']));
         }
-        
         
         if($orderInvoice['fecha_pago'] == ''){
             unset($orderInvoice['fecha_pago']);
@@ -207,6 +209,7 @@ class Pedidofactura extends MY_Controller
         }
         
         $orderInvoice['id_user'] = $this->session->userdata('id_user');
+     
         
         if (! isset($orderInvoice['id_pedido_factura'])) {
             $this->db->where('id_factura_proveedor', $orderInvoice['id_factura_proveedor']);

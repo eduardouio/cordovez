@@ -1,6 +1,6 @@
 <div class="row">
 	<div class="col-sm-6">
-		{% if order.bg_isclosed == 0 %}
+		{% if (order.bg_haveExpenses == 0) %}
 		<a href="{{rute_url}}pedidofactura/nuevo/{{ order.nro_pedido }}">
 			<button class="btn btn-sm btn-primary">
 				<span class="fa fa-plus fa-fw"> </span> Agregar Factura Provedor Exterior
@@ -47,7 +47,15 @@
 				</tr>
 			</thead>
 			<tbody>
+				{% set sumaFacturas = 0 %}
+				{% set sumaRetirado = 0 %}
+				{% set sumaSaldo = 0 %}
+
 				{% for orderInvoice in orderInvoices %}
+
+				{% set sumaFacturas = sumaFacturas + orderInvoice.valor %}
+				{% set sumaRetirado = sumaRetirado + orderInvoice.valor %}
+				
 				<tr>
 					<td>{{loop.index}}</td>
 
@@ -76,6 +84,7 @@
 					<td class="text-right">{{nacionalizado | number_format(2, '.', ',') }}</td>
 
 					<td class="text-right"> <strong>{{(orderInvoice.valor - nacionalizado) | number_format(2, '.', ',') }} </strong></td>
+					{% set sumaSaldo = sumaSaldo + (orderInvoice.valor - nacionalizado) %}
 					<td>
 						<div class="dropdown">
 							<button class="btn btn-sm btn-default" id="dLabel" type="button"
@@ -89,7 +98,7 @@
 									href="{{rute_url}}pedidofactura/presentar/{{orderInvoice.id_pedido_factura}}">
 										<span class="fa fa-eye fa-fw"></span> Ver Productos
 								</a></li>
-								{% if order.bg_isclosed == 0 %}
+								{% if order.bg_haveExpenses == 0 %}
 								<li><a
 									href="{{rute_url}}detallepedido/nuevo/{{orderInvoice.id_pedido_factura}}">
 										<span class="fa fa-cube fa-fw"></span> Agregar Item Producto
@@ -109,6 +118,17 @@
 					</td>
 				</tr>
 				{% endfor %}
+
+				<tr>
+					<td></td>
+				</tr>
+				<tr style="background-color:#c1c1c1; font-weight:bold;">
+            <td colspan="6" class="text-right">SUMAS: &nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td class="text-right"> {{ sumaFacturas | number_format(2,',','.') }}</td>
+            <td class="text-right">{{ sumaRetirado | number_format(2,',','.') }}</td>
+            <td class="text-right">{{ sumaSaldo  | number_format(2,',','.') }}</td>
+            <td class="text-right"></td>
+          </tr>
 			</tbody>
 		</table>
 	</div>

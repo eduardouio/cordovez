@@ -14,35 +14,20 @@ defined('BASEPATH') or exit('No direct script access allowed');
  */
 class Facinformativa extends MY_Controller
 {
-
     private $controller = "factura_informativa";
-
     private $template = '/pages/pageFactutaInformativa.html';
-
     private $almaceneraId = '0990304262001';
-
     private $modelOrder;
-
     private $modelUser;
-
     private $modelSupplier;
-
     private $modelExpenses;
-
     private $modelOrderInvoice;
-
     private $modelOrderInvoiceDetail;
-
     private $modelInfoInvoice;
-
     private $modelInfoInvoiceDetail;
-
     private $modelNationalization;
-
     private $modelProduct;
-
     private $modelLog;
-
     private $myModel;
 
     /**
@@ -263,6 +248,7 @@ class Facinformativa extends MY_Controller
         }
         
         $infoInvoice = $this->input->post();
+        $infoInvoice['fecha_emision'] = str_replace( '/', '-', $infoInvoice['fecha_emision']);
         $infoInvoice['fecha_emision'] = date('Y-m-d', strtotime($infoInvoice['fecha_emision']));
         $infoInvoice['id_user'] = $this->session->userdata('id_user');
         

@@ -332,7 +332,7 @@ class Modelorder extends CI_Model
     
     
     /**
-     * busca todas las activas que aun tengas gastos por justificar
+     * busca ordernes activas las activas que aun tengas gastos por justificar
      * Retorna un arreglo con los numeros de orden unicamente
      * @return mixed
      */
@@ -343,7 +343,6 @@ class Modelorder extends CI_Model
             'where' => [
                 'bg_closed' => 0,
             ],
-            'goup_by'
         ]);
        if((gettype($orders) == 'array') && (count($orders))){
            $tempArray = [];
@@ -466,6 +465,7 @@ class Modelorder extends CI_Model
     public function update(array $order):bool
     {   
         $this->db->where('nro_pedido', $order['nro_pedido']);
+        unset($order['nro_pedido']);
         if($this->db->update($this->table, $order)){
             return true;
         }

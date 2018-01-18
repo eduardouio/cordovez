@@ -9,9 +9,8 @@
       </div>      
   </div>
   <br>
-  	<div class="row">
-  		<div class="col-md-1">&nbsp;</div>
-  		<div class="col-md-10">
+  	<div class="row">  		
+  		<div class="col-md-12">
         	{% for orderInvoice in orderInvoices %}
         		<div class="text-tittle">
       			Factura Proveedor : {{ orderInvoice.supplier.nombre }} Nro Factura: {{ orderInvoice.id_factura_proveedor }} 
@@ -26,6 +25,7 @@
       					<th>Agregar</th>
       					<th>Nro Cajas</th>
       					<th>Gr. Alc</th>
+      					<th>Costo</th>
       				</tr>
       			</thead>
       			<tbody>
@@ -34,10 +34,11 @@
       					<td>{{product.producto}} </td>
       					<td class="text-right">{{product.grado_alcoholico}}</td>
       					<td class="text-right">{{product.stock}}</td>
-      					<td class="text-right">{{product.costo_caja | number_format(3,",",".")}}</td>
+      					<td class="text-right" id="costo_caja_{{product.detalle_pedido_factura}}">{{product.costo_caja | number_format(3,",",".")}}</td>
       					<td> 
       						<input 
       							type="checkbox" 
+      							class="text-right" 
       							name="detalle_pedido_factura-{{product.detalle_pedido_factura}}" 
       							id="detalle_{{product.detalle_pedido_factura}}" 
       							value="{{product.detalle_pedido_factura}}"
@@ -47,6 +48,7 @@
       						<input 
       							type="number" 
       							step="1" 
+      							class="text-right" 
       							id= nro_cajas_{{product.detalle_pedido_factura}}
       							name="nro_cajas-{{product.detalle_pedido_factura}}" 
       							value="0" 
@@ -57,11 +59,20 @@
       						<input 
       							type="number" 
       							step="0.01" 
+      							class="text-right" 
       							id="grado_alcholico_{{product.detalle_pedido_factura}}" 
       							name="grado_alcoholico-{{product.detalle_pedido_factura}}" 
       							value="{{product.grado_alcoholico}}" 
       							disabled
       						>
+      					</td>
+      					<td>
+      						<input 
+      						disabled="" 
+      						type="text" 
+      						id="valor_item_{{product.detalle_pedido_factura}}" 
+      						value="0" 
+      						class="text-right">
       					</td>
       				</tr>
       				{% endfor %}
@@ -69,35 +80,66 @@
       		</table>
       		<br>
         	{% endfor %}
-       </div>
-      <div class="col-md-1">&nbsp;</div>
+       </div>    
 </div>
 <div class="row">
-	<div class="col-md-1">&nbsp;</div>	
+	<div class="col-md-6">&nbsp;</div>
+
+		<div class="col-md-2 text-right">
+		<div class="form-group">
+			<label> Valor Total</label>
+			<input type="number" id="valor_total" disabled="" class="text-right" style="color:#a94442;font-weight: bold;">
+		</div>
+	</div>
+		<div class="col-md-2 text-right">
+		<div class="form-group">
+			<label> Valor M&aacute;ximo</label>
+			<input type="number" id="valor_maximo" disabled="" class="text-right" style="color:#a94442;font-weight: bold;" value="{{infoInvoice.valor}}">
+		</div>
+	</div>
+	<div class="col-md-2 text-right">
+		<div class="form-group">
+			<label> Diferencia</label>
+			<input type="number" id="valor_diferencia" disabled="" class="text-right" style="color:#a94442;font-weight: bold;">
+		</div>
+	</div>
+</div>
+<div class="row">
+	<hr>
+</div>
+<div class="row">
 	<div class="col-md-4">
 	<button type="submit" class="btn btn-default btn-sm">
 		<span class="fa fa-plus"></span>  Agregar Seleccionados
 	</button>
 	</div>
-	<div class="col-md-4">&nbsp;</div>
+	<div class="col-md-5">&nbsp;</div>
 	<div class="col-md-2">
 		<a href="{{rute_url}}facinformativa/presentar/{{infoInvoice.id_factura_informativa}}" class="btn btn-sm btn-warning">
 			<span class="fa fa-cubes"></span>
 		Volver a Factura Informativa [{{order.nro_pedido}}]
 	</a>
 	</div>
-	<div class="col-md-1">&nbsp;</div>
 </div>
    </form>
 
+<script type="text/javascript">
+function calDiferencia(){	
+	var a = parseFloat($('#valor_total').val());
+	var b = {{ infoInvoice.valor}};
+	$('#valor_diferencia').val(b-a);
+
+	if((b-a) > b){
+		alert('VALOR DE LA FACTURA EXCEDIDO');
+	}
+}
+</script>
 
 <script type="text/javascript">
-   var stockProducts = {{ (stockProducts | json_encode()) | raw }};
-   console.dir(stockProducts);
+var maxValueInvoidce = parseFloat({{ infoInvoice.valor }});
+var stockProducts = {{ (stockProducts | json_encode()) | raw }};
+var currentValInvoice = 0;
 
-   $('#pedido_factura').change(function(){
-   	console.dir(this.value);
-   });
 </script>
         	{% for orderInvoice in orderInvoices %}
       					{% for product in  orderInvoice.products %}
@@ -120,7 +162,26 @@
       									alert('VALOR EXCEDIDO');
       									this.value = 0;	
       								}
+
+      								var costo_caja = parseFloat($('#costo_caja_{{product.detalle_pedido_factura}}').html());
+      								var nro_cajas = parseFloat(this.value);
+      								$('#valor_item_{{product.detalle_pedido_factura}}').val(
+      									costo_caja * nro_cajas
+      									);
+
+      								currentValInvoice = (costo_caja * nro_cajas);
+      								actualizarTotal(currentValInvoice);
+
       							});
       					</script>
       				{% endfor %}
         	{% endfor %}
+
+        	<script type="text/javascript">
+
+        	function actualizarTotal(value){
+        			$('#valor_total').val(currentValInvoice);
+        			calDiferencia();
+        	}
+        	
+        	</script>

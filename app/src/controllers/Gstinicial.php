@@ -1,7 +1,9 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
+
 /**
  * Controller encargado de manejar los gastos iniciales
+ * 
  * @package CordovezApp
  * @author Eduardo Villota <eduardouio7@gmail.com>
  * @copyright Copyright (c) 2014, Agencias y Representaciones Cordovez S.A.
@@ -12,19 +14,33 @@ defined('BASEPATH') or exit('No direct script access allowed');
  */
 class Gstinicial extends MY_Controller
 {
+
     private $controller = "gastos_nacionalizacion";
+
     private $template = '/pages/pageGastoInicial.html';
+
     private $securePercent = 0.0018;
+
     private $isdPer = 0.05;
+
     private $modelBase;
+
     private $modelOrder;
+
     private $ModelOrderInvoiceDetail;
+
     private $modelSupplier;
+
     private $modelExpenses;
+
     private $myModel;
+
     private $modelIncoterms;
+
     private $modelProducts;
+
     private $modelUser;
+
     private $modelLog;
 
     /**
@@ -68,28 +84,29 @@ class Gstinicial extends MY_Controller
      */
     public function index()
     {
-        return($this->redirectPage('ordersList'));
+        return ($this->redirectPage('ordersList'));
     }
 
     /**
      * Pesenta la informacion completa del rgistro de gasto inicial
-     * 
+     *
      * @param (int) $idInitExpense
      * @return array
      */
     public function presentar($idInitExpense)
     {
-        if (!isset($idInitExpense)){
+        if (! isset($idInitExpense)) {
             $this->redirectPage('ordersList');
             return false;
         }
         
         $initExpense = $this->modelExpenses->getExpense($idInitExpense);
         
-        if ($initExpense == false){
+        if ($initExpense == false) {
             $this->redirectPage('ordersList');
             return false;
-        };
+        }
+        ;
         
         $order = $this->modelOrder->get($initExpense['nro_pedido']);
         
@@ -105,9 +122,9 @@ class Gstinicial extends MY_Controller
 
     /**
      * Muestra el formulario para regostrar un nuevo gasto inicial
-     * 
+     *
      * @param (string) $nroOrder
-     * @return (array)     
+     * @return (array)
      */
     public function nuevo($nroOrder)
     {
@@ -128,15 +145,13 @@ class Gstinicial extends MY_Controller
             'rateExpenses' => $rateExpenses,
             'usedExpenses' => $usedExpenses,
             'unusedExpenses' => $unusedExpenses,
-            'titleContent' => 'Registro De Gasto Inicial Provisionado ' . 
-                              '[ Pedido ' . $nroOrder . ']'
+            'titleContent' => 'Registro De Gasto Inicial Provisionado ' . '[ Pedido ' . $nroOrder . ']'
         ]);
     }
 
-    
-    
     /**
-     * Presenta el formulario con los datos del gasto inicial 
+     * Presenta el formulario con los datos del gasto inicial
+     * 
      * @param int $idInitExpense
      * @return void | string
      */
@@ -144,21 +159,21 @@ class Gstinicial extends MY_Controller
     {
         $initExpense = $this->modelExpenses->getExpense($idInitExpense);
         
-        if ($initExpense  == false){
+        if ($initExpense == false) {
             $this->modelLog->redirectLog('Acceso dirtecto a editar', current_url());
-            return($this->index());
+            return ($this->index());
         }
         
         $order = $this->modelOrder->get($initExpense['nro_pedido']);
         
-        return($this->responseHttp([
+        return ($this->responseHttp([
             'order' => $order,
             'initExpense' => $initExpense,
             'supplier' => $this->modelSupplier->get($initExpense['identificacion_proveedor']),
             'suppliers' => $this->modelSupplier->getAll(),
             'createBy' => $this->modelUser->get($initExpense['id_user']),
             'titleContent' => 'Descripción De Gasto Incial Pedido:' . $order['nro_pedido'],
-            'edit' => true,
+            'edit' => true
         ]));
     }
 
@@ -221,34 +236,32 @@ class Gstinicial extends MY_Controller
 
     /**
      * Elimina un Gasto inicial de la tabla
-     * 
+     *
      * @param $idInitiExpense =>
      *            identificador del registro a eliminar
      * @return void
      */
     public function eliminar($idInitExpense)
-    {   
+    {
         $initialExpense = $this->modelExpenses->getExpense($idInitExpense);
         
         if ($initialExpense == false) {
-            $this->modelLog->warningLog('Intendo de Eliminar un gasto inicial directamente', 
-                                                                    $this->db->last_query());
-            return($this->redirectPage('ordersList'));
+            $this->modelLog->warningLog('Intendo de Eliminar un gasto inicial directamente', $this->db->last_query());
+            return ($this->redirectPage('ordersList'));
         }
         
-        if($this->modelExpenses->delete($idInitExpense)){
-         return($this->redirectPage('validargi', $initialExpense['nro_pedido']));   
+        if ($this->modelExpenses->delete($idInitExpense)) {
+            return ($this->redirectPage('validargi', $initialExpense['nro_pedido']));
         }
-        $this->modelLog->errorLog('Error al eliminar un gasto Inicial, ya se encuentra justificado', 
-                                                        $this->db->last_query());
-        return($this->redirectPage('validargi', $initialExpense['nro_pedido']));
+        $this->modelLog->errorLog('Error al eliminar un gasto Inicial, ya se encuentra justificado', $this->db->last_query());
+        return ($this->redirectPage('validargi', $initialExpense['nro_pedido']));
     }
 
     /**
      * Verifica Los gastos iniciales de una Order, indica al isuario
      * Los parametros que un pedido debe cumplir para que se puedan
      * Generar los gastos iniciales
-     * 
+     *
      * @param (string) $nroOrder
      * @return (array)
      */
@@ -265,8 +278,8 @@ class Gstinicial extends MY_Controller
         $initExpenses = $this->modelExpenses->getInitialExpenses($nroOrder);
         $minimal = $this->getMinimalParams($order, $initExpenses);
         $minimal['valuesOrder'] = $this->calcValuesOrderItems($order, $invoicesOrder, $initExpenses);
-
-        return($this->responseHttp([
+        
+        return ($this->responseHttp([
             'validateExpenses' => true,
             'titleContent' => 'Generar Gastos Iniciales Pedido: [' . $nroOrder . '] ' . ' <small>Validar Información</small>',
             'rateExpenses' => $rateExpenses,
@@ -277,13 +290,13 @@ class Gstinicial extends MY_Controller
             'order' => $order,
             'minimal' => $minimal,
             'user' => $this->modeluser->get($order['id_user']),
-            'isOk' => searchOrderCeroValues($minimal),
-            ]));
+            'isOk' => searchOrderCeroValues($minimal)
+        ]));
     }
 
     /**
      * Establece los gastos iniciales de acuedo a los parametros establecidos
-     * 
+     *
      * @param (string) $nroOrder
      * @return array | boolean
      */
@@ -320,27 +333,27 @@ class Gstinicial extends MY_Controller
             ];
             $this->db->insert($this->controller, $initExpense);
         }
-        return($this->redirectPage('presentOrder', $nroOrder));
+        return ($this->redirectPage('presentOrder', $nroOrder));
     }
-    
-    public function cerrarGastosIniciales($nroOrder){
+
+    public function cerrarGastosIniciales($nroOrder)
+    {
         $order = $this->modelOrder->get($nroOrder);
-        if($order == false){
+        if ($order == false) {
             $this->modelLog->warningLog('Intentado modificar status gastos iniciales ilegalmente ' . current_url());
-            return($this->index());
+            return ($this->index());
         }
         $order['bg_haveExpenses'] = 1;
-        if($this->modelOrder->update($order)){
-            if($order['regimen'] == 70){
+        if ($this->modelOrder->update($order)) {
+            if ($order['regimen'] == 70) {
                 return ($this->redirectPage('infoInvoiceNew', $nroOrder));
             }
             $this->modellog->error_log('No se puede cambiar el estado del pedido');
             $this->modelLog->error_log($this->db->last_query());
             return ($this->redirectPage('nationalizationNew', $nroOrder));
         }
-
     }
-    
+
     /**
      * Reemplaza los incoterms cuando un pedido se edita
      * por el momento siempre los cambia
@@ -367,76 +380,75 @@ class Gstinicial extends MY_Controller
         }
         $this->putIncoterms($nroOrder);
     }
-    
-    
+
     /**
      * Inicia el asistente para establecer las provisiones de bodega inicial
-     * y las provisiones de demoraje 
+     * y las provisiones de demoraje
+     * 
      * @param string $nroOrder
      */
     public function validarbodegainicial(string $nroOrder = '')
     {
-        if ($_POST){
+        if ($_POST) {
             if ($this->modelOrder->update([
-                'nro_pedido' =>  $_POST['nro_pedido'],
-                'fecha_arribo' => date('Y-m-d',strtotime($_POST['fecha_arribo'])),
-                'fecha_salida_bodega_puerto' => date('Y-m-d',strtotime($_POST['fecha_salida_bodega_puerto'])),
-                'dias_libres' => $_POST['dias_libres'],
-            ])){
+                'nro_pedido' => $_POST['nro_pedido'],
+                'fecha_arribo' => date('Y-m-d', strtotime($_POST['fecha_arribo'])),
+                'fecha_salida_bodega_puerto' => date('Y-m-d', strtotime($_POST['fecha_salida_bodega_puerto'])),
+                'dias_libres' => $_POST['dias_libres']
+            ])) {
                 $this->modelExpenses->create([
                     'nro_pedido' => $_POST['nro_pedido'],
                     'id_factura_informativa' => 0,
                     'identificacion_proveedor' => 0,
                     'concepto' => 'ALMACENAJE INICIAL',
                     'tipo' => 'INICIAL',
-                    'valor_provisionado' => $_POST['bodegaje_inicial'], 
+                    'valor_provisionado' => $_POST['bodegaje_inicial']
                 ]);
                 
-                if (isset($_POST['demoraje'])){
+                if (isset($_POST['demoraje'])) {
                     $this->modelExpenses->create([
                         'nro_pedido' => $_POST['nro_pedido'],
                         'id_factura_informativa' => 0,
                         'identificacion_proveedor' => 0,
                         'concepto' => 'DEMORAJE',
                         'tipo' => 'INICIAL',
-                        'valor_provisionado' => $_POST['demoraje'],
+                        'valor_provisionado' => $_POST['demoraje']
                     ]);
                 }
             }
-            return($this->redirectPage('validargi', $_POST['nro_pedido']));
+            return ($this->redirectPage('validargi', $_POST['nro_pedido']));
         }
         
         $order = $this->modelOrder->get($nroOrder);
-        if($order == false){
-            return($this->index());
+        if ($order == false) {
+            return ($this->index());
         }
         $expenses = $this->modelExpenses->get($nroOrder);
-        $bodegaInicial  = null;
+        $bodegaInicial = null;
         $demoraje = null;
-        if ($expenses){
-            foreach ($expenses as $item => $expense){
-                if($expense['concepto'] == 'ALMACENAJE INICIAL'){
+        if ($expenses) {
+            foreach ($expenses as $item => $expense) {
+                if ($expense['concepto'] == 'ALMACENAJE INICIAL') {
                     $bodegaInicial = $expense['valor_provisionado'];
-                }elseif($expense['concepto'] == 'DEMORAJE'){
+                } elseif ($expense['concepto'] == 'DEMORAJE') {
                     $demoraje = $expense['valor_provisionado'];
                 }
             }
         }
-       
-        return($this->responseHttp([
-          'titleContent' =>  'Asistente cálculo de Bodegaje Inicial y Demoraje Pedido ['.
-                                    $order['nro_pedido'] . ']',
-           'validateInitialWarenhouse' => true,
+        
+        return ($this->responseHttp([
+            'titleContent' => 'Asistente cálculo de Bodegaje Inicial y Demoraje Pedido [' . $order['nro_pedido'] . ']',
+            'validateInitialWarenhouse' => true,
             'order' => $order,
             'invoicesOrder' => $this->modelOrder->getInvoices($nroOrder),
             'bodegajeIncial' => $bodegaInicial,
-            'demoraje' => $demoraje,
+            'demoraje' => $demoraje
         ]));
     }
-    
+
     /**
      * Elimina y Crea gastos iniciales, sin tomar en cuenta FLETE y GASTOS ORIGEN
-     * 
+     *
      * @param array $_POST
      * @return void | boolean
      */
@@ -482,13 +494,12 @@ class Gstinicial extends MY_Controller
                 $insertExpense['valor_provisionado'] = $valuesOrder['seguro'];
             }
             
-            if($this->db->insert($this->controller, $insertExpense)){
-             $this->modelLog->susessLog('Gasto Inicial Insertado, ' . current_url());   
-            }else{
+            if ($this->db->insert($this->controller, $insertExpense)) {
+                $this->modelLog->susessLog('Gasto Inicial Insertado, ' . current_url());
+            } else {
                 $this->modelLog->warningLog('No se puede Aplicar Gasto Inicial' . current_url());
                 $this->modelLog->errorLog($this->db->last_query());
             }
-            
         }
         $this->redirectPage('validargi', $initExpensesInput['nro_pedido']);
     }
@@ -497,7 +508,7 @@ class Gstinicial extends MY_Controller
      * Calcula los Valores FOB; FLETE; CIF ; ISD ; SEGURO de un pedido, y ademas
      * comprueba que el detalle de las facturas sea igual al que se encuentra
      * registrado en el pedido
-     * 
+     *
      * @param
      *            $order
      * @param
@@ -526,7 +537,7 @@ class Gstinicial extends MY_Controller
             'fob' => 0.0,
             'seguro' => 0.0,
             'isd' => 0.0,
-            'tasa_de_servicio_aduanero' => 0.0,
+            'tasa_de_servicio_aduanero' => 0.0
         ];
         
         if ($invoicesOrder) {
@@ -539,7 +550,7 @@ class Gstinicial extends MY_Controller
             }
         }
         
-        if(gettype($initExpenses) == 'array'){
+        if (gettype($initExpenses) == 'array') {
             foreach ($initExpenses as $key => $value) {
                 if ($value['concepto'] == 'GASTO ORIGEN') {
                     $valuesOrder['gastos_origen'] = floatval($value['valor_provisionado']);
@@ -565,28 +576,26 @@ class Gstinicial extends MY_Controller
             unset($valuesOrder['gastos_origen']);
         }
         
-        $initialStockProducts = $this->ModelOrderInvoiceDetail->getActiveStokProductsByOrder($order['nro_pedido']);
-        if($initialStockProducts != false){
-            foreach ($initialStockProducts as $item => $product){
-                    if ($valuesOrder['tasa_de_servicio_aduanero'] < 700.01){
-                   $valuesOrder['tasa_de_servicio_aduanero'] += (((
-                                                                    intval($product['capacidad_ml'])/ 2000) * 0.10) * 
-                                                                    ($product['nro_cajas'] * $product['cantidad_x_caja']
-                                                                 ));
-                }
-               }
+        $initialStockProducts = $this->ModelOrderInvoiceDetail->getActiveStokProductsByOrder($order['nro_pedido']);        
+        if ($initialStockProducts != false) {
+            foreach ($initialStockProducts as $item => $product) {
+                $tasaServicio = (((intval($product['capacidad_ml']) / 2000) * 0.10) * ($product['nro_cajas'] * $product['cantidad_x_caja']));
+                if($tasaServicio < 700){
+                    $valuesOrder['tasa_de_servicio_aduanero'] += $tasaServicio;
+                }else{
+                    $valuesOrder['tasa_de_servicio_aduanero'] += 700;
+                    }
+            }
         }
         return $valuesOrder;
     }
 
-
-    
     /**
      * Obtiene el numero minimo de parametros que debe tener una oren de compra
      *
      * @param
      *            $nroOrder
-     *
+     *            
      * @return array
      */
     private function getMinimalParams($order, $initExpenses)
@@ -608,9 +617,6 @@ class Gstinicial extends MY_Controller
         }
         return $minimal;
     }
-    
-    
-    
 
     /**
      * Calcula la diferencia entre los gastos iniciales
@@ -637,11 +643,10 @@ class Gstinicial extends MY_Controller
         }
         return $unusedExpenses;
     }
-    
 
     /**
      * Se validan las columnas que debe tener la consulta para que no falle
-     * 
+     *
      * @return [array] | [bolean]
      */
     private function validData($data)

@@ -70,8 +70,8 @@
                id = "nro_refrendo"
                placeholder="000-0000-00-000000"
                class="form-control" 
-               maxlength="20" 
-               value="{{order.nro_refrendo}}" 
+               maxlength="22" 
+               value="{{ order.nro_refrendo | raw }}" 
                >
          </div>
       </div>
@@ -134,7 +134,11 @@
    <script type="text/javascript">
       var incotermsDb = {{ incoterms | raw }} ;
    </script>
-
+	
+	
+	
    <script type="text/javascript">
-   	 $('#nro_refrendo').mask('999-9999-99-009999999');
+   	 $('#nro_refrendo').change(function(){
+   		$('#nro_refrendo').mask('999-9999-99-999999999');
+   	   	 });
    </script>

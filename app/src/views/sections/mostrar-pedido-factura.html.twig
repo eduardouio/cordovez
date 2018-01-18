@@ -11,7 +11,8 @@
     {% set suma = suma +  detail.total_item %}
     {% endfor %}
     {% set diferencia =  (invoice.valor - suma) | number_format(2) %}
-
+    {% set nro_cajas = 0 %}
+  
 <h4 class="text-info">{{ supplier[0].nombre }}
   {% if diferencia != 0 %}
     &nbsp;
@@ -110,6 +111,7 @@
         </thead>
         <tbody>
           {% for detail in invoiceDetail %}
+          {% set nro_cajas = nro_cajas + detail.nro_cajas %}
           <tr>
             <td>{{ loop.index }}</td>
             <td> <a href="{{ rute_url }}detallepedido/editar/{{ detail.detalle_pedido_factura }}"> <span class="fa fa-pencil"></span> {{ detail.nombre }}</a></td>
@@ -123,7 +125,12 @@
             <td class="text-right">{{ simbolo | raw}} {{ detail.total_item | number_format(2, '.', ',') }}</td>
             <td>
               <div class="dropdown">
-                <button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-sm btn-default">
+                <button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="
+                false" class="btn btn-sm btn-default"
+                {% if order.bg_haveExpenses == 1 %}
+                disabled="" 
+                {% endif %}
+                >
                 <span class="fa fa-chevron-down" ></span>
                 Seleccione
                 </button>
@@ -141,6 +148,19 @@
             </td>
           </tr>
           {% endfor %}
+          <tr>
+          <td></td>
+          </tr>
+          <tr style="background-color:#2E86C1; color:#fff; font-weight:bold;" style="padding:1px;">
+            <td colspan="4" class="text-right">SUMAS: &nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td class="text-right">{{nro_cajas | number_format(0,',','.')}}</td>
+            <td class="text-right">--</td>
+            <td class="text-right">--</td>
+            <td class="text-right">--</td>
+            <td class="text-right">--</td>
+            <td class="text-right">{{suma | number_format(2,',','.')}}</td>
+            <td class="text-right"></td>
+          </tr>
         </tbody>
       </table>
   </div>
@@ -154,7 +174,13 @@
       </a>
     </div>
     <div class="col-ms-3">
-      <a href="{{ rute_url }}pedidofactura/editar/{{invoice.id_pedido_factura}}" class="btn btn-primary btn-sm">
+      <a class="btn btn-primary btn-sm"
+{% if order.bg_haveExpenses == 1 %}
+                disabled="" 
+                {% else %}
+                    href="{{ rute_url }}pedidofactura/editar/{{invoice.id_pedido_factura}}" 
+                {% endif %}
+      >
         <span class="fa fa-file-text-o fa-fw"></span>
         Editar Cabecera Factura <b>[{{invoice.id_factura_proveedor}}]</b>
       </a>

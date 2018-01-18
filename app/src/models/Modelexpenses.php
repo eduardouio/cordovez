@@ -242,8 +242,6 @@ class Modelexpenses extends CI_Model
      */
     public function getActiveExpenses($nroOrder)
     {
-            
-        $nroOrder = '100-17' ;
         $expenses = $this->modelBase->get_table([
             'table' => $this->table,
             'where' => [
@@ -271,7 +269,7 @@ class Modelexpenses extends CI_Model
                     if (is_array($nationalizationExpense)){
                     foreach ($nationalizationExpense as $idex => $val){
                         array_push($expenses, $val);
-                    }                        
+                        }                        
                     }
                 }
             }

@@ -1,143 +1,103 @@
-
 <div class="row">
-	<div class="col-md-2">&nbsp;</div>
-	<div class="col-md-8">
-		<table class="table table-hover table-bordered table-striped">
-			<thead>
-				<tr style="background-color: #c1c1c1;">
-					<th>Campo</th>
-					<th>Valor</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td class="text-right"><b>Estado Del Pedido:</b></td>
-					{% if order.bg_isclosed == false %}
-						<td class="success"> <strong class="text-success">Pedido Activo</strong></td>
-					{% else %}
-						<td class="danger"><strong class="text-danger">Pedido Cerrado</strong> &nbsp;&nbsp;&nbsp;<small> <span class="fa fa-warning"></span> No puede hacer cambios en este pedido</small></td>
-					{% endif %}
-				</tr>
-				<tr>
-					<td class="text-right"><b>Nro Pedido:</b></td>
-					<td>{{ order.nro_pedido }}</td>
-				</tr>
-				<tr>
-					<td class="text-right"><b>Regimen:</b></td>
-					<td>{{ order.regimen }}</td>
-				</tr>
-				<tr>
-					<td class="text-right"><b>Incoterm:</b></td>
-					<td>{{ order.incoterm }}</td>
-				</tr>
-				<tr>
-					<td class="text-right"><b>Puerto de Embarque:</b></td>
-					<td>{{ order.ciudad_origen }}</td>
-				</tr>
-				<tr>
-					<td class="text-right"><b>Pais Origen:</b></td>
-					<td>{{ order.pais_origen }}</td>
-				</tr>
-				<tr>
-					<td class="text-right"><b>Número Referendo:</b></td>
-					<td>{{ order.nro_refrendo }}</td>
-				</tr>
-				<tr>
-					<td class="text-right"><b>Dias Libres (Demoraje):</b></td>
-					<td>{{ order.dias_libres }}</td>
-				</tr>
-				<tr>
-					<td class="text-right"><b>Fecha Llegada a Puerto:</b></td>
-					<td>{{ order.fecha_arribo }}</td>
-				</tr>
-				
-				{% if order.fecha_salida_bodega_puerto == null %}
-					<tr>
-						<td class="text-right"><strong>Fecha Salida Puerto:</strong></td>
-						<td class="success">A&uacute;n En Puerto De LLegada</td>
-					</tr>
-				{% else %}
-					<tr>
-						<td class="text-right"> <strong>Fecha Salida Puerto</strong></td>
-						<td>{{ order.fecha_salida_bodega_puerto }}</td>
-					</tr>
-					{% if order.fecha_salida_almacenera == null %}
-						<tr>
-						<td class="text-right"><strong>Fecha Llegada Alamacenera P&uacute;blica</strong></td>
-						<td class="success">A&uacute;n en Alamcenera P&uacute;blica</td>
-						</tr>
-
-					{% else %}
-						<tr>
-						<td class="text-right"><strong>Fecha Salida Almacenera P&uacute;blica</strong></td>
-						<td>{{ order.fecha_salida_almacenera }}</td>
-						</tr>
-					{% endif %}
-				{% endif %}
-				<tr>
-					<td class="text-right"><b>Comentarios:</b></td>
-					<td>{{ order.comentarios }}</td>
-				</tr>
-				<tr>
-					<td class="text-right"><b>Creado El:</b></td>
-					<td>{{ order.date_create }}</td>
-				</tr>
-				<tr>
-					<td class="text-right"><b>Ultima Actualización:</b></td>
-					<td>{{ order.last_update }}</td>
-				</tr>
-				<tr>
-					<td class="text-right"><b>Creado Por:</b></td>
-					<td>{{ order.user.nombres }}</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-	<div class="col-md-2">&nbsp;</div>
-</div>
-<div class="row">
-	<div class="col-md-12">
-	{% if order.bg_isclosed == '0' %}
-	<a
-			href="{{rute_url}}gstinicial/validargi/{{order.nro_pedido}}">
-			<button type="button" class="btn btn-default btn-sm">
-				<span class="fa fa-gear"></span> Generar Gastos Iniciales
-			</button>
-		</a>
-		&nbsp;&nbsp;
-		<a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}"
-			class="text-primary">
-			<button class="btn btn-sm btn-default">
-				<span class="fa fa-pencil fa-fw"></span>Ediar Pedido
-			</button>
-		</a>  &nbsp;&nbsp; 
-		<a
-			href="{{rute_url}}pedidofactura/nuevo/{{ order.nro_pedido }}">
-			<button class="btn btn-sm btn-default">
-				<span class="fa fa-plus"></span> Agregar Factura Productos
-			</button>
-		</a> &nbsp;&nbsp;
-		<a
-			href="{{rute_url}}facturapagos/nuevo/{{order.nro_pedido}}">
-			<button class="btn btn-sm btn-default">
-				<span class="fa fa-file-o"></span> Justificar Gasto
-			</button>
-		</a>
-		{% endif %}
-		&nbsp;&nbsp; <a
-			href="#{{order.nro_pedido}}">
-			<button class="btn btn-sm btn-primary">
-				<span class="fa fa-file-pdf-o"></span> Informe General
-			</button>
-		</a> 
-		{% if order.bg_isclosed == '0' %}
-		&nbsp;&nbsp;
-		&nbsp;&nbsp; <a
-			href="{{rute_url}}pedido/eliminar/{{order.nro_pedido}}">
-			<button class="btn btn-sm btn-danger">
-				<span class="fa fa-trash fa-fw"></span>Elimnar Pedido
-			</button>
-		</a>  
-		{% endif %}
-	</div>
+  <div class="col-md-2">
+  </div>
+  <div class="col-md-8">
+    <table class="table table-hover table-bordered table-striped">
+      <thead>
+        <tr style="background-color: #c1c1c1;">
+          <th>Campo</th>
+          <th>Valor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="text-right"><b>Estado Del Pedido:</b></td>
+          {% if order.bg_isclosed == false %}
+          <td class="success"> <strong class="text-success">Pedido Activo</strong></td>
+          {% else %}
+          <td class="danger"><strong class="text-danger">Pedido Cerrado</strong> &nbsp;&nbsp;&nbsp;<small> <span class="fa fa-warning"></span> No puede hacer cambios en este pedido</small></td>
+          {% endif %}
+        </tr>
+        <tr>
+          <td class="text-right"><b>Nro Pedido:</b></td>
+          <td>{{ order.nro_pedido }}</td>
+        </tr>
+        <tr>
+          <td class="text-right"><b>Regimen:</b></td>
+          <td>{{ order.regimen }}</td>
+        </tr>
+        <tr>
+          <td class="text-right"><b>Incoterm:</b></td>
+          <td>{{ order.incoterm }}</td>
+        </tr>
+        <tr>
+          <td class="text-right"><b>Puerto de Embarque:</b></td>
+          <td>{{ order.ciudad_origen }}</td>
+        </tr>
+        <tr>
+          <td class="text-right"><b>Pais Origen:</b></td>
+          <td>{{ order.pais_origen }}</td>
+        </tr>
+        <tr>
+          <td class="text-right"><b>Número Referendo:</b></td>
+          <td>{{ order.nro_refrendo }}</td>
+        </tr>
+        <tr>
+          <td class="text-right"><b>Dias Libres (Demoraje):</b></td>
+          <td>{{ order.dias_libres }}</td>
+        </tr>
+        <tr>
+          <td class="text-right"><b>Fecha Llegada a Puerto:</b></td>
+          {% if order.fecha_arribo == null %}
+          <td class="text-danger">Pendiente</td>
+          {% else %}
+          <td>{{ order.fecha_arribo | date('d-m-Y') }}</td>
+          {% endif  %}
+        </tr>
+        <tr>
+          <td class="text-right"><strong>Fecha Salida Bodega Puerto:</strong></td>
+          {% if order.fecha_salida_bodega_puerto == null %}
+          <td class="text-danger">Pendiente</td>
+          {% else %}
+          <td> {{ order.fecha_salida_bodega_puerto | date('d-m-Y')}}           </td>
+          {% endif %}
+        </tr>
+         
+         {% if order.regimen == 70 %}
+        <tr>
+          <td class="text-right"><strong>Fecha Llegada Almacenera P&uacute;blica</strong></td>
+          {% if order.fecha_ingreso_almacenera == null%}
+          <td class="text-danger">Pendiente</td>
+          {% else %}
+		<td>          {{ order.fecha_ingreso_almacenera | date('d-m-Y') }}</td>
+          {% endif %}
+        </tr>
+        <tr>
+          <td class="text-right"><strong>Fecha Salida Almacenera P&uacute;blica</strong></td>
+          {%  if order.fecha_salida_almacenera == null %}
+          <td class="text-danger">Pendiente</td>
+          {% else %}
+          <td>{{ order.fecha_salida_almacenera | date('d-m-Y') }}</td>
+          {% endif %}
+        </tr>
+          {% endif %}
+        <tr>
+          <td class="text-right"><b>Comentarios:</b></td>
+          <td>{{ order.comentarios }}</td>
+        </tr>
+        <tr>
+          <td class="text-right"><b>Creado El:</b></td>
+          <td>{{ order.date_create }}</td>
+        </tr>
+        <tr>
+          <td class="text-right"><b>Ultima Actualización:</b></td>
+          <td>{{ order.last_update }}</td>
+        </tr>
+        <tr>
+          <td class="text-right"><b>Creado Por:</b></td>
+          <td>{{ order.user.nombres }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

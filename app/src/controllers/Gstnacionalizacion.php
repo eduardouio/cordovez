@@ -18,31 +18,18 @@ class Gstnacionalizacion extends MY_Controller
 {
 
     private $controller = 'gastos_nacionalizacion';
-
     private $template = 'pages/pageGastosNacionalizacion.html';
-
     private $modelOrder;
-
     private $modelExpenses;
-
     private $modelProduct;
-
     private $modelOrderInvoice;
-
     private $modelOrderInvoiceDetail;
-
     private $modelInfoInvoiceDetail;
-
     private $modelInfoInvoice;
-
     private $modelBase;
-
     private $modelLog;
-
     private $modelUser;
-
     private $modelSupplier;
-
     private $modelRateExpenses;
 
     /**
@@ -103,8 +90,7 @@ class Gstnacionalizacion extends MY_Controller
      * @param string $nroOrder
      * @return string template
      */
-    public 
-    function putExpenses()
+    public  function putExpenses()
     {
         if (! $_POST) {
             return ($this->index());
@@ -267,9 +253,35 @@ class Gstnacionalizacion extends MY_Controller
      */
     private function getWarenhousePartialValue(int $idInfoInvoice):float
     {   
+        $fobStarted = 0.0;
+        $fobNationalized = 0.0;
+        
         $infoInvoice = $this->modelInfoInvoice->get($idInfoInvoice);
         $order = $this->modelOrder->get($infoInvoice['nro_pedido']);
+        $initialStock = $this->modelOrderInvoice->getbyOrder($infoInvoice['nro_pedido']);
         
+        if(is_array($initialStock)){
+            foreach ($initialStock as $item => $orderInvoice){
+                #el valor de la factura por el tipo de cambio de la fac informativa
+                $fobStarted += ($orderInvoice['valor'] * $infoInvoice['tipo_cambio']);
+            }
+        }
+
+        $actualStock = $this->modelInfoInvoice->getClosedByOrder($infoInvoice['nro_pedido']);
+        if (is_array($actualStock)){
+            foreach ($actualStock as $key => $item){
+                $fobNationalized += ($item['valor'] * $item['tipo_de_cambio']);
+            }
+
+        }
+        
+
+
+        return (0);
+        print $fobNationalized;
+        print $fobStarted;
+        
+            exit();
     }
     
     

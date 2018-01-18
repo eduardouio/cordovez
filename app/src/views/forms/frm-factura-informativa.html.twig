@@ -1,7 +1,7 @@
 {% set saldoEuros  =  (sumsValues.valInvoicesEuros  - sumsValues.infoInvoicesEuros) %}
 {% set saldoDolares  =  (sumsValues.valInvoicesDollars  - sumsValues.infoInvoicesDollars) %}
-{% set fob = (sumsValues.valInvoices) + (sumsValues.originExpenses * sumsValues.multiple) %}
-{% set cif = (fob + sumsValues.valSecureExpense + sumsValues.valSecureExpense + sumsValues.valShipExpnese)  %}
+{% set fob = (sumsValues.valInvoices) %}
+{% set cif = (fob + sumsValues.valSecureExpense  + sumsValues.valShipExpnese)  %}
 {% set nacionalizado = 0 %}
 {% if order.regimen == 70  %}
 	{% set nacionalizado = sumsValues.infoInvoices  %}
@@ -311,5 +311,5 @@
 </script>
 
   <script type="text/javascript">
-       $('#nro_refrendo').mask('999-9999-99-009999999');
+       $('#nro_refrendo').mask('999-9999-99-99999999');
    </script>

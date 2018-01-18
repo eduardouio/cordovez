@@ -67,8 +67,40 @@
          step="0.0000000001" 
          value="{{ detailInvoiceOrder.costo_caja }}" 
          >
-
    </div>
+</div>
+<div class="row">
+   <div class="col-md-2">
+   <div class="input-group">
+      <label>Cantidad Caja</label>
+      <input type="text" disabled="" id="cantidad_caja" class="form-control" value="{{ product.cantidad_x_caja }}">
+   </div>
+</div>
+<div class="col-md-2">
+   <div class="input-group">
+      <label>Unidades</label>
+      <input type="text" disabled="" id="unidades" class="form-control" value="{{ product.cantidad_x_caja * detailInvoiceOrder.nro_cajas }}">
+   </div>
+</div>
+<div class="col-md-2">
+   <div class="input-group">
+      <label>Capacidad ML</label>
+      <input type="text" disabled="" id="capacidad_ml" class="form-control" value="{{product.capacidad_ml}}" >
+   </div>
+</div>
+<div class="col-md-2">
+   <div class="input-group">
+      <label>Costo Und</label>
+      <input type="text" disabled="" id="costo_und" class="form-control" value="{{product.cantidad_x_caja / detailInvoiceOrder.costo_caja}}">
+   </div>
+</div>
+<div class="col-md-2">
+   <div class="form-group">
+      <label class="text-danger">Costo Total</label>
+      <input type="text" id="costoTotal" class="form-control" style="color:#a94442;font-weight: bold;" disabled="" value="{{product.cantidad_x_caja * detailInvoiceOrder.costo_caja}}">
+   </div>
+</div>
+<div class="col-md-2">&nbsp;</div>
 </div>   
    <div class="row">
       <div class="col-md-12">
@@ -84,6 +116,42 @@
       </div>
    </div>
 </form>
+<script type="text/javascript">
+var maxValueInvoice = {{invoiceOrder.valor}};
+</script>
+
+<script type="text/javascript">
+$('#costo_caja').change(function(){
+      var numBoxes = $('#nro_cajas').val();
+      var itemPerBox = parseFloat($('#cantidad_caja').val());
+      var valBox = parseFloat(this.value);
+      $('#unidades').val(numBoxes * itemPerBox);
+      $('#costoTotal').val(numBoxes * valBox);
+      if((numBoxes * valBox) > maxValueInvoice ){
+         alert('La cantidad de cajas excede el valor de la factura!');
+         $('#nro_cajas').val(0);
+         $('#costo_caja').val(0);
+         $('#costoTotal').val(0);
+         $('#unidades').val(0);
+      }
+});
+</script>
+
+<script type="text/javascript">
+   $('#nro_cajas').change(function(){
+      var numBoxes = parseFloat(this.value);
+      var itemPerBox = parseFloat($('#cantidad_caja').val());
+      var valBox = parseFloat($('#costo_caja').val());
+      $('#unidades').val(numBoxes * itemPerBox);
+      $('#costoTotal').val(numBoxes * valBox);
+      if((numBoxes * valBox) > maxValueInvoice ){
+         alert('La cantidad de cajas excede el valor de la factura!');
+         $('#nro_cajas').val(0);
+         $('#costoTotal').val(0);
+         $('#unidades').val(0);
+      }
+   });
+</script>
 <script type="text/javascript">
    $('#chage_params').click(function(){
       if( $('#chage_params').is(':checked') ){

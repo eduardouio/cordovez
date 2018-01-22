@@ -59,12 +59,12 @@ class Modelinfoinvoice extends CI_Model
      * @param (string) $nroOrder
      * @return array | boolean
      */
-    public function getByOrder($nroOrder)
+    public function getByParcial($idParcial)
     {
         $invoices = $this->modelBase->get_table([
             'table' => $this->table,
             'where' => [
-                'nro_pedido' => $nroOrder
+                'id_parcial' => $idParcial
             ],
             'orderby' => [
                 'fecha_emision' => 'DESC',
@@ -74,6 +74,7 @@ class Modelinfoinvoice extends CI_Model
         if((gettype($invoices) == 'array') && (count($invoices) > 0)){
             return $invoices;
         }
+        $this->modelLog->warningLog('Parcial Sin facturas informativas', $this->db->last_query());
         return false;
     }
     

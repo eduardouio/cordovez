@@ -37,7 +37,7 @@ class Modelparcial extends CI_Model
      * @param int $idParcial
      * @return array | boolean
      */
-    public function get(int $idParcial):array
+    public function get(int $idParcial)
     {
         $parcial = $this->modelBase->get_table([
             'table' => $this->table,
@@ -62,33 +62,30 @@ class Modelparcial extends CI_Model
      */
     public function getByOrder(string $nroOrder)
     {
-        $infoInvoices = $this->modelBase->get_table([
-            'table' => 'factura_informativa',
+        $parcials = $this->modelBase->get_table([
+            'table' => $this->table,
             'where' => [
                 'nro_pedido' => $nroOrder,
             ],
         ]);
         
-        if( is_array($infoInvoices) && !empty($infoInvoices)){
-            $partials = [];
-            foreach ($infoInvoices as $item => $invoice){
-                array_push($partials, $infoInvoices['id_parcial']);
-            }
-            return $partials;
+        if( is_array($parcials) && count($parcials) > 0){
+            return $parcials;
         }
-        $this->modelLog->warningLog('Pedido sin Parciales', $this->db->last_query());
         return false;
     }
     
     
     /**
-     * Registra un parcial en la base de datos y retorna el id del mismo
-     * @param array $parcial
+     * Registra un parcial abierto en la base de datos 
+     * @param array $parcial arreglo con informacion del parcial
      * @return int | boolean
      */
     public function create(array $parcial)
     {
+               
         if($this->db->insert($this->table, $parcial)){
+            $this->modelLog->susessLog('Se crea un nuevo parcual abierto ' . $this->db->insert_id());
             return $this->db->insert_id();
         }
         if($this->modelLog->errorLog('No se puede insertar un parcial' , $this->db->last_query()));

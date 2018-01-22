@@ -12,9 +12,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @filesource
  */
 class Modellog extends CI_Model{
-    private $path = '/var/www/html/app/src/logs/app.log';
+    private $path = '/var/www/html/cordovezapp/app/src/logs/app.log';
+ 
     
-    
+    /**
+     * Funcion constructora de la clase
+     */ 
     function __construct(){
         parent::__construct();
     }

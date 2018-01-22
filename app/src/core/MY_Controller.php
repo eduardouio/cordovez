@@ -13,9 +13,9 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  * @filesource
  */
 class MY_Controller extends CI_Controller
-{   
+{
     private $modelBase;
-
+    
     public function __construct()
     {
         parent::__construct();
@@ -31,7 +31,7 @@ class MY_Controller extends CI_Controller
         $this->load->model('modelbase');
         $this->modelBase = new ModelBase();
     }
-
+    
     /**
      * Verofica la sesion del usuario, si la sesion no existe
      * redirecciona al formulario de autenticacion
@@ -47,7 +47,7 @@ class MY_Controller extends CI_Controller
             return true;
         }
     }
-
+    
     /**
      * controla las columnas y la longitud de sus valores
      * @param (array) $paramsdata => Parametros minimos
@@ -68,7 +68,7 @@ class MY_Controller extends CI_Controller
             'columns' => [],
             'len' => [],
         ];
-
+        
         foreach ($paramsData as $param => $value) {
             if (isset($data[$param])) {
                 if (strlen($data[$param]) < ($value - 1)) {
@@ -82,18 +82,19 @@ class MY_Controller extends CI_Controller
         }
         return $validationResult;
     }
-
-
+    
+    
     /**
      * Redirecciona a cualquier pagina del sitio
      * htttp://ip/index.php/controller/method/params/
      *
      * @param $page => pagename
-     * @param $id => identificator Row
+     * @param $id => primer parametro de la funcion
+     * @param $id2 => segundo parametro de la funcion
      *
      * @return void | bool
      */
-    public function redirectPage(string $page, $id = false)
+    public function redirectPage(string $page, $id = false, $id2 = false)
     {
         $target = [
             'loginForm' =>  'index.php/login/',
@@ -122,14 +123,19 @@ class MY_Controller extends CI_Controller
         ];
         header('Status: 301 Moved Permanently', false, 301);
         if ($id) {
+            if($id2){
+                header('Location: ' . base_url() . $target[$page] . '/' . $id  . '/' . $id2);
+                return true;
+            }
             header('Location: ' . base_url() . $target[$page] . '/' . $id);
             return true;
         }
         header('Location: ' . base_url() . $target[$page]);
+        return true;
     }
     
     
-        
+    
     /**
      * Obtiene el tiempo en dias de un pedido en la bodega inicial
      * si el pedido se encuentra nacionalizado o tiene una factura

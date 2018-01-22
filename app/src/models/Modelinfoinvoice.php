@@ -21,8 +21,8 @@ class Modelinfoinvoice extends CI_Model
     private $modelOrderInvoice;
     private $modelLog;
     private $modelOrder;
- 
-
+    
+    
     /**
      * Constructor de la clase
      */
@@ -34,7 +34,7 @@ class Modelinfoinvoice extends CI_Model
     
     
     /**
-     * carga los modelos y librerias necesarias para la 
+     * carga los modelos y librerias necesarias para la
      * clase
      */
     private function init()
@@ -53,7 +53,7 @@ class Modelinfoinvoice extends CI_Model
         $this->modelOrder = new Modelorder();
     }
     
-      
+    
     /**
      * Obtiene el listado de facturas informativas de un pedido en regimen 70
      * @param (string) $nroOrder
@@ -70,10 +70,10 @@ class Modelinfoinvoice extends CI_Model
                 'fecha_emision' => 'DESC',
             ],
         ]);
-
+        
         if((gettype($invoices) == 'array') && (count($invoices) > 0)){
             return $invoices;
-            }
+        }
         return false;
     }
     
@@ -82,7 +82,7 @@ class Modelinfoinvoice extends CI_Model
     /**
      * Obtiene todas las facturas cerradas del pedido
      * @param string $nroOrder
-     * @return array | bool 
+     * @return array | bool
      */
     public  function getClosedByOrder(string $nroOrder)
     {
@@ -97,7 +97,7 @@ class Modelinfoinvoice extends CI_Model
         }
         return false;
     }
-
+    
     /**
      * Obtiene el registro de una factura informativa
      * @param int $idFacInformativemodel
@@ -122,7 +122,7 @@ class Modelinfoinvoice extends CI_Model
     /**
      * Eliminar una factura infotmativa de la base de datos si no puede retorna false
      * @param integer $idFactInformative identificador de regitro
-     * @return boolean 
+     * @return boolean
      */
     public function delete($idFactInformative){
         $this->db->where('id_factura_informativa', $idFactInformative);
@@ -133,7 +133,7 @@ class Modelinfoinvoice extends CI_Model
             return false;
         }
     }
-        
+    
     /**
      * crea una factura informativa en la base de datos
      * @param array $infoiInvoice informacion factura informativa
@@ -143,13 +143,13 @@ class Modelinfoinvoice extends CI_Model
         if($this->db->insert($this->table, $infoInvoice)){
             return $this->db->insert_id();
         }
-        $this->modelLog->errorLog('Modelinfoinvoice,create,No se puede crear');
+        $this->modelLog->errorLog('Modelinfoinvoice,create,No se puede crear', $this->db->last_query());
         return false;
     }
     
     
     /**
-     * Actualiza el registro de una 
+     * Actualiza el registro de una
      * @param array $infoInvoice
      * @return bool
      */
@@ -174,7 +174,7 @@ class Modelinfoinvoice extends CI_Model
             'select' => ['SUM(*) as parciales'],
             'table' => $this->table,
             'where' => [
-                'nro_pedido' => $nroOrder,                
+                'nro_pedido' => $nroOrder,
             ],
         ]);
         if( gettype($result) == 'array' && count($result) > 0 ){
@@ -187,7 +187,7 @@ class Modelinfoinvoice extends CI_Model
     
     /**
      * Retorna la ultima factura informativ cerrada de un pedido
-     * @param string $nroOrder 
+     * @param string $nroOrder
      * @return array | boolean
      */
     public function lastInfoInvoice($nroOrder){
@@ -199,13 +199,13 @@ class Modelinfoinvoice extends CI_Model
             ],
             'orderby' => ['id_factura_informativa' => 'DESC'],
             'limit' => 1,
-        ]); 
+        ]);
         $this->modelLog->susessLog($this->db->last_query());
         if((gettype($infoInvoice) == 'array') && (count($infoInvoice)> 0 )){
             return $infoInvoice[0];
         }
         return false;
-            
+        
     }
     
     
@@ -228,5 +228,5 @@ class Modelinfoinvoice extends CI_Model
         }
         return 0;
     }
-       
+    
 }

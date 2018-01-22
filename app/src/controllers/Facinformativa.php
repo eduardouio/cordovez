@@ -1,5 +1,4 @@
-<?php
-defined('BASEPATH') or exit('No direct script access allowed');
+<?php defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
  * Modulo encargado de manejar los proveedores, CRUD y validaciones
@@ -29,7 +28,7 @@ class Facinformativa extends MY_Controller
     private $modelProduct;
     private $modelLog;
     private $myModel;
-
+    
     /**
      * Constructor de la funcion
      */
@@ -38,7 +37,7 @@ class Facinformativa extends MY_Controller
         parent::__construct();
         $this->init();
     }
-
+    
     /**
      * Carga los modelos a usar en la clase
      *
@@ -71,7 +70,7 @@ class Facinformativa extends MY_Controller
         $this->modelLog = new Modellog();
         $this->myModel = new Mymodel();
     }
-
+    
     /**
      * Redirecciona a la lista de pedidos
      */
@@ -80,7 +79,7 @@ class Facinformativa extends MY_Controller
         $this->redirectPage('ordersList');
         return true;
     }
-
+    
     /**
      * Muestra a detalle una factura informativa
      *
@@ -124,7 +123,7 @@ class Facinformativa extends MY_Controller
             'user' => $this->modelUser->get($infoInvoice['id_user'])
         ]);
     }
-
+    
     /**
      * Presenta el formulario para registrar una nueva factura informativa
      * las facturas informativas solo se usan con regimen 70
@@ -178,7 +177,7 @@ class Facinformativa extends MY_Controller
             'user' => $this->modelUser->get($order['id_user'])
         ]);
     }
-
+    
     /**
      * Prepara el formulario para editar una factura informativa
      *
@@ -226,13 +225,13 @@ class Facinformativa extends MY_Controller
             'supplier' => $this->modelsupplier->get($this->almaceneraId),
             'haveEuros' => $this->orderHaveEuros($infoInvoice['nro_pedido']),
             'sumsValues' => $this->myModel->getValuesOrder($order),
-#            'warenHouseDays' => $this->getWarenHouseDaysPartials($order),
+            #            'warenHouseDays' => $this->getWarenHouseDaysPartials($order),
             'olderPartials' => $olderPartials,
             'titleContent' => 'Modificar Factura Informativa Pedido: [' . $infoInvoice['nro_pedido'] . ']',
             'user' => $this->modelUser->get($order['id_user'])
         ]);
     }
-
+    
     /**
      * Valida y gusrada una factura informativa si no existe redirecciona a pedidos
      *
@@ -272,9 +271,10 @@ class Facinformativa extends MY_Controller
             } else {
                 $infoInvoice['last_update'] = date('Y-m-d H:m:s');
                 if ($this->modelInfoInvoice->update($infoInvoice)) {
+                    print 'Actualiza';
                     return ($this->redirectPage('infoInvoiceShow', $infoInvoice['id_factura_informativa']));
                 }
-                return (print('problemas con la base de datos'));
+                
             }
         } else {
             $order = $this->modelOrder->get($infoInvoice['nro_pedido']);
@@ -295,7 +295,7 @@ class Facinformativa extends MY_Controller
             ]));
         }
     }
-
+    
     /**
      * Elimina una factura informativa de la base de datos, solo si esta
      * no tiene dependencias
@@ -323,7 +323,7 @@ class Facinformativa extends MY_Controller
             ]);
         }
     }
-
+    
     /**
      * Verifica si el pedido tiene una factura en euros
      *
@@ -366,7 +366,7 @@ class Facinformativa extends MY_Controller
     }
     
     
-
+    
     /**
      * Se validan las columnas que debe tener la consulta para que no falle
      *
@@ -385,7 +385,7 @@ class Facinformativa extends MY_Controller
         );
         return $this->_checkColumnsData($columnsLen, $data);
     }
-
+    
     /*
      * Envia la respuestas html al navegador
      * @param array $config Arreglo con info de la plantilla
@@ -402,4 +402,3 @@ class Facinformativa extends MY_Controller
         return $this->twig->display($this->template, $config);
     }
 }
-

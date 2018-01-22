@@ -37,6 +37,7 @@ class Pedido extends MY_Controller
     private $modelOrderInvoice;
     private $modelOrderInvoiceDetail;
     private $modelPaidDetail;
+    private $modelParcial;
     
     public function __construct()
     {
@@ -63,6 +64,7 @@ class Pedido extends MY_Controller
         $this->load->model('modelorderinvoice');
         $this->load->model('modelorderinvoicedetail');
         $this->load->model('modelpaiddetail');
+        $this->load->model('modelparcial');
         $this->modelOrder = new Modelorder();
         $this->modelSupplier = new Modelsupplier();
         $this->modelProduct = new Modelproduct();
@@ -77,6 +79,7 @@ class Pedido extends MY_Controller
         $this->modelOrderInvoice = new Modelorderinvoice();
         $this->modelPaidDetail = new Modelpaiddetail();
         $this->modelOrderInvoiceDetail = new Modelorderinvoicedetail();
+        $this->modelParcial = new Modelparcial();
     }
     
     /**

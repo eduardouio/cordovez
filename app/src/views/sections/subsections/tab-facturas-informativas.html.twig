@@ -4,7 +4,7 @@
             <a href="{{ rute_url }}facinformativa/nuevo/{{ order.nro_pedido }}">
                 <button type="button" class="btn btn-primary btn-sm">
                     <span class="fa fa-plus"></span>
-                    Nueva Factura Informativa
+                    Nuevo Parcial Pedido
                 </button>
             </a>
             <br>
@@ -33,30 +33,27 @@
 
 
 <div class="row">
-    <div class="col-sm-12">
+    <div class="col-sm-1">&nbsp;</div>
+    <div class="col-sm-10">
         <table class="table table-hover table-bordered table-striped">
             <thead>
             <tr style="background-color: #c1c1c1;">
                 <th>#</th>
-                <th>Nro Fact</th>
-                <th>Proveedor</th>
-                <th>Fecha</th>
-                <th>Moneda</th>
-                <th>Tipo Cambio</th>
+                <th>Id Parcial</th>
+                <th>Pedido</th>
                 <th>Valor</th>
-                <th>Total</th>
                 <th>Acciones</th>
             </tr>
             </thead>
             <tbody>
-            {% for invoice in invoicesInfo %}
+            {% for parcial in parcials %}
                 <tr>
                     <td>{{ loop.index }}</td>
                     <td>
                     <span class="fa fa-eye">
                         <a href="{{ rute_url }}facinformativa/presentar/{{ invoice.id_factura_informativa }}">
                                         {{ invoice.nro_factura_informativa }}
-                                         </a>
+                                         </a>   
                 </td>
                     <td>
                     <span class="fa fa-pencil">
@@ -66,9 +63,6 @@
                                          </a>
                     </td>
                     <td>{{ invoice.fecha_emision }}</td>
-                    <td>{{ invoice.moneda }}</td>
-                    <td>{{ invoice.tipo_cambio }}</td>
-                    <td>{{ invoice.valor }}</td>
                     <td>{{ (invoice.tipo_cambio * invoice.valor) | number_format(2,',','.') }} </td>
                     <td>
                         <div class="dropdown">
@@ -109,5 +103,10 @@
             {% endfor %}
             </tbody>
         </table>
+    </div>
+    <div class="col-sm-1">&nbsp;</div>
+
+    <div class="row">
+        
     </div>
 </div>

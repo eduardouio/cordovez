@@ -1,16 +1,32 @@
 <?php
 
+defined('BASEPATH') or exit('No direct script access allowed');
 
+/**
+ * Controller encargado de manejar los parciales de los pedidos
+ *
+ * @package CordovezApp
+ * @author Eduardo Villota <eduardouio7@gmail.com>
+ * @copyright Copyright (c) 2014, Agencias y Representaciones Cordovez S.A.
+ * @license Derechos reservados Agencias y Representaciones Cordovez S.A.
+ * @link https://gitlab.com/eduardo/APPImportaciones
+ * @since Version 1.0.0
+ * @filesource
+ */
 class Parcial extends MY_Controller
 {
-    
+
+    private $template = '/pages/pageParcial.html';
+    private $controller = 'parcial';
     private $modelParcial;
     private $modelOrder;
     private $modelInfoInvoice;
+    private $modelInfoInvoiceDetail;
     private $modelLog;
     private $modelProduct;
-    
-    
+    private $modelUser;
+    private $modelExpenses;
+
     /**
      * constructor de clase
      */
@@ -19,10 +35,10 @@ class Parcial extends MY_Controller
         parent::__construct();
         $this->init();
     }
-    
-    
+
     /**
      * Inicia los modelos de la clase
+     *
      * @return void
      */
     public function init()
@@ -30,45 +46,121 @@ class Parcial extends MY_Controller
         $this->load->model('Modelparcial');
         $this->load->model('Modelorder');
         $this->load->model('Modelinfoinvoice');
+        $this->load->model('Modelinfoinvoicedetail');
         $this->load->model('Modellog');
-        $this->load->model('Modelproduct');
+        $this->load->model('Modelproduct');        
+        $this->load->model('Modeluser');        
+        $this->load->model('Modelexpenses');        
         $this->modelParcial = new Modelparcial();
         $this->modelOrder = new Modelorder();
         $this->modelInfoInvoice = new Modelinfoinvoice();
+        $this->modelInfoInvoiceDetail = new Modelinfoinvoicedetail();
         $this->modelLog = new Modellog();
         $this->modelProduct = new Modelproduct();
+        $this->modelUser = new Modeluser();
+        $this->modelExpenses = new Modelexpenses();
     }
-    
-    
+
     /**
-     * metodo inicial de la clase
+     * Si se accede directamente a la clase se redirecciona a la 
+     * lista de pedidos
      */
     public function index()
     {
-        print 'Bienvenido al Cambio ';
+        $this->modelLog->redirectLog('Falta de parametros parcial ', current_url());
+        return ($this->redirectPage('ordersList'));
+    }
+
+    /**
+     * Genera un nuevo parcial en la base de datos
+     * luego redirecciona al formulario de factura informativa
+     *
+     * @param string $nroOrder
+     */
+    public function presentar(string $nroOrder, int $idParcial)
+    {
+        $order = $this->modelOrder->get($nroOrder);
+        $parcial = $this->modelParcial->get($idParcial);
+        
+        if ($order == false || $parcial == false) {
+            $this->modelLog->warningLog('Se accede directamente a la funcion ' . current_url());
+            return ($this->redirectPage('ordersList'));
+        }
+
+        $infoInvoices = $this->modelInfoInvoice->getByParcial($idParcial);
+        if(is_array($infoInvoices)){
+            foreach ($infoinvoices as $item => $invoice){
+                $invoice['user'] = $this->modelUser->get($invoice['id_user']);
+                $invoice['details'] = $this->modelInfoInvoiceDetail->getByFacInformative($invoice['id_factura_informativa']);
+                $infoInvoices[$item] = $invoice;
+            }
+        }
+        
+        print '<pre>';
+        print_r($infoInvoices);
+        print '</pre>';
+
+        return($this->responseHttp([
+            'titleContent' => "Detalle parcial [" . $this->getNumberParcial($order['nro_pedido']) . "] " .
+                                  "para el pedido [" . $order['nro_pedido'] . "]",
+            'show' => true,            
+            'order' => $order,
+            'parcial' => $parcial,
+            'infoInvoices' => $infoInvoices,
+            'partialNumber' => $this->getNumberParcial($order['nro_pedido']),
+        ]));
     }
     
     
     /**
-     * Genera un nuevo parcial en la base de datos
-     * luego redirecciona al formulario de factura informativa
-     * @param string $nroOrder
+     * se validan los datos que deben estar para que la consulta no falle
+     *
+     * @return [array] | [bolean]
      */
-    public function nuevo(string $nroOrder)
+    private function validData($pedido)
     {
-        $parcial = [
-            'id_user' => $this->session->userdata('id_user'),
-        ];
-        
-        if($this->modelParcial->create($parcial)){
-            print $this->db->insert_id();
-        }
-        
-        $this->modelLog->errorLog('No se pudo crear un nuevo parcial', $this->db->last_query());
-        return(print 'No se puede continuar si el parcial no puede ser creado');
+        return ($this->_checkColumnsData([
+            'nro_pedido' => 6,
+            'regimen' => 2,
+            'incoterm' => 1,
+            'pais_origen' => 1,
+            'ciudad_origen' => 1,
+            'nro_refrendo' => 1,
+            'id_user' => 1
+        ], $pedido));
     }
     
     
-    
-    
+    /**
+     * Retorna en numero del parcial 1,2,3,4, indepedientememte
+     * del id autoincremental asignado po la base
+     * 12 54. 544,
+     * @param string $nroOrder
+     * @return int secuencial parcial (primero, segundo)
+     */
+    private function getNumberParcial(string $nroOrder):int
+    {
+        $partials = $this->modelParcial->getByOrder($nroOrder);
+        if(is_array($partials)){
+            return (count($partials));
+        }
+        return 0;
+    }
+
+    /*
+     * Redenderiza la informacion y la envia al navegador
+     * @param array $config informacion de la plantilla
+     */
+    private function responseHttp($config)
+    {
+        return ($this->twig->display($this->template, array_merge($config, [
+            'title' => 'Pedidos',
+            'base_url' => base_url(),
+            'rute_url' => base_url() . 'index.php/',
+            'controller' => $this->controller,
+            'iconTitle' => 'fa-cubes',
+            'content' => 'home'
+        ])));
+    }
 }
+   

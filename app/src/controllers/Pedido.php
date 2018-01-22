@@ -256,14 +256,24 @@ class Pedido extends MY_Controller
         
         $order = $_POST;
         $order['fecha_ingreso_almacenera'] = str_replace('/', '-', $order['fecha_ingreso_almacenera']);
-        $order['fecha_ingreso_almacenera'] = date('Y-m-d' , strtotime($order['fecha_ingreso_almacenera']));
+        $order['fecha_ingreso_almacenera'] = date('Y-m-d' , strtotime($order['fecha_ingreso_almacenera']));        
         $order['bg_haveExpenses'] = '1';
         $pedido['last_update'] = date('Y-m-d H:i:s');
+        
         if($this->modelOrder->update($order)){
             $this->modelLog->warningLog('Pedido Actualizado Correctamente', $this->db->last_query());
-            return($this->redirectPage('closeInitExpenses', $order['nro_pedido']));
+            
+            $idParcial = $this->modelParcial->create([
+                'nro_pedido' => $order['nro_pedido'],
+                'id_user' => $this->session->userdata('id_user'),                
+            ]);
+            
+            if($idParcial){
+                return($this->redirectPage('newParcial', $order['nro_pedido'] , $idParcial));
+            }
         }
-        $this->modelLog->errorLog('Error al intentar acrtualizar un Pedido ' . current_url() , $this->db->last_query());
+        
+        $this->modelLog->errorLog('No se puede cerrar los gastos iniciales del pedido ' . current_url() , $this->db->last_query());
     }
     
     /**

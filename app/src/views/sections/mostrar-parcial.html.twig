@@ -1,0 +1,71 @@
+<div class="well well-sm">
+	<div class="row">
+		<div class="col-md-3">
+			<strong>FOB Parcial:</strong> <span>{{ parcial.numero }}</span>
+		</div>
+		<div class="col-md-2">
+			<strong>Flete Parcial:</strong> <span>{{ supplier.identificacion_proveedor }}</span>
+		</div>
+		<div class="col-md-2">
+			<strong>Seguro Parcial:</strong> <span>{{ infoInvoice.fecha_emision  }}</span>
+		</div>
+		<div class="col-md-2">
+			<strong>Cajas Parcial:</strong> {{infoInvoice.seguro_aduana }}
+		</div>
+		<div class="col-md-3">
+			<strong>Unidades:</strong> <span>{{ infoInvoice.comentarios }}</span>
+		</div>
+	</div>
+</div>
+<br>
+<!-- Tabs -->
+<div>
+   <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active">
+      	<a href="#facturas" role="tab" data-toggle="tab" aria-controls="facturas">
+      	<span class="fa fa-file"></span> Facturas Informativas Parcial
+      	{% if infoInvoice.bg_isclosed == '0' %}
+         <span class="label label-success">Abierto</span>
+         {% else %}
+         <span class="label label-died">Cerrado</span>
+         {% endif %}
+      </a>
+      </li>
+      <li role="presentation">
+      	<a href="#gastos" role="tab" data-toggle="tab" aria-controls="gastos">
+      		<span class="fa fa-list"></span> Gastos Nacionalizacion Parcial
+      	</a>
+      </li>    
+      <li role="presentation">
+      	<a href="#servicios" role="tab" data-toggle="tab" aria-controls="servicios">
+      		<span class="fa fa-file-text-o"></span> Provisiones Justificadas Parcial
+      	</a>
+      </li>
+   </ul>
+   <br>
+   <div class="tab-content">
+      <!-- tabFacturas-->
+      <div role="tabpanel" class="tab-pane active" id="facturas">
+         {% include 'sections/subsections/tab-facturainformativa-detalle.html.twig' %}
+      </div>
+      <!-- /Tab Facturas-->
+      <!-- Gastos nacionalizacion factura informativa -->
+      <div role="tabpanel" class="tab-pane" id="gastos">
+      	 {% include 'sections/subsections/tab-gastos-nacionalizacion.html.twig' %}
+      </div>
+      <!-- /Gastos nacionalizacion factura informativa -->
+      <!-- Tab Facturas Servicios factura informativa -->
+      <div role="tabpanel" class="tab-pane" id="servicios">
+         {% include 'sections/subsections/tab-facturas-servicios.html.twig' %}
+      </div>
+      <!-- /Tab Facturas Servicios -->
+   </div>
+</div>
+<!--/tabs-->
+<div class="row">
+	<div class="col-md-2">
+		<a href="{{rute_url}}pedido/presentar/{{ infoInvoice.nro_pedido }}" class="btn btn-default btn-sm">
+			<i class="fa fa-cubes"></i> Volver al Pedido [{{ infoInvoice.nro_pedido }}]
+		</a>
+	</div>
+</div>

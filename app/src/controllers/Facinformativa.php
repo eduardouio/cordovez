@@ -28,6 +28,7 @@ class Facinformativa extends MY_Controller
     private $modelProduct;
     private $modelLog;
     private $myModel;
+    private $modelParcial;
     
     /**
      * Constructor de la funcion
@@ -57,6 +58,8 @@ class Facinformativa extends MY_Controller
         $this->load->model('modelproduct');
         $this->load->model('mymodel');
         $this->load->model('modellog');
+        $this->load->model('Modelparcial');
+        $this->modelParcial = new Modelparcial();
         $this->modelOrder = new Modelorder();
         $this->modelUser = new Modeluser();
         $this->modelSupplier = new Modelsupplier();
@@ -128,46 +131,47 @@ class Facinformativa extends MY_Controller
      * Presenta el formulario para registrar una nueva factura informativa
      * las facturas informativas solo se usan con regimen 70
      *
-     * @param (string) $nroOrder
+     * @param (string) $nroOrder pedido al que 
      * @return void
      */
-    public function nuevo($nroOrder)
+    public function nuevo(string $nroOrder, int $idParcial)
     {
         $order = $this->modelOrder->isRegimen70($nroOrder);
-        if ($order == false) {
+        $parcial = $this->modelParcial->get($idParcial);
+        
+        if ($order == false || $parcial == false) {
             $this->modelLog->redirectLog($this->controller . ',nuevo,' . current_url());
             $this->index();
             return false;
         }
+        
         $invoicesOrder = $this->modelOrderInvoice->getbyOrder($nroOrder);
-        $invoicesOrderTemp = [];
+        
         if ($invoicesOrder != false) {
             foreach ($invoicesOrder as $item => $invoiceOrder) {
                 $invoiceOrder['details'] = $this->modelOrderInvoiceDetail->getByOrderInvoice($invoiceOrder['id_pedido_factura']);
                 $invoiceOrder['supplier'] = $this->modelSupplier->get($invoiceOrder['identificacion_proveedor']);
                 $invoiceOrder['user'] = $this->modelUser->get($invoiceOrder['id_user']);
-                $invoicesOrderTemp[$item] = $invoiceOrder;
+                $invoicesOrder[$item] = $invoiceOrder;
             }
         }
         
         $infoInvoices = $this->modelInfoInvoice->getByOrder($nroOrder);
-        $olderPartials = 0;
-        $infoInvoicesTemp = [];
         if ($infoInvoices != false) {
             foreach ($infoInvoices as $item => $infoInvoice) {
                 $infoInvoice['supplier'] = $this->modelSupplier->get($infoInvoice['identificacion_proveedor']);
                 $infoInvoice['details'] = $this->modelInfoInvoiceDetail->getByFacInformative($infoInvoice['id_factura_informativa']);
                 $infoInvoice['user'] = $this->modelUser->get($infoInvoice['id_user']);
-                $infoInvoicesTemp[$item] = $infoInvoice;
-                $olderPartials += 1;
+                $infoInvoices[$item] = $infoInvoice;
             }
         }
+        
         
         return $this->responseHttp([
             'create_invoice' => true,
             'order' => $order,
-            'invoicesOrder' => $invoicesOrderTemp,
-            'infoInvoices' => $infoInvoicesTemp,
+            'invoicesOrder' => $invoicesOrder,
+            'infoInvoices' => $infoInvoices,
             'supplier' => $this->modelsupplier->get($this->almaceneraId),
             'haveEuros' => $this->orderHaveEuros($nroOrder),
             'sumsValues' => $this->myModel->getValuesOrder($order),

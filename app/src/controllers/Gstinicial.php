@@ -336,23 +336,6 @@ class Gstinicial extends MY_Controller
         return ($this->redirectPage('presentOrder', $nroOrder));
     }
 
-    public function cerrarGastosIniciales($nroOrder)
-    {
-        $order = $this->modelOrder->get($nroOrder);
-        if ($order == false) {
-            $this->modelLog->warningLog('Intentado modificar status gastos iniciales ilegalmente ' . current_url());
-            return ($this->index());
-        }
-        $order['bg_haveExpenses'] = 1;
-        if ($this->modelOrder->update($order)) {
-            if ($order['regimen'] == 70) {
-                return ($this->redirectPage('infoInvoiceNew', $nroOrder));
-            }
-            $this->modellog->error_log('No se puede cambiar el estado del pedido');
-            $this->modelLog->error_log($this->db->last_query());
-            return ($this->redirectPage('nationalizationNew', $nroOrder));
-        }
-    }
 
     /**
      * Reemplaza los incoterms cuando un pedido se edita
@@ -480,7 +463,7 @@ class Gstinicial extends MY_Controller
         foreach ($initExpensesRates as $key => $value) {
             $insertExpense = [
                 'nro_pedido' => $initExpensesInput['nro_pedido'],
-                'id_factura_informativa' => 0,
+                'id_parcial' => 0,
                 'identificacion_proveedor' => 0,
                 'concepto' => $value['concepto'],
                 'valor_provisionado' => $value['valor'],

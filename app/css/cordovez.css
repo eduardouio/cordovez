@@ -360,3 +360,11 @@ th{
     border-bottom-color: #f6f6f7;
   }
 }
+
+.breadcrumb>.active {
+    color: red;
+}
+
+.btn-primary {
+    background-color: #2E86C1;
+}

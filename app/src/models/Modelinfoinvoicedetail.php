@@ -17,16 +17,29 @@ class Modelinfoinvoicedetail extends CI_Model
     private $modelBase;
     private $modelProduct;
     private $modelLog;
+    private $modelOrderInvoiceDetail;
 
     public function __construct()
     {
         parent::__construct();
+        $this->init();
+    }
+    
+    
+    
+    /**
+     * Inicia los modelos de la clase
+     */
+    public function init()
+    {
         $this->load->model('modelbase');
         $this->load->model('modelproduct');
         $this->load->model('modellog');
+        $this->load->model('Modelorderinvoicedetail');
         $this->modelBase = new ModelBase();
         $this->modelProduct = new Modelproduct();
         $this->modelLog = new Modellog();
+        $this->modelOrderInvoiceDetail = new Modelorderinvoicedetail();
     }
     
     /**
@@ -134,6 +147,34 @@ class Modelinfoinvoicedetail extends CI_Model
         }
         return false;
     }
+    
+    
+    
+    /**
+     * Retorna el numero de cajas que tiene una factura informativa
+     * @param int $idInfoInvoice
+     * @return array [boxes = , unitid]
+     */
+    public function countBoxesAnd(int $idInfoInvoice):array
+    {
+        $quantity = [
+          'boxes' => 0,
+          'unities' => 0,
+        ];
+        
+        $details = $this->getByFacInformative($idInfoInvoice);
+        if(is_array($details)){
+            foreach ($detail as $item => $itemInvoice)
+            {   
+                $quantity['boxes'] =+ $itemInvoice['nro_cajas'];
+                $detailOrder = $this->modelOrderInvoiceDetail->get($itemInvoice['detalle_pedido_factura']);
+                $product = $this->modelProduct->get($detailOrder['cod_contable']);
+                $quantity['unities'] += ($product['cantidad_x_caja'] * $itemInvoice['nro_cajas']);
+            }
+        }
+        return $quantity;        
+    }
+    
     
     
 }

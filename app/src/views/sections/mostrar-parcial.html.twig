@@ -1,4 +1,3 @@
-<div class="well well-sm">
 	<div class="row">
 		<div class="col-md-3">
 			<strong>FOB Parcial:</strong> <span>{{ parcial.numero }}</span>
@@ -16,8 +15,45 @@
 			<strong>Unidades:</strong> <span>{{ infoInvoice.comentarios }}</span>
 		</div>
 	</div>
-</div>
 <br>
+   <div class="row">
+<div class="col-md-5">
+<ol class="breadcrumb" style="color: #999;">
+  <li class="{{ ubicacion.almacenera }}"> <span class="fa fa-fort-awesome"></span>Almacenera</li>
+  <li class="{{ ubicacion.transporte }}"> <span class="fa fa-truck"></span> Transporte</li>
+  <li class="{{ ubicacion.cordovez }}"> <span class="fa fa-home"></span> Cordovez</li>
+</ol>
+</div>
+<div class="col-md-7 text-right">
+	{% if order.bg_isclosed == '0' %}
+	<a
+			href="{{rute_url}}gstinicial/validargi/{{order.nro_pedido}}">
+			<button type="button" class="btn btn-primary btn-sm">
+				<span class="fa fa-gear"></span> Gastos Parcial
+			</button>
+		</a>
+		
+		<a
+			href="{{rute_url}}facturapagos/nuevo/{{order.nro_pedido}}">
+			<button class="btn btn-primary btn-sm">
+				<span class="fa fa-file-o"></span> Justificar Gasto
+			</button>
+		</a>
+		<a
+			href="{{rute_url}}pedido/eliminar/{{order.nro_pedido}}">
+			<button class="btn btn-sm btn-danger">
+				<span class="fa fa-trash fa-fw"></span>Eliminar Parcial
+			</button>
+		</a>
+		{% endif %}
+		<a
+			href="#{{order.nro_pedido}}">
+			<button class="btn btn-sm btn-primary">
+				<span class="fa fa-file-pdf-o"></span> Informe del Parcial
+			</button>
+		</a>		
+		</div>
+	</div>
 <!-- Tabs -->
 <div>
    <ul class="nav nav-tabs" role="tablist">
@@ -46,17 +82,17 @@
    <div class="tab-content">
       <!-- tabFacturas-->
       <div role="tabpanel" class="tab-pane active" id="facturas">
-         {% include 'sections/subsections/tab-facturainformativa-detalle.html.twig' %}
+         {% include 'sections/subsections/tab-lista-facturas-informativas-parcial.html.twig' %}
       </div>
       <!-- /Tab Facturas-->
       <!-- Gastos nacionalizacion factura informativa -->
       <div role="tabpanel" class="tab-pane" id="gastos">
-      	 {% include 'sections/subsections/tab-gastos-nacionalizacion.html.twig' %}
+      	 {% include 'sections/subsections/tab-gastos-nacionalizacion-parcial.html.twig' %}
       </div>
       <!-- /Gastos nacionalizacion factura informativa -->
       <!-- Tab Facturas Servicios factura informativa -->
       <div role="tabpanel" class="tab-pane" id="servicios">
-         {% include 'sections/subsections/tab-facturas-servicios.html.twig' %}
+         {% include 'sections/subsections/tab-facturas-servicios-parcial.html.twig' %}
       </div>
       <!-- /Tab Facturas Servicios -->
    </div>
@@ -64,8 +100,8 @@
 <!--/tabs-->
 <div class="row">
 	<div class="col-md-2">
-		<a href="{{rute_url}}pedido/presentar/{{ infoInvoice.nro_pedido }}" class="btn btn-default btn-sm">
-			<i class="fa fa-cubes"></i> Volver al Pedido [{{ infoInvoice.nro_pedido }}]
+		<a href="{{rute_url}}pedido/presentar/{{ order.nro_pedido }}" class="btn btn-default btn-sm">
+			<i class="fa fa-cubes"></i> Volver al Pedido [{{ order.nro_pedido }}]
 		</a>
 	</div>
 </div>

@@ -108,7 +108,7 @@ class MY_Controller extends CI_Controller
             'presentOrder' =>  'index.php/pedido/presentar',
             'paidsList' => 'index.php/facturapagos/listar/',
             'paidPresent' => 'index.php/facturapagos/presentar',
-            'paidDetailNew' => 'index.php/detallefacpago/nuevo/',
+            'paidDetailNew' => 'index.php/detallefacpago/nuevo',
             'supplierPresent' => 'index.php/proveedor/presentar',
             'supplierNew' => 'index.php/proveedor/nuevo',
             'suppliersList' => 'index.php/proveedor/listar',
@@ -118,8 +118,9 @@ class MY_Controller extends CI_Controller
             'replaceIncoterms' =>   'index.php/gstinicial/replaceIncoterms',
             'putIncoterms' => 'index.php/gstinicial/putIncoterms',
             'presentInvoiceOrder' =>  'index.php/pedidofactura/presentar',
-            'closeInitExpenses' =>  'index.php/gstinicial/cerrarGastosIniciales',
             'validar70' =>  'index.php/gstnacionalizacion/validar70',
+            'newParcial' => 'index.php/parcial/nuevo',
+            
         ];
         header('Status: 301 Moved Permanently', false, 301);
         if ($id) {

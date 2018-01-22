@@ -23,6 +23,7 @@ class Modelinfoinvoice extends CI_Model
     private $modelOrder;
     
     
+    
     /**
      * Constructor de la clase
      */
@@ -51,6 +52,7 @@ class Modelinfoinvoice extends CI_Model
         $this->modelOrderInvoice = new Modelorderinvoice();
         $this->modelLog = new Modellog();
         $this->modelOrder = new Modelorder();
+        
     }
     
     
@@ -81,20 +83,20 @@ class Modelinfoinvoice extends CI_Model
     
     
     /**
-     * Obtiene todas las facturas cerradas del pedido
+     * Obtiene todas los parciales cerradas del pedido
      * @param string $nroOrder
      * @return array | bool
      */
-    public  function getClosedByOrder(string $nroOrder)
+    public  function getClosedByPartial(int $idParcial)
     {
-        $closedInfoInvoices = $this->modelBase->get_table([
+        $closedParcials = $this->modelBase->get_table([
             'table' => $this->table,
             'where' => [
                 'bg_isclosed' => 1,
             ],
         ]);
-        if(((gettype($closedInfoInvoices) == 'array') && (count($closedInfoInvoices) > 0))){
-            return $closedInfoInvoices;
+        if((is_array($closedParcials)) && (count($closedParcials) > 0)){
+            return $closedParcials;
         }
         return false;
     }
@@ -185,31 +187,6 @@ class Modelinfoinvoice extends CI_Model
     }
     
     
-    
-    /**
-     * Retorna la ultima factura informativ cerrada de un pedido
-     * @param string $nroOrder
-     * @return array | boolean
-     */
-    public function lastInfoInvoice($nroOrder){
-        $infoInvoice = $this->modelBase->get_table([
-            'table' => $this->table,
-            'where' => [
-                'nro_pedido' => $nroOrder,
-                'bg_iscloses' => '1',
-            ],
-            'orderby' => ['id_factura_informativa' => 'DESC'],
-            'limit' => 1,
-        ]);
-        $this->modelLog->susessLog($this->db->last_query());
-        if((gettype($infoInvoice) == 'array') && (count($infoInvoice)> 0 )){
-            return $infoInvoice[0];
-        }
-        return false;
-        
-    }
-    
-    
     /**
      * Verifica si un registro ya existe en la base de datos
      * @param array $informativeInvoice
@@ -221,7 +198,7 @@ class Modelinfoinvoice extends CI_Model
             'table' => $this->table,
             'where' => [
                 'nro_factura_informativa' => $informativeInvoice['nro_factura_informativa'],
-                'nro_pedido' => $informativeInvoice['nro_pedido'],
+                'id_parcial' => $informativeInvoice['id_parcial'],
             ],
         ]);
         if( gettype($infoInvoice) == 'array' && count($infoInvoice) > 0 ){

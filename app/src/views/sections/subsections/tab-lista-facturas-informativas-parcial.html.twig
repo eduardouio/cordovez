@@ -1,0 +1,60 @@
+<div class="row">
+	<div class="col-md-9">
+		<h4 class="text-tittle">Listado de Facturas Informativas</h4>
+	</div>
+	<div class="col-md-3 text-right">
+		<a href="{{rute_url}}facinformativa/nuevo/{{parcial.id_parcial}}" class="btn btn-sm btn-default">
+			<span class="fa fa-plus"></span>
+			<span class="text-primary">
+			Agregar Factura Informativa
+			</span>
+		</a>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<table class="table table-condensed table-hover table-striped">
+			<thead>
+				<tr>
+					<th>Parcial</th>
+					<th>Factura Informativa</th>
+					<th>Almacenera</th>
+					<th>FOB</th>
+					<th>FLETE</th>
+					<th>SEGURO</th>
+					<th>Cajas</th>
+					<th>Unidades</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for infoInvoice in infoInvoices  %}
+				
+				    {% set sumaFOB = sumaFOB + infoInvoice.valor %}
+				    {% set sumaFLETE = sumaFLETE +  infoInvoice.flete_aduana %}
+				    {% set sumaSEGURO = sumaSEGURO + infoInvoice.seguro_aduana %}
+				    {% set sumaCAJAS = sumaCAJAS + infoInvoice.cajas %}
+				    {% set sumaUNIDADES = sumaUNIDADES + infoInvoice.unidades %}
+				    
+				<tr>
+					<td>{{ loop.index }}</td>
+					<td>{{ invoInvoice.nro_factura_informativa }}</td>
+					<td>{{ infoInvoice.supplier.nombre }}</td>
+					<td>{{ infoInvoice.valor }}</td>
+					<td>{{ infoInvoice.flete_aduana }}</td>
+					<td>{{ infoInvoice.seguro_aduana }}</td>
+					<td>{{ infoInvoice.nro_cajas }}</td>
+					<td>{{ infoInvoice.unidades }}</td>
+				</tr>
+				{% endfor %}
+			<tr style="background-color:#c1c1c1; font-weight:bold;">
+            <td colspan="3" class="text-right" style="background-color: #fff;">SUMAS: &nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td class="text-right"> {{ sumaFOB | number_format(2,',','.') }}</td>
+            <td class="text-right">{{ sumaFLETE | number_format(2,',','.') }}</td>
+            <td class="text-right">{{ sumaSEGURO  | number_format(2,',','.') }}</td>
+            <td class="text-right">{{ sumaCAJAS | number_format(0,',','.') }}</td>
+            <td class="text-right">{{ sumaUNIDADES | number_format(0,',','.') }}</td>
+          </tr>
+			</tbody>
+		</table>
+	</div>
+</div>

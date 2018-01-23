@@ -1,6 +1,4 @@
-<?php
-
-defined('BASEPATH') or exit('No direct script access allowed');
+<?php defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
  * Controller encargado de manejar los parciales de los pedidos
@@ -114,6 +112,47 @@ class Parcial extends MY_Controller
             'infoInvoices' => $infoInvoices,
             'partialNumber' => $this->getNumberParcial($order['nro_pedido']),
         ]));
+    }
+    
+    
+    /**
+     * Genera un nuevo parcial y luego lleva a la creacion de una factura informativa
+     * Se compruaba que no exista otro parcial abierto
+     * @param string $nroOrder
+     * @return string template 
+     */
+    public function nuevo(string $nroOrder)
+    {
+        $order = $this->modelOrder->get($nroOrder);
+        $hasActiveParcial = false;
+        
+        if($order == false){
+            $this->modelLog->errorLog('No se puede crear un parcial para un pedido inexistente');
+            return $this->index();
+        }
+        $olderParcials = $this->modelParcial->getByOrder($nroOrder);
+        
+        $parcial = [
+            'id_user' => $this->session->userdata('id_user'),
+            'nro_pedido' => $nroOrder,
+        ];
+                
+        if(is_array($olderParcials)){
+            foreach($olderParcials as $idex => $parcial){
+                if($parcial['bg_isclosed'] == 1)
+                {
+                    $hasActiveParcial = true;
+                }
+            }
+        }
+        
+        if($hasActiveParcial == false && $order['regimen'] == 70){
+            $id_parcial = $this->modelParcial->create($parcial);
+            return($this->redirectPage('infoInvoiceNew', $nroOrder));
+        }
+        
+        $this->modelLog->warningLog('No se puede crear un parcial mientras uno esté activo' . current_url() );
+        return ($this->redirectPage('presentOrder', $nroOrder));        
     }
     
     

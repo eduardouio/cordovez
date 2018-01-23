@@ -1,6 +1,14 @@
+{% set newParcial = true %}
+
+{% for parcial in parcials %}
+	{% if parcial.bg_isclosed == 0 %}
+		{% set newParcial = false %}		
+	{% endif %}	
+{% endfor %}
+
 <div class="row">
     <div class="col-sm-3">
-        {% if order.bg_haveExpenses  ==  1 %}
+        {% if newParcial == true %}
             <a href="{{ rute_url }}facinformativa/nuevo/{{ order.nro_pedido }}">
                 <button type="button" class="btn btn-primary btn-sm">
                     <span class="fa fa-plus"></span>
@@ -58,6 +66,7 @@
                     <span class="fa fa-eye"></span>
                     {%  if parcial.is_closed == 0 %}
                     	<label class="label label-success">Abierto</label>
+                    	{% set newParcial = false %}
                     {%  else %}
                     	<label class="label label-inverse">Cerrado</label>
                     {%  endif %}

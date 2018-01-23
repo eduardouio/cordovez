@@ -70,8 +70,7 @@
          <thead>
             <tr style="background-color: #333; color: #fff;">
                <div class="text-tittle">
-                  RESUMEN DE ESTADO GASTOS NACIONALIZACIÓN FACTURA INFORMATIVA {{ infoInvoice.nro_factura_informativa }}
-                  PARCIAL {{ partial | number_format(0)}} DEL PEDIDO     [{{order.nro_pedido}}]
+                  RESUMEN DE ESTADO GASTOS NACIONALIZACIÓN PARCIAL {{ parcial.id_parcial }} DEL PEDIDO     [{{order.nro_pedido}}]
                </div>
             </tr>
          </thead>
@@ -132,15 +131,15 @@
       </table>
          {% include 'sections/subsections/table-infoinvoice-info.html.twig' %}   
          <br><br><br><br><p>
-         <a href="{{rute_url}}facinformativa/presentar/{{infoInvoice.id_factura_informativa}}" class="btn btn-default btn-sm">
+         <a href="{{rute_url}}parcial/presentar/{{parcial.id_parcial}}" class="btn btn-default btn-sm">
          <span class="fa fa-arrow-left fa-fw"></span>
-         Volver A Factura Informativa [{{infoInvoice.nro_factura_informativa}}]
+         Volver Al Parcial [{{parcial.id_parcial}}]
          </a>
          &nbsp;&nbsp;&nbsp;&nbsp;
          {% if isOk == true %}
-         <a href="{{rute_url}}gstnacionalizacion/impuestosFI/{{infoInvoice.id_factura_informativa}}" class="btn btn-primary btn-sm">
+         <a href="{{rute_url}}gstnacionalizacion/impuestosFI/{{parcial.id_parcial}}" class="btn btn-primary btn-sm">
          <span class="fa fa-gears fa-fw"></span>
-         Generar Impuestos Factura Informativa [{{infoInvoice.nro_factura_informativa}}]
+         Generar Impuestos Parcial [{{parcial.id_parcial}}]
       </a>
          {% endif %}
       </p>

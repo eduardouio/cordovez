@@ -1,14 +1,14 @@
 <form action="{{ rute_url }}gstnacionalizacion/validar" method="post">
-	<input type="hidden" name="id_factura_informativa" value="{{ infoInvoice.id_factura_informativa }}">
+	<input type="hidden" name="id_parcial" value="{{ parcial.id_parcial }}">
 	<input type="hidden" name="id_gastos_nacionalizacion" value="{{ expense.id_gastos_nacionalizacion}}">
 <div class="row">
 	<div class="col-sm-2">
 		<div class="form-group">
-			<label>Factura Informativa</label>
+			<label>Parcial</label>
 			<input 
 			type="text" 
 			class="form-control" 
-			value="{{ infoInvoice.nro_factura_informativa }}" 
+			value="{{ parcial.id_parcial }}" 
 			disabled="true" 
 			>
 		</div>

@@ -212,20 +212,22 @@ class Modelexpenses extends CI_Model
     
     
     /**
-     * Retorna los gastos de nacionalizacion para una factura infromativa
+     * Retorna los gastos de nacionalizacion para un parcial
      * @param int $idInfoInvoice
      * @return array | boolean
      */
-    public function getPartialExpenses(int $idInfoInvoice)
+    public function getPartialExpenses(int $idParcial)
     {
         $partialExpenses = $this->modelBase->get_table([
             'table' => $this->table,
             'where' => [
-                'id_factura_informativa' => $idInfoInvoice, 
+                'id_parcial' => $idParcial, 
             ],
         ]);
         
-        if(gettype($partialExpenses) == 'array' && count($partialExpenses) > 0){
+        $this->modelLog->warningLog('Query' , $this->db->last_query());
+        
+        if(is_array($partialExpenses) && count($partialExpenses) > 0){
             return $partialExpenses;
         }
         
@@ -278,29 +280,7 @@ class Modelexpenses extends CI_Model
         }
         return false;
     }
-    
-    
-    /**
-     * Retorna los gastos de nacionalizacionde la ultima factura informativa
-     * @param int $idInfoInvoice
-     * @return array
-     */
-    public function getByInfoInvoice(int $idInfoInvoice)
-    {
-        $expenses = $this->modelBase->get_table([
-            'table' => $this->table,
-            'where' => [
-                'id_factura_informativa' => $idInfoInvoice,
-            ],
-        ]);
-        if(count($expenses) > 0){
-            return $expenses;
-        }
-        $this->modelLog->errorLog('Existe un pedido sin gastos de nacionalizacion' .  current_url());
-        return false;
-    }
-    
-    
+        
     
     /**
      * Actualiza el registro para un gasto nacionalizacion

@@ -27,7 +27,7 @@
 <div class="col-md-7 text-right">
 	{% if parcial.bg_isclosed == '0' %}
 	<a
-			href="{{rute_url}}gstinicial/validargi/{{order.nro_pedido}}">
+			href="{{rute_url}}gstnacionalizacion/validar70/{{parcial.id_parcial}}">
 			<button type="button" class="btn btn-primary btn-sm">
 				<span class="fa fa-gear"></span> Gastos Parcial
 			</button>
@@ -40,7 +40,7 @@
 			</button>
 		</a>
 		<a
-			href="{{rute_url}}pedido/eliminar/{{order.nro_pedido}}">
+			href="{{rute_url}}parcial/eliminar/{{parcial.id_parcial}}">
 			<button class="btn btn-sm btn-danger">
 				<span class="fa fa-trash fa-fw"></span>Eliminar Parcial
 			</button>

@@ -1,6 +1,6 @@
 <div class="text-tittle">Provisiones Aplicables Al Parcial</div>
 <form action="{{rute_url}}gstnacionalizacion/putExpenses/" method="post">
-   <input type="hidden" name="id_factura_informativa" value="{{infoInvoice.id_factura_informativa}}">
+   <input type="hidden" name="id_parcial" value="{{parcial.id_parcial}}">
    <table class="table  table-hover table-condensed table-striped">
       <thead>
          <tr>
@@ -15,7 +15,7 @@
             <td>0</td>
             <td>ALMACENAJE PARCIAL</td>
             <td>0</td>
-            <td class="text-right"><a href="{{rute_url}}gstnacionalizacion/validarbodegaparcial/{{ infoInvoice.id_factura_informativa }}" >
+            <td class="text-right"><a href="{{rute_url}}gstnacionalizacion/validarbodegaparcial/{{ parcial.id_parcial }}" >
    <span class="text-primary">Provisionar</span>
    </a></td>
          </tr>

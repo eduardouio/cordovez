@@ -31,12 +31,12 @@ class Gstnacionalizacion extends MY_Controller
     private $modelUser;
     private $modelSupplier;
     private $modelRateExpenses;
+    private $modelParcial;
 
     /**
      * constructor de la clase
      */
-    public 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
         $this->init();
@@ -69,6 +69,7 @@ class Gstnacionalizacion extends MY_Controller
         $this->load->model('modelbase');
         $this->load->model('modelsupplier');
         $this->load->model('modelrateexpenses');
+        $this->load->model('modelparcial');
         $this->modelOrder = new Modelorder();
         $this->modelExpenses = new Modelexpenses();
         $this->modelProduct = new Modelproduct();
@@ -81,6 +82,7 @@ class Gstnacionalizacion extends MY_Controller
         $this->modelSupplier = new Modelsupplier();
         $this->modelRateExpenses = new Modelrateexpenses();
         $this->modelBase = new ModelBase();
+        $this->modelParcial = new Modelparcial();
     }
 
     /**
@@ -90,21 +92,21 @@ class Gstnacionalizacion extends MY_Controller
      * @param string $nroOrder
      * @return string template
      */
-    public  function putExpenses()
+    public function putExpenses()
     {
         if (! $_POST) {
             return ($this->index());
         }
         
         $expensesInput = $this->input->post();
-        $iInfoInvoice = $expensesInput['id_factura_informativa'];
+        $idParcial = $expensesInput['id_parcial'];
         unset($expensesInput['id_factura_informativa']);
         $expenses = [];
         foreach ($expensesInput as $input => $val) {
             $expenseRate = $this->modelRateExpenses->get($val);
             $this->modelExpenses->create([
                 'nro_pedido' => '000-00',
-                'id_factura_informativa' => $iInfoInvoice,
+                'id_parcial' => $idParcial,
                 'identificacion_proveedor' => $expenseRate['identificacion_proveedor'],
                 'concepto' => $expenseRate['concepto'],
                 'tipo' => 'NACIONALIZACION',
@@ -116,7 +118,7 @@ class Gstnacionalizacion extends MY_Controller
             ]);
         }
         
-        return ($this->redirectPage('validar70', $iInfoInvoice));
+        return ($this->redirectPage('validar70', $idParcial));
     }
 
     /**
@@ -146,7 +148,7 @@ class Gstnacionalizacion extends MY_Controller
      * Rertorna el stock actual en CIF para un pedido solo aplica para R70
      * El stock inicial es restado de los parciales solo en las facturas
      * informativas que se encuentren cerradas
-     * 
+     *
      * @param string $nroOrder
      * @return array
      */
@@ -165,56 +167,44 @@ class Gstnacionalizacion extends MY_Controller
      * redirecciona a la pagina de lista de pedidos
      * son redirecciones por accesos sin ilegales
      *
-     * @param
-     *            identificador de la factura infromativa
+     * @param int $idParcial
      */
-    public 
-    function validar70(int $idInfoInvoice)
+    public function validar70(int $idParcial)
     {
-        $infoInvoice = $this->modelInfoInvoice->get($idInfoInvoice);
-        if ($infoInvoice == false) {
+        $parcial = $this->modelParcial->get($idParcial);
+        if ($parcial == false) {
             return ($this->index());
         }
         
-        $infoInvoice['supplier'] = $this->modelSupplier->get($infoInvoice['identificacion_proveedor']);
-        $infoInvoice['user'] = $this->modelUser->get($infoInvoice['id_user']);
-        $infoInvoice['detail'] = $this->modelInfoInvoiceDetail->getByFacInformative($idInfoInvoice);
+        $parcial = $this->modelParcial->get($idParcial);
+        $order = $this->modelOrder->get($parcial['nro_pedido']);
+        $expenses = $this->modelExpenses->getPartialExpenses($idParcial);
         
-        if ($infoInvoice['detail'] != false) {
-            
-            foreach ($infoInvoice['detail'] as $item => $detail) {
-                $detailOrderInvoice = $this->modelOrderInvoiceDetail->get($detail['detalle_pedido_factura']);
-                
-                $detail['product'] = $this->modelProduct->get($detailOrderInvoice['cod_contable']);
-                
-                $detail['detailOrder'] = $this->modelOrderInvoiceDetail->get($detail['detalle_pedido_factura']);
-                $infoInvoice['detail'][$item] = $detail;
+        $order = $this->modelOrder->get($parcial['nro_pedido']);
+        
+        $infoInvoices = $this->modelInfoInvoice->getByParcial($idParcial);
+        
+        if(is_array($infoInvoices)){
+            foreach ($infoInvoices as $item => $invoice){
+                $invoice['user'] = $this->modelUser->get($invoice['id_user']);
+                $invoice['details'] = $this->modelInfoInvoiceDetail->getByFacInformative($invoice['id_factura_informativa']);
+                $invoice['supplier'] = $this->modelSupplier->get($invoice['identificacion_proveedor']);
+                $count = $this->modelInfoInvoiceDetail->countBoxesAnd($invoice['id_factura_informativa']);
+                $invoice['boxes'] = $count['boxes'];
+                $invoice['unities'] = $count['unities'];
+                $infoInvoices[$item] = $invoice;
             }
         }
-        $order = $this->modelOrder->get($infoInvoice['nro_pedido']);
-        $infoInvoiceDetailsTemp = $this->modelInfoInvoiceDetail->getByFacInformative($infoInvoice['id_factura_informativa']);
-        $infoInvoiceDetails = [];
-        if ($infoInvoiceDetailsTemp != false) {
-            
-            foreach ($infoInvoiceDetailsTemp as $item => $detail) {
-                $invoiceOrderDetail = $this->modelOrderInvoiceDetail->get($detail['detalle_pedido_factura']);
-                $detail['product'] = $this->modelProduct->get($invoiceOrderDetail['cod_contable']);
-                $detail['user'] = $this->modelUser->get($detail['id_user']);
-                $infoInvoiceDetails[$item] = $detail;
-            }
-        }
-        
-        $expenses = $this->modelExpenses->getPartialExpenses($idInfoInvoice);
+               
         return ($this->responseHTTP([
-            'titleContent' => 'generar gastos nacionalizacion factura informativa [' . $infoInvoice['nro_factura_informativa'] . '] Pedido: [' . $order['nro_pedido'] . '] ',
+            'titleContent' => 'generar gastos nacionalizacion Parcial[' . $parcial['id_parcial'] . '] Pedido: [' . $parcial['nro_pedido'] . '] ',
             'order' => $order,
             'expenses' => $expenses,
-            'rateExpenses' => $this->filterRateExpenses($idInfoInvoice),
-            'infoInvoice' => $infoInvoice,
+            'rateExpenses' => $this->filterRateExpenses($idParcial),
+            'parcial' => $parcial,
+            'infoInvoices' => $infoInvoices,
             'showExpenses' => true,
-            'infoInvoiceDertails' => $infoInvoiceDetails,
             'warenHouseDays' => $this->getWarenHouseDays($order),
-            'partial' => count($this->modelInfoInvoice->getByOrder($order['nro_pedido']))
         ]));
     }
 
@@ -243,16 +233,15 @@ class Gstnacionalizacion extends MY_Controller
             }
         }
     }
-    
-    
-    
+
     /**
      * retorna el costo de la bodega para el parcial, aplicando una formula
+     * 
      * @param int $idInfoInvoice
      * @return float
      */
-    private function getWarenhousePartialValue(int $idInfoInvoice):float
-    {   
+    private function getWarenhousePartialValue(int $idInfoInvoice): float
+    {
         $fobStarted = 0.0;
         $fobNationalized = 0.0;
         
@@ -260,43 +249,38 @@ class Gstnacionalizacion extends MY_Controller
         $order = $this->modelOrder->get($infoInvoice['nro_pedido']);
         $initialStock = $this->modelOrderInvoice->getbyOrder($infoInvoice['nro_pedido']);
         
-        if(is_array($initialStock)){
-            foreach ($initialStock as $item => $orderInvoice){
-                #el valor de la factura por el tipo de cambio de la fac informativa
+        if (is_array($initialStock)) {
+            foreach ($initialStock as $item => $orderInvoice) {
+                // el valor de la factura por el tipo de cambio de la fac informativa
                 $fobStarted += ($orderInvoice['valor'] * $infoInvoice['tipo_cambio']);
             }
         }
-
+        
         $actualStock = $this->modelInfoInvoice->getClosedByOrder($infoInvoice['nro_pedido']);
-        if (is_array($actualStock)){
-            foreach ($actualStock as $key => $item){
+        if (is_array($actualStock)) {
+            foreach ($actualStock as $key => $item) {
                 $fobNationalized += ($item['valor'] * $item['tipo_de_cambio']);
             }
-
         }
         
-
-
         return (0);
         print $fobNationalized;
         print $fobStarted;
         
-            exit();
+        exit();
     }
-    
-    
 
     /**
      * Retorna los parametros de tarifas para gastos de nacionalizacion
      * si no existen retorna false
      *
-     * @param int $idInfoInvoice
+     * @param int $idParcial
      * @return array | bool
      */
-    private function filterRateExpenses(int $idInfoInvoice)
+    private function filterRateExpenses(int $idParcial)
     {
         $rateExpenses = $this->modelRateExpenses->getPartialRates();
-        $expeses = $this->modelExpenses->getPartialExpenses($idInfoInvoice);
+        $expeses = $this->modelExpenses->getPartialExpenses($idParcial);
         if ($rateExpenses == false) {
             return false;
         }
@@ -322,8 +306,7 @@ class Gstnacionalizacion extends MY_Controller
      * @param (int) $idInitExpense
      * @return array
      */
-    public 
-    function presentar(int $idInitExpense)
+    public function presentar(int $idInitExpense)
     {
         $initExpense = $this->modelExpenses->getExpense($idInitExpense);
         if ($initExpense == false) {
@@ -357,15 +340,15 @@ class Gstnacionalizacion extends MY_Controller
             return ($this->index());
         }
         
-        $infoInvoice = $this->modelInfoInvoice->get($expense['id_factura_informativa']);
-        $order = $this->modelOrder->get($infoInvoice['nro_pedido']);
+        $parcial = $this->modelParcial->get($expense['id_parcial']);
+        $order = $this->modelOrder->get($parcial['nro_pedido']);
         return ($this->responseHttp([
-            'titleContent' => 'Actulalizar Gasto Nacionalizacion Pedido [' . $order['nro_pedido'] . '] Factura Informativa [' . $infoInvoice['nro_factura_informativa'] . ']',
+            'titleContent' => 'Actulalizar Gasto Nacionalizacion Pedido [' . $order['nro_pedido'] . '] Parcial [' . $parcial['id_parcial'] . ']',
             'order' => $order,
             'expense' => $expense,
             'supplier' => $this->modelSupplier->get($expense['identificacion_proveedor']),
             'suppliers' => $this->modelSupplier->getByLocation('NACIONAL'),
-            'infoInvoice' => $infoInvoice,
+            'parcial' => $parcial,
             'edit' => true
         ]));
     }
@@ -387,7 +370,6 @@ class Gstnacionalizacion extends MY_Controller
         
         $h = $this->initialCIFOrderVal($infoInvoice['nro_pedido']);
         $k = $this->currentCIFOrderVal($infoInvoice['nro_pedido']);
-        
         
         $valuesPartial = [
             'flete_parcial' => $infoInvoice['flete_aduana'],
@@ -416,8 +398,7 @@ class Gstnacionalizacion extends MY_Controller
      *
      * @param int $idNationalizationExpense
      */
-    public 
-    function eliminar(int $idNationalizationExpense)
+    public function eliminar(int $idNationalizationExpense)
     {
         $expense = $this->modelExpenses->getExpense($idNationalizationExpense);
         if ($expense) {
@@ -436,8 +417,7 @@ class Gstnacionalizacion extends MY_Controller
      *            $_POST
      * @return string redirect
      */
-    public 
-    function validar()
+    public function validar()
     {
         if (! $_POST) {
             return ($this->index());
@@ -451,31 +431,30 @@ class Gstnacionalizacion extends MY_Controller
         $expense['valor_provisionado'] = floatval($expense['valor_provisionado']);
         $expense['last_update'] = date('Y-m-d H:m:s');
         if ($this->modelExpenses->update($expense)) {
-            return ($this->redirectPage('validar70', $expense['id_factura_informativa']));
+            return ($this->redirectPage('validar70', $expense['id_parcial']));
         }
         
         print 'Error con la base de datos';
     }
 
     /**
-     * Valida la bodega parcial para una factura informativa
+     * Valida la bodega parcial para un parcial
      *
      * @param int $idInfoInvoice
      */
-    public 
-    function validarbodegaparcial(int $idInfoInvoice)
+    public function validarbodegaparcial(int $idParcial)
     {
-        $infoInvoice = $this->modelInfoInvoice->get($idInfoInvoice);
-        if ($infoInvoice == false) {
+       $parcial = $this->modelParcial->get($idParcial);
+        if ($parcial == false) {
             return ($this->index());
         }
         
-        $infoInvoicesOrder = $this->modelInfoInvoice->getByOrder($infoInvoice['nro_pedido']);
-        $order = $this->modelOrder->get($infoInvoice['nro_pedido']);
+        $infoInvoicesOrder = $this->modelInfoInvoice->getByParcial($idParcial);
+        $order = $this->modelOrder->get($parcial['nro_pedido']);
         $lastInvoInvoice = $this->modelInfoInvoice->lastInfoInvoice($order['nro_pedido']);
         $startWarenhouse = false;
         if ($lastInvoInvoice) {
-            $lastExpenses = $this->modelExpenses->getByInfoInvoice($idInfoInvoice);
+            $lastExpenses = $this->modelExpenses->getPartialExpenses($idParcial);
             $pos = 0;
             foreach ($lastExpenses as $item => $expense) {
                 if ($expense['fecha_fin'] == null) {

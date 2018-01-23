@@ -103,20 +103,20 @@ class Parcial extends MY_Controller
             }
         }
 
-        $expenses = $this->modelExpenses->getByParcial($idFacInformative);
+        $expenses = $this->modelExpenses->getPartialExpenses($idParcial);
         if ($expenses != false) {
             foreach ($expenses as $index => $expense) {
                 $expense['supplier'] = $this->modelSupplier->get($expense['identificacion_proveedor']);
                 $expenses[$index] = $expense;
             }
         }
-                
         return($this->responseHttp([
             'titleContent' => "Detalle parcial [" . $this->getNumberParcial($order['nro_pedido']) . "] " .
                                   "para el pedido [" . $order['nro_pedido'] . "]",
             'show' => true,            
             'order' => $order,
             'parcial' => $parcial,
+            'expenses' => $expenses,
             'infoInvoices' => $infoInvoices,
             'partialNumber' => $this->getNumberParcial($order['nro_pedido']),
         ]));

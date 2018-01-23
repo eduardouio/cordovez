@@ -90,6 +90,7 @@ class Modelinfoinvoicedetail extends CI_Model
         if($this->db->insert($this->table, $infoInvoiceDetail)){
             return $this->db->insert_id();
         }
+        $this->modelLog->errorLog('No se puede agregar el detalle a la factura', $this->db->last_query());
         return false;
     }
   

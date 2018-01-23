@@ -109,21 +109,13 @@ class Facinformativa extends MY_Controller
                 $infoInvoice['details'][$item]['oderDetail'] = $invoiceOrderDetail;
             }
         }
-        $expenses = $this->modelExpenses->getByInfoInvoice($idFacInformative);
-        if ($expenses != false) {
-            foreach ($expenses as $index => $expense) {
-                $expense['supplier'] = $this->modelSupplier->get($expense['identificacion_proveedor']);
-                $expenses[$index] = $expense;
-            }
-        }
-        
+                
         $this->responseHttp([
             'show' => true,
             'titleContent' => 'Pedido [' . $order['nro_pedido'] . '] ' . ' Detalle Factura Informativa [ <small> ' . $infoInvoice['nro_factura_informativa'] . ' => ' . $supplier['nombre'] . '</small> ]',
             'order' => $order,
             'infoInvoice' => $infoInvoice,
             'parcial' => $parcial,
-            'expenses' => $expenses,
             'supplier' => $supplier,
             'user' => $this->modelUser->get($infoInvoice['id_user'])
         ]);

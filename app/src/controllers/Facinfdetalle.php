@@ -214,7 +214,6 @@ class Facinfdetalle extends MY_Controller
         $infoInvoice = $this->modelInfoInvoice->get($idInfoInvoice);
         unset($inputForm['id_factura_informativa']);
         $itemsInvoice = array_chunk($inputForm, 3, true);
-        $errorInsert = false;
         foreach ($itemsInvoice as $item){
             $myItemInvoice = [];
             foreach ($item as $key => $value){
@@ -223,13 +222,9 @@ class Facinfdetalle extends MY_Controller
                 $itemName = explode('-', $key);
                 $myItemInvoice[$itemName[0]] = $value;
             }
-            if($this->modelInfoInvoiceDetail->isAlreadyExistItem($myItemInvoice) == false && $myItemInvoice['nro_cajas'] > 0){
-                $this->modelInfoInvoiceDetail->create($myItemInvoice);
-            }else{
-             $this->modelLog->errorLog('No se puede anadir un item dos veces key duplicada o con valor cero ' . current_url());
-             $errorInsert = true;
-             
-            }
+            if($this->modelInfoInvoiceDetail->create($myItemInvoice) == false){
+             $this->modelLog->errorLog('No se puede anadir un item en la factura' . current_url());
+            }             
         }
         return($this->redirectPage('infoInvoiceShow', $infoInvoice['id_factura_informativa']));
     }

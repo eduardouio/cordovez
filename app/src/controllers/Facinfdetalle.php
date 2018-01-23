@@ -82,14 +82,16 @@ class Facinfdetalle extends MY_Controller
         }
         $infoInvoice = $this->modelInfoInvoice->get($infoInvoiceDetail['id_factura_informativa']);
         $orderInvoiceDetail = $this->modelOrderInvoiceDetail->get($infoInvoiceDetail['detalle_pedido_factura']);
-        $order = $this->modelOrder->get($infoInvoice['nro_pedido']);
+        $parcial = $this->modelParcial->get($infoInvoice['id_parcial']);
+        $order = $this->modelOrder->get($parcial['nro_pedido']);
         return ($this->responseHttp([
-            'titleContent' => 'Detalle Factura Informativa [ ' . $infoInvoice['nro_factura_informativa']  . ' ]' . 
-                            'Pedido [' . $order['nro_pedido'] .']' ,
+            'titleContent' => 'Detalle Factura Informativa [' . $infoInvoice['nro_factura_informativa']  . '] ' . 
+                            'Pedido [' . $order['nro_pedido'] .']' . ' Parcial [' . $parcial['id_parcial'] . ']' ,
             'show_detail' => true,
             'order' => $order,
             'supplier' => $this->modelSupplier->get($infoInvoice['identificacion_proveedor']),
             'infoInvoice' => $infoInvoice,
+            'parcial' => $parcial,
             'infoInvoiceDetail' => $infoInvoiceDetail,
             'orderInvoiceDetail' => $orderInvoiceDetail,
             'product' => $this->modelProduct->get($orderInvoiceDetail['cod_contable']),

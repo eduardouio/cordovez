@@ -25,7 +25,7 @@
 </ol>
 </div>
 <div class="col-md-7 text-right">
-	{% if order.bg_isclosed == '0' %}
+	{% if parcial.bg_isclosed == '0' %}
 	<a
 			href="{{rute_url}}gstinicial/validargi/{{order.nro_pedido}}">
 			<button type="button" class="btn btn-primary btn-sm">
@@ -60,7 +60,7 @@
       <li role="presentation" class="active">
       	<a href="#facturas" role="tab" data-toggle="tab" aria-controls="facturas">
       	<span class="fa fa-file"></span> Facturas Informativas Parcial
-      	{% if infoInvoice.bg_isclosed == '0' %}
+      	{% if parcial.bg_isclosed == '0' %}
          <span class="label label-success">Abierto</span>
          {% else %}
          <span class="label label-died">Cerrado</span>

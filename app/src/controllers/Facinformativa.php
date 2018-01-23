@@ -97,7 +97,8 @@ class Facinformativa extends MY_Controller
             $this->index();
             return false;
         }
-        $order = $this->modelOrder->get($infoInvoice['nro_pedido']);
+        $parcial = $this->modelParcial->get($infoInvoice['id_parcial']);
+        $order = $this->modelOrder->get($parcial['nro_pedido']);
         $supplier = $this->modelSupplier->get($infoInvoice['identificacion_proveedor']);
         $orderInvoices = $this->modelOrderInvoice->getbyOrder($order['nro_pedido']);
         $infoInvoice['details'] = $this->modelInfoInvoiceDetail->getByFacInformative($idFacInformative);
@@ -121,6 +122,7 @@ class Facinformativa extends MY_Controller
             'titleContent' => 'Pedido [' . $order['nro_pedido'] . '] ' . ' Detalle Factura Informativa [ <small> ' . $infoInvoice['nro_factura_informativa'] . ' => ' . $supplier['nombre'] . '</small> ]',
             'order' => $order,
             'infoInvoice' => $infoInvoice,
+            'parcial' => $parcial,
             'expenses' => $expenses,
             'supplier' => $supplier,
             'user' => $this->modelUser->get($infoInvoice['id_user'])
@@ -197,8 +199,9 @@ class Facinformativa extends MY_Controller
             $this->modelLog->redirectLog($this->controller . ',editar,' . current_url());
             return false;
         }
-        $order = $this->modelOrder->isRegimen70($infoInvoice['nro_pedido']);
-        $invoicesOrder = $this->modelOrderInvoice->getbyOrder($infoInvoice['nro_pedido']);
+        $parcial = $this->modelParcial->get($infoInvoice['id_parcial']);
+        $order = $this->modelOrder->isRegimen70($parcial['nro_pedido']);
+        $invoicesOrder = $this->modelOrderInvoice->getbyOrder($parcial['nro_pedido']);
         $invoicesOrderTemp = [];
         if ($invoicesOrder != false) {
             foreach ($invoicesOrder as $item => $invoiceOrder) {
@@ -208,7 +211,7 @@ class Facinformativa extends MY_Controller
                 $invoicesOrderTemp[$item] = $invoiceOrder;
             }
         }
-        $infoInvoices = $this->modelInfoInvoice->getByOrder($infoInvoice['nro_pedido']);
+        $infoInvoices = $this->modelInfoInvoice->getByParcial($parcial['id_parcial']);
         $olderPartials = 0;
         $infoInvoicesTemp = [];
         if ($infoInvoices != false) {
@@ -227,11 +230,11 @@ class Facinformativa extends MY_Controller
             'infoInvoices' => $infoInvoicesTemp,
             'infoInvoice' => $this->modelInfoInvoice->get($idFacInformative),
             'supplier' => $this->modelsupplier->get($this->almaceneraId),
-            'haveEuros' => $this->orderHaveEuros($infoInvoice['nro_pedido']),
+            'haveEuros' => $this->orderHaveEuros($parcial['nro_pedido']),
             'sumsValues' => $this->myModel->getValuesOrder($order),
             #            'warenHouseDays' => $this->getWarenHouseDaysPartials($order),
             'olderPartials' => $olderPartials,
-            'titleContent' => 'Modificar Factura Informativa Pedido: [' . $infoInvoice['nro_pedido'] . ']',
+            'titleContent' => 'Modificar Factura Informativa Pedido: [' . $parcial['nro_pedido'] . ']',
             'user' => $this->modelUser->get($order['id_user'])
         ]);
     }
@@ -293,7 +296,6 @@ class Facinformativa extends MY_Controller
                 'haveEuros' => $this->orderHaveEuros($order['nro_pedido']),
                 'sumsValues' => $this->myModel->getValuesOrder($order),
                 'message' => 'La información de uno de los campos es incorrecta!.',
-                'warenHouseDays' => $this->getWarenHouseDaysPartials($order),
                 'user' => $this->modelUser->get($order['id_user']),
                 'formError' => true,
                 'data' => $status,
@@ -382,7 +384,7 @@ class Facinformativa extends MY_Controller
     {
         $columnsLen = array(
             'nro_factura_informativa' => 2,
-            'id_parcial' => 6,
+            'id_parcial' => 1,
             'identificacion_proveedor' => 13,
             'flete_aduana' => 1,
             'fecha_emision' => 10,

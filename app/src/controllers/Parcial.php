@@ -80,34 +80,31 @@ class Parcial extends MY_Controller
      *
      * @param string $nroOrder
      */
-    public function presentar(string $nroOrder, int $idParcial)
+    public function presentar(int $idParcial)
     {
-        $order = $this->modelOrder->get($nroOrder);
         $parcial = $this->modelParcial->get($idParcial);
         
-        if ($order == false || $parcial == false) {
+        if ($parcial == false) {
             $this->modelLog->warningLog('Se accede directamente a la funcion ' . current_url());
             return ($this->redirectPage('ordersList'));
         }
-
+        
+        $order = $this->modelOrder->get($parcial['nro_pedido']);
+        
         $infoInvoices = $this->modelInfoInvoice->getByParcial($idParcial);
-        $quantities = [
-            'boxes' => 0,
-            'unities' => 0,
-        ];
         
         if(is_array($infoInvoices)){
-            foreach ($infoinvoices as $item => $invoice){
+            foreach ($infoInvoices as $item => $invoice){
                 $invoice['user'] = $this->modelUser->get($invoice['id_user']);
                 $invoice['details'] = $this->modelInfoInvoiceDetail->getByFacInformative($invoice['id_factura_informativa']);
-                $invoice['supplier'] = $this->modelSupplier->get($invoice['id_factura_informativa']);
+                $invoice['supplier'] = $this->modelSupplier->get($invoice['identificacion_proveedor']);
                 $count = $this->modelInfoInvoiceDetail->countBoxesAnd($invoice['id_factura_informativa']);
-                $quantities['boxes'] += $count['boxes'];
-                $quantities['unities'] += $count['unities'];
+                $invoice['boxes'] = $count['boxes'];
+                $invoice['unities'] = $count['unities'];
                 $infoInvoices[$item] = $invoice;
             }
         }
-        
+                
         return($this->responseHttp([
             'titleContent' => "Detalle parcial [" . $this->getNumberParcial($order['nro_pedido']) . "] " .
                                   "para el pedido [" . $order['nro_pedido'] . "]",
@@ -116,7 +113,6 @@ class Parcial extends MY_Controller
             'parcial' => $parcial,
             'infoInvoices' => $infoInvoices,
             'partialNumber' => $this->getNumberParcial($order['nro_pedido']),
-            'quantities' => $quantities,
         ]));
     }
     

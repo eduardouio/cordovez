@@ -164,7 +164,7 @@ class Modelinfoinvoicedetail extends CI_Model
         
         $details = $this->getByFacInformative($idInfoInvoice);
         if(is_array($details)){
-            foreach ($detail as $item => $itemInvoice)
+            foreach ($details as $item => $itemInvoice)
             {   
                 $quantity['boxes'] =+ $itemInvoice['nro_cajas'];
                 $detailOrder = $this->modelOrderInvoiceDetail->get($itemInvoice['detalle_pedido_factura']);

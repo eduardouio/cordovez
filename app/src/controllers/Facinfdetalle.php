@@ -25,6 +25,7 @@ class Facinfdetalle extends MY_Controller
     private $modelProduct;
     private $modelUser;
     private $modelLog;
+    private $modelParcial;
 
     public function __construct()
     {
@@ -45,6 +46,7 @@ class Facinfdetalle extends MY_Controller
         $this->load->model('modellog');
         $this->load->model('modelorderinvoice');
         $this->load->model('modelorderinvoicedetail');
+        $this->load->model('modelparcial');
         $this->modelOrder = new Modelorder();
         $this->modelInfoInvoice = new Modelinfoinvoice();
         $this->modelSupplier = new Modelsupplier();
@@ -54,6 +56,7 @@ class Facinfdetalle extends MY_Controller
         $this->modelLog = new Modellog();
         $this->modelOrderInvoice = new Modelorderinvoice();
         $this->modelOrderInvoiceDetail = new Modelorderinvoicedetail();
+        $this->modelParcial = new Modelparcial();
     }
 
     /**
@@ -108,9 +111,9 @@ class Facinfdetalle extends MY_Controller
           $this->modelLog->redirectLog($this->controller . ',nuevo,' . current_url());
           return($this->index());
       }
-      
-      $activeStock = $this->modelOrderInvoiceDetail->getActiveStokProductsByOrder($infoInvoice['nro_pedido']);
-      $orderInvoices = $this->modelOrderInvoice->getbyOrder($infoInvoice['nro_pedido']);
+      $parcial = $this->modelParcial->get($infoInvoice['id_parcial']);
+      $activeStock = $this->modelOrderInvoiceDetail->getActiveStokProductsByOrder($parcial['nro_pedido']);
+      $orderInvoices = $this->modelOrderInvoice->getbyOrder($parcial['nro_pedido']);
       $orderInvoicesTemp =[];
       foreach ($orderInvoices as $item => $val){
           $val['supplier'] = $this->modelSupplier->get($val['identificacion_proveedor']);
@@ -125,16 +128,15 @@ class Facinfdetalle extends MY_Controller
           $orderInvoicesTemp[$item] = $val;
       }
       
-      
       return($this->responseHttp([
           'titleContent' => 'Agregar Producto en Factura infromativa [' . 
                             $infoInvoice['nro_factura_informativa']. '] del Pedido [' . 
-                            $infoInvoice['nro_pedido'] . ']',
+                            $parcial['nro_pedido'] . ']',
           'create_detail' => true,
           'stockProducts' => $activeStock,
           'orderInvoices' => $orderInvoicesTemp,
           'infoInvoice' => $infoInvoice,
-          'order' => $this->modelOrder->get($infoInvoice['nro_pedido']),
+          'order' => $this->modelOrder->get($parcial['nro_pedido']),
       ]));
     }
     
@@ -152,8 +154,10 @@ class Facinfdetalle extends MY_Controller
         }
         $orderInvoiceDetail = $this->modelOrderInvoiceDetail->get($infoInvoiceDetail['detalle_pedido_factura']);
         $infoInvoice = $this->modelInfoInvoice->get($infoInvoiceDetail['id_factura_informativa']);
+        $parcial = $this->modelParcial->get($infoInvoice['id_parcial']);
         $product = $this->modelProduct->get($orderInvoiceDetail['cod_contable']);
-        $activeStock = $this->modelOrderInvoiceDetail->getActiveStokProductsByOrder($infoInvoice['nro_pedido']);
+        
+        $activeStock = $this->modelOrderInvoiceDetail->getActiveStokProductsByOrder($parcial['nro_pedido']);
         $productStock = 0;
         foreach($activeStock as $item => $val){
             if ($val['detalle_pedido_factura'] == $infoInvoiceDetail['detalle_pedido_factura']){

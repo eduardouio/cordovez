@@ -155,14 +155,32 @@ class Pedido extends MY_Controller
         $order['user'] = $this->modelUser->get($order['id_user']);
         $order['valuesOrder'] = $this->myModel->getValuesOrder($order);
         $invoicesOrder = $this->modelOrderInvoice->getbyOrder($nroOrder);
-        $infoInvoices = $this->modelInfoInvoice->getByOrder($nroOrder);
+        $parcials = $this->modelParcial->getByOrder($nroOrder);
         $initialExpenses = $this->modelExpenses->get($nroOrder);
         $paidsDetails = $this->modelPaidDetail->getByOrder($nroOrder);
         
-        if(is_array($infoInvoices)){
-            foreach ($infoInvoices as $item => $infoInvoice){
-                $infoInvoice['supplier'] = $this->modelSupplier->get($infoInvoice['identificacion_proveedor']);
-                $infoInvoices[$item] = $infoInvoice;
+        if(is_array($parcials)){
+            foreach ($parcials as $item => $parcial){
+                $quantity = [
+                    'boxesInParcial' => 0,
+                    'unitiesInParcial' => 0,
+                    'totalParcialValue' => 0.0,
+                ];
+                
+                $infoInvoices = $this->modelInfoInvoice->getByParcial($parcial['id_parcial']);
+                foreach ($infoInvoices as $index => $infoInvoice)
+                {
+                    $count = $this->modelInfoInvoiceDetail->countBoxesAnd($infoInvoice['id_factura_informativa']);
+                    $quantity['boxesInParcial'] += $count['boxes'];
+                    $quantity['unitiesInParcial'] += $count['unities'];
+                    $quantity['totalParcialValue'] =+ ($infoInvoice['valor'] * $infoInvoice['tipo_cambio']);
+                }
+                $parcial['user'] = $this->modelUser->get($parcial['id_user']);
+                $parcial['countInfoInvoices'] = count($this->modelInfoInvoice->getByParcial($parcial['id_parcial']));
+                $parcial['boxesInParcial'] = $quantity['boxesInParcial'];
+                $parcial['unitiesInParcial'] = $quantity['unitiesInParcial'];
+                $parcial['totalParcialValue'] = $quantity['totalParcialValue'];
+                $parcials[$item] = $parcial;
             }
         }
         
@@ -192,7 +210,8 @@ class Pedido extends MY_Controller
             }
             $paidsDetails = $paidsDetailsTemp;
         }
-        $this->responseHttp([
+        
+        return($this->responseHttp([
             'show_order' => true,
             'order' => $order,
             'ubicacion' => $this->whereIsOrder($order),
@@ -201,12 +220,11 @@ class Pedido extends MY_Controller
             'initialExpenses' => $initialExpenses,
             'paidsDetails' => $paidsDetails,
             'activeStok' => $this->modelOrderInvoiceDetail->getActiveStokProductsByOrder($nroOrder),
-            'invoicesInfo' => $infoInvoices,
-            'boxesOrder' => $this->myModel->getBoxesOrder($nroOrder, $order['regimen']),
+            'parcials' => $parcials,
             'sumsValues' => $this->myModel->getValuesOrder($order),
             'list_active' => 'class="active"',
             'titleContent' => 'Detalle De Pedido [ ' . $nroOrder . '] [' . $order['incoterm'] . '] [Regimen ' . $order['regimen'] . ']'
-        ]);
+        ]));
     }
     
     

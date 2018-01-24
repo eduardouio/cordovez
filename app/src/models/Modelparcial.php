@@ -94,18 +94,16 @@ class Modelparcial extends CI_Model
     
     
     /**
-     * Retorna el ultimo parcial de un pedido, si no existe retorna false
+     * Retorna el ultimo parcial de un pedido, 
+     * se usa para saber la fecha de salida del ultimo parical,
+     * si no existe un parcial se toma la fecha de entrada a la almacenera
      * @param string $nroOrder identificador del parical
      * @return array | boolean
      */
     public function getLastParcial(string $nroOrder)
     {
-        $partials = $this->getByOrder($nroOrder);
         
-        if(is_array($partials)){
-          return end($partials);    
-        }
-        return false;
+        
     }
     
     

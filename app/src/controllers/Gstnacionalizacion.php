@@ -451,9 +451,9 @@ class Gstnacionalizacion extends MY_Controller
         
         $infoInvoicesOrder = $this->modelInfoInvoice->getByParcial($idParcial);
         $order = $this->modelOrder->get($parcial['nro_pedido']);
-        $lastInvoInvoice = $this->modelInfoInvoice->lastInfoInvoice($order['nro_pedido']);
+        $lastParcial = $this->modelParcial->getLastParcial($nroOrder); 
         $startWarenhouse = false;
-        if ($lastInvoInvoice) {
+        if ($lastParcial) {
             $lastExpenses = $this->modelExpenses->getPartialExpenses($idParcial);
             $pos = 0;
             foreach ($lastExpenses as $item => $expense) {

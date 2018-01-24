@@ -102,8 +102,21 @@ class Modelparcial extends CI_Model
      */
     public function getLastParcial(string $nroOrder)
     {
+        $lastParcias = $this->modelBase->get_table([
+            'table' => $this->table,
+            'where' => [
+                'nro_pedido' => $nroOrder,
+            ],
+            'orderby' => [
+                'fecha_salida_almacenera' => 'DESC'
+            ],
+        ]);
         
-        
+        if(is_array($lastParcias) && count($lastParcias) > 1){
+            $this->modelLog->warningLog('Revisar que el primero sea el ultimo parcial', $this->db->last_query());
+            return $lastParcias[1];
+        }
+        return false;        
     }
     
     

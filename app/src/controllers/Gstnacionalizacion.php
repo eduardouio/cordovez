@@ -425,7 +425,7 @@ class Gstnacionalizacion extends MY_Controller
         
         $expense = $_POST;
         $expense['fecha'] = date('Y-m-d', strtotime($expense['fecha']));
-        $expense['fecha_fin'] = date('Y-m-d', strtotime($expense['fecha_fin']));
+        //$expense['fecha_fin'] = date('Y-m-d', strtotime($expense['fecha_fin']));
         $expense['id_user'] = $this->session->userdata('id_user');
         $expense['tipo'] = 'NACIONALIZACION';
         $expense['valor_provisionado'] = floatval($expense['valor_provisionado']);
@@ -451,33 +451,37 @@ class Gstnacionalizacion extends MY_Controller
         
         $infoInvoicesOrder = $this->modelInfoInvoice->getByParcial($idParcial);
         $order = $this->modelOrder->get($parcial['nro_pedido']);
-        $lastParcial = $this->modelParcial->getLastParcial($nroOrder); 
-        $startWarenhouse = false;
-        if ($lastParcial) {
-            $lastExpenses = $this->modelExpenses->getPartialExpenses($idParcial);
-            $pos = 0;
-            foreach ($lastExpenses as $item => $expense) {
-                if ($expense['fecha_fin'] == null) {
-                    unset($lastExpenses[$item]);
-                } else {
-                    $pos += 1;
-                }
-            }
-            
-            $startWarenhouse = $lastExpenses[$pos];
-            $dateLast = new DateTime(date('Y-m-d', strtotime($startWarenhouse['fecha_fin'])));
-            $dateLast->modify('+1 day');
-            $startWarenhouse['fecha_fin'] = $dateLast->format('m/d/Y');
-        }
+
         
         return ($this->responseHttp([
-            'titleContent' => 'Generar Provisiones Por Bodega Del Parcial Pedido [' . $order['nro_pedido'] . '] Factura Informativa [' . $infoInvoice['nro_factura_informativa'] . ']',
+            'titleContent' => 'Generar Provisiones Por Bodega Del Parcial Pedido [' . $order['nro_pedido'] . '] Parcial [' . $parcial['id_parcial'] . ']',
             'validWarenHouse' => 'true',
+            'lastDateWarenhouse' => $this->lastDataWarenhouse($order),
             'order' => $order,
             'infoInvoicesOrder' => (count($infoInvoicesOrder) > 1) ? $infoInvoicesOrder : false,
-            'infoInvoice' => $infoInvoice,
-            'startWarenhouse' => $startWarenhouse
+            'parcial' => $parcial,
         ]));
+    }
+    
+    
+    /**
+     * Retorna la ultima fecha que se ha facturado el bodegaje parcial
+     * @param string $nroOrder
+     * @return string
+     */
+    private function lastDataWarenhouse(array $nroOrder):string
+    {
+        #primero comprobamos que haya parciales
+        $lastParcial = $this->modelParcial->getLastParcial($nroOrder);
+        
+        if($lastParcial == false){
+            return($order['fecha_ingreso_almacenera']);
+        }
+        
+        #si tiene parciales tomamos el ultimo y buscamos en los gastos 
+        $parcialExpenses = $this->modelExpenses->getPartialExpenses($lastParcial['id_parcial']);
+        
+        
     }
 
     /**
@@ -485,8 +489,7 @@ class Gstnacionalizacion extends MY_Controller
      * desde la fecha_ingreso_almacenera, si el pedido se encuentra cerrado
      * se calcula hasta fecha_salida_Almacenera
      *
-     * @param array $order
-     *            pedido a evaluar
+     * @param array $order pedido a evaluar
      * @return int
      */
     private function getWarenHouseDays(array $order): int

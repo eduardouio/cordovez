@@ -21,14 +21,20 @@ class Modelparcial extends CI_Model
     private $table = 'parcial';
     private $modelBase;
     private $modelLog;
+    private $modelOrderInvoice;
+    private $modelInfoInvoice;
     
     public function __construct()
     {
         parent::__construct();
         $this->load->model('modelbase');
         $this->load->model('modellog');
+        $this->load->model('Modelinfoinvoice');
+        $this->load->model('Modelorderinvoice');
         $this->modelBase = new ModelBase();
         $this->modelLog = new Modellog();
+        $this->modelInfoInvoice = new Modelinfoinvoice();
+        $this->modelOrderInvoice = new Modelorderinvoice();
     }
     
     
@@ -122,11 +128,15 @@ class Modelparcial extends CI_Model
     
     /**
      * Obtiene la lista de los parciales cerrados para un pedido
+     * 
      * @param int $idParcial
+     * @param $all boolean true-> retorna todos 
      * @return array | boolean
      */
-    public function getClosedParcials(string $nroOrder)
+    public function getClosedParcials(string $nroOrder, bool $all = false)
     {
+        $limit = ($all) ? 1 : 1000;
+        
         $oldParcial = $this->modelBase->get_table([
             'table' => $this->table,
             'where' => [ 
@@ -136,10 +146,10 @@ class Modelparcial extends CI_Model
             'orderby' => [
                 'decha' => 'DESC',
             ],
-            'limit' => 1,
+            'limit' => $limit,
         ]);
         
-        $this->modelLog->warningLog('Se pide el ultimo parcial', 
+        $this->modelLog->warningLog('Consulta a los parciales de un pedido', 
                                      $this->db->last_query()
                                     );
         
@@ -149,6 +159,49 @@ class Modelparcial extends CI_Model
         
         return false;
     }
+    
+    
+    /**
+     * Retorna el valor que suman las facturas, el fob actual se calcula
+     * FOBinical = suma valor de Facturas * tipo de cambio factura pedido
+     * CurrentFOB = suma valor de parciales * tipo de cambio factura pedido
+     * Con esto se mantiene la relacion de lo nacionalizado y lo declarado
+     * inicialemente, el tipo de cambio de la factura informativa solo
+     * se usa para la declaracion de impuestos
+     * 
+     * @param string $nroPedido
+     * @return float
+     */
+    public function getNationalicedCIF(string $nroOrder): array
+    {
+        $fobNationalized = [
+            'fob' => 0.0,
+            'seguro' => 0.0,
+            'felete' => 0.0,
+        ];
+        
+        $parcials = $this->getClosedParcials($nroOrder, true);
+        $typeChange = $this->modelOrderInvoice->getTypeChange($nroOrder);
+        
+        if( is_array($parcials) ){
+            foreach ($parcials as $item => $parcial){
+                $infoinvoices = $this->modelInfoInvoice->getByParcial(
+                                                        $parcial['id_parcial']
+                                                                    );
+                foreach ($infoinvoices as $index => $invoice){
+                    $fobNationalized['fob'] += (
+                                        $invoice['valor'] * $typeChange 
+                                        );
+                    $fobNationalized['seguro'] += $invoice['seguro'];
+                    $fobNationalized['flete'] += $invoice['flete'];
+                }
+            }
+        }
+        
+        $this->modelLog->susessLog('FOB Nacionalizado 0 pedido: ' . $nroOrder);
+        return $fobNationalized;        
+    }
+    
     
     /**
      * Elimina un parcial siempre y cuando este vacio

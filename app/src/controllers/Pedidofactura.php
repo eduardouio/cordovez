@@ -248,6 +248,8 @@ class Pedidofactura extends MY_Controller
                 ]));
         }
     }
+    
+    
 
     /**
      * se validan los datos que deben estar para que la consulta no falle

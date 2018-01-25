@@ -1,16 +1,27 @@
+{% set fobParcial = 0.0 %}
+{% set fleteParcial = 0.0 %}
+{% set seguroParcial = 0.0 %}
+
+{% for infoInvoice in infoInvoices %}
+   {% set fobParcial = fobParcial +  infoInvoice.valor  %}
+   {% set fleteParcial = fleteParcial + infoInvoice.flete_aduana  %}
+   {% set seguroParcial = seguroParcial + infoInvoice.seguro_aduana  %}   
+{% endfor %}
+
+
 <div class="well well-sm">
    <div class="row">
       <div class="col-sm-3">
          <strong>Valor FOB:</strong> 
          <span class="text-primary">
-         $ {{infoInvoice.valor | number_format(2, '.', ',') }}      
+         $ {{fobParcial | number_format(2, '.', ',') }}      
          </span>  
       </div>
       <div class="col-sm-2">
          <strong>
          Seguro:</strong> 
          <span class="text-primary">
-         {{ infoInvoice.seguro_aduana | number_format(2, '.', ',')}}
+         {{ seguroParcial | number_format(2, '.', ',')}}
          </span>
       </div>
       <div class="col-sm-2">
@@ -18,13 +29,13 @@
          Felete:</strong> 
          <span class="text-primary">
          <span>
-         {{ infoInvoice.flete_aduana | number_format(2, '.', ',') }}
+         {{ fleteParcial| number_format(2, '.', ',') }}
          </span>
          </span>
       </div>
       <div class="col-sm-2">
         <strong>CIF:</strong>
-        <strong class="text-primary">{{ (infoInvoice.flete_aduana + infoInvoice.seguro_aduana + infoInvoice.valor) | number_format(2, '.', ',') }}</strong>
+        <strong class="text-primary">{{ (fobParcial + fleteParcial + seguroParcial) | number_format(2, '.', ',') }}</strong>
       </div>
       <div class="col-sm-3">
          <strong>

@@ -196,7 +196,7 @@ class Gstnacionalizacion extends MY_Controller
                 $infoInvoices[$item] = $invoice;
             }
         }
-               
+                
         return ($this->responseHTTP([
             'titleContent' => 'generar gastos nacionalizacion Parcial[' . $parcial['id_parcial'] . '] Pedido: [' . $parcial['nro_pedido'] . '] ',
             'order' => $order,
@@ -244,26 +244,41 @@ class Gstnacionalizacion extends MY_Controller
      * @return float
      */
     private function getWarenhousePartialValue(int $idParcial): float
-    {
-        $fobInitial = 0.0;
-        $fobNationalized = 0.0;
+    {   
         
         $parcial = $this->modelParcial->get($idParcial);
         $order = $this->modelOrder->get($parcial['nro_pedido']);
         
-        $initialStock = $this->modelOrderInvoice->getbyOrder(
-            $parcial['nro_pedido']
-            );
+        $cifInitial = $this->modelOrderInvoice->getInitCIFOrder(
+                                                        $parcial['nro_pedido']
+                                                                );
         
-        if (is_array($initialStock)) {
-            foreach ($initialStock as $item => $orderInvoice) {
-                $fobStarted += (
-                        $orderInvoice['valor'] * $orderInvoice['tipo_cambio']
-                    );
-            }
+        $cifNationalized = $this->modelParcial->getNationalicedCIF(
+                                                        $parcial['nro_pedido']
+                                                                    );
+        $cifInitTotal = 0.0;
+        $cifNationalizedTotal = 0.0;
+        
+        foreach ($cifInitial as $item => $value){
+            $cifInitTotal += $value;
         }
         
-        return $fobStarted;
+        foreach ($cifNationalized as $item => $value){
+            $cifNationalizedTotal += $value;
+        }
+        
+        $warenHouseValue = ((($cifInitTotal - $cifNationalizedTotal)*4)/1000);
+        
+        $this->modelLog->susessLog('Valor de Alamacenaje calculado ' . 
+                                    $warenHouseValue . ' Pedido ' . 
+                                    $order['nro_pedido']
+                                  );
+        
+        if($warenHouseValue < 165){
+            return 165;
+        }
+        return $warenHouseValue;
+        
     }
 
     /**
@@ -455,8 +470,8 @@ class Gstnacionalizacion extends MY_Controller
             'validWarenHouse' => 'true',
             'lastDateWarenhouse' => $this->lastDataWarenhouse($order),
             'order' => $order,
-            'infoInvoicesOrder' => (count($infoInvoicesOrder) > 1) ? $infoInvoicesOrder : false,
             'parcial' => $parcial,
+            'fobSaldo' => $this->getWarenhousePartialValue($idParcial),
         ]));
     }
     

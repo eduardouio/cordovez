@@ -86,6 +86,83 @@ class Modelorderinvoice extends CI_Model
     }
     
     
+    
+    /**
+     * Retorna el valor que suman las facturas, el fob actual se calcula
+     * FOBinical = suma valor de Facturas * tipo de cambio factura pedido
+     * CurrentFOB = suma valor de parciales * tipo de cambio factura pedido
+     * Con esto se mantiene la relacion de lo nacionalizado y lo declarado
+     * inicialemente, el tipo de cambio de la factura informativa solo
+     * se usa para la declaracion de impuestos
+     * 
+     * @param string $nroPedido
+     * @return float
+     */
+    public function getInitCIFOrder(string $nroOrder):array
+    {
+
+        $orderInvoices = $this->getbyOrder($nroOrder);
+        
+        $initFlete = $this->modelBase->get_table([
+            'table' => 'gastos_nacionalizacion',
+            'where' => [
+                'nro_pedido' => $nroOrder,
+                'concepto' => 'FLETE'
+            ],
+        ]);
+        
+        $initSeguro = $this->modelBase->get_table([
+            'table' => 'gastos_nacionalizacion',
+            'where' => [
+                'nro_pedido' => $nroOrder,
+                'concepto' => 'SEGURO'
+            ],
+        ]);
+        
+        
+                
+        $cifInitial = [
+            'fob' => 0.0,
+            'seguro' => floatval($initSeguro[0]),
+            'flete' => floatval($initFlete[0]),
+        ];
+
+        if (is_array($orderInvoices)){
+            foreach ($orderInvoices as $item => $invoice){
+                
+                $cifInitial['fob'] += ($invoice['valor'] * ($invoice['tipo_cambio']));
+            }
+            
+            return $cifInitial;
+        }
+        
+        $this->modelLog->errorLog(
+                            'Pedido sin facturas, no procede, FOB inicial en cero',
+                            $this->db->last_query()
+                            );
+        
+        print 'El FOB Inicial no puede ser CERO, sin facturas de producto';
+        return $cifInitial;
+    }
+    
+    
+    /**
+     * Retorna el tipo de cambio para un pedido, si el pedido tiene varias 
+     * facturas de producto se toma el tipo de cambio de la primera ya que aplica
+     * para todas
+     * @param string $nroOrder
+     * @return float 
+     */
+    public function getTypeChange($nroOrder):float
+    {
+        $orderInvoice = $this->getbyOrder($nroOrder);
+        
+        foreach ($orderInvoice as $idx => $invoice){
+            return floatval($invoice['tipo_cambio']); 
+        }
+    }
+    
+    
     /**
      * Registra una factura de proveedor en la base de datos
      * @param array $invoiceOrder

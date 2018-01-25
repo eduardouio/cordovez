@@ -16,31 +16,18 @@ class Gstinicial extends MY_Controller
 {
 
     private $controller = "gastos_nacionalizacion";
-
     private $template = '/pages/pageGastoInicial.html';
-
     private $securePercent = 0.0018;
-
     private $isdPer = 0.05;
-
     private $modelBase;
-
     private $modelOrder;
-
     private $ModelOrderInvoiceDetail;
-
     private $modelSupplier;
-
     private $modelExpenses;
-
     private $myModel;
-
     private $modelIncoterms;
-
     private $modelProducts;
-
     private $modelUser;
-
     private $modelLog;
 
     /**
@@ -278,7 +265,7 @@ class Gstinicial extends MY_Controller
         $initExpenses = $this->modelExpenses->getInitialExpenses($nroOrder);
         $minimal = $this->getMinimalParams($order, $initExpenses);
         $minimal['valuesOrder'] = $this->calcValuesOrderItems($order, $invoicesOrder, $initExpenses);
-        
+                
         return ($this->responseHttp([
             'validateExpenses' => true,
             'titleContent' => 'Generar Gastos Iniciales Pedido: [' . $nroOrder . '] ' . ' <small>Validar Información</small>',
@@ -323,7 +310,7 @@ class Gstinicial extends MY_Controller
         foreach ($incoterms as $key => $value) {
             $initExpense = [
                 'nro_pedido' => $nroOrder,
-                'id_factura_informativa' => 0,
+                'id_parcial' => 0,
                 'identificacion_proveedor' => 0,
                 'concepto' => $value['tipo'],
                 'valor_provisionado' => $value['tarifa'],

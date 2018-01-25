@@ -156,12 +156,29 @@ class Parcial extends MY_Controller
         
         if($hasActiveParcial == false && $order['regimen'] == 70){
             $id_parcial = $this->modelParcial->create($parcial);
-            return($this->redirectPage('infoInvoiceNew', $nroOrder));
+            return($this->redirectPage('infoInvoiceNew', $id_parcial));
         }
         
         $this->modelLog->warningLog('No se puede crear un parcial mientras uno esté activo' . current_url() );
         return ($this->redirectPage('presentOrder', $nroOrder));        
     }
+    
+    
+    
+    /**
+     * Elimina un parcial vacio
+     * @param int $idParcial
+     */
+    public function eliminar(int $idParcial)
+    {
+        $parcial = $this->modelParcial->get($idParcial);
+        
+        if($parcial){           
+            $this->modelParcial->delete($idParcial);
+        }
+        return ($this->redirectPage('presentOrder', $parcial['nro_pedido']));
+    }
+    
     
     
     /**

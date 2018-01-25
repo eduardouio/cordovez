@@ -9,7 +9,7 @@
 <div class="row">
     <div class="col-sm-3">
         {% if newParcial == true %}
-            <a href="{{ rute_url }}facinformativa/nuevo/{{ order.nro_pedido }}">
+            <a href="{{ rute_url }}parcial/nuevo/{{ order.nro_pedido }}">
                 <button type="button" class="btn btn-primary btn-sm">
                     <span class="fa fa-plus"></span>
                     Nuevo Parcial Pedido
@@ -93,25 +93,20 @@
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dLabel">
                                 <li>
-                                    <a href="{{ rute_url }}facinformativa/presentar/{{ invoice.id_factura_informativa }}">
+                                    <a href="{{ rute_url }}parcial/presentar/{{ parcial.id_parcial }}">
                                         <span class="fa fa-eye fa-fw"></span>
-                                        Ver Factura Informativa </a>
+                                        Ver Detalle Parcial</a>
                                 </li>
                                 {%  if invoice.bg_isclosed == 0 %}
                                 <li>
-                                    <a href="{{ rute_url }}facinfdetalle/nuevo/{{ invoice.id_factura_informativa }}">
-                                        <span class="fa fa-eye fa-fw"></span>
-                                        Agregar Productos</a>
+                                    <a href="{{ rute_url }}facinformativa/nuevo/{{ parcial.id_parcial }}">
+                                        <span class="fa fa-plus fa-fw"></span>
+                                        Añadir Factura Informativa</a>
                                 </li>
                                 <li>
-                                    <a href="{{ rute_url }}facinformativa/editar/{{ invoice.id_factura_informativa }}">
-                                        <span class="fa fa-pencil fa-fw"></span>
-                                        Editar Factura Informativa</a>
-                                </li>
-                                <li>
-                                    <a href="{{ rute_url }}facinformativa/eliminar/{{ invoice.id_factura_informativa }}">
+                                    <a href="{{ rute_url }}parcial/eliminar/{{ parcial.id_parcial }}">
                                         <span class="fa fa-trash fa-fw"></span>
-                                        Eliminar Factura Informativa</a>
+                                        Eliminar Parcial</a>
                                 </li>
                                 {%  endif %}
                             </ul>
@@ -123,8 +118,4 @@
         </table>
     </div>
     <div class="col-sm-1">&nbsp;</div>
-
-    <div class="row">
-        
-    </div>
 </div>

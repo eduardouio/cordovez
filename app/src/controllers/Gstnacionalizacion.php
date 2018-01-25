@@ -163,6 +163,7 @@ class Gstnacionalizacion extends MY_Controller
         ]);
     }
 
+    
     /**
      * redirecciona a la pagina de lista de pedidos
      * son redirecciones por accesos sin ilegales
@@ -218,11 +219,11 @@ class Gstnacionalizacion extends MY_Controller
         }
         
         $partialPost = $_POST;
-        $idInfoInvoice = $partialPost['id_factura_informativa'];
-        unset($partialPost['id_factura_informativa']);
+        $idParcial = $partialPost['id_parcial'];
+        unset($partialPost['id_parcial']);
         foreach ($partialPost['periodo'] as $item => $warenHouse) {
-            $warenHouse['id_factura_informativa'] = $idInfoInvoice;
-            $warenHouse['valor_provisionado'] = $this->getWarenhousePartialValue($idInfoInvoice);
+            $warenHouse['id_parcial'] = $idParcial;
+            $warenHouse['valor_provisionado'] = $this->getWarenhousePartialValue($idParcial);
             $warenHouse['id_user'] = $this->session->userdata('id_user');
             if ($this->modelExpenses->create($warenHouse)) {
                 $this->modelLog->susessLog('Periodo Bodega Registrado Correctamete');
@@ -237,37 +238,25 @@ class Gstnacionalizacion extends MY_Controller
     /**
      * retorna el costo de la bodega para el parcial, aplicando una formula
      * 
-     * @param int $idInfoInvoice
+     * @param int $idParcial
      * @return float
      */
-    private function getWarenhousePartialValue(int $idInfoInvoice): float
+    private function getWarenhousePartialValue(int $idParcial): float
     {
         $fobStarted = 0.0;
         $fobNationalized = 0.0;
         
-        $infoInvoice = $this->modelInfoInvoice->get($idInfoInvoice);
-        $order = $this->modelOrder->get($infoInvoice['nro_pedido']);
-        $initialStock = $this->modelOrderInvoice->getbyOrder($infoInvoice['nro_pedido']);
+        $parcial = $this->modelParcial->get($idParcial);
+        $order = $this->modelOrder->get($parcial['nro_pedido']);
+        $initialStock = $this->modelOrderInvoice->getbyOrder($parcial['nro_pedido']);
         
         if (is_array($initialStock)) {
             foreach ($initialStock as $item => $orderInvoice) {
-                // el valor de la factura por el tipo de cambio de la fac informativa
-                $fobStarted += ($orderInvoice['valor'] * $infoInvoice['tipo_cambio']);
+                $fobStarted += ($orderInvoice['valor'] * $orderInvoice['tipo_cambio']);
             }
         }
         
-        $actualStock = $this->modelInfoInvoice->getClosedByOrder($infoInvoice['nro_pedido']);
-        if (is_array($actualStock)) {
-            foreach ($actualStock as $key => $item) {
-                $fobNationalized += ($item['valor'] * $item['tipo_de_cambio']);
-            }
-        }
-        
-        return (0);
-        print $fobNationalized;
-        print $fobStarted;
-        
-        exit();
+        return $fobStarted;
     }
 
     /**
@@ -469,17 +458,13 @@ class Gstnacionalizacion extends MY_Controller
      * @param string $nroOrder
      * @return string
      */
-    private function lastDataWarenhouse(array $nroOrder):string
+    private function lastDataWarenhouse(array $order):string
     {
-        #primero comprobamos que haya parciales
-        $lastParcial = $this->modelParcial->getLastParcial($nroOrder);
+        #primero comprobamos que haya mas de un parcial
+        $lastParcial = $this->modelParcial->getLastParcial($order['nro_pedido']);
         
-        if($lastParcial == false){
             return($order['fecha_ingreso_almacenera']);
-        }
         
-        #si tiene parciales tomamos el ultimo y buscamos en los gastos 
-        $parcialExpenses = $this->modelExpenses->getPartialExpenses($lastParcial['id_parcial']);
         
         
     }

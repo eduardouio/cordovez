@@ -88,7 +88,7 @@
             <tr>
                <td>{{expense.concepto }}</td>
                <td>{{ expense.fecha }}</td>
-               {% if expense.fecha_fin == null %}
+               {% if ((expense.fecha_fin == null) or (expense.fecha_fin == '0000-00-00')) %}
                <td class="text-center"> --- </td>
                {% else %}
                   <td>{{ expense.fecha_fin }}</td>
@@ -97,10 +97,10 @@
                   {% if expense.valor_provisionado > 0 %}
                      <td class="success pull-rigth" style=" width: 1px; white-space: nowrap;">
                      OK <a href="{{rute_url}}gstnacionalizacion/editar/{{expense.id_gastos_nacionalizacion}}">
-                     <span class="fa fa-pencil"></span> Editar
+                     <span class="fa fa-pencil"></span>
                      </a>
                      <a href="{{rute_url}}gstnacionalizacion/eliminar/{{expense.id_gastos_nacionalizacion}}" class="text-danger">
-                     <span class="fa fa-trash"></span> Eliminar
+                     <span class="fa fa-trash"></span>
                      </a>
                      </td>
                   {% else %}
@@ -110,7 +110,7 @@
                      Registrar                           
                         </a>
                         <a href="{{rute_url}}gstnacionalizacion/eliminar/{{expense.id_gastos_nacionalizacion}}" class="text-danger">
-                     <span class="fa fa-trash"></span> Eliminar
+                     <span class="fa fa-trash"></span> 
                      </a>
                   </td>
                   {% endif %}

@@ -168,12 +168,14 @@ class Pedido extends MY_Controller
                 ];
                 
                 $infoInvoices = $this->modelInfoInvoice->getByParcial($parcial['id_parcial']);
-                foreach ($infoInvoices as $index => $infoInvoice)
-                {
-                    $count = $this->modelInfoInvoiceDetail->countBoxesAnd($infoInvoice['id_factura_informativa']);
-                    $quantity['boxesInParcial'] += $count['boxes'];
-                    $quantity['unitiesInParcial'] += $count['unities'];
-                    $quantity['totalParcialValue'] =+ ($infoInvoice['valor'] * $infoInvoice['tipo_cambio']);
+                if (is_array($infoInvoices)){
+                    foreach ($infoInvoices as $index => $infoInvoice)
+                    {
+                        $count = $this->modelInfoInvoiceDetail->countBoxesAnd($infoInvoice['id_factura_informativa']);
+                        $quantity['boxesInParcial'] += $count['boxes'];
+                        $quantity['unitiesInParcial'] += $count['unities'];
+                        $quantity['totalParcialValue'] =+ ($infoInvoice['valor'] * $infoInvoice['tipo_cambio']);
+                    }                    
                 }
                 $parcial['user'] = $this->modelUser->get($parcial['id_user']);
                 $parcial['countInfoInvoices'] = count($this->modelInfoInvoice->getByParcial($parcial['id_parcial']));

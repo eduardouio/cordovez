@@ -15,9 +15,9 @@
             <td>0</td>
             <td>PROVISION ALMACENAJE INICIAL</td>
             <td>0.00</td>
-            <td>
+            <td class="text-center">
                <a href="{{rute_url}}gstinicial/validarbodegainicial/{{order.nro_pedido}}">
-   <span class="text-primary"> Provisionar </span>
+    <button class="text-primary">Provisionar</button>
    </a>
             </td>
          </tr>
@@ -62,14 +62,16 @@
             {% else %}
             <td>{{rateExpense.valor |number_format(2, '.', ',') }}</td>
             {% endif %}
-            <td class="text-center">
+            <td class="pull-right">
+               <label class="control control-checkbox">
                <input
                   type="checkbox" 
                   name="{{ rateExpense.concepto | replace({' ':''})}}" 
                   value="{{rateExpense.id_tarifa_gastos}}"
-                  id= 'cehck{{loop.index}}'
-                  onclick = "test('cehck{{loop.index}}')"
-                  >
+                  id= "{{rateExpense.id_tarifa_gastos}}"
+                  onclick="check({{rateExpense.id_tarifa_gastos}})">
+                   <div class="control_indicator"></div>
+</label>
             </td>
          </tr>
          {% endfor %}
@@ -85,30 +87,25 @@
    <br>
    <br>
 </form>
+
 <script type="text/javascript">
-   var radioState = false;
-   function test(element){
-      if(radioState == false){
-         check(element);
-         radioState = true;
-      }else{
-         uncheck(element);
-         radioState = false;
-      }
-   }
+   var rates  = {{ unusedExpenses | json_encode() | raw }};  
    
-   /**
-   * Marca a un radio button como seleccionado
-   */
-   function check(element){
-   document.getElementById(element).checked = true;
-   }
-   
-   /**
-   * quita la seleccion a un radio button
-   */
-   function uncheck(element){
-   document.getElementById(element).checked = false;
-   }
-   
+   //Se encarga de comprobar si hay opciones iguales en la lista si las hay las deselecciona
+   function check(idItem){
+      var item = {};
+      var objSeleccionados = [];
+      $.each(rates, function(key, value){
+         if( parseInt(value.id_tarifa_gastos) === idItem ){
+            item = value;
+         }
+      });
+
+      //Quita el check en caso de que este seleccionados
+      $.each(rates, function(key, value){
+         if(value.concepto === item.concepto && parseInt(value.id_tarifa_gastos) != idItem){
+            $('#'+ value.id_tarifa_gastos).prop('checked', false);
+         }
+      });
+   }   
 </script>

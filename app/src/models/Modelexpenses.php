@@ -224,9 +224,7 @@ class Modelexpenses extends CI_Model
                 'id_parcial' => $idParcial, 
             ],
         ]);
-        
-        $this->modelLog->warningLog('Query' , $this->db->last_query());
-        
+                
         if(is_array($partialExpenses) && count($partialExpenses) > 0){
             return $partialExpenses;
         }
@@ -252,8 +250,8 @@ class Modelexpenses extends CI_Model
             ],
         ]);
 
-        $infoInvoices = $this->modelBase->get_table([
-            'table' => 'factura_informativa',
+        $parcials = $this->modelBase->get_table([
+            'table' => 'parcial',
             'where' => [
                 'nro_pedido' => $nroOrder,
             ],

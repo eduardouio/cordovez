@@ -222,7 +222,20 @@ class Gstnacionalizacion extends MY_Controller
         
         $partialPost = $_POST;
         $idParcial = $partialPost['id_parcial'];
+        $dateExitWarenhouseParcial = $partialPost['fecha_salida_almacenera'];
         unset($partialPost['id_parcial']);
+        unset($partialPost['fecha_salida_almacenera']);
+        
+        $index = count($partialPost['periodo']) -1 ;
+        
+        $dataParcial = [
+            'id_parcial' => $idParcial,
+            'fecha_salida_almacenera' => $dateExitWarenhouseParcial,
+            'proximo_almacenaje_desde' => ($partialPost['periodo'][$index]['fecha_fin']),
+        ];
+        
+        $this->modelParcial->update($dataParcial);
+        exit();
         foreach ($partialPost['periodo'] as $item => $warenHouse) {
             $warenHouse['id_parcial'] = $idParcial;
             $warenHouse['valor_provisionado'] = $this->getWarenhousePartialValue($idParcial);

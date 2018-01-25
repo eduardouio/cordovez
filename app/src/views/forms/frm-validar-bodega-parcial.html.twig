@@ -154,6 +154,7 @@
     * Establece el concepto del itervalo con un mes de adelanto
     */
     function setInterval(date, months){
+
     var intervalo = {
     	'fecha' : (date.getFullYear()) + '-' +  (date.getMonth() + 1) + '-' +  (date.getDate()),
    		'fecha_fin' : null,
@@ -171,6 +172,7 @@
    	date.setDate(date.getDate() + 1 );
     intervalo.concepto.toUpperCase();
    	arrayAlmacenaje.push(intervalo);
+
    }
 
    /**
@@ -190,12 +192,14 @@
  	* url gstnacionalizacion/validaBodega/
  	*/
  	$('#enviarFormulario').click(function(){
+ 		//Se envian los almacenajes de los peridos
  		$.post('{{rute_url}}gstnacionalizacion/putWarenhouseExpense', 
  													{ 
  													  	'id_parcial' : {{parcial.id_parcial}},
+ 													  	'fecha_salida_almacenera' : $('#fecha_nacionalizacion_parcial').val(),
  														'periodo' : arrayAlmacenaje , 
  													 });
-
-	window.location.href = '{{rute_url}}gstnacionalizacion/validar70/{{parcial.id_parcial}}';
+ 		//Actualizacmos las fechas en el parcial
+	//window.location.href = '{{rute_url}}gstnacionalizacion/validar70/{{parcial.id_parcial}}';
  	});
 </script>

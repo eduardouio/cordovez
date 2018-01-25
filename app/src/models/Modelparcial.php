@@ -114,7 +114,7 @@ class Modelparcial extends CI_Model
                 'nro_pedido' => $nroOrder,
             ],
             'orderby' => [
-                'fecha_salida_almacenera' => 'DESC'
+                'proximo_almacenaje_desde' => 'DESC'
             ],
         ]);
         
@@ -200,6 +200,43 @@ class Modelparcial extends CI_Model
         
         $this->modelLog->susessLog('FOB Nacionalizado 0 pedido: ' . $nroOrder);
         return $fobNationalized;        
+    }
+    
+    
+    
+    /**
+     * Actualiza un parcial, se usa para cambiar las fechas de salida 
+     * de la almacenera y fecha de fin de facturacion del ultimo parcial
+     * @param array $parcial
+     * @return bool
+     */
+    public function update(array $parcial): bool {
+        
+        $parcial['last_update'] = date('Y-m-d H:i:s');
+        
+        $parcial['fecha_salida_almacenera'] = str_replace( 
+                                            '/', 
+                                            '-', 
+                                            $parcial['fecha_salida_almacenera']
+                                                        );
+        
+        $parcial['fecha_salida_almacenera'] = date(
+                                 'Y-m-d',
+                                 strtotime($parcial['fecha_salida_almacenera'])
+                                                  );
+                
+        $parcial['proximo_almacenaje_desde'] = date(
+            'Y-m-d',
+            strtotime($parcial['proximo_almacenaje_desde'] . ' +1 day')
+            );
+       
+        $this->db->where('id_parcial', $parcial['id_parcial']);
+        
+        if($this->db->update($this->table, $parcial)){
+            return true;
+        }
+        
+        return false;
     }
     
     

@@ -121,6 +121,36 @@ class Modelparcial extends CI_Model
     
     
     /**
+     * Obtiene la lista de los parciales cerrados para un pedido
+     * @param int $idParcial
+     * @return array | boolean
+     */
+    public function getClosedParcials(string $nroOrder)
+    {
+        $oldParcial = $this->modelBase->get_table([
+            'table' => $this->table,
+            'where' => [ 
+                'nro_pedido' => $nroOrder,
+                'bg_isclosed' => '1',
+            ],
+            'orderby' => [
+                'decha' => 'DESC',
+            ],
+            'limit' => 1,
+        ]);
+        
+        $this->modelLog->warningLog('Se pide el ultimo parcial', 
+                                     $this->db->last_query()
+                                    );
+        
+        if(is_array($oldParcial) && count($oldParcial) > 0){
+            return $oldParcial;
+        }
+        
+        return false;
+    }
+    
+    /**
      * Elimina un parcial siempre y cuando este vacio
      * @param int $idParcial
      * @return bool

@@ -75,11 +75,7 @@
                class="btn btn-warning btn-sm"> 
                <span class="fa fa-arrow-left"></span> Volver Gastos Parcial</a>
             </div>
-         </div>
-      </div>
-      <div class="col-md-1">&nbsp;</div>
-   </div>
-   </div>
+      </div>  
 <script type="text/javascript">
    Date.isLeapYear = function (year) { 
       	return (((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0)); 
@@ -161,7 +157,7 @@
     var intervalo = {
     	'fecha' : (date.getFullYear()) + '-' +  (date.getMonth() + 1) + '-' +  (date.getDate()),
    		'fecha_fin' : null,
-   		'concepto' : 'Almaceneaje ' + (date.getFullYear()) + monthNames[date.getMonth()] ,
+   		'concepto' : 'ALMACENEAJE ' + (date.getFullYear()) + monthNames[date.getMonth()] ,
    		'valor_provisionado' : 0,
    		'tipo' : 'NACIONALIZACION',
    		'nro_pedido' : '000-00',
@@ -173,6 +169,7 @@
    	intervalo.fecha_fin = (date.getFullYear()) + '-' + (date.getMonth() + 1) + '-' + (date.getDate());
    	intervalo.concepto +=  '-' + (date.getFullYear()) + monthNames[date.getMonth()] ;
    	date.setDate(date.getDate() + 1 );
+    intervalo.concepto.toUpperCase();
    	arrayAlmacenaje.push(intervalo);
    }
 
@@ -199,6 +196,6 @@
  														'periodo' : arrayAlmacenaje , 
  													 });
 
-//	window.location.href = '{{rute_url}}gstnacionalizacion/validar70/{{parcial.id_parcial}}';
+	window.location.href = '{{rute_url}}gstnacionalizacion/validar70/{{parcial.id_parcial}}';
  	});
 </script>

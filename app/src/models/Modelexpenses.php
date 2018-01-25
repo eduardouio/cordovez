@@ -223,12 +223,14 @@ class Modelexpenses extends CI_Model
             'where' => [
                 'id_parcial' => $idParcial, 
             ],
+            'orderby' => ['concepto' => 'ASC' ],
         ]);
                 
         if(is_array($partialExpenses) && count($partialExpenses) > 0){
             return $partialExpenses;
         }
         
+        $this->modelLog->generalLog("Parcial $idParcial sin Gastos");
         return false;
     }
     
@@ -258,12 +260,12 @@ class Modelexpenses extends CI_Model
         ]);
         
         if(gettype($expenses) == 'array' && !empty($expenses)){
-            if( gettype($infoInvoices) == 'array' && !empty($infoInvoices)){
-                foreach ($infoInvoices as $key => $value) {
+            if( gettype($parcials) == 'array' && !empty($parcials)){
+                foreach ($parcials as $key => $value) {
                     $nationalizationExpense = $this->modelBase->get_table([
                         'table' => $this->table,
                         'where' => [
-                            'id_factura_informativa' => $value['id_factura_informativa'],
+                            'id_pacial' => $value['id_parcial'],
                         ],
                     ]);
                     if (is_array($nationalizationExpense)){

@@ -1,6 +1,4 @@
 <div class="text-tittle">Provisiones Aplicables Al Parcial</div>
-<form action="{{rute_url}}gstnacionalizacion/putExpenses/" method="post">
-   <input type="hidden" name="id_parcial" value="{{parcial.id_parcial}}">
    <table class="table  table-hover table-condensed table-striped">
       <thead>
          <tr>
@@ -19,6 +17,8 @@
    <button class="text-primary">Provisionar</button>
    </a></td>
          </tr>
+         <form action="{{rute_url}}gstnacionalizacion/putExpenses/" method="post">
+   <input type="hidden" name="id_parcial" value="{{parcial.id_parcial}}">
       {% for rateExpense in rateExpenses %}
          <tr>
             <td>{{loop.index}}</td>

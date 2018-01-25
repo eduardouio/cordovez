@@ -210,7 +210,9 @@ class Gstnacionalizacion extends MY_Controller
     }
 
     /**
-     * Registra los costos de alamcenaje en la nacionalizacion del parcial
+     * Registra los costos de alamcenaje para el parcial de un pedido
+     * @param array $_POST arreglo por post
+     * @return string plantillas
      */
     public function putWarenhouseExpense()
     {
@@ -243,16 +245,21 @@ class Gstnacionalizacion extends MY_Controller
      */
     private function getWarenhousePartialValue(int $idParcial): float
     {
-        $fobStarted = 0.0;
+        $fobInitial = 0.0;
         $fobNationalized = 0.0;
         
         $parcial = $this->modelParcial->get($idParcial);
         $order = $this->modelOrder->get($parcial['nro_pedido']);
-        $initialStock = $this->modelOrderInvoice->getbyOrder($parcial['nro_pedido']);
+        
+        $initialStock = $this->modelOrderInvoice->getbyOrder(
+            $parcial['nro_pedido']
+            );
         
         if (is_array($initialStock)) {
             foreach ($initialStock as $item => $orderInvoice) {
-                $fobStarted += ($orderInvoice['valor'] * $orderInvoice['tipo_cambio']);
+                $fobStarted += (
+                        $orderInvoice['valor'] * $orderInvoice['tipo_cambio']
+                    );
             }
         }
         
@@ -390,9 +397,10 @@ class Gstnacionalizacion extends MY_Controller
     public function eliminar(int $idNationalizationExpense)
     {
         $expense = $this->modelExpenses->getExpense($idNationalizationExpense);
+        
         if ($expense) {
             $this->modelExpenses->delete($idNationalizationExpense);
-            return ($this->redirectPage('validar70', $expense['id_factura_informativa']));
+            return ($this->redirectPage('validar70', $expense['id_parcial']));
         }
         
         $this->modelLog->errorLog('Intenta Elimnar gasto no existente', $this->db->last_query());
@@ -460,12 +468,14 @@ class Gstnacionalizacion extends MY_Controller
      */
     private function lastDataWarenhouse(array $order):string
     {
-        #primero comprobamos que haya mas de un parcial
-        $lastParcial = $this->modelParcial->getLastParcial($order['nro_pedido']);
+        $oldParcial = $this->modelParcial->getClosedParcials(
+                                          $order['nro_pedido']
+                                                              );       
+        if( $oldParcial == false ) {
+            return( $order['fecha_ingreso_almacenera'] );            
+        }
         
-            return($order['fecha_ingreso_almacenera']);
-        
-        
+        return( $oldParcial['fecha_salida_almacenera'] );
         
     }
 

@@ -41,7 +41,9 @@
          <strong>
          Fecha Registro:</strong> 
          <span class="text-primary">
-         {{ infoInvoice.date_create }}            
+          {% if parcial.date_create != null %}
+              {{ parcial.date_create | date('d-m-Y H:m')}}            
+          {% endif %}
          </span>
       </div>
    </div>
@@ -65,12 +67,12 @@
       <div class="col-sm-2">
          <strong>Incoterm:</strong> 
          <span class="text-primary">
-         {{order.incoterm}}
+         {{ order.incoterm }}
          </span>         
       </div>
       <div class="col-sm-3">
          <strong>Creado Por:</strong> 
-         {{infoInvoice.user.nombres}}
+         {{ user.nombres }}
       </div>
    </div>
 </div>
@@ -94,6 +96,7 @@
                <th class="text-center">ESTADO</th>
             </tr>            
             {% set isOk = true %}
+            {% set sumExpenses = 0 %}
             {% for expense in expenses  %}
             {% set sumExpenses = sumExpenses + expense.valor_provisionado %}
             <tr>
@@ -104,7 +107,7 @@
                {% else %}
                   <td>{{ expense.fecha_fin }}</td>
                {% endif %}
-               <td>{{expense.valor_provisionado}}</td>
+               <td class="text-right">{{expense.valor_provisionado}}</td>
                   {% if expense.valor_provisionado > 0 %}
                      <td class="success pull-rigth" style=" width: 1px; white-space: nowrap;">
                      OK <a href="{{rute_url}}gstnacionalizacion/editar/{{expense.id_gastos_nacionalizacion}}">
@@ -127,11 +130,11 @@
                   {% endif %}
             </tr>
             {% endfor %}
-          <tr>
-          <td> <strong>Total Facturas Provisiones Gastos Iniciales (DOLARES):</strong>
-          <td>
+          <tr style="background-color: #c1c1c1;">
+          <td colspan="3" class="text-right" style="background-color: #fff;"> <strong>SUMAS:</strong>
+          <td class="text-right">
           	<strong>
-          	{{sumExpenses}}
+          	{{ sumExpenses | number_format(3,',','.')}}
           	</strong>
           </td>
           <td class="text-center">
@@ -148,10 +151,11 @@
          </a>
          &nbsp;&nbsp;&nbsp;&nbsp;
          {% if isOk == true %}
-         <a href="{{rute_url}}gstnacionalizacion/impuestosFI/{{parcial.id_parcial}}" class="btn btn-primary btn-sm">
-         <span class="fa fa-gears fa-fw"></span>
-         Generar Impuestos Parcial [{{parcial.id_parcial}}]
-      </a>
+
+           <button data-toggle="modal" data-target="#myModal" class="btn btn-primary btn-sm pull-right">
+      <span class="fa fa-gears"></span>
+      Generar Impuestos Parcial [{{parcial.id_parcial}}]
+      </button>
          {% endif %}
       </p>
       </div>
@@ -162,7 +166,6 @@
 </div>
 
 
-{% if isOk == true %}
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -178,41 +181,12 @@
           <hr>
           <p>
             Lista de Gastos Iniciales no provisionados:
-            {% include 'sections/subsections/table-rates.html.twig' %}            
+            {% include 'sections/subsections/table-rates-partial.html.twig' %}            
           </p>
           <hr>
           Cualquier justificación que no tenga provisión quedará como gasto no provisionado.
           </p>
-          <form action="{{rute_url}}pedido/ingresoAlmacenera" method="post">
-            <input type="hidden" name="nro_pedido" value="{{order.nro_pedido}}">
-            <div class="form-group">
-              <label>Feha Ingreso Almacenera Pública del Pedido {{order.nro_pedido}} :</label>
-              <div class="input-group">
-                <input 
-                  type="text" 
-                  class="form-control fecha" 
-                  name="fecha_ingreso_almacenera" 
-                  readonly="" 
-                  required="" 
-                  >
-                <div class="input-group-addon">
-                  <span class="glyphicon glyphicon-th"></span>
-                </div>
-              </div>
-              <br>
-            </div>
-        </div>
-      </div>
-      <div class="modal-footer">
       <button class="btn btn-sm btn-primary"><span class="fa fa-save"></span> Registrar y Continuar</button>
-      <button type="button" class="btn btn-sm btn-default" data-dismiss="modal"> <span class="fa fa-ban"></span> 
-      Cancelar y Cerrar</button>
-      {% if order.regimen  == 10 %} 
-      <a  href="{{rute_url}}gstinicial/cerrarGastosIniciales/{{order.nro_pedido}}" class="btn btn-sm btn-default"> <span class="fa fa-money"></span> Nacionalizar Pedido</a>
-      {% endif %}
-      </div>
-      </form>
     </div>
   </div>
 </div>
-{% endif %}

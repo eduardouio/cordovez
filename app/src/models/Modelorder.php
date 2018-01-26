@@ -344,23 +344,25 @@ class Modelorder extends CI_Model
                 'bg_closed' => 0,
             ],
         ]);
+        
        if((gettype($orders) == 'array') && (count($orders))){
            $tempArray = [];
            $i = 0;
            $keyArray = [];
            foreach ($orders as $val){
-               if(! in_array($val['nro_pedido'], $keyArray)){
+               if(! in_array($val['nro_pedido'], $keyArray) && ($val['nro_pedido'] != '000-00')){
                    $keyArray[$i] = $val['nro_pedido'];
                    $tempArray[$i] = $val;
                }
                $i++;
-           }   
+           }
+           
            $result = [];
            foreach ($tempArray as $key => $value){
                $value['expenses'] = 
                $this->modelExpenses->getActiveExpenses($value['nro_pedido']);
                $result[$key] = $value;
-           }
+           }           
            return $result;
        }
        return false;

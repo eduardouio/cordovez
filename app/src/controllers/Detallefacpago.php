@@ -14,7 +14,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
  */
 class Detallefacpago extends \MY_Controller
 {
-
     private $template = "/pages/pageFacturasDetalles.html";
     private $controller = 'detalle_documento_pago';
     private $modelOrder;
@@ -25,15 +24,16 @@ class Detallefacpago extends \MY_Controller
     private $modelSupplier;
     private $myModel;
 
+    
     /**
      * Se realiza la carga de los modelos necesarios para la clase
      */
     public function __construct()
     {
         parent::__construct();
-        $this->init();
-       
+        $this->init();      
     }
+    
     
     /**
      * Inicia los modelos de la clase
@@ -84,10 +84,12 @@ class Detallefacpago extends \MY_Controller
         $activeOrders = $this->modelOrder->getActives();
         $orders = [];
  
-        if (gettype($activeOrders) == 'array') {
+        if (is_array($activeOrders)) {
             foreach ($activeOrders as $item) {
-                $expensesTemp = $this->modelExpenses->getActiveExpenses(($item['nro_pedido']));
+                
+                $expensesTemp = $this->modelExpenses->getActiveExpenses($item['nro_pedido']);
                 $expenses = [];
+                
                 foreach ($expensesTemp as $index => $expense){
                     $expense['justification'] = $this->modelPaidDetail->getByExpense($expense['id_gastos_nacionalizacion']);
                     $expense['user'] = $this->modelUser->get($expense['id_user']);

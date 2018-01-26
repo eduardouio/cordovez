@@ -162,6 +162,59 @@ class Modelparcial extends CI_Model
     
     
     /**
+     * Onbtiene
+     *
+     * @param string $nroOrder
+     * @return array
+     */
+    public function getOrdinalsNumbersParcials($nroOrder) : array{
+        
+        $ordinalsInities = [
+            1 => 'primero', 2 => 'segundo', 3 => 'tercero',
+            4 => 'cuarto', 5 => 'quito', 6 => 'sexto',
+            7 => 'séptimo', 8 => 'octavo', 9 => 'noveno',
+        ];
+        
+        $ordinalTens = [
+            10 => 'Décimo', 20 => 'Veigésimo', 30 =>'Trigésimo',
+            40 => 'Cuadragésimo', 50 => 'Quincuagésimo', 60 => 'Sexagésimo',
+        ];
+        
+        $parcials = $this->getAllParcials($nroOrder);
+        
+        
+        
+    }
+    
+    
+    
+    
+    /**
+     * Retorna todos los parciales de un pedido, no toma en cuenta 
+     * el bg_isclosed
+     * 
+     * @param string $nroOrder
+     * @return array | boolean
+     */
+    public function getAllParcials(string $nroOrder)
+    {
+        $parcials = $this->modelBase->get_table([
+            'table' => $this->table,
+            'where' => [
+                'nro_pedido' => $nroOrder,
+            ],
+        ]);
+        
+        if(is_array($parcials) && count($parcials) > 0){
+            return $parcials;
+        }
+        
+        return false;
+    }
+    
+    
+    
+    /**
      * Retorna el valor que suman las facturas, el fob actual se calcula
      * FOBinical = suma valor de Facturas * tipo de cambio factura pedido
      * CurrentFOB = suma valor de parciales * tipo de cambio factura pedido

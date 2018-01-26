@@ -122,10 +122,10 @@ class Parcial extends MY_Controller
         ]));
     }
     
-    
     /**
-     * Genera un nuevo parcial y luego lleva a la creacion de una factura informativa
-     * Se compruaba que no exista otro parcial abierto
+     * Genera un nuevo parcial y luego lleva a la creacion de una factura 
+     * informativa Se compruaba que no exista otro parcial abierto
+     * 
      * @param string $nroOrder
      * @return string template 
      */
@@ -215,6 +215,7 @@ class Parcial extends MY_Controller
         }
         return 0;
     }
+    
 
     /*
      * Redenderiza la informacion y la envia al navegador

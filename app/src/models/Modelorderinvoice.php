@@ -4,14 +4,17 @@ class Modelorderinvoice extends CI_Model
     private $table = 'pedido_factura';
     private $modelBase;
     private $modelLog;
+    private $modelOrder;
 
     public function __construct()
     {
         parent::__construct();
         $this->load->model('modelbase');
         $this->load->model('modellog');
+        $this->load->model('modelorder');
         $this->modelBase = new ModelBase();
         $this->modelLog = new Modellog();
+        $this->modelOrder = new Modelorder();
         
     }
     
@@ -101,6 +104,7 @@ class Modelorderinvoice extends CI_Model
     public function getInitCIFOrder(string $nroOrder):array
     {
 
+        $order = $this->modelOrder->get($nroOrder);
         $orderInvoices = $this->getbyOrder($nroOrder);
         
         $initFlete = $this->modelBase->get_table([
@@ -130,7 +134,7 @@ class Modelorderinvoice extends CI_Model
         if (is_array($orderInvoices)){
             foreach ($orderInvoices as $item => $invoice){
                 
-                $cifInitial['fob'] += ($invoice['valor'] * ($invoice['tipo_cambio']));
+                $cifInitial['fob'] += ($invoice['valor'] * ($order['tipo_cambio_almaceneraR70']));
             }
             
             return $cifInitial;

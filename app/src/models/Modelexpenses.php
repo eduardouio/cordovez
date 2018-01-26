@@ -262,20 +262,24 @@ class Modelexpenses extends CI_Model
         if(gettype($expenses) == 'array' && !empty($expenses)){
             if( gettype($parcials) == 'array' && !empty($parcials)){
                 foreach ($parcials as $key => $value) {
+                    
                     $nationalizationExpense = $this->modelBase->get_table([
                         'table' => $this->table,
                         'where' => [
-                            'id_pacial' => $value['id_parcial'],
+                            'id_parcial' => $value['id_parcial'],
                         ],
                     ]);
+                    
                     if (is_array($nationalizationExpense)){
                     foreach ($nationalizationExpense as $idex => $val){
+                        $val['concepto'] = '[GP] ' . $val['concepto'];
+                        $val['tipo'] = 'Gasto Parcial';
                         array_push($expenses, $val);
-                        }                        
+                        }
+                        
                     }
                 }
             }
-            
             return $expenses;
         }
         return false;

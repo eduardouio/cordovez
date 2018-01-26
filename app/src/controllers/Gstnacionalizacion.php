@@ -188,27 +188,39 @@ class Gstnacionalizacion extends MY_Controller
         if(is_array($infoInvoices)){
             foreach ($infoInvoices as $item => $invoice){
                 $invoice['user'] = $this->modelUser->get($invoice['id_user']);
-                $invoice['details'] = $this->modelInfoInvoiceDetail->getByFacInformative($invoice['id_factura_informativa']);
-                $invoice['supplier'] = $this->modelSupplier->get($invoice['identificacion_proveedor']);
-                $count = $this->modelInfoInvoiceDetail->countBoxesAnd($invoice['id_factura_informativa']);
+                
+                $invoice['details'] = $this->modelInfoInvoiceDetail->
+                        getByFacInformative($invoice['id_factura_informativa']);
+                
+                $invoice['supplier'] = $this->modelSupplier->get(
+                                           $invoice['identificacion_proveedor']
+                                                                 );
+                
+                $count = $this->modelInfoInvoiceDetail->countBoxesAnd(
+                                             $invoice['id_factura_informativa']
+                                                                      );
                 $invoice['boxes'] = $count['boxes'];
                 $invoice['unities'] = $count['unities'];
                 $infoInvoices[$item] = $invoice;
             }
         }
-                
+       
         return ($this->responseHTTP([
-            'titleContent' => 'generar gastos nacionalizacion Parcial[' . $parcial['id_parcial'] . '] Pedido: [' . $parcial['nro_pedido'] . '] ',
+            'titleContent' => 'generar gastos nacionalizacion Parcial[' . 
+                               $parcial['id_parcial'] . '] Pedido: [' . 
+                               $parcial['nro_pedido'] . '] ',
             'order' => $order,
             'expenses' => $expenses,
             'rateExpenses' => $this->filterRateExpenses($idParcial),
             'parcial' => $parcial,
             'infoInvoices' => $infoInvoices,
             'showExpenses' => true,
+            'user' => $this->modelUser->get($parcial['id_user']),
             'warenHouseDays' => $this->getWarenHouseDays($order),
         ]));
     }
 
+    
     /**
      * Registra los costos de alamcenaje para el parcial de un pedido
      * @param array $_POST arreglo por post
@@ -231,11 +243,11 @@ class Gstnacionalizacion extends MY_Controller
         $dataParcial = [
             'id_parcial' => $idParcial,
             'fecha_salida_almacenera' => $dateExitWarenhouseParcial,
-            'proximo_almacenaje_desde' => ($partialPost['periodo'][$index]['fecha_fin']),
-        ];
+            'proximo_almacenaje_desde' => (
+                                $partialPost['periodo'][$index]['fecha_fin']
+                                            ),
+                        ];
         
-        $this->modelParcial->update($dataParcial);
-        exit();
         foreach ($partialPost['periodo'] as $item => $warenHouse) {
             $warenHouse['id_parcial'] = $idParcial;
             $warenHouse['valor_provisionado'] = $this->getWarenhousePartialValue($idParcial);
@@ -367,10 +379,14 @@ class Gstnacionalizacion extends MY_Controller
         $parcial = $this->modelParcial->get($expense['id_parcial']);
         $order = $this->modelOrder->get($parcial['nro_pedido']);
         return ($this->responseHttp([
-            'titleContent' => 'Actulalizar Gasto Nacionalizacion Pedido [' . $order['nro_pedido'] . '] Parcial [' . $parcial['id_parcial'] . ']',
+            'titleContent' => 'Actulalizar Gasto Nacionalizacion Pedido [' . 
+                                $order['nro_pedido'] . '] Parcial [' . 
+                                $parcial['id_parcial'] . ']',
             'order' => $order,
             'expense' => $expense,
-            'supplier' => $this->modelSupplier->get($expense['identificacion_proveedor']),
+            'supplier' => $this->modelSupplier->get(
+                                            $expense['identificacion_proveedor']
+                                                    ),
             'suppliers' => $this->modelSupplier->getByLocation('NACIONAL'),
             'parcial' => $parcial,
             'edit' => true
@@ -401,14 +417,32 @@ class Gstnacionalizacion extends MY_Controller
             'fob' => ($infoInvoice['valor'] * $infoInvoice['tipo_cambio'])
         ];
         
-        $infoInvoice['detail'] = $this->modelInfoInvoiceDetail->getByFacInformative($idInfoInvoice);
+        $infoInvoice['detail'] = $this->modelInfoInvoiceDetail->
+                                            getByFacInformative($idInfoInvoice);
+        
         foreach ($infoInvoice['detail'] as $item => $detail) {
-            $orderDetail = $this->modelOrderInvoiceDetail->get($detail['detalle_pedido_factura']);
-            $detail['product'] = $this->modelProduct->get($orderDetail['cod_contable']);
-            $detail['unidades'] = ($detail['nro_cajas'] * $detail['product']['cantidad_x_caja']);
+            
+            $orderDetail = $this->modelOrderInvoiceDetail->
+                                         get($detail['detalle_pedido_factura']);
+            
+            $detail['product'] = $this->modelProduct->get(
+                                                  $orderDetail['cod_contable']
+                                                         );
+            
+            $detail['unidades'] = (
+                    $detail['nro_cajas'] * $detail['product']['cantidad_x_caja']
+                                  );
+            
+            
             $detail['costo_caja'] = $orderDetail['costo_caja'];
-            $detail['fob_item'] = ($detail['nro_cajas'] * $orderDetail['costo_caja']);
-            $detail['fob_parcial'] = ($detail['fob_item'] / $valuesPartial['fob']);
+            $detail['fob_item'] = (
+                               $detail['nro_cajas'] * $orderDetail['costo_caja']
+                                    );
+            
+            $detail['fob_parcial'] = (
+                                    $detail['fob_item'] / $valuesPartial['fob']
+                                     );
+            
             $infoInvoice['detail'][$item] = $detail;
         }
         
@@ -416,6 +450,7 @@ class Gstnacionalizacion extends MY_Controller
         print_r($infoInvoice);
         print '</pre>';
     }
+    
 
     /**
      * Elimina un gasto de nacionalizacion
@@ -435,6 +470,7 @@ class Gstnacionalizacion extends MY_Controller
         return ($this->index());
     }
 
+    
     /**
      * Actualiza un gasto de nacionalizacion
      *
@@ -461,6 +497,7 @@ class Gstnacionalizacion extends MY_Controller
         
         print 'Error con la base de datos';
     }
+    
 
     /**
      * Valida la bodega parcial para un parcial
@@ -503,7 +540,7 @@ class Gstnacionalizacion extends MY_Controller
             return( $order['fecha_ingreso_almacenera'] );            
         }
         
-        return( $oldParcial['fecha_salida_almacenera'] );
+        return( $oldParcial['proximo_almacenaje_desde'] );
         
     }
 
@@ -518,10 +555,14 @@ class Gstnacionalizacion extends MY_Controller
     private function getWarenHouseDays(array $order): int
     {
         if (gettype($order['fecha_salida_almacenera']) == 'NULL') {
-            return (dateDiffInDays($order['fecha_ingreso_almacenera'], date('Y-m-d')));
+            return (
+                dateDiffInDays($order['fecha_ingreso_almacenera'], date('Y-m-d'))
+                );
         }
         
-        return (dateDiffInDays($order['fecha_ingreso_almacenera'], $order['fecha_salida_almacenera']));
+        return ( dateDiffInDays($order['fecha_ingreso_almacenera'], 
+                $order['fecha_salida_almacenera']) 
+                );
     }
 
     /*

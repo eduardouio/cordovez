@@ -51,7 +51,11 @@
 							{{ detail.supplier.nombre | raw }}
 					</a></td>
 					<td>{{ detail.concepto }}</td>
-					<td>{{ detail.fecha_emision }}</td>
+					<td>
+						{% if detail.fecha_emision != null %}
+							{{ detail.fecha_emision | date('d/m/Y') }}
+						{% endif %}
+				</td>
 					<td>{{ detail.valor }}</td>
 					<td>
 						<div class="dropdown">

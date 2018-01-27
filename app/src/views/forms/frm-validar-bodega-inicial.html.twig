@@ -1,5 +1,12 @@
 {% if order.fecha_arribo != null %}
    {% set fecha_arribo = order.fecha_arribo | date('m/d/Y') %}
+   {% else %}
+   <div class="alert alert-danger">
+     <h3 class="text-danger">Registre la fecha de arribo en el pedido para continuar</h3>
+     <a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}" class="btn btn-default">Registrar</a>
+     </div>
+     <br>
+     <br>
 {% endif %}
 {% if order.fecha_salida_bodega_puerto != null %}
    {% set fecha_salida_bodega_puerto = order.fecha_salida_bodega_puerto | date('m/d/Y') %}
@@ -35,7 +42,9 @@
                required="" 
                readonly="" 
                name="fecha_arribo" 
-               value="{{fecha_arribo | date('d/m/Y')}}" 
+               {% if fecha_arribo != null %}
+                  value="{{ fecha_arribo | date('d/m/Y') }}" 
+               {% endif %}
                >
             <div class="input-group-addon">
                <span class="glyphicon glyphicon-th"></span>
@@ -54,7 +63,9 @@
                required="" 
                readonly="" 
                name="fecha_salida_bodega_puerto" 
-               value="{{ fecha_salida_bodega_puerto | date('d/m/Y')}}" 
+               {% if fecha_salida_bodega_puerto != null %}
+                 value="{{ fecha_salida_bodega_puerto | date('d/m/Y')}}" 
+               {% endif %}
                >
             <div class="input-group-addon">
                <span class="glyphicon glyphicon-th"></span>
@@ -113,7 +124,7 @@
         	id="demoraje" 
         	step="0.01" 
         	class="form-control"
-        	value="{{demoraje}}" 
+        	value="{{ demoraje }}" 
         	disabled="" 
         	required="" 
         	>

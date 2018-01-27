@@ -1,5 +1,4 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
  * Modelo que gestiona la escritura del fichero del log
@@ -13,6 +12,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Modellog extends CI_Model{
     private $path = '/var/www/html/cordovezapp/app/src/logs/app.log';
+    private $modelUser;
+    private $user;
  
     
     /**
@@ -20,6 +21,18 @@ class Modellog extends CI_Model{
      */ 
     function __construct(){
         parent::__construct();
+        $this->load->model('modeluser');
+        $this->modelUser = new Modeluser();
+        $this->getUser();
+    }
+    
+    
+    /**
+     * obtiene la informacion del usuario, tomandolo de la session
+     */
+    public function getUser()
+    {
+      $this->user = $this->modelUser->get($this->session->userdata('id_user'));  
     }
     
     
@@ -30,7 +43,12 @@ class Modellog extends CI_Model{
      */
     public function susessLog(string $message)
     {
-        error_log("\n[Success][" . date("D, d M Y H:i:s") . '] '. $message, 3 , $this->path);
+        error_log(
+                    "\n[Success][" . date("d m Y H:i:s") . '] '. $message . 
+                     ' [' . $this->user['nombres'] . ']' , 
+                     3 , 
+                    $this->path
+                 );
     }
     
     
@@ -40,9 +58,15 @@ class Modellog extends CI_Model{
      */
     public function generalLog(string $message,  $string = NULL)
     {
-        error_log("\n[Log][" . date("D, d M Y H:i:s") . '] '. $message, 3 , $this->path);
+        error_log(
+                  "\n[Log][" . date("d m Y H:i:s") . '] '. $message . 
+                  ' [' . $this->user['nombres'] . ' ]' ,
+                  3 , 
+                  $this->path
+                  );
+        
         if($string){
-            error_log("\n[aditional] " . $string, 3 , $this->path);
+            error_log(" [aditional] " . $string, 3 , $this->path);
         }
     }
     
@@ -53,10 +77,15 @@ class Modellog extends CI_Model{
      */
     public function warningLog(string $message, string $sql = NULL)
     {
-        error_log("\n[warning][" . date("D, d M Y H:i:s") . '] ' . $message, 3 , $this->path);
+        error_log(
+                  "\n[warning][" . date("d m Y H:i:s") . '] ' . $message .
+                 ' [' . $this->user['nombres'] . ']' ,
+                 3 , 
+                 $this->path
+                 );
         
         if($sql){
-            error_log("\n[query] " . $sql , 3 , $this->path);            
+            error_log(" [query] " . $sql , 3 , $this->path);            
         }
     }
     
@@ -66,9 +95,13 @@ class Modellog extends CI_Model{
      */
     public function redirectLog(string $message, string $url = NULL)
     {
-        error_log("\n[redirect][" . date("D, d M Y H:i:s") . '] ' . $message, 3 , $this->path);
+        error_log("\n[redirect][" . date("d m Y H:i:s") . '] ' . $message . 
+            ' [' . $this->user['nombres'] . ']' , 
+                  3, 
+                  $this->path
+                );
         if($url){
-            error_log("\n[url] " . $url , 3 , $this->path);
+            error_log(" [url] " . $url , 3 , $this->path);
         }
     }
     
@@ -79,9 +112,13 @@ class Modellog extends CI_Model{
      */
     public function errorLog(string $message, string $sql = NULL)
     {
-        error_log("\n[error][" . date("D, d M Y H:i:s") . '] '. $message, 3 , $this->path);
+        error_log("\n[error][" . date("d m Y H:i:s") . '] '. $message .
+            ' [' . $this->user['nombres'] . ']' ,
+            3 , 
+            $this->path
+            );
         if($sql){
-            error_log("\n[query] " . $sql , 3 , $this->path);
+            error_log(" [query] " . $sql , 3 , $this->path);
         }
     }
     

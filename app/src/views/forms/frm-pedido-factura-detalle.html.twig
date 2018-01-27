@@ -143,9 +143,6 @@ var maxValueInvoice = {{invoice.valor}};
       });      
    });
 
-</script>
-
-<script type="text/javascript">
 	$('#nro_cajas').change(function(){
 		var numBoxes = parseFloat(this.value);
 		var itemPerBox = parseFloat($('#cantidad_caja').val());
@@ -159,10 +156,7 @@ var maxValueInvoice = {{invoice.valor}};
 			$('#unidades').val(0);
 		}
 	});
-</script>
 
-
-<script type="text/javascript">
 $('#costo_caja').change(function(){
 		var numBoxes = $('#nro_cajas').val();
 		var itemPerBox = parseFloat($('#cantidad_caja').val());
@@ -177,9 +171,7 @@ $('#costo_caja').change(function(){
 			$('#unidades').val(0);
 		}
 });
-</script>
 
-<script type="text/javascript">
    $('#chage_params').click(function(){
       if( $('#chage_params').is(':checked') ){
          $('#grado_alcoholico').removeAttr('readonly');

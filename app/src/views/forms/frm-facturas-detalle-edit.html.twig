@@ -7,7 +7,7 @@
 			<strong>Ruc:</strong> <span>{{ document.supplier.identificacion_proveedor }}</span>
 		</div>
 		<div class="col-md-3">
-			<strong>Fecha:</strong> <span>{{ document.fecha_emision  }}</span>
+			<strong>Fecha:</strong> <span>{{ document.fecha_emision | date('d/m/Y')  }}</span>
 		</div>
 	</div>
 	<div class="row">
@@ -19,7 +19,7 @@
 		</div>
 		<div class="col-md-2">
 			<strong>Registrado:</strong>
-			<span>{{ document.date_create }}</span>
+			<span>{{ document.date_create | date('d/m/Y H:m')}}</span>
 		</div>
 		<div class="col-md-5">
 			<strong>Comentarios:</strong> <span>{{ document.comentarios }}</span>
@@ -83,6 +83,14 @@
 							<td>{{provision.id_gastos_nacionalizacion}}</td>
 						</tr>
 						<tr>
+							<td class="text-right"><strong>Tipo&nbsp;</strong></td>
+							{% if provision.id_parcial != 0 %}
+								<td>GASTO DE PARCIAL</td>
+							{% else %}
+								<td>GASTO INICIAL</td>
+							{% endif %}
+						</tr>
+						<tr>
 							<td class="text-right"><strong>Nro Pedido &nbsp;</strong></td>
 							<td> {{provision.nro_pedido}} </td>
 						</tr>
@@ -114,14 +122,16 @@
 						<tr>
 							<td class="text-right"><strong>Fecha/Hora Registro
 									&nbsp;</strong></td>
-							<td> {{provision.date_create}}  </td>
+							<td> {{provision.date_create | date('d/m/Y H:m')}}  </td>
 						</tr>
 						<tr>
 							<td class="text-right">
 								<strong>Ultima Actualización</strong>
 							</td>
 							<td>
-								{{provision.last_update}}
+								{% if provision.last_update != null %}
+									{{provision.last_update | date('d/m/Y H:m')}}
+								{% endif %}								
 							</td>
 						</tr>
 					</tbody>

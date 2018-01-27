@@ -334,6 +334,15 @@ class Facinformativa extends MY_Controller
     private function orderHaveEuros($nroOrder)
     {
         $invoicesOrder = $this->modelOrder->getInvoices($nroOrder);
+        
+        if($invoicesOrder == false){
+            $this->modelLog->errorLog(
+                                    "Pedido $nroOrder sin informativa " ,
+                                    $this->db->last_query()
+                                    );
+            return false;
+        }
+        
         foreach ($invoicesOrder as $key => $value) {
             if ($value['moneda'] != 'DOLARES') {
                 return ([

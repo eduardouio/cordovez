@@ -42,7 +42,7 @@
          Fecha Registro:</strong> 
          <span class="text-primary">
           {% if parcial.date_create != null %}
-              {{ parcial.date_create | date('d-m-Y H:m')}}            
+              {{ parcial.date_create | date('d/m/Y H:m')}}            
           {% endif %}
          </span>
       </div>
@@ -105,7 +105,7 @@
                {% if ((expense.fecha_fin == null) or (expense.fecha_fin == '0000-00-00')) %}
                <td class="text-center"> --- </td>
                {% else %}
-                  <td>{{ expense.fecha_fin }}</td>
+                  <td>{{ expense.fecha_fin | date('d/m/Y') }}</td>
                {% endif %}
                <td class="text-right">{{expense.valor_provisionado}}</td>
                   {% if expense.valor_provisionado > 0 %}

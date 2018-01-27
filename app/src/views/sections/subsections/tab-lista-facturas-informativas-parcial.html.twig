@@ -47,7 +47,11 @@
 							{{ infoInvoice.nro_factura_informativa }} <span class="fa fa-eye"></span>
 					</a></td>
 					<td>{{ infoInvoice.supplier.nombre }}</td>
-					<td>{{ infoInvoice.fecha_emision | date('d/m/Y') }}</td>
+					<td>
+					{% if infoInvoice.fecha_emision != null %}
+					{{ infoInvoice.fecha_emision | date('d/m/Y') }}				
+					{% endif %}
+				</td>
 					<td>{{ infoInvoice.valor }}</td>
 					<td>{{ infoInvoice.flete_aduana }}</td>
 					<td>{{ infoInvoice.seguro_aduana }}</td>

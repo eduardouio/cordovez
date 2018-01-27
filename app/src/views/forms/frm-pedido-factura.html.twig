@@ -8,7 +8,7 @@
       type="text" 
       name="nro_pedido"
       class="form-control" 
-      value="{{order.nro_pedido}}" 
+      value="{{ order.nro_pedido }}" 
       >
     </div>
     </div>
@@ -195,9 +195,6 @@
     $('#total').val(result);  
   })
   
-</script>
-
-<script type="text/javascript">
 //<!--Actualiza la fecha de vencimiento para el pago de una factura de proveedo//-->
 var dateString = '';
 $('#fecha_emision').change(function(){

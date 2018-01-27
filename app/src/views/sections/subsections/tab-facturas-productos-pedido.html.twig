@@ -66,8 +66,18 @@
 					</a>
 				</td>
 					<td class="text-right">{{orderInvoice.fecha_emision}}</td>
-					<td class="text-right">{{orderInvoice.vencimiento_pago}}</td>
-					<td class="text-right">{{orderInvoice.fecha_pago}}</td>
+					<td class="text-right">
+						{% if orderInvoice.vencimiento_pago != null %}
+							{{ orderInvoice.vencimiento_pago | date('d/m/Y') }}
+						{% endif %}
+						
+					</td>
+					<td class="text-right">
+						{% if orderInvoice.fecha_pago != null %}
+							{{ orderInvoice.fecha_pago | date('d/m/Y') }}
+						{% endif %}
+						
+					</td>
 					<td class="text-right">{{orderInvoice.moneda}}</td>
 					<td class="text-right">{{orderInvoice.valor | number_format(2, '.', ',') }}</td>
 					{% if (order.bg_isclosed) == 1 %}

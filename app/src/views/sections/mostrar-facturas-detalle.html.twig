@@ -38,7 +38,7 @@
           </tr>
           <tr>
             <td class="text-right"> <strong>Fecha de Registro </strong></td>
-            <td> {{detail.date_create}} </td>
+            <td> {{detail.date_create | date('d/m/Y H:m')}} </td>
           </tr>
           <tr>
             <td class="text-right"> <strong>Creado Por: </strong></td>
@@ -46,7 +46,11 @@
           </tr>
           <tr>
             <td class="text-right"> <strong>Ultima Actualización: </strong></td>
-            <td> {{detail.last_update}} </td>
+            <td> 
+            {% if detail.last_update != null %}
+            {{detail.last_update | date('d/m/Y H:m')}} 
+            {% endif %}
+          </td>
           </tr>
         </tbody>
       </table>

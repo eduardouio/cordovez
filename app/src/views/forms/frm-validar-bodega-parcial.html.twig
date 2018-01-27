@@ -23,7 +23,10 @@
                      id="fecha_ingreso_almacenera" 
                      disabled=""
                      name="fecha_ingreso_almacenera" 
-                     value="{{lastDateWarenhouse | date('d/m/Y') }}" 
+                     {% if conditionlastDateWarenhouse != null %}
+                        value="{{lastDateWarenhouse | date('d/m/Y') }}" 
+                     {% endif %}
+                     
                      >
                   <div class="input-group-addon">
                      <span class="glyphicon glyphicon-th"></span>

@@ -368,7 +368,8 @@ class Gstinicial extends MY_Controller
             ])) {
                 $this->modelExpenses->create([
                     'nro_pedido' => $_POST['nro_pedido'],
-                    'id_factura_informativa' => 0,
+                    'id_parcial' => 0,
+                    'fecha' => date('y-m-d'),
                     'identificacion_proveedor' => 0,
                     'concepto' => 'ALMACENAJE INICIAL',
                     'tipo' => 'INICIAL',
@@ -378,7 +379,7 @@ class Gstinicial extends MY_Controller
                 if (isset($_POST['demoraje'])) {
                     $this->modelExpenses->create([
                         'nro_pedido' => $_POST['nro_pedido'],
-                        'id_factura_informativa' => 0,
+                        'id_parcial' => 0,
                         'identificacion_proveedor' => 0,
                         'concepto' => 'DEMORAJE',
                         'tipo' => 'INICIAL',

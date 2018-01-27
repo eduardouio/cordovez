@@ -190,7 +190,7 @@ class Pedidofactura extends MY_Controller
             unset($orderInvoice['fecha_emision']);
         }else{
             $orderInvoice['fecha_emision'] = str_replace( '/', '-', $orderInvoice['fecha_emision']);
-            $orderInvoice['fecha_emision'] = date('d-m-Y', strtotime($orderInvoice['fecha_emision']));
+            $orderInvoice['fecha_emision'] = date('Y-m-d', strtotime($orderInvoice['fecha_emision']));
         }
    
      

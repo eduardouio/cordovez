@@ -32,7 +32,13 @@
          <strong>Nro Factura:</strong> <span class="text-danger">{{invoice.id_factura_proveedor}}</span>
       </div>
       <div class="col-sm-3">
-         <strong>Fecha Emisión:</strong> <span class="text-info">{{invoice.nro_pedido }}</span>
+         <strong>Fecha Emisión:</strong> <span class="text-info">
+          {% if invoice.fecha_emision == null or invoice.fecha_emision == '0000-00-00' %}
+          <a  href="{{ rute_url }}pedidofactura/editar/{{invoice.id_pedido_factura}}" >Registrar</a>
+          {% else %}
+            {{ invoice.fecha_emision | date('d/m/Y') }}
+          {% endif %}
+       </span>
       </div>
       <div class="col-sm-3">
          <strong>Vencimiento:</strong> <span>{{invoice.vencimiento_pago}}</span>

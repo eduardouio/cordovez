@@ -28,11 +28,19 @@
           </tr>
           <tr>
             <td class="text-right"> <b>Fecha:</b></td>
-            <td>{{ initExpense.fecha }}</td>
+            <td>
+              {% if initExpense.fecha != null %}
+                {{ initExpense.fecha | date('m/d/Y') }}
+              {% endif %}
+          </td>
           </tr>         
           <tr>
             <td class="text-right"> <b>Fecha Fin:</b></td>
-            <td>{{ initExpense.fecha_fin }}</td>
+            <td>
+              {% if initExpense.fecha_fin != null %}
+                {{ initExpense.fecha_fin | date('m/d/Y') }}
+              {% endif %}
+          </td>
           </tr>          
           <tr>
             <td class="text-right"> <b>Concepto:</b></td>
@@ -62,11 +70,21 @@
           </tr>
           <tr>
             <td class="text-right"> <b>Creado El:</b></td>
-            <td> {{ initExpense.date_create }} </td>
+            <td> 
+              {% if initExpense.date_create != null %}
+                  {{ initExpense.date_create | date('m/d/Y H:m') }} 
+              {% endif %}
+              
+          </td>
           </tr>
           <tr>
             <td class="text-right"> <b>Ultima Actualización:</b></td>
-            <td> {{ initExpense.last_update }} </td>
+            <td> 
+              {% if initExpense.last_update != null %}
+                  {{ initExpense.last_update | date('m/d/Y H:m') }} 
+              {% endif %}
+              
+          </td>
           </tr>
           <tr>
             <td class="text-right"> <b>Creado Por:</b></td>

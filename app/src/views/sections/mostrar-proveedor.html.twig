@@ -57,11 +57,19 @@
           </tr>
           <tr>
             <td class="text-right"> <b>Fecha de Registro:</b></td>
-            <td> {{ supplier.date_create }} </td>
+            <td> 
+              {% if supplier.date_create != null %}
+                {{ supplier.date_create  date('d/m/Y H:m')}}               
+              {% endif %}
+          </td>
           </tr>
           <tr>
             <td class="text-right"> <b>Ultima Actualización:</b></td>
-            <td> {{ supplier.last_update }} </td>
+            <td> 
+              {% if supplier.last_update != null %}
+                {{ supplier.last_update | date('d/m/Y H:m')}}               
+              {% endif %}
+          </td>
           </tr>
         </tbody>
       </table>

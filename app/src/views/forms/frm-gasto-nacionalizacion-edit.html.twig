@@ -53,7 +53,10 @@
                id="fecha" 
                required="required" 
                name="fecha" 
-               value="{{ expense.fecha | date ('m/d/Y')}}" 
+               {% if expense.fecha != null %}
+               		value="{{ expense.fecha | date ('m/d/Y')}}" 
+               {% endif %}
+               
                >
             <div class="input-group-addon">
                <span class="glyphicon glyphicon-th"></span>
@@ -74,7 +77,9 @@
                required="required" 
                name="fecha_fin" 
                class="bootstrap-datepicker" 
-               value="{{ expense.fecha_fin | date ('m/d/Y')}}" 
+               {% if expense.fecha_fin != null%}
+               		value="{{ expense.fecha_fin | date ('m/d/Y')}}" 
+               {% endif %}
                >
             <div class="input-group-addon">
                <span class="glyphicon glyphicon-th"></span>

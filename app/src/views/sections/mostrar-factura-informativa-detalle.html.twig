@@ -12,7 +12,7 @@
       <strong>Ruc:</strong> <span>{{ supplier.identificacion_proveedor }}</span>
     </div>
     <div class="col-md-2">
-      <strong>Fecha:</strong> <span>{{ infoInvoice.fecha_emision  }}</span>
+      <strong>Fecha:</strong> <span>{{ infoInvoice.fecha_emision | date('d/m/Y')}}</span>
     </div>
     <div class="col-md-3">
       <strong>Comentarios:</strong> <span>{{ infoInvoice.comentarios }}</span>
@@ -40,7 +40,7 @@
     </div>
     <div class="col-md-3">
       <strong>Creado Por :</strong> <span>{{ user.nombres }}</span>
-      <span class="text-primary"> [{{ infoInvoice.date_create }}]</span>
+      <span class="text-primary"> [{{ infoInvoice.date_create | date('d/m/Y H:m')}}]</span>
     </div>
   </div>
 </div>

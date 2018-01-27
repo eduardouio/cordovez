@@ -76,11 +76,21 @@
           </tr>
           <tr>
             <td class="text-right"> <b>Creado El:</b></td>
-            <td> {{ product.date_create }} </td>
+            <td> 
+              {% if product.date_create != null %}
+                {{ product.date_create | date('d/m/Y H:m') }} 
+              {% endif %}
+              
+          </td>
           </tr>
           <tr>
             <td class="text-right"> <b>Ultima Actualización:</b></td>
-            <td> {{ product.last_update }} </td>
+            <td> 
+              {% if product.last_update != null %}
+                {{ product.last_update | date('d/m/Y H:m') }} 
+              {% endif %}
+              
+          </td>
           </tr>
           <tr>
             <td class="text-right"> <b>Creado Por:</b></td>

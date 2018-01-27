@@ -50,7 +50,9 @@
                id="fecha" 
                required="required" 
                name="fecha" 
-               value="{{ initExpense.fecha | date ('d/m/Y')}}" 
+               {% if initExpense.fecha != null%}
+               		value="{{ initExpense.fecha | date ('d/m/Y')}}" 
+               {% endif %}
                >
             <div class="input-group-addon">
                <span class="glyphicon glyphicon-th"></span>
@@ -117,7 +119,7 @@
                id="fecha_fin" 
                required="required" 
                name="fecha_fin" 
-               value="{{ initExpense.fecha_fin | date ('m/d/Y')}}"
+               value="{{ initExpense.fecha_fin | date ('d/m/Y')}}"
                >
             <div class="input-group-addon">
                <span class="glyphicon glyphicon-th"></span>

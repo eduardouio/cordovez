@@ -1,5 +1,3 @@
-
-
 <!--tabPedido-->
 <div class="pedido">
    <div class="row">
@@ -67,7 +65,7 @@
                <td>{{ order.incoterm }}</td>
                <td>{{ order.pais_origen }}</td>
                <td>{% if order.fecha_arribo == NULL %} <strong>
-                  Arribo Pendiente </strong> {% else %} {{ order.fecha_arribo | date('d-m-Y')}}
+                  Arribo Pendiente </strong> {% else %} {{ order.fecha_arribo | date('d/m/Y')}}
                   {% endif %}
                </td>
                <td class="text-right">{{ order.dias_libres }} días {% if order.dias_libres > order.warenHouseDays %}
@@ -114,7 +112,7 @@
                         {% if fob == 0 %}
                         <li><a
                            href="{{ rute_url }}pedido/eliminar/{{ order.nro_pedido }}"
-                           <span class="fa fa-trash"></span> Elminar Pedido</a>
+                           <span class="fa fa-trash"></span> Eliminar Pedido</a>
                         </li>
                         {% endif %}
                         {% endif %}

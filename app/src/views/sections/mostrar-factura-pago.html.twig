@@ -8,7 +8,7 @@
 			<strong>Ruc:</strong> <span>{{ document.supplier.identificacion_proveedor }}</span>
 		</div>
 		<div class="col-md-2">
-			<strong>Fecha:</strong> <span>{{ document.fecha_emision  }}</span>
+			<strong>Fecha:</strong> <span>{{ document.fecha_emision  | date('d/m/Y') }}</span>
 		</div>
 		<div class="col-md-5">
 			<strong>Comentarios:</strong> <span>{{ document.comentarios }}</span>
@@ -131,8 +131,8 @@
 			> 
 			{{ saldo | number_format(2,',','.') }} 
 			</td>
-			<td>{{ detail.expense.fecha }}</td>
-			<td>{{ detail.expense.fecha_fin  }}</td>
+			<td>{{ detail.expense.fecha | date('d/m/Y') }}</td>
+			<td>{{ detail.expense.fecha_fin  | date('d/m/Y') }}</td>
 			<td>
 				 <div class="dropdown">
                 <button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-sm btn-default">

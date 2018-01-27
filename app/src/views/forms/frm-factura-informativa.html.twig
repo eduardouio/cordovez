@@ -39,7 +39,7 @@
          <strong>
          Fecha Registro:</strong> 
          <span class="text-primary">
-         {{ order.date_create }}            
+         {{ order.date_create | date('d/m/Y')}}            
          </span>
       </div>
    </div>
@@ -154,7 +154,11 @@
                   id="fecha_emision" 
                   required="required" 
                   name="fecha_emision" 
-                  value="{{ infoInvoice.fecha_emision | date('m-d-Y') }}" 
+                  {% if infoInvoice.fecha_emision == null %}
+                     value="" 
+                     {% else %}
+                        value="{{ infoInvoice.fecha_emision | date('m-d-Y') }}" 
+                  {% endif %}
                   >
                <div class="input-group-addon">
                   <span class="glyphicon glyphicon-th"></span>

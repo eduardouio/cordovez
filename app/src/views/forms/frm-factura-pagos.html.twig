@@ -11,7 +11,7 @@
         class="form-control">
         {% if fail == true %}
         <option selected="true" value="{{invoice.identificacion_proveedor}}">
-        {{supplierName}} </option>
+        {{ supplierName }} </option>
         {% else %}
         <option disabled="" selected="" >Seleccione... </option>
         {% endif %}
@@ -44,7 +44,9 @@
                id="fecha_emision" 
                required="required" 
                name="fecha_emision" 
-               value="{{ invoice.fecha_emision }}" 
+               {% if document.fecha_emision != null %}
+                  value="{{ invoice.fecha_emision | date('d/m/Y')}}" 
+               {% endif %}
                >
             <div class="input-group-addon">
                <span class="glyphicon glyphicon-th"></span>

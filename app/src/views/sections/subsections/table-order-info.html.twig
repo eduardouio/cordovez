@@ -103,7 +103,11 @@ FACTURAS EN EUROS
             {{invoice.supplier.nombre}}
             </a>
          </td>
-         <td>{{invoice.fecha_emision}}</td>
+         <td>
+            {% if invoice.fecha_emision != null %}
+               {{invoice.fecha_emision}}
+            {% endif %}
+      </td>
          <td>{{invoice.detailInvoice.sums.countBoxesProduct | number_format(0,',','.') }}</td>
          {% set totalboxes = totalboxes +  invoice.detailInvoice.sums.countBoxesProduct %}
          {% set valRegister = invoice.detailInvoice.sums.valueItems %}

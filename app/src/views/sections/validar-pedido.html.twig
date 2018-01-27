@@ -112,7 +112,7 @@
             </a>
           </td>
           {% else %}
-          <td>{{ order.fecha_arribo }} </td>
+          <td>{{ order.fecha_arribo | date('d/m/Y') }} </td>
           <td class="success">OK
             <a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}"><span class="fa fa-pencil"></span>Editar</a>
           </td>

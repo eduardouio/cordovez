@@ -45,8 +45,11 @@
                class="form-control fecha" 
                id="fecha_emision" 
                required="required" 
+               readonly="" 
                name="fecha_emision" 
-               value="{{ document.fecha_emision | date ('d-m-Y') }}"
+               {% if document.fecha_emision != null %}
+                  value="{{ document.fecha_emision | | date('d/m/Y) }}"
+               {% endif %}
                >
             <div class="input-group-addon">
                <span class="glyphicon glyphicon-th"></span>

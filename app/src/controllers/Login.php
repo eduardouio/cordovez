@@ -112,7 +112,7 @@ class Login extends CI_Controller {
 			$userData['last_login'] = $lastlogin;
 			unset($userData['password']);
 			$this->session->set_userdata($userData);
-			$this->redirectPage('ordersList');
+			$this->redirectPage('home');
 		}else{
 			$config = [
 				'message' => 'Usuario y/o Contraseña Incorrectos.',

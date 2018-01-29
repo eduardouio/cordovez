@@ -125,7 +125,10 @@ class MY_Controller extends CI_Controller
         header('Status: 301 Moved Permanently', false, 301);
         if ($id) {
             if($id2){
-                header('Location: ' . base_url() . $target[$page] . '/' . $id  . '/' . $id2);
+                header(
+                    'Location: ' . base_url() . $target[$page] 
+                        . '/' . $id  . '/' . $id2
+                    );
                 return true;
             }
             header('Location: ' . base_url() . $target[$page] . '/' . $id);
@@ -149,9 +152,18 @@ class MY_Controller extends CI_Controller
     protected function getWarenHouseDaysInitial(array $order): int
     {
         if (gettype($order['fecha_salida_bodega_puerto']) == 'NULL') {
-            return (dateDiffInDays(strtotime($order['fecha_arribo']), date('Y-m-d')));
+            return (
+                    dateDiffInDays(strtotime($order['fecha_arribo']), 
+                    date('Y-m-d'))
+                    );
         }
-        return (dateDiffInDays($order['fecha_arribo'], $order['fecha_salida_bodega_puerto']));
+        
+        return (
+                dateDiffInDays(
+                            $order['fecha_arribo'], 
+                            $order['fecha_salida_bodega_puerto']
+                            )
+                );
     }
     
     

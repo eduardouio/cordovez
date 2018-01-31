@@ -196,15 +196,48 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Confirmation</h4>
+                <h4 class="modal-title"> <span class="fa fa-warning"></span> Confirmar Acción</h4>
             </div>
             <div class="modal-body">
-                <p>Do you want to save changes you made to document before closing?</p>
-                <p class="text-warning"><small>If you don't save, your changes will be lost.</small></p>
+            	<p>
+            		Esta acción aplica para los gastos que no fueron provisionados al iniciar un <strong>Pedido</strong> o un 
+            		<strong>Parcial</strong>, en el siguiente formulario indique al Pedido y/o Parcial que afecta asi como tambien el valor, si lo deses puede seleccionar todo el valor Pendiente que es de 
+            		<strong>
+            		$ {{ saldoFactura | number_format(2,',','.') }}
+					</strong> 
+					dólares o una parte del mismo.
+            	</p>
+            	<div class="row">
+            		<form>
+            			<input type="hidden" name="tipo" value="NO PROVISIONADO">
+            		<div class="col-md-3">
+            			<div class="form-group">
+            				<label>Pedido</label>
+            			<select class="form-control" name="nro_pedido" required="">
+            				<option disabled="" selected="">Seleccione...</option>
+            			</select>
+            		</div>
+            		</div>
+            		<div class="col-md-3">
+            			<div class="form-group">
+            				<label>Parcial</label>
+            			<select class="form-control" name="id_parcial">
+            				<option disabled="" selected="">Seleccione...</option>
+            			</select>
+            			</div>
+            		</div>
+            		<div class="col-md-6">
+            			<div class="form-group">
+            				<label>concepto</label>
+            				<input type="text" name="concepto" class="form-control" maxlength="45" required="">
+            			</div>
+            		</div>
+            		</form>
+            	</div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"> <span class="fa fa-ban"></span> Cancelar</button>
+                <button type="button" class="btn btn-primary btn-sm"> <span class="fa fa-save"></span> Aceptar Cambios</button>
             </div>
         </div>
     </div>

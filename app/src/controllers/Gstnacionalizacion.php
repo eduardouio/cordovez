@@ -1,5 +1,4 @@
-<?php
-defined('BASEPATH') or exit('No direct script access allowed');
+<?php defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
  * Modulo encargado de Gestionar los gastos de nacionaliacion para
@@ -556,12 +555,18 @@ class Gstnacionalizacion extends MY_Controller
     {
         if (gettype($order['fecha_salida_almacenera']) == 'NULL') {
             return (
-                dateDiffInDays($order['fecha_ingreso_almacenera'], date('Y-m-d'))
-                );
+                    dateDiffInDays(
+                                $order['fecha_ingreso_almacenera'], 
+                                date('Y-m-d')
+                                )
+                    );
         }
         
-        return ( dateDiffInDays($order['fecha_ingreso_almacenera'], 
-                $order['fecha_salida_almacenera']) 
+        return ( 
+                dateDiffInDays(
+                                $order['fecha_ingreso_almacenera'], 
+                                $order['fecha_salida_almacenera']
+                               ) 
                 );
     }
 

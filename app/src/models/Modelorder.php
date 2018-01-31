@@ -32,7 +32,6 @@ class Modelorder extends CI_Model
         $this->modelExpenses = new Modelexpenses();
         $this->modelProduct = new Modelproduct(); 
         $this->modelLog = new Modellog();
-        
     }
 
 

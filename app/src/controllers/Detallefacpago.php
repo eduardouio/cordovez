@@ -63,7 +63,22 @@ class Detallefacpago extends \MY_Controller
         $this->redirectPage('paidsList');
         return true;
     }
-
+    
+    
+    /**
+     * Registra el detalle de una factura de pago servicios
+     * y a la vez registra un gasto en la tabla de gastos de nacionalizacion
+     * como gasto no provisionado y lo deja con estatus gb_closed
+     * El gasto es tomado como gasto inicial en R10 
+     * y si no pertenece a ningun parcial gasto inicial en R70
+     * @param int $idDocument => identificacion Factura Pago
+     */
+    public function noProvisionado(int $idDocument)
+    {
+        
+    }
+    
+    
     /**
      * Presenta el formulario para agregar un nuevo item de factura
      * 

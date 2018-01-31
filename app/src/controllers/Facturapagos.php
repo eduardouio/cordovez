@@ -232,11 +232,13 @@ class Facturapagos extends MY_Controller
             $this->redirectPage('paidsList');
             return false;
         }        
+        
         $document = $this->modelPaid->get($nroDocument);
         if ($document == false){
             $this->redirectPage('paidsList');
             return false;
         }
+        
         $this->responseHttp([
             'titleContent' => 'Detalle Documento De Pago [' . 
                                   $document['nro_factura']. '] <small>'. 

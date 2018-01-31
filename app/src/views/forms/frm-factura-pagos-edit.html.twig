@@ -48,7 +48,7 @@
                readonly="" 
                name="fecha_emision" 
                {% if document.fecha_emision != null %}
-                  value="{{ document.fecha_emision | | date('d/m/Y) }}"
+                  value="{{ document.fecha_emision | date('d/m/Y') }}"
                {% endif %}
                >
             <div class="input-group-addon">

@@ -8,9 +8,9 @@
     {% set unidades = 0 %}
     {% for detail in invoiceDetail %} 
     {% set unidades = unidades + detail.nro_cajas %}
-    {% set suma = suma +  detail.total_item %}
+    {% set suma = (suma +  (detail.total_item * invoice.tipo_cambio) ) %}
     {% endfor %}
-    {% set diferencia =  (invoice.valor - suma) | number_format(2) %}
+    {% set diferencia =  ((invoice.valor * invoice.tipo_cambio) - suma) | number_format(2) %}
     {% set nro_cajas = 0 %}
   
 <h4 class="text-info">{{ supplier[0].nombre }}
@@ -93,7 +93,8 @@
       <h5 class="text-primary"> <small>Valor Reg: </small> <span id="suma"> {{ simbolo | raw}} {{ suma | number_format(2, '.', ',')}}</span></h5>
     </div>
     <div class="col-sm-2">
-      <h5 class="text-danger"> <small>Diferencia: </small> <span id="suma"> {{ simbolo | raw}} {{ diferencia | number_format(2, '.', ',') }} </span></h5>
+      <h5 class="text-danger"> <small>Diferencia: </small> <span id="suma"> {{ simbolo | raw}} 
+      {{ diferencia | number_format(2, '.', ',') }} </span></h5>
     </div>
   </div>
   <br>

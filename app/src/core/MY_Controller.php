@@ -138,8 +138,6 @@ class MY_Controller extends CI_Controller
         return true;
     }
     
-    
-    
     /**
      * Obtiene el tiempo en dias de un pedido en la bodega inicial
      * si el pedido se encuentra nacionalizado o tiene una factura

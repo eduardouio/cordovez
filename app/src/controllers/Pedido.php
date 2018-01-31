@@ -39,11 +39,14 @@ class Pedido extends MY_Controller
     private $modelPaidDetail;
     private $modelParcial;
     
+    
+    /**
+     * constructor de la clase
+     */
     public function __construct()
     {
         parent::__construct();
         $this->init();
-        $this->modelLog->generalLog('Se inicia la clase pedido');
     }
     
     /**

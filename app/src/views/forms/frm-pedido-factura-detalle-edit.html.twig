@@ -122,12 +122,14 @@ var maxValueInvoice = {{invoiceOrder.valor}};
 
 <script type="text/javascript">
 $('#costo_caja').change(function(){
-      var numBoxes = $('#nro_cajas').val();
+      var numBoxes = parseInt($('#nro_cajas').val());
       var itemPerBox = parseFloat($('#cantidad_caja').val());
       var valBox = parseFloat(this.value);
+      var costosTotalItems = parseFloat(numBoxes * valBox);
+      costosTotalItems = Math.round(costosTotalItems * 1000)/1000;
       $('#unidades').val(numBoxes * itemPerBox);
-      $('#costoTotal').val(numBoxes * valBox);
-      if((numBoxes * valBox) > maxValueInvoice ){
+      $('#costoTotal').val(costosTotalItems);
+      if(costosTotalItems > maxValueInvoice ){
          alert('La cantidad de cajas excede el valor de la factura!');
          $('#nro_cajas').val(0);
          $('#costo_caja').val(0);
@@ -140,9 +142,11 @@ $('#costo_caja').change(function(){
       var numBoxes = parseFloat(this.value);
       var itemPerBox = parseFloat($('#cantidad_caja').val());
       var valBox = parseFloat($('#costo_caja').val());
+      var costosTotalItems = parseFloat(numBoxes * valBox);
+      costosTotalItems = Math.round(costosTotalItems * 1000)/1000;
       $('#unidades').val(numBoxes * itemPerBox);
-      $('#costoTotal').val(numBoxes * valBox);
-      if((numBoxes * valBox) > maxValueInvoice ){
+      $('#costoTotal').val(costosTotalItems);
+      if( costosTotalItems > maxValueInvoice ){
          alert('La cantidad de cajas excede el valor de la factura!');
          $('#nro_cajas').val(0);
          $('#costoTotal').val(0);

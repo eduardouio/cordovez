@@ -15,14 +15,26 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Home extends MY_Controller {
 	
 	private $template = '/pages/pageHome.html';
+	private $modelLog;
 
 
-
-
+    /**
+     * Constructor de la clase
+     */
 	function __construct(){
 		parent::__construct();
+		$this->init();		
 	}
 
+	/**
+	 * incia los modelos de la clase
+	 */
+	private function init()
+	{
+	    $this->load->model('modellog');
+	    $this->modelLog = new Modellog();
+	    $this->modelLog->generalLog('Acceso al Home');
+	}
 
 	/**	
 	* Muestra el formulario de inicio de sesion
@@ -30,27 +42,6 @@ class Home extends MY_Controller {
 	public function index(){
 		$config['title'] = 'Inicio';
 		$this->responseHttp($config);
-	}
-
-	/* *
-	* Envia la respuestas html al navegador 
-	* @param $config => arreglo con la informacion de la plantilla
-	* @return void 
-	*/
-	public function responseHttp($config){
-		$config = [
-				'base_url' => base_url(),
-				'rute_url' => base_url() . 'index.php/',
-				'actionFrm' => base_url() . 'index.php/login/validar',
-				'controller' => 'inicio',
-				'iconTitle' => 'fa-ship',
-				'infoBase' => $this->getAllInfo(),
-				'content' => 'home',
-				'titleContent' => 'Sistema de Importaciones &nbsp;&nbsp;&nbsp;
-												<small> Lista de Módulos Disponibles </small>',
-							];
-
-		return $this->twig->display($this->template, $config);
 	}
 
 
@@ -68,6 +59,28 @@ class Home extends MY_Controller {
 
 		 
 
+	}
+	
+	
+	/* *
+	 * Envia la respuestas html al navegador
+	 * @param $config => arreglo con la informacion de la plantilla
+	 * @return void
+	 */
+	private function responseHttp($config){
+	    $config = [
+	        'base_url' => base_url(),
+	        'rute_url' => base_url() . 'index.php/',
+	        'actionFrm' => base_url() . 'index.php/login/validar',
+	        'controller' => 'inicio',
+	        'iconTitle' => 'fa-ship',
+	        'infoBase' => $this->getAllInfo(),
+	        'content' => 'home',
+	        'titleContent' => 'Sistema de Importaciones &nbsp;&nbsp;&nbsp;
+												<small> Lista de Módulos Disponibles </small>',
+	    ];
+	    
+	    return $this->twig->display($this->template, $config);
 	}
 
 }

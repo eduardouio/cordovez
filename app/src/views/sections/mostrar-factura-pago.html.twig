@@ -37,18 +37,19 @@
 </div>
 <br>
 <div class="row">
-	<div class="col-md-6">
+	<div class="col-md-3">
 		{% if saldoFactura > 0 %}
 		    &nbsp;
-    <small class="text-danger"> <span class="fa fa-warning"></span> Completar El Detalle De La Factura
+    <small class="text-danger"> 
+    	<span class="fa fa-warning"></span> Factura Incompleta
     </small>
     <br>
     <br>
 		<a
 			href="{{ rute_url }}detallefacpago/nuevo/{{ document.id_documento_pago }}"
-			class="btn btn-default btn-sm"> <span class="fa fa-file"></span>
-			Justificar Provision en Pedido
-		</a> 			
+			class="btn btn-primary btn-sm"> <span class="fa fa-file"></span>
+			Justificar Provision
+		</a>
 		{% endif %}
 		{% if saldoFactura < 0 %}
 		<h4 class="text-danger" ><span class="fa fa-warning"></span> Factura Inválida, VALORES EXCEDIDOS</h4>  
@@ -58,6 +59,17 @@
 		{% endif %}
 		<br>
 		<br>
+	</div>
+	<div class="col-md-3">
+		<small>
+		<span class="text-warning"> <span class="fa fa-lock"></span> Cerrar Factura de Servicios</span>
+			
+		</small>
+		<br>
+		<br>
+		<a href="#myModal"  class="btn btn-primary btn-sm" type="button" data-toggle="modal" aria-hidden="true">
+			<span class="fa fa-cancel"></span> <span class="fa fa-file"></span> Liquidar [$ {{ saldoFactura | number_format(2,',','.')  }}] de Saldo
+		</a>
 	</div>
 	<div class="col-md-2">
 		<h4 class="text-primary">
@@ -167,14 +179,33 @@
 </div>
 <div class="row">
 	<div class="col-md-4">
-		<a href="{{rute_url}}/facturapagos/listar/" class="btn btn-sm btn-default"><i class="fa fa-arrow-left"></i> Regresar a La Lista De Facturas</a>
+		<a href="{{rute_url}}/facturapagos/listar/" class="btn btn-sm btn-primary"><i class="fa fa-arrow-left"></i> Regresar a La Lista De Facturas</a>
 		&nbsp;
-		<a href="{{rute_url}}/facturapagos/eliminar/{{document.id_documento_pago}}" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> Eliminar Factuar</a>
-		
+		<a href="{{rute_url}}/facturapagos/eliminar/{{document.id_documento_pago}}" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> Eliminar Factura</a>
 	</div>
-	<div class="col-md-offset-8">
+
+	<div class="col-md-offset-8 text-right">
 	<a href="{{rute_url}}facturapagos/editar/{{document.id_documento_pago}}" class="btn btn-info btn-sm"> 
 	Editar Cabeceras Facura
 	</a>
 	</div>
+</div>
+<!-- Modal HTML -->
+<div id="myModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Confirmation</h4>
+            </div>
+            <div class="modal-body">
+                <p>Do you want to save changes you made to document before closing?</p>
+                <p class="text-warning"><small>If you don't save, your changes will be lost.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
 </div>

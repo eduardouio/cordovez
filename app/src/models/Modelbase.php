@@ -87,7 +87,7 @@ class ModelBase extends CI_Model {
         }        
 
         if(isset($paramsQuery['notwhere'])){
-            $sql .= 'AND ' ;
+            $sql .= 'WHERE ' ;
             $position = 0 ;
             $count = (count($paramsQuery['notwhere'])) -1;
 

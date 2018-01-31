@@ -18,12 +18,16 @@ class Facturapagos extends MY_Controller
     private $template = "/pages/pageFacturas.html";
     private $listPerPage = 15;
     private $modelOrder;
+    private $modelParcial;
+    private $modelLog;
     private $modelUser;
     private $modelSupplier;
     private $modelPaid;
     private $myModel;
     
-
+    /**
+     * constructor de la clase
+     */
     public function __construct()
     {
         parent::__construct();
@@ -37,13 +41,17 @@ class Facturapagos extends MY_Controller
     private function init()
     {
         $this->load->model('modelorder');
+        $this->load->model('modelparcial');
         $this->load->model('modeluser');
         $this->load->model('modelsupplier');
+        $this->load->model('modellog');
         $this->load->model('modelpaid');
         $this->load->model('mymodel');
         $this->modelOrder = new Modelorder();
+        $this->modelParcial = new Modelparcial();
         $this->modelUser = new Modeluser();
         $this->modelSupplier = new Modelsupplier();
+        $this->modelLog = new Modellog();
         $this->modelPaid = new Modelpaid();
         $this->myModel = new Mymodel();
     }
@@ -239,11 +247,26 @@ class Facturapagos extends MY_Controller
             return false;
         }
         
+        $activeOrders =  $this->modelOrder->getAll();
+        $this->modelLog->generalLog($this->db->last_query());
+        if(is_array($activeOrders)){
+            foreach ($activeOrders as $item => $order){
+                if($order['regimen'] = 70 ){
+                    $order['parcials'] = 
+                                $this->modelParcial->getOrdinalsNumbersParcials(
+                                                            $order['nro_pedido']
+                                                                              );
+                }
+                $activeOrders[$item] = $order;
+            }
+        }
+        
         $this->responseHttp([
             'titleContent' => 'Detalle Documento De Pago [' . 
                                   $document['nro_factura']. '] <small>'. 
                                   $document['supplier']['nombre'] . '</small>',
             'document' => $document,
+            'orders' => $activeOrders,
             'user' => $this->modelUser->get($document['id_user']),
             'show' => true,
         ]);

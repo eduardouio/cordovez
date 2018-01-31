@@ -120,7 +120,11 @@
 			<tr>
 			<td>{{loop.index}}</td>
 			<td> <a href="{{rute_url}}detallefacpago/presentar/{{detail.id_detalle_documento_pago}}">
+			{% if detail.bg_isnotprovisioned == '1' %}
+					<label class="label label-danger"> <span class="fa fa-warning"></span> No Provisionado</label>
+			{% endif %}
 			{{ detail.expense.concepto  }}
+			
 			</a>
 		</td>
 			<td>
@@ -201,44 +205,132 @@
             <div class="modal-body">
             	<p>
             		Esta acción aplica para los gastos que no fueron provisionados al iniciar un <strong>Pedido</strong> o un 
-            		<strong>Parcial</strong>, en el siguiente formulario indique al Pedido y/o Parcial que afecta asi como tambien el valor, si lo deses puede seleccionar todo el valor Pendiente que es de 
+            		<strong>Parcial</strong>, en el siguiente formulario indique al Pedido y/o Parcial que afecta asi como tambien el valor, si se requiere se puede seleccionar el valor completo que es de 
             		<strong>
             		$ {{ saldoFactura | number_format(2,',','.') }}
 					</strong> 
 					dólares o una parte del mismo.
             	</p>
             	<div class="row">
-            		<form>
-            			<input type="hidden" name="tipo" value="NO PROVISIONADO">
+            		<form action="{{rute_url}}/detallefacpago/noProvisionado" method="post">
+            			<input type="hidden" name="id_documento_pago" value="{{document.id_documento_pago}}">
             		<div class="col-md-3">
             			<div class="form-group">
             				<label>Pedido</label>
-            			<select class="form-control" name="nro_pedido" required="">
+            			<select class="form-control" name="nro_pedido" id="nro_pedido" required="">
             				<option disabled="" selected="">Seleccione...</option>
+            				{% for order in orders %}
+            					<option value="{{order.nro_pedido}}"> {{order.nro_pedido}} </option>
+            				{% endfor %}
             			</select>
             		</div>
             		</div>
             		<div class="col-md-3">
             			<div class="form-group">
             				<label>Parcial</label>
-            			<select class="form-control" name="id_parcial">
+            			<select class="form-control" name="id_parcial" id="id_parcial" disabled="">
             				<option disabled="" selected="">Seleccione...</option>
             			</select>
             			</div>
             		</div>
             		<div class="col-md-6">
             			<div class="form-group">
-            				<label>concepto</label>
-            				<input type="text" name="concepto" class="form-control" maxlength="45" required="">
+            				<label>Concepto</label>
+            				<input 
+            					type="text" 
+            					name="concepto" 
+            					class="form-control" 
+            					maxlength="45" 
+            					required="">
             			</div>
             		</div>
-            		</form>
             	</div>
+            	<div class="row">
+            		<div class="col-md-3">
+            			<div class="form-group">
+            				<label>Valor</label>
+            				<input 
+            					class="form-control" 
+            					type="number" 
+            					name="valor" 
+            					step="0.01" 
+            					id="valProvision"
+            					required="">
+            			</div>
+            		</div>
+            		<div class="col-md-6">
+            		<div class="form-gruop">
+            			<label>Comentarios</label>
+            			<textarea 
+            			name="comentarios" 
+            			required="" 
+            			class="form-control"
+            			maxlength="250" 
+            			></textarea>
+            		</div>
+            		</div>
+            		<div class="col-md-3">
+            			<br>
+            			<br>
+            			<div id="message">
+            			</div>
+            		</div>
+            	</div>
+            	
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"> <span class="fa fa-ban"></span> Cancelar</button>
-                <button type="button" class="btn btn-primary btn-sm"> <span class="fa fa-save"></span> Aceptar Cambios</button>
+                <a type="button" class="btn btn-default btn-sm" data-dismiss="modal"> <span class="fa fa-ban"></span> Cancelar</a>
+                <button type="submit" class="btn btn-primary btn-sm"> <span class="fa fa-save"></span> Aceptar Cambios</button>
             </div>
+            </form>
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+	var maxvalue = {{ saldoFactura | number_format(2,'.') }};
+	var okMessage  = `
+						<span class="text-success">
+						<i class="fa fa-check"></i> Valor Dentro de rango Saldo
+						</div>
+					`;
+
+    var errorMessage  = `
+    					<span class="text-danger">
+						<i class="fa fa-ban"></i> Valor Fuera de Rango, ingrese un valor válido
+						</span>
+					`;
+
+
+	$('#valProvision').keyup(function(){
+		var currentVal = parseFloat(this.value);
+		$('#message').empty();
+		if(currentVal <= maxvalue){
+			$('#message').append(okMessage + (maxvalue - currentVal));
+		}else{
+			$('#message').append(errorMessage + (maxvalue - currentVal));
+			this.value = '';
+			this.focus();
+		}
+	});
+
+var orders = {{ orders | json_encode | raw }};
+
+$('#nro_pedido').change(function(){
+	var found = orders.find(function(element){
+		return element.nro_pedido === $('#nro_pedido').val();
+	});
+
+	if( found.regimen === 70 && found.parcials != false){
+		$('#id_parcial option').remove();
+		$('#id_parcial').removeAttr('disabled');
+		$('#id_parcial').append('<option desabled selected>Seleccione...</option>');
+		$.each(found.parcials, function(key, value){
+			var item =  '<option value="' + value.id_parcial + '">' + value.ordinalNumber + "<option>";
+			$('#id_parcial').append(item);
+		});
+	}
+});
+
+
+</script>

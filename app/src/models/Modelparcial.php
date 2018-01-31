@@ -165,12 +165,12 @@ class Modelparcial extends CI_Model
      * Onbtiene
      *
      * @param string $nroOrder
-     * @return array
+     * @return array | false
      */
-    public function getOrdinalsNumbersParcials($nroOrder) : array{
+    public function getOrdinalsNumbersParcials($nroOrder){
         
         $ordinalsInities = [
-            1 => 'primero', 2 => 'segundo', 3 => 'tercero',
+            0 => '', 1 => 'primero', 2 => 'segundo', 3 => 'tercero',
             4 => 'cuarto', 5 => 'quito', 6 => 'sexto',
             7 => 'séptimo', 8 => 'octavo', 9 => 'noveno',
         ];
@@ -182,7 +182,26 @@ class Modelparcial extends CI_Model
         
         $parcials = $this->getAllParcials($nroOrder);
         
+        if(is_array($parcials)){
+            $ordinal = 1;
+            foreach ($parcials as $item => $parcial){
+                if($ordinal < 10){
+                    $parcial['ordinalNumber'] = $ordinalsInities[$ordinal];
+                }else{
+                    $decena = floor($parcial/10);
+                    $unity = ($ordinal - $decena);
+                    
+                    $parcial['ordinalNumber'] = $ordinalTens[$decena] . 
+                                                $ordinalsInities[$unity]; 
+                }
+                
+                $ordinal++;
+                $parcials[$item] = $parcial;
+            }
+            return $parcials;
+        }
         
+        return false;
         
     }
     
@@ -203,6 +222,7 @@ class Modelparcial extends CI_Model
             'where' => [
                 'nro_pedido' => $nroOrder,
             ],
+            'orderby' => ['id_parcial' => 'ASC']
         ]);
         
         if(is_array($parcials) && count($parcials) > 0){

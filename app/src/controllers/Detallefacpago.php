@@ -18,6 +18,7 @@ class Detallefacpago extends \MY_Controller
     private $controller = 'detalle_documento_pago';
     private $modelOrder;
     private $modelPaid;
+    private $modelLog;
     private $modelPaidDetail;
     private $modelUser;
     private $modelExpenses;
@@ -26,7 +27,7 @@ class Detallefacpago extends \MY_Controller
 
     
     /**
-     * Se realiza la carga de los modelos necesarios para la clase
+     * constructor de la clase
      */
     public function __construct()
     {
@@ -46,6 +47,7 @@ class Detallefacpago extends \MY_Controller
         $this->load->model('modelpaiddetail');
         $this->load->model('modelsupplier');
         $this->load->model('mymodel');
+        $this->load->model('modellog');        
         $this->modelOrder = new Modelorder();
         $this->modelPaid = new Modelpaid();
         $this->modelUser = new Modeluser();
@@ -53,6 +55,7 @@ class Detallefacpago extends \MY_Controller
         $this->modelPaidDetail = new Modelpaiddetail();
         $this->modelSupplier = new Modelsupplier();
         $this->myModel =  new Mymodel();
+        $this->modelLog = new Modellog();
     }
 
     /**
@@ -73,9 +76,45 @@ class Detallefacpago extends \MY_Controller
      * y si no pertenece a ningun parcial gasto inicial en R70
      * @param int $idDocument => identificacion Factura Pago
      */
-    public function noProvisionado(int $idDocument)
+    public function noProvisionado()
     {
+        if(!$_POST){
+            $this->modelLog->warningLog('Acceso no autorizado a metodo');
+            return $this->index();
+        }
+
+        $document = $this->modelPaid->getDocument($_POST['id_documento_pago']);
         
+        $idExpense = $this->modelExpenses->create([
+            'nro_pedido' => $_POST['nro_pedido'],
+            'id_parcial' => 0,
+            'identificacion_proveedor' => $document['identificacion_proveedor'],
+            'concepto' => $_POST['concepto'],
+            'tipo' => 'NO PROVISIONADO',
+            'valor_provisionado' => $_POST['valor'],
+            'comentarios' => $_POST['comentarios'],
+            'fecha' => date('Y-m-d'),
+            'id_user' => $this->session->userdata('id_user'),
+            'bg_closed' => 1,
+            ]);
+        
+        if($idExpense == false){
+            $this->modelLog->errorLog(
+                            'No se puede proceder con el gasto no provisionado'
+                                     );
+            return (print('Error en el Sistema'));
+        }
+        
+        if($this->modelPaidDetail->create([
+            'id_gastos_nacionalizacion' => $idExpense,
+            'id_documento_pago' => $_POST['id_documento_pago'],
+            'valor' => $_POST['valor'],
+            'id_user' => $this->session->userdata('id_user'),
+            'bg_isnotprovisioned' => 1,
+            'bg_closed' => 1,
+        ])){
+            $this->redirectPage('paidPresent' , $_POST['id_documento_pago']);    
+        };
     }
     
     
@@ -242,7 +281,7 @@ class Detallefacpago extends \MY_Controller
             $this->redirectPage('paidsList');
             return false;
         }
-        $document = $this->modelPaid->getDocument($detail['id_documento_pago']);
+        $document = $this->modelPaid->getDocument($detail['id_documento_pago']);        
        
         return($this->responseHttp([
             'titleContent' => 'Detalle Justificación de Provision',

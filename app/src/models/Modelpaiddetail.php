@@ -18,17 +18,32 @@ class Modelpaiddetail extends \CI_Model
     private $table = 'detalle_documento_pago';
     private $modelExpenses;
     private $modelBase;
+    private $modelLog;
     private $myModel;
 
+    
+    /**
+     * constructor de la clase
+     */
     public function __construct()
     {
         parent::__construct();
+        $this->init();
+    }
+    
+    /**
+     * Inicia los modelos de la clase
+     */
+    public function init()
+    {
         $this->load->model('modelexpenses');
         $this->load->model('modelbase');
         $this->load->model('mymodel');
+        $this->load->model('modellog');
         $this->modelExpenses = new Modelexpenses();
         $this->modelBase = new ModelBase();
         $this->myModel = new Mymodel();
+        $this->modelLog = new Modellog();
     }
     
     /**
@@ -132,6 +147,24 @@ class Modelpaiddetail extends \CI_Model
         }
         return false;
     } 
+    
+    
+    /**
+     * Crea un nuevo detalle de factura
+     * @param array $paidDetail
+     * @return int
+     */
+    public function create(array $paidDetail)
+    {
+        if($this->db->insert($this->table, $paidDetail)){
+            return $this->db->insert_id();
+        }
+        $this->modelLog->errorLog(
+                            'No se puede registrar el detalle documento',
+                            $this->db->last_query()
+                            );        
+        return false;
+    }
     
     
 }

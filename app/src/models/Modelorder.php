@@ -43,7 +43,12 @@ class Modelorder extends CI_Model
     {
         return ($this->modelBase->get_table([
             'table' => 'pedido',
+            'notwhere' => [
+                        'nro_pedido' => '000-00', 
+                        ],
+            'orderby' => ['nro_pedido' => 'DESC']
         ]));
+        
     }
 
 

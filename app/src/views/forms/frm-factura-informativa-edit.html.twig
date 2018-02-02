@@ -155,7 +155,7 @@
                   id="fecha_emision" 
                   required="required" 
                   name="fecha_emision" 
-                  value="{{ infoInvoice.fecha_emision | | date('d/m/Y') }}" 
+                  value="{{ infoInvoice.fecha_emision | date('d/m/Y') }}" 
                   >
                <div class="input-group-addon">
                   <span class="glyphicon glyphicon-th"></span>
@@ -163,65 +163,6 @@
             </div>
          </div>
       </div>
-      <div class="col-md-2">
-         <div class="form-group">
-            <label>Seguro Aduana <small><b>USD</b></small>
-            </label>
-            <input 
-               type="number" 
-               name="seguro_aduana"
-               class="form-control" 
-               step="0.01" 
-               required="required" 
-               value="{{infoInvoice.seguro_aduana }}" 
-               >
-         </div>
-      </div>
-      <div class="col-md-2">
-         <div class="form-group">
-            <label>Felte Aduana <small><b>USD</b></small>
-            </label>
-            <input 
-               type="number" 
-               name="flete_aduana"
-               class="form-control" 
-               step="0.01" 
-               required="required" 
-               value="{{infoInvoice.flete_aduana}}" 
-               >
-         </div>
-      </div>
-   </div>
-   <div class="row">
-      <div class="col-md-2">
-         <div class="form-group">
-            <label>Nro Referendo</label>
-            <input 
-               type="text" 
-               name = "nro_refrendo"
-               id = "nro_refrendo"
-               placeholder="000-0000-00-000000"
-               class="form-control" 
-               maxlength="20" 
-               value="{{infoInvoice.nro_refrendo}}" 
-               >
-         </div>
-      </div>
-      <div class="col-md-2">
-         <div class="form-group">
-            <label>Valor</label>
-            <input 
-               class="form-control" 
-               type="number" 
-               name="valor"
-               value="{{infoInvoice.valor}}" 
-               id="valor"
-               step="0.01" 
-               required="required" 
-               >
-         </div>
-      </div>
-      {% if haveEuros.euros == true %}
       <div class="col-md-2">
          <div class="form-group">
             <label>Moneda</label>
@@ -250,6 +191,66 @@
                >
          </div>
       </div>
+   </div>
+   <div class="row">
+      <div class="col-md-2">
+         <div class="form-group">
+            <label>Nro Referendo</label>
+            <input 
+               type="text" 
+               name = "nro_refrendo"
+               id = "nro_refrendo"
+               placeholder="000-0000-00-000000"
+               class="form-control" 
+               maxlength="20" 
+               value="{{infoInvoice.nro_refrendo}}" 
+               >
+         </div>
+      </div>
+      <div class="col-md-2">
+         <div class="form-group">
+            <label>Valor FOB</label>
+            <input 
+               class="form-control" 
+               type="number" 
+               name="valor"
+               value="{{infoInvoice.valor}}" 
+               id="valor"
+               step="0.01" 
+               required="required" 
+               >
+         </div>
+      </div>
+            <div class="col-md-2">
+          <div class="form-group">
+            <label>Seguro Aduana <small><b>USD</b></small>
+            </label>
+            <input 
+               type="number" 
+               name="seguro_aduana"
+               class="form-control" 
+               step="0.01" 
+               required="required" 
+               value="{{infoInvoice.seguro_aduana }}" 
+               >
+         </div>
+      </div>
+            <div class="col-md-2">
+         <div class="form-group">
+            <label>Felte Aduana <small><b>USD</b></small>
+            </label>
+            <input 
+               type="number" 
+               name="flete_aduana"
+               class="form-control" 
+               step="0.01" 
+               required="required" 
+               value="{{infoInvoice.flete_aduana}}" 
+               >
+         </div>
+      </div>
+      {% if haveEuros.euros == true %}
+
       <div class="col-md-2">
          <div class="form-group">
             <label>Total USD</label>

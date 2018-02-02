@@ -15,7 +15,6 @@
 class Gstnacionalizacion extends MY_Controller
 
 {
-
     private $controller = 'gastos_nacionalizacion';
     private $template = 'pages/pageGastosNacionalizacion.html';
     private $modelOrder;

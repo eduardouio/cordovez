@@ -50,12 +50,17 @@ class Modelexpenses extends CI_Model
                 'tipo_gasto' => 'GASTO INICIAL',
 
             ],
-            'notwhere' => ['regimen' => 'R' . $regExclude],
+            'andnotwhere' => ['regimen' => 'R' . $regExclude],
             'orderby' => [
                 'concepto' => 'ASC',
             ],
         ]);
+        $this->modelLog->generalLog($this->db->last_query());
         if (empty($rateExpenses)) {
+            $this->modelLog->errorLog(
+                                'No se puede recuperar parametros de gastos',
+                                $this->db->last_query()
+                                     );
             return false;
         }
 

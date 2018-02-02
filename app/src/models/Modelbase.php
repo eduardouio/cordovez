@@ -45,6 +45,11 @@ class ModelBase extends CI_Model {
     *                               'col' => 'condition1',
     *                               'coln' => 'conditionn',
     *                           ],
+    *           'andnotwhere' => [
+    *                               'col' => 'condition1',
+    *                               'col' => 'condition1',
+    *                               'coln' => 'conditionn',
+    *                           ],
     *
     *           'orderby' => [
     *                               'col1' => 'ASC | DESC',
@@ -96,6 +101,20 @@ class ModelBase extends CI_Model {
                 if (($position > -1) && ( $position < $count )){
                     $sql .= ' AND ';
                }
+                $position ++;
+            }
+        }
+        
+        if(isset($paramsQuery['andnotwhere'])){
+            $sql .= 'AND ' ;
+            $position = 0 ;
+            $count = (count($paramsQuery['andnotwhere'])) -1;
+            
+            foreach ($paramsQuery['andnotwhere'] as $key => $val) {
+                $sql .= $key . " != '" . $val . "' ";
+                if (($position > -1) && ( $position < $count )){
+                    $sql .= ' AND ';
+                }
                 $position ++;
             }
         }

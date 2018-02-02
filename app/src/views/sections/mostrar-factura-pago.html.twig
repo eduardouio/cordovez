@@ -61,6 +61,7 @@
 		<br>
 	</div>
 	<div class="col-md-3">
+{% if saldoFactura != 0 %}
 		<small>
 		<span class="text-warning"> <span class="fa fa-lock"></span> Cerrar Factura de Servicios</span>
 			
@@ -68,10 +69,12 @@
 		<br>
 		<br>
 		<a href="#myModal"  class="btn btn-primary btn-sm" type="button" data-toggle="modal" aria-hidden="true">
-			<span class="fa fa-cancel"></span> <span class="fa fa-file"></span> Liquidar [$ {{ saldoFactura | number_format(2,',','.')  }}] de Saldo
+			<span class="fa fa-cancel"></span> <span class="fa fa-file"></span> Liquidar [$ {{ saldoFactura | number_format(2,',','.')  }}]
 		</a>
+{% endif %}
 	</div>
 	<div class="col-md-2">
+
 		<h4 class="text-primary">
 			<small>Val Factura: $</small> <span> {{ document.valor | number_format(2,',','.')}}</span>
 		</h4>
@@ -177,6 +180,15 @@
 			</td>
 			</tr>
 			{%  endfor %}
+
+			<tr style="background-color:#2E86C1; color:#fff; font-weight:bold;">
+            <td colspan="4" class="text-right">SUMAS: &nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td class="text-right">{{ document.invoiceDetails.sums | number_format(2,',','.') }}</td>
+            <td class="text-right">--</td>
+            <td class="text-right">--</td>
+            <td class="text-right">--</td>
+            <td class="text-right">--</td>
+            </tr>
 			</tbody>
 		</table>
 	</div>
@@ -239,6 +251,7 @@
             				<input 
             					type="text" 
             					name="concepto" 
+            					id="concepto" 
             					class="form-control" 
             					maxlength="45" 
             					required="">
@@ -263,6 +276,7 @@
             			<label>Comentarios</label>
             			<textarea 
             			name="comentarios" 
+            			id="comentarios" 
             			required="" 
             			class="form-control"
             			maxlength="250" 
@@ -288,7 +302,7 @@
 </div>
 
 <script type="text/javascript">
-	var maxvalue = {{ saldoFactura | number_format(2,'.') }};
+	var maxvalue = {{ saldoFactura }};
 	var okMessage  = `
 						<span class="text-success">
 						<i class="fa fa-check"></i> Valor Dentro de rango Saldo
@@ -330,6 +344,15 @@ $('#nro_pedido').change(function(){
 			$('#id_parcial').append(item);
 		});
 	}
+
+});
+
+$('#concepto').keyup(function(){
+	this.value = this.value.toUpperCase();
+});
+
+$('#comentarios').keyup(function(){
+	this.value = this.value.toUpperCase();
 });
 
 

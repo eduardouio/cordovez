@@ -631,6 +631,20 @@ class Gstinicial extends MY_Controller
         );
         return $this->_checkColumnsData($columnsLen, $data);
     }
+    
+    /**
+     * Calcula el valor de las etiquetas fiscales
+     * @param string $nroOrder => 
+     * @return float => valor de todas las etiquetas
+     */
+    private function calcLabelsCost(string $nroOrder):float
+    {
+        $unities = $this->ModelOrderInvoiceDetail->getActiveStokProductsByOrder($nroOrder);
+        print '<pre>';
+        print_r($unities);
+        print '</pre>';
+        exit();
+    }
 
     /*
      * Envia la respuestas html al navegador

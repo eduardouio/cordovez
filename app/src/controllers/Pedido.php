@@ -288,11 +288,12 @@ class Pedido extends MY_Controller
             
             $idParcial = $this->modelParcial->create([
                 'nro_pedido' => $order['nro_pedido'],
-                'id_user' => $this->session->userdata('id_user'),                
+                'id_user' => $this->session->userdata('id_user'),
+                
             ]);
             
             if($idParcial){
-                return($this->redirectPage('newParcial', $order['nro_pedido'] , $idParcial));
+                return($this->redirectPage('newParcial' , $idParcial));
             }
         }
         

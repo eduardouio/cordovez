@@ -270,9 +270,6 @@
     </div>
   </div>
 </div>
-
-
-
       {% endif %}
       {% endif %}
     </p>
@@ -306,8 +303,9 @@
           Cualquier justificación que no tenga provisión quedará como gasto no provisionado.
           </p>
           <form action="{{rute_url}}pedido/ingresoAlmacenera" method="post">
+            <div class="row">
             <input type="hidden" name="nro_pedido" value="{{order.nro_pedido}}">
-            <div class="form-group">
+            <div class="col-md-6">
               <label>Feha Ingreso Almacenera Pública del Pedido {{order.nro_pedido}} :</label>
               <div class="input-group">
                 <input 
@@ -321,7 +319,19 @@
                   <span class="glyphicon glyphicon-th"></span>
                 </div>
               </div>
+            <input type="text" name="">
               <br>
+            </div>
+              <div class="col-md-6">
+                <label>Tipo de Cambio Para Nacionalización</label>
+                <input 
+                type="number" 
+                step="0.01" 
+                name="tipo_cambio_impuestosR70"
+                required="" 
+                class="form-control" 
+                >
+              </div>
             </div>
         </div>
       </div>

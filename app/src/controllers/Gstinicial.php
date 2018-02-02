@@ -350,6 +350,7 @@ class Gstinicial extends MY_Controller
         }
         $this->putIncoterms($nroOrder);
     }
+    
 
     /**
      * Inicia el asistente para establecer las provisiones de bodega inicial
@@ -547,9 +548,11 @@ class Gstinicial extends MY_Controller
             unset($valuesOrder['gastos_origen']);
         }
         
+        $valLabels = 0.0;
         $initialStockProducts = $this->ModelOrderInvoiceDetail->getActiveStokProductsByOrder($order['nro_pedido']);        
         if ($initialStockProducts != false) {
             foreach ($initialStockProducts as $item => $product) {
+                $valLabels += ((0.03) * ($product['nro_cajas'] * $product['cantidad_x_caja']));
                 $tasaServicio = (((intval($product['capacidad_ml']) / 2000) * 0.10) * ($product['nro_cajas'] * $product['cantidad_x_caja']));
                 if($tasaServicio < 700){
                     $valuesOrder['tasa_de_servicio_aduanero'] += $tasaServicio;
@@ -558,6 +561,10 @@ class Gstinicial extends MY_Controller
                     }
             }
         }
+        
+        print $valLabels;
+        $valuesOrder['etiquetas_fiscales'] = $valLabels;
+        
         return $valuesOrder;
     }
 

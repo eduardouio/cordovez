@@ -51,11 +51,21 @@
             </td>
             {% endif %}
             
+              {% if rateExpense.concepto  == 'ETIQUETAS FISCALES' %}
+               <td class="text-success">
+               <strong>
+               {{minimal.valuesOrder.etiquetas_fiscales |number_format(2, '.', ',') }}
+               </strong>  
+            </td>
+            {% endif %}
+
 
             {% if rateExpense.concepto != 'SEGURO' %}
             {% if rateExpense.concepto != 'ISD' %}
+            {% if rateExpense.concepto != 'ETIQUETAS FISCALES' %}
             {% if rateExpense.concepto != 'TASA DE SERVICIO ADUANERO' %}
             <td>{{rateExpense.valor |number_format(2, '.', ',') }}</td>
+            {% endif %}
             {% endif %}
             {% endif %}
             {% endif %}

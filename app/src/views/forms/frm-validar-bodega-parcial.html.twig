@@ -26,6 +26,8 @@
                      {% if conditionlastDateWarenhouse != null %}
                         value="{{lastDateWarenhouse | date('d/m/Y') }}" 
                      {% endif %}
+
+                     value="{{ order.fecha_ingreso_almacenera | date('d/m/Y')}}" 
                      
                      >
                   <div class="input-group-addon">

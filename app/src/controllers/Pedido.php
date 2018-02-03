@@ -281,7 +281,7 @@ class Pedido extends MY_Controller
         $order['fecha_ingreso_almacenera'] = str_replace('/', '-', $order['fecha_ingreso_almacenera']);
         $order['fecha_ingreso_almacenera'] = date('Y-m-d' , strtotime($order['fecha_ingreso_almacenera']));        
         $order['bg_haveExpenses'] = '1';
-        $pedido['last_update'] = date('Y-m-d H:i:s');
+        $order['last_update'] = date('Y-m-d H:i:s');
         
         if($this->modelOrder->update($order)){
             $this->modelLog->warningLog('Pedido Actualizado Correctamente', $this->db->last_query());

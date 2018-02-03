@@ -16,30 +16,20 @@
          <div class="col-md-3">
             <div class="form-group">
                <label>Ingreso Almacenera</label>
-               <div class="input-group">
                   <input 
                      type="text" 
                      class="form-control" 
                      id="fecha_ingreso_almacenera" 
                      disabled=""
                      name="fecha_ingreso_almacenera" 
-                     {% if conditionlastDateWarenhouse != null %}
+                     {% if lastDateWarenhouse != null %}
                         value="{{lastDateWarenhouse | date('d/m/Y') }}" 
-                     {% endif %}
-
-                     value="{{ order.fecha_ingreso_almacenera | date('d/m/Y')}}" 
-                     
-                     >
-                  <div class="input-group-addon">
-                     <span class="glyphicon glyphicon-th"></span>
-                  </div>
+                     {% endif %}                     >
                </div>
-            </div>
          </div>
          <div class="col-md-4">
             <div class="form-group">
                <label>Fecha Salida Alamcenera del Parcial</label>
-               <div class="input-group">
                   <input 
                      type="text" 
                      class="form-control fecha" 
@@ -48,10 +38,6 @@
                      readonly="" 
                      name="fecha_nacionalizacion_parcial" 
                      >
-                  <div class="input-group-addon">
-                     <span class="glyphicon glyphicon-th"></span>
-                  </div>
-               </div>
             </div>
          </div>
          <div class="col-md-3">
@@ -141,8 +127,6 @@
 
     strDateStart = $('#fecha_ingreso_almacenera').val().split('/');
     strDateEnd = $('#fecha_nacionalizacion_parcial').val().split('/');
-
-
 
    	var dateStart = new Date(strDateStart[2], strDateStart[1] - 1, strDateStart[0]);
    	var dateEnd = new Date(strDateEnd[2], strDateEnd[1] - 1, strDateEnd[0]);

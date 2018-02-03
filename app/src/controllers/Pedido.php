@@ -284,7 +284,7 @@ class Pedido extends MY_Controller
         $order['last_update'] = date('Y-m-d H:i:s');
         
         if($this->modelOrder->update($order)){
-            $this->modelLog->warningLog('Pedido Actualizado Correctamente', $this->db->last_query());
+            $this->modelLog->susessLog('Pedido Actualizado Correctamente');
             
             $idParcial = $this->modelParcial->create([
                 'nro_pedido' => $order['nro_pedido'],
@@ -293,11 +293,16 @@ class Pedido extends MY_Controller
             ]);
             
             if($idParcial){
-                return($this->redirectPage('newParcial' , $idParcial));
+                return($this->redirectPage('infoInvoiceNew' , $idParcial));
             }
         }
         
-        $this->modelLog->errorLog('No se puede cerrar los gastos iniciales del pedido ' . current_url() , $this->db->last_query());
+        $this->modelLog->errorLog(
+            'No se peude actualizar el pedido', 
+            $this->db->last_query()
+            );
+        
+        return false;
     }
     
     /**

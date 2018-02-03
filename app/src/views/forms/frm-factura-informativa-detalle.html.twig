@@ -44,10 +44,17 @@
             <td class="text-right">{{product.stock}}</td>
             <td class="text-right"
               id="costo_caja_{{product.detalle_pedido_factura}}">{{product.costo_caja | number_format(3,".",",")}}</td>
-            <td><input type="checkbox" class="text-right"
+            <td class="pull-right">
+              <label class="control control-checkbox">
+              <input 
+              type="checkbox" 
+              class="text-right"
               name="detalle_pedido_factura-{{product.detalle_pedido_factura}}"
               id="detalle_{{product.detalle_pedido_factura}}"
-              value="{{product.detalle_pedido_factura}}">
+              value="{{product.detalle_pedido_factura}}"
+              >
+                <div class="control_indicator"></div>                  
+</label>
             </td>
             <td class="text-right"><input type="number" step="1"
               class="text-right" id="nro_cajas_{{product.detalle_pedido_factura}}"
@@ -69,6 +76,24 @@
       <br>
       {% endfor %}
     </div>
+  </div>
+    <div class="row">
+    <div class="col-md-4">
+      <a
+        href="{{rute_url}}facinformativa/presentar/{{infoInvoice.id_factura_informativa}}"
+        class="btn btn-sm btn-default"> <span class="fa fa-cubes"></span>
+      Volver a Factura Informativa [{{order.nro_pedido}}]
+      </a>
+    </div>
+    <div class="col-md-5">&nbsp;</div>
+    <div class="col-md-3 text-right">
+            <button type="submit" class="btn btn-sm btn-default">
+      <span class="fa fa-plus"></span> Agregar Seleccionados
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <br>
   </div>
   <div class="row">
     <div class="col-md-6">&nbsp;</div>
@@ -93,24 +118,6 @@
           id="valor_diferencia" disabled="" class="text-right"
           style="color: #a94442; font-weight: bold;">
       </div>
-    </div>
-  </div>
-  <div class="row">
-    <hr>
-  </div>
-  <div class="row">
-    <div class="col-md-4">
-      <button type="submit" class="btn btn-default btn-sm">
-      <span class="fa fa-plus"></span> Agregar Seleccionados
-      </button>
-    </div>
-    <div class="col-md-5">&nbsp;</div>
-    <div class="col-md-2">
-      <a
-        href="{{rute_url}}facinformativa/presentar/{{infoInvoice.id_factura_informativa}}"
-        class="btn btn-sm btn-warning"> <span class="fa fa-cubes"></span>
-      Volver a Factura Informativa [{{order.nro_pedido}}]
-      </a>
     </div>
   </div>
 </form>

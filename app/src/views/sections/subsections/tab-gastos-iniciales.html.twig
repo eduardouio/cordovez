@@ -2,7 +2,7 @@
             <div class="col-sm-6">
             {% if order.bg_haveExpenses == 0 and controller != 'factura_informativa' %}
             <a href="{{rute_url}}gstinicial/validargi/{{order.nro_pedido}}">
-                  <button type="button" class="btn btn-primary btn-sm" >
+                  <button type="button" class="btn btn-default btn-sm" >
                      <span class="fa fa-gear"></span>
                      Generar Gastos Iniciales
                   </button>
@@ -10,7 +10,7 @@
                {% endif %}
             {% if infoInvoice.bg_isclosed == 0 and controller == 'factura_informativa' %}
             <a href="{{rute_url}}gstnacionalizacion/validar70/{{infoInvoice.id_factura_informativa}}">
-                  <button type="button" class="btn btn-primary btn-sm" >
+                  <button type="button" class="btn btn-default btn-sm" >
                      <span class="fa fa-gear"></span> Generar Gastos Nacionalización
                   </button>
                </a>

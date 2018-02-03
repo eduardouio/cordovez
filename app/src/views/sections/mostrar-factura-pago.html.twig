@@ -47,7 +47,7 @@
     <br>
 		<a
 			href="{{ rute_url }}detallefacpago/nuevo/{{ document.id_documento_pago }}"
-			class="btn btn-primary btn-sm"> <span class="fa fa-file"></span>
+			class="btn btn-default btn-sm"> <span class="fa fa-file"></span>
 			Justificar Provision
 		</a>
 		{% endif %}
@@ -68,7 +68,7 @@
 		</small>
 		<br>
 		<br>
-		<a href="#myModal"  class="btn btn-primary btn-sm" type="button" data-toggle="modal" aria-hidden="true">
+		<a href="#myModal"  class="btn btn-default btn-sm" type="button" data-toggle="modal" aria-hidden="true">
 			<span class="fa fa-cancel"></span> <span class="fa fa-file"></span> Liquidar [$ {{ saldoFactura | number_format(2,',','.')  }}]
 		</a>
 {% endif %}
@@ -195,15 +195,17 @@
 </div>
 <div class="row">
 	<div class="col-md-4">
-		<a href="{{rute_url}}/facturapagos/listar/" class="btn btn-sm btn-primary"><i class="fa fa-arrow-left"></i> Regresar a La Lista De Facturas</a>
+		<a href="{{rute_url}}/facturapagos/listar/" class="btn btn-sm btn-default"><i class="fa fa-arrow-left"></i> Regresar a La Lista De Facturas</a>
 		&nbsp;
 		<a href="{{rute_url}}/facturapagos/eliminar/{{document.id_documento_pago}}" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> Eliminar Factura</a>
 	</div>
 
 	<div class="col-md-offset-8 text-right">
+		{% if saldoFactura != 0 %}
 	<a href="{{rute_url}}facturapagos/editar/{{document.id_documento_pago}}" class="btn btn-info btn-sm"> 
 	Editar Cabeceras Facura
 	</a>
+{% endif %}
 	</div>
 </div>
 <!-- Modal HTML -->
@@ -294,7 +296,7 @@
             </div>
             <div class="modal-footer">
                 <a type="button" class="btn btn-default btn-sm" data-dismiss="modal"> <span class="fa fa-ban"></span> Cancelar</a>
-                <button type="submit" class="btn btn-primary btn-sm"> <span class="fa fa-save"></span> Aceptar Cambios</button>
+                <button type="submit" class="btn btn-default btn-sm"> <span class="fa fa-save"></span> Aceptar Cambios</button>
             </div>
             </form>
         </div>

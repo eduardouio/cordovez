@@ -250,16 +250,23 @@ class Gstnacionalizacion extends MY_Controller
             $warenHouse['id_parcial'] = $idParcial;
             $warenHouse['valor_provisionado'] = $this->getWarenhousePartialValue($idParcial);
             $warenHouse['id_user'] = $this->session->userdata('id_user');
+            
             if ($this->modelExpenses->create($warenHouse)) {
-                $this->modelLog->susessLog('Periodo Bodega Registrado Correctamete');
-                $this->modelLog->susessLog($this->db->last_query());
+                
+                $this->modelLog->susessLog(
+                    'Periodo Almacenera Registrado Correctamete'
+                    );
+                
             } else {
-                $this->modelLog->errorLog('Error al Registrar periodo bodega ' . current_url());
-                $this->modelLog->errorLog($this->db->last_query());
+                $this->modelLog->errorLog(
+                    'Error al Registrar periodo bodega',
+                    current_url()
+                    );
             }
         }
     }
 
+    
     /**
      * retorna el costo de la bodega para el parcial, aplicando una formula
      * 

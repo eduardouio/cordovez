@@ -228,7 +228,7 @@ class Modelexpenses extends CI_Model
             'where' => [
                 'id_parcial' => $idParcial, 
             ],
-            'orderby' => ['concepto' => 'ASC' ],
+            'orderby' => ['id_gastos_nacionalizacion' => 'ASC' , 'concepto' => 'DESC' ],
         ]);
                 
         if(is_array($partialExpenses) && count($partialExpenses) > 0){
@@ -317,8 +317,9 @@ class Modelexpenses extends CI_Model
         if($this->db->insert($this->table, $expense)){
             return($this->db->insert_id());
         }
-        $this->modelLog->errorLog('No se puede crear un gasto Nacionalizaicon ' . current_url());
-        $this->modelLog->errorLog($this->db->last_query());
+        $this->modelLog->errorLog('No se puede crear un gasto Nacionalizaicon',
+            $this->db->last_query()
+            );
         return false;
     }
     

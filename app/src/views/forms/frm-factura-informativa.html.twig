@@ -166,6 +166,7 @@
             </div>
          </div>
       </div>
+            {% if haveEuros.euros == true %}
       <div class="col-md-2">
                  <div class="form-group">
             <label>Moneda</label>
@@ -194,6 +195,10 @@
                >
          </div>
       </div>
+           {% else %}
+      <input type="hidden" name="moneda" value="DOLARES">
+      <input type="hidden" name="tipo_cambio" value="1">
+      {% endif %}
    </div>
    <div class="row">
       <div class="col-md-2">
@@ -223,22 +228,7 @@
                required="required" 
                >
          </div>
-      </div>
-      {% if haveEuros.euros == true %}
-      <div class="col-md-2">
-      	 <div class="form-group">
-            <label>Seguro Aduana <small><b>USD</b></small>
-            </label>
-            <input 
-               type="number" 
-               name="seguro_aduana"
-               class="form-control" 
-               step="0.01" 
-               required="required" 
-               value="{{infoInvoice.seguro_aduana }}" 
-               >
-         </div>
-      </div>
+      </div>      
       <div class="col-md-2">
          <div class="form-group">
             <label>Felte Aduana <small><b>USD</b></small>
@@ -250,6 +240,20 @@
                step="0.01" 
                required="required" 
                value="{{infoInvoice.flete_aduana}}" 
+               >
+         </div>
+      </div>
+            <div class="col-md-2">
+          <div class="form-group">
+            <label>Seguro Aduana <small><b>USD</b></small>
+            </label>
+            <input 
+               type="number" 
+               name="seguro_aduana"
+               class="form-control" 
+               step="0.01" 
+               required="required" 
+               value="{{infoInvoice.seguro_aduana }}" 
                >
          </div>
       </div>
@@ -265,10 +269,6 @@
                >
          </div>
       </div>
-      {% else %}
-      <input type="hidden" name="moneda" value="DOLARES">
-      <input type="hidden" name="tipo_cambio" value="1">
-      {% endif %}
       <div class="col-md-6">
          <div class="form-group">
             <label>Comentarios</label>

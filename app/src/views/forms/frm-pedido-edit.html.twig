@@ -9,6 +9,7 @@
                name="nro_pedido" 
                class="form-control" 
                value="{{order.nro_pedido}}" 
+               required = "required"
                >
          </div>
       </div>
@@ -35,17 +36,19 @@
             id = "pais_origen"
             name = "pais_origen"
             class="form-control"
+            required = "required"
             >
             <option value="{{order.pais_origen}}" >{{order.pais_origen}}</option>
          </select>
       </div>
       <div class="col-md-2">
          <div class="form-group">
-            <label>Ciudad Origen</label>
+            <label>Puerto Embarque</label>
             <select
                class="form-control"
                id="ciudad_origen"
                name="ciudad_origen"
+               required = "required"
                >
                <option value="{{order.ciudad_origen}}">{{order.ciudad_origen}}</option>
             </select>
@@ -56,6 +59,7 @@
          <select
             class="form-control"
             name ="incoterm"
+            required = "required"
             id ="incoterm"
             >
             <option>{{order.incoterm}}<option>
@@ -103,6 +107,7 @@
             step="1" 
             name="dias_libres"
               value="{{order.dias_libres}}" 
+              required = "required"
             >
          </div>
       </div>

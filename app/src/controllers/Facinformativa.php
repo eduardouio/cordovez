@@ -333,23 +333,14 @@ class Facinformativa extends MY_Controller
      */
     private function orderHaveEuros($nroOrder)
     {
-        $invoicesOrder = $this->modelOrder->getInvoices($nroOrder);
+        $order = $this->modelOrder->get($nroOrder);
+        $haveEuros = $this->modelOrderInvoice->haveEuros($nroOrder);
         
-        if($invoicesOrder == false){
-            $this->modelLog->errorLog(
-                                    "Pedido $nroOrder sin informativa " ,
-                                    $this->db->last_query()
-                                    );
-            return false;
-        }
-        
-        foreach ($invoicesOrder as $key => $value) {
-            if ($value['moneda'] != 'DOLARES') {
-                return ([
-                    'euros' => true,
-                    'tipo_cambio' => $value['tipo_cambio']
-                ]);
-            }
+        if($haveEuros){
+            return ([
+                'euros' => true,
+                'tipo_cambio' => $order['tipo_cambio_almaceneraR70'],
+            ]);
         }
         return false;
     }

@@ -79,7 +79,7 @@
 </div>
 <div class="row">
 <div class="col-md-5">
-<ol class="breadcrumb" style="color: #999;">
+<ol class="breadcrumb" style="color: #111;">
   <li class="{{ ubicacion.buque }}"> <span class="fa fa-ship"></span> Buque</a></li>
   <li class="{{ ubicacion.puerto }}"> <span class="fa fa-simplybuilt"></span> Puerto</li>
   {% if order.regimen == 70 %}
@@ -94,20 +94,20 @@
 	{% if (order.bg_haveExpenses == 0) %}
 	<a
 			href="{{rute_url}}gstinicial/validargi/{{order.nro_pedido}}">
-			<button type="button" class="btn btn-primary btn-sm">
+			<button type="button" class="btn btn-default btn-sm">
 				<span class="fa fa-gear"></span> Gastos Iniciales
 			</button>
 		</a>
 		
 		<a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}"
 			class="text-primary">
-			<button class="btn btn-primary btn-sm">
+			<button class="btn btn-default btn-sm">
 				<span class="fa fa-pencil fa-fw"></span>Editar
 			</button>
 		</a>  
 		<a
 			href="{{rute_url}}pedidofactura/nuevo/{{ order.nro_pedido }}">
-			<button class="btn btn-primary btn-sm">
+			<button class="btn btn-default btn-sm">
 				<span class="fa fa-plus"></span> Agregar Productos
 			</button>
 		</a>
@@ -115,14 +115,14 @@
 		
 		<a
 			href="{{rute_url}}facturapagos/nuevo/{{order.nro_pedido}}">
-			<button class="btn btn-primary btn-sm">
+			<button class="btn btn-default btn-sm">
 				<span class="fa fa-file-o"></span> Justificar Gasto
 			</button>
 		</a>
 		{% endif %}
 		 <a
 			href="http://localhost/cordovezapp/app/index.php/report/nuevo">
-			<button class="btn btn-sm btn-primary">
+			<button class="btn btn-sm btn-default">
 				<span class="fa fa-file-pdf-o"></span> Informe General
 			</button>
 		</a>

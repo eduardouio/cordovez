@@ -21,20 +21,32 @@ class Modelorder extends CI_Model
     private $modelProduct;
     private $modelLog;
     
+    
+    /**
+     * contructor de la clase
+     */
     public function __construct()
     {
         parent::__construct();
+        $this->init();
+    }
+    
+    
+    /**
+     * Inicia los modelos de la clase
+     */
+    public function init()
+    {
         $this->load->model('modelbase');
         $this->load->model('modelexpenses');
         $this->load->model('modelproduct');
         $this->load->model('modellog');
         $this->modelBase = new Modelbase();
         $this->modelExpenses = new Modelexpenses();
-        $this->modelProduct = new Modelproduct(); 
+        $this->modelProduct = new Modelproduct();
         $this->modelLog = new Modellog();
     }
-
-
+    
     /**
      * Obtiene todas las ordenes, solo mas ordenes 
      * @return array | bool

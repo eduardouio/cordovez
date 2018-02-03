@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
  * Controller encargado de manejar los gastos iniciales
- * 
+ *
  * @package CordovezApp
  * @author Eduardo Villota <eduardouio7@gmail.com>
  * @copyright Copyright (c) 2014, Agencias y Representaciones Cordovez S.A.
@@ -18,11 +18,13 @@ class Gstinicial extends MY_Controller
     private $controller = "gastos_nacionalizacion";
     private $template = '/pages/pageGastoInicial.html';
     private $securePercent = 0.0018;
+    private $labelCost = 0.13;
     private $isdPer = 0.05;
     private $modelBase;
     private $modelOrder;
     private $ModelOrderInvoiceDetail;
     private $modelSupplier;
+    private $modelOrderInvoice;
     private $modelExpenses;
     private $myModel;
     private $modelIncoterms;
@@ -53,7 +55,9 @@ class Gstinicial extends MY_Controller
         $this->load->model('modelproduct');
         $this->load->model('modeluser');
         $this->load->model('modellog');
+        $this->load->model('Modelorderinvoice');
         $this->load->model('Modelorderinvoicedetail');
+        $this->modelOrderInvoice= new Modelorderinvoice();
         $this->modelOrder = new Modelorder();
         $this->modelSupplier = new Modelsupplier();
         $this->modelBase = new ModelBase();
@@ -138,7 +142,7 @@ class Gstinicial extends MY_Controller
 
     /**
      * Presenta el formulario con los datos del gasto inicial
-     * 
+     *
      * @param int $idInitExpense
      * @return void | string
      */
@@ -259,7 +263,6 @@ class Gstinicial extends MY_Controller
             $this->redirectPage('ordersList');
             return true;
         }
-        
         $rateExpenses = $this->modelExpenses->getAllRates($order['regimen']);
         $invoicesOrder = $this->modelOrder->getInvoices($nroOrder);
         $initExpenses = $this->modelExpenses->getInitialExpenses($nroOrder);
@@ -277,7 +280,8 @@ class Gstinicial extends MY_Controller
             'order' => $order,
             'minimal' => $minimal,
             'user' => $this->modeluser->get($order['id_user']),
-            'isOk' => searchOrderCeroValues($minimal)
+            'isOk' => searchOrderCeroValues($minimal),
+            'haveEuros' => $this->modelOrderInvoice->haveEuros($nroOrder),
         ]));
     }
 
@@ -323,7 +327,6 @@ class Gstinicial extends MY_Controller
         return ($this->redirectPage('presentOrder', $nroOrder));
     }
 
-
     /**
      * Reemplaza los incoterms cuando un pedido se edita
      * por el momento siempre los cambia
@@ -350,12 +353,11 @@ class Gstinicial extends MY_Controller
         }
         $this->putIncoterms($nroOrder);
     }
-    
 
     /**
      * Inicia el asistente para establecer las provisiones de bodega inicial
      * y las provisiones de demoraje
-     * 
+     *
      * @param string $nroOrder
      */
     public function validarbodegainicial(string $nroOrder = '')
@@ -430,6 +432,7 @@ class Gstinicial extends MY_Controller
             return ($this->redirectPage('ordersList'));
         }
         $initExpensesInput = $this->input->post();
+        
         $initExpensesRates = [];
         
         foreach ($initExpensesInput as $key => $value) {
@@ -464,13 +467,17 @@ class Gstinicial extends MY_Controller
                 $insertExpense['valor_provisionado'] = $valuesOrder['isd'];
             } elseif ($value['concepto'] == 'SEGURO') {
                 $insertExpense['valor_provisionado'] = $valuesOrder['seguro'];
+            } elseif ($value['concepto'] == 'ETIQUETAS FISCALES') {
+                $insertExpense['valor_provisionado'] = $valuesOrder['etiquetas_fiscales'];
+            } elseif ($value['concepto'] == 'TASA DE SERVICIO ADUANERO') {
+                $insertExpense['valor_provisionado'] = $valuesOrder['tasa_de_servicio_aduanero'];
             }
             
             if ($this->db->insert($this->controller, $insertExpense)) {
+                
                 $this->modelLog->susessLog('Gasto Inicial Insertado, ' . current_url());
             } else {
-                $this->modelLog->warningLog('No se puede Aplicar Gasto Inicial' . current_url());
-                $this->modelLog->errorLog($this->db->last_query());
+                $this->modelLog->errorLog('No se puede Aplicar Gasto Inicial', $this->db->last_query());
             }
         }
         $this->redirectPage('validargi', $initExpensesInput['nro_pedido']);
@@ -481,13 +488,10 @@ class Gstinicial extends MY_Controller
      * comprueba que el detalle de las facturas sea igual al que se encuentra
      * registrado en el pedido
      *
-     * @param
-     *            $order
-     * @param
-     *            @invoicesOrder
-     * @param
-     *            $initExpenses
-     *            
+     * @param array $order
+     * @param array $invoicesOrder
+     * @param array $initExpenses
+     *
      * @return array
      */
     private function calcValuesOrderItems($order, $invoicesOrder, $initExpenses)
@@ -549,16 +553,16 @@ class Gstinicial extends MY_Controller
         }
         
         $valLabels = 0.0;
-        $initialStockProducts = $this->ModelOrderInvoiceDetail->getActiveStokProductsByOrder($order['nro_pedido']);        
+        $initialStockProducts = $this->ModelOrderInvoiceDetail->getActiveStokProductsByOrder($order['nro_pedido']);
         if ($initialStockProducts != false) {
             foreach ($initialStockProducts as $item => $product) {
-                $valLabels += ((0.13) * ($product['nro_cajas'] * $product['cantidad_x_caja']));
+                $valLabels += (($this->labelCost) * ($product['nro_cajas'] * $product['cantidad_x_caja']));
                 $tasaServicio = (((intval($product['capacidad_ml']) / 2000) * 0.10) * ($product['nro_cajas'] * $product['cantidad_x_caja']));
-                if($tasaServicio < 700){
+                if ($tasaServicio < 700) {
                     $valuesOrder['tasa_de_servicio_aduanero'] += $tasaServicio;
-                }else{
+                } else {
                     $valuesOrder['tasa_de_servicio_aduanero'] += 700;
-                    }
+                }
             }
         }
         
@@ -636,20 +640,6 @@ class Gstinicial extends MY_Controller
             'fecha' => 10
         );
         return $this->_checkColumnsData($columnsLen, $data);
-    }
-    
-    /**
-     * Calcula el valor de las etiquetas fiscales
-     * @param string $nroOrder => 
-     * @return float => valor de todas las etiquetas
-     */
-    private function calcLabelsCost(string $nroOrder):float
-    {
-        $unities = $this->ModelOrderInvoiceDetail->getActiveStokProductsByOrder($nroOrder);
-        print '<pre>';
-        print_r($unities);
-        print '</pre>';
-        exit();
     }
 
     /*

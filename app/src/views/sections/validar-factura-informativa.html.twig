@@ -1,192 +1,192 @@
 {% set fobParcial = 0.0 %}
 {% set fleteParcial = 0.0 %}
 {% set seguroParcial = 0.0 %}
-
 {% for infoInvoice in infoInvoices %}
-   {% set fobParcial = fobParcial +  infoInvoice.valor  %}
-   {% set fleteParcial = fleteParcial + infoInvoice.flete_aduana  %}
-   {% set seguroParcial = seguroParcial + infoInvoice.seguro_aduana  %}   
+{% set fobParcial = fobParcial +  infoInvoice.valor  %}
+{% set fleteParcial = fleteParcial + infoInvoice.flete_aduana  %}
+{% set seguroParcial = seguroParcial + infoInvoice.seguro_aduana  %}   
 {% endfor %}
-
-
 <div class="well well-sm">
-   <div class="row">
-      <div class="col-sm-3">
-         <strong>Valor FOB:</strong> 
-         <span class="text-primary">
-         $ {{fobParcial | number_format(2, '.', ',') }}      
-         </span>  
-      </div>
-      <div class="col-sm-2">
-         <strong>
-         Seguro:</strong> 
-         <span class="text-primary">
-         {{ seguroParcial | number_format(2, '.', ',')}}
-         </span>
-      </div>
-      <div class="col-sm-2">
-         <strong>
-         Felete:</strong> 
-         <span class="text-primary">
-         <span>
-         {{ fleteParcial| number_format(2, '.', ',') }}
-         </span>
-         </span>
-      </div>
-      <div class="col-sm-2">
-        <strong>CIF:</strong>
-        <strong class="text-primary">{{ (fobParcial + fleteParcial + seguroParcial) | number_format(2, '.', ',') }}</strong>
-      </div>
-      <div class="col-sm-3">
-         <strong>
-         Fecha Registro:</strong> 
-         <span class="text-primary">
-          {% if parcial.date_create != null %}
-              {{ parcial.date_create | date('d/m/Y H:m')}}            
-          {% endif %}
-         </span>
-      </div>
-   </div>
-   <div class="row">
-      <div class="col-sm-3">
-         <strong>Tiempo en Almacenera:</strong> 
-         <span>{{ warenHouseDays | number_format(0)}}</span>
-      </div>
-      <div class="col-sm-2">
-         <strong>P. Origen:</strong> 
-         <span class="text-primary">
-         {{ order.pais_origen }}
-         </span>
-      </div>
-      <div class="col-sm-2">
-         <strong>C Origen:</strong> 
-         <span class="text-primary">
-         {{ order.ciudad_origen  }}            
-         </span>
-      </div>
-      <div class="col-sm-2">
-         <strong>Incoterm:</strong> 
-         <span class="text-primary">
-         {{ order.incoterm }}
-         </span>         
-      </div>
-      <div class="col-sm-3">
-         <strong>Creado Por:</strong> 
-         {{ user.nombres }}
-      </div>
-   </div>
+  <div class="row">
+    <div class="col-sm-3">
+      <strong>Valor FOB:</strong> 
+      <span class="text-primary">
+      $ {{fobParcial | number_format(2, '.', ',') }}      
+      </span>  
+    </div>
+    <div class="col-sm-2">
+      <strong>
+      Seguro:</strong> 
+      <span class="text-primary">
+      {{ seguroParcial | number_format(2, '.', ',')}}
+      </span>
+    </div>
+    <div class="col-sm-2">
+      <strong>
+      Felete:</strong> 
+      <span class="text-primary">
+      <span>
+      {{ fleteParcial| number_format(2, '.', ',') }}
+      </span>
+      </span>
+    </div>
+    <div class="col-sm-2">
+      <strong>CIF:</strong>
+      <strong class="text-primary">{{ (fobParcial + fleteParcial + seguroParcial) | number_format(2, '.', ',') }}</strong>
+    </div>
+    <div class="col-sm-3">
+      <strong>
+      Fecha Registro:</strong> 
+      <span class="text-primary">
+      {% if parcial.date_create != null %}
+      {{ parcial.date_create | date('d/m/Y H:m')}}            
+      {% endif %}
+      </span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-3">
+      <strong>Tiempo en Almacenera:</strong> 
+      <span>{{ warenHouseDays | number_format(0)}}</span>
+    </div>
+    <div class="col-sm-2">
+      <strong>P. Origen:</strong> 
+      <span class="text-primary">
+      {{ order.pais_origen }}
+      </span>
+    </div>
+    <div class="col-sm-2">
+      <strong>C Origen:</strong> 
+      <span class="text-primary">
+      {{ order.ciudad_origen  }}            
+      </span>
+    </div>
+    <div class="col-sm-2">
+      <strong>Incoterm:</strong> 
+      <span class="text-primary">
+      {{ order.incoterm }}
+      </span>         
+    </div>
+    <div class="col-sm-3">
+      <strong>Creado Por:</strong> 
+      {{ user.nombres }}
+    </div>
+  </div>
 </div>
 <div id="detalles">
-   <div class="row">
-      <div class="col-sm-7 div-bordered">
-               <table  class="table table-hover table-condensed table-striped">
-         <thead>
-            <tr style="background-color: #333; color: #fff;">
-               <div class="text-tittle">
-                  RESUMEN DE ESTADO GASTOS NACIONALIZACIÓN PARCIAL {{ parcial.id_parcial }} DEL PEDIDO     [{{order.nro_pedido}}]
-               </div>
-            </tr>
-         </thead>
-         <tbody>
-            <tr style="background-color: #fff;">
-               <th class="text-center">CONCEPTO</th>
-               <th class="text-center">F. Inicio</th>
-               <th class="text-center">F. Fin</th>
-               <th class="text-center">VALOR</th>
-               <th class="text-center">ESTADO</th>
-            </tr>            
-            {% set isOk = true %}
-            {% set sumExpenses = 0 %}
-            {% for expense in expenses  %}
-            {% set sumExpenses = sumExpenses + expense.valor_provisionado %}
-            <tr>
-               <td>{{expense.concepto }}</td>
-               <td>{{ expense.fecha }}</td>
-               {% if ((expense.fecha_fin == null) or (expense.fecha_fin == '0000-00-00')) %}
-               <td class="text-center"> --- </td>
-               {% else %}
-                  <td>{{ expense.fecha_fin | date('d/m/Y') }}</td>
-               {% endif %}
-               <td class="text-right">{{expense.valor_provisionado}}</td>
-                  {% if expense.valor_provisionado > 0 %}
-                     <td class="success pull-rigth" style=" width: 1px; white-space: nowrap;">
-                     OK <a href="{{rute_url}}gstnacionalizacion/editar/{{expense.id_gastos_nacionalizacion}}">
-                     <span class="fa fa-pencil"></span>
-                     </a>
-                     <a href="{{rute_url}}gstnacionalizacion/eliminar/{{expense.id_gastos_nacionalizacion}}" class="text-danger">
-                     <span class="fa fa-trash"></span>
-                     </a>
-                     </td>
-                  {% else %}
-                  {% set isOk = false %}
-                     <td class="danger" style=" width: 1px; white-space: nowrap;">
-                        <a href="{{rute_url}}gstnacionalizacion/editar/{{expense.id_gastos_nacionalizacion}}">
-                     Registrar                           
-                        </a>
-                        <a href="{{rute_url}}gstnacionalizacion/eliminar/{{expense.id_gastos_nacionalizacion}}" class="text-danger">
-                     <span class="fa fa-trash"></span> 
-                     </a>
-                  </td>
-                  {% endif %}
-            </tr>
-            {% endfor %}
-          <tr style="background-color: #c1c1c1;">
-          <td colspan="3" class="text-right" style="background-color: #fff;"> <strong>SUMAS:</strong>
-          <td class="text-right">
-          	<strong>
-          	{{ sumExpenses | number_format(3,',','.')}}
-          	</strong>
-          </td>
-          <td class="text-center">
-          	---
-          </td>
+  <div class="row">
+    <div class="col-sm-7 div-bordered">
+      <table  class="table table-hover table-condensed table-striped">
+        <thead>
+          <tr style="background-color: #333; color: #fff;">
+            <div class="text-tittle">
+              RESUMEN DE ESTADO GASTOS NACIONALIZACIÓN PARCIAL {{ parcial.id_parcial }} DEL PEDIDO     [{{order.nro_pedido}}]
+            </div>
           </tr>
-         </tbody>
+        </thead>
+        <tbody>
+          <tr style="background-color: #fff;">
+            <th class="text-center">CONCEPTO</th>
+            <th class="text-center">F. Inicio</th>
+            <th class="text-center">F. Fin</th>
+            <th class="text-center">VALOR</th>
+            <th class="text-center">ESTADO</th>
+          </tr>
+          {% set isOk = true %}
+          {% set sumExpenses = 0 %}
+          {% for expense in expenses  %}
+          {% set sumExpenses = sumExpenses + expense.valor_provisionado %}
+          <tr>
+            <td>{{expense.concepto }}</td>
+            <td>{{ expense.fecha | date('d/m/Y')}}</td>
+            {% if ((expense.fecha_fin == null) or (expense.fecha_fin == '0000-00-00')) %}
+            <td class="text-center"> --- </td>
+            {% else %}
+            <td>{{ expense.fecha_fin | date('d/m/Y') }}</td>
+            {% endif %}
+            <td class="text-right">{{expense.valor_provisionado}}</td>
+            {% if expense.valor_provisionado > 0 %}
+            <td class="success pull-rigth" style=" width: 1px; white-space: nowrap;">
+              OK <a href="{{rute_url}}gstnacionalizacion/editar/{{expense.id_gastos_nacionalizacion}}">
+              <span class="fa fa-pencil"></span>
+              </a>
+              <a href="{{rute_url}}gstnacionalizacion/eliminar/{{expense.id_gastos_nacionalizacion}}" class="text-danger">
+              <span class="fa fa-trash"></span>
+              </a>
+            </td>
+            {% else %}
+            {% set isOk = false %}
+            <td class="danger" style=" width: 1px; white-space: nowrap;">
+              <a href="{{rute_url}}gstnacionalizacion/editar/{{expense.id_gastos_nacionalizacion}}">
+              Registrar                           
+              </a>
+              <a href="{{rute_url}}gstnacionalizacion/eliminar/{{expense.id_gastos_nacionalizacion}}" class="text-danger">
+              <span class="fa fa-trash"></span> 
+              </a>
+            </td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+          <tr style="background-color: #c1c1c1;">
+            <td colspan="3" class="text-right" style="background-color: #fff;"> <strong>SUMAS:</strong>
+            <td class="text-right">
+              <strong>
+              {{ sumExpenses | number_format(3,',','.')}}
+              </strong>
+            </td>
+            <td class="text-center">
+              ---
+            </td>
+          </tr>
+        </tbody>
       </table>
-         {% include 'sections/subsections/table-infoinvoice-info.html.twig' %}   
-         <br><br><br><br><p>
-         <a href="{{rute_url}}parcial/presentar/{{parcial.id_parcial}}" class="btn btn-default btn-sm">
-         <span class="fa fa-arrow-left fa-fw"></span>
-         Volver Al Parcial [{{parcial.id_parcial}}]
-         </a>
-         &nbsp;&nbsp;&nbsp;&nbsp;
-         {% if isOk == true %}
-
-           <button data-toggle="modal" data-target="#myModal" class="btn btn-primary btn-sm pull-right">
-      <span class="fa fa-gears"></span>
-      Generar Impuestos Parcial [{{parcial.id_parcial}}]
-      </button>
-         {% endif %}
+      {% include 'sections/subsections/table-infoinvoice-info.html.twig' %}   
+      <br><br><br><br>
+      <p>
+        <a href="{{rute_url}}parcial/presentar/{{parcial.id_parcial}}" class="btn btn-default btn-sm">
+        <span class="fa fa-arrow-left fa-fw"></span>
+        Volver Al Parcial [{{parcial.id_parcial}}]
+        </a>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        {% if isOk == true %}
+        <button data-toggle="modal" data-target="#myModal" class="btn btn-default btn-sm pull-right">
+        <span class="fa fa-gears"></span>
+        Generar Impuestos Parcial [{{parcial.id_parcial}}]
+        </button>
+        {% endif %}
       </p>
-      </div>
-      <div class="col-sm-5 div-bordered">
-         {% include 'sections/subsections/table-rates-partial.html.twig' %}            
-      </div>
-   </div>  
+    </div>
+    <div class="col-sm-5 div-bordered">
+      {% include 'sections/subsections/table-rates-partial.html.twig' %}            
+    </div>
+  </div>
 </div>
-
-
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel"><span class="fa fa-warning"></span> Advertencia... ¿Desea Continuar?</h4>
+<div class="modal-dialog" role="document">
+<div class="modal-content">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="myModalLabel"><span class="fa fa-warning"></span> Advertencia... ¿Desea Continuar?</h4>
+  </div>
+  <div class="modal-body">
+    <div style="font-size: 14px; text-align: justify;">
+      <p>
+        Esta acción cerrará los gastos iniciales, <strong>No va a ser posible generar más provisiones iniciales </strong>,
+        solo se prodrá justificarlas. 
+      <hr>
+      <p>
+        Lista de Gastos Iniciales no provisionados:
+        {% include 'sections/subsections/table-rates-partial.html.twig' %}            
+      </p>
+      <hr>
+      Cualquier justificación que no tenga provisión quedará como gasto no provisionado.
+      </p>
+      <div class="row">
+        <form action="{{rute_url}}parcial/prepareRates/" method="post">
+        <button class="btn btn-sm btn-default"><span class="fa fa-save"></span> Registrar y Continuar</button>
+        <a href="#" data-dismiss="modal" class="btn btn-sm btn-default">Cerrar</a>
+        </form>
       </div>
-      <div class="modal-body">
-        <div style="font-size: 14px; text-align: justify;">
-          <p>
-            Esta acción cerrará los gastos iniciales, <strong>No va a ser posible generar más provisiones iniciales </strong>,
-            solo se prodrá justificarlas. 
-          <hr>
-          <p>
-            Lista de Gastos Iniciales no provisionados:
-            {% include 'sections/subsections/table-rates-partial.html.twig' %}            
-          </p>
-          <hr>
-          Cualquier justificación que no tenga provisión quedará como gasto no provisionado.
-          </p>
-      <button class="btn btn-sm btn-primary"><span class="fa fa-save"></span> Registrar y Continuar</button>
     </div>
   </div>
 </div>

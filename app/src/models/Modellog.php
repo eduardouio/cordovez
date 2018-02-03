@@ -11,7 +11,7 @@
  * @filesource
  */
 class Modellog extends CI_Model{
-    private $path = '/var/www/html/src/logs/app.log';
+    private $path = '/var/www/html/cordovezapp/app/src/logs/app.log';
     private $modelUser;
     private $user;
 

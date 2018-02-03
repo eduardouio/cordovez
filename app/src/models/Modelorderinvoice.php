@@ -6,19 +6,27 @@ class Modelorderinvoice extends CI_Model
     private $modelLog;
     private $modelOrder;
 
+    /**
+     * contrctor de la clase
+     */
     public function __construct()
     {
         parent::__construct();
+        $this->init();
+    }
+    
+    
+    /**
+     * Carga los modelos de la clase
+     */
+    private function init(){
         $this->load->model('modelbase');
         $this->load->model('modellog');
         $this->load->model('modelorder');
         $this->modelBase = new ModelBase();
         $this->modelLog = new Modellog();
         $this->modelOrder = new Modelorder();
-        
     }
-    
-    
  
     
     /**
@@ -177,9 +185,31 @@ class Modelorderinvoice extends CI_Model
         if($this->db->insert($this->table, $invoiceOrder)){
             return $this->db->insert_id();
         }
+        $this->modelLog->errorLog(
+            'No se puede crear un registro',
+            $this->db->last_query()
+            );
         return false;
     }
     
+    
+    
+    /**
+     * Verifica si en las facturas de un pedido existe alguna con euros
+     * @param string $nroOrder
+     * @return bool
+     */
+    public function haveEuros(string $nroOrder):bool
+    {
+        $orderInvoices = $this->getbyOrder($nroOrder);
+        
+        foreach ($orderInvoices as $item => $invoice){
+            if($invoice['moneda'] == 'EUROS'){
+                return true;
+            }
+        }
+        return false;
+    }
     
     /**
      * Actualiza una factura de producto
@@ -192,6 +222,10 @@ class Modelorderinvoice extends CI_Model
         if($this->db->update($this->table, $invoiceOrder)){
             return true;
         }
+        $this->modelLog->errorLog(
+            'No se puede actualizar el registro factura de producto',
+            $this->db->last_query()
+            );
         return false;
     }
     
@@ -206,6 +240,10 @@ class Modelorderinvoice extends CI_Model
         if($this->db->delete($this->table)){
             return true;
         }
+        $this->modelLog->errorLog(
+            'No se puede eliminar el registro',
+            $this->db->last_query()
+            );
         return false;
     }
     

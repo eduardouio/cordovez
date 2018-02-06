@@ -77,24 +77,16 @@
       {% endfor %}
     </div>
   </div>
-    <div class="row">
-    <div class="col-md-4">
-      <a
-        href="{{rute_url}}facinformativa/presentar/{{infoInvoice.id_factura_informativa}}"
-        class="btn btn-sm btn-default"> <span class="fa fa-cubes"></span>
-      Volver a Factura Informativa [{{order.nro_pedido}}]
-      </a>
-    </div>
-    <div class="col-md-5">&nbsp;</div>
+<div class="row">
+<div class="col-md-9"></div>
     <div class="col-md-3 text-right">
             <button type="submit" class="btn btn-sm btn-default">
       <span class="fa fa-plus"></span> Agregar Seleccionados
       </button>
     </div>
-  </div>
-  <div class="row">
-    <br>
-  </div>
+
+</div>
+<br>
   <div class="row">
     <div class="col-md-6">&nbsp;</div>
     <div class="col-md-2 text-right">
@@ -120,6 +112,15 @@
       </div>
     </div>
   </div>
+      <div class="row">
+    <div class="col-md-4">
+      <a
+        href="{{rute_url}}facinformativa/presentar/{{infoInvoice.id_factura_informativa}}"
+        class="btn btn-sm btn-default"> <span class="fa fa-cubes"></span>
+      Volver a Factura Informativa [{{order.nro_pedido}}]
+      </a>
+    </div>
+  </div>
 </form>
 <script type="text/javascript">
   function calDiferencia(){	
@@ -128,7 +129,7 @@
   	$('#valor_diferencia').val(b-a);
   
   	if((b-a) > b){
-  		alert('VALOR DE LA FACTURA EXCEDIDO');
+  		alert('El valor de la factura ha sido excedido');
   	}
   }
 
@@ -190,7 +191,7 @@
   });
  
   	$('#nro_cajas_{{product.detalle_pedido_factura}}').change(function(){
-  		
+  	  	
   		if( this.value < 0){
   			alert('INGRESE UN VALOR MAYOR A CERO')
   			this.value = 0;	

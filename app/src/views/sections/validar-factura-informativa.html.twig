@@ -171,20 +171,46 @@
   <div class="modal-body">
     <div style="font-size: 14px; text-align: justify;">
       <p>
-        Esta acción cerrará los gastos iniciales, <strong>No va a ser posible generar más provisiones iniciales </strong>,
+        Esta acción cerrará los gastos iniciales, 
+        <strong>No va a ser posible generar más provisiones iniciales </strong>,
         solo se prodrá justificarlas. 
       <hr>
-      <p>
         Lista de Gastos Iniciales no provisionados:
+        <div class="table-responsive" style="height: 250px;">
         {% include 'sections/subsections/table-rates-partial.html.twig' %}            
+        </div>
       </p>
-      <hr>
-      Cualquier justificación que no tenga provisión quedará como gasto no provisionado.
-      </p>
-      <div class="row">
-        <form action="{{rute_url}}parcial/prepareRates/" method="post">
-        <button class="btn btn-sm btn-default"><span class="fa fa-save"></span> Registrar y Continuar</button>
-        <a href="#" data-dismiss="modal" class="btn btn-sm btn-default">Cerrar</a>
+      <div class="row">      
+          <div class="col-md-8">
+      <h5>Confirme el tipo de cambio para el cálculo de impuestos</h5>
+        <form action="{{rute_url}}facinformativa/updateExchangeRate/" method="post">
+            <input type="hidden" name="id_parcial" value="{{ parcial.id_parcial }}">
+            <div class="form-group">
+              <label>Tipo de Cambio</label>
+              <input 
+              type="number" 
+              name="tipo_cambio"
+              step="0.000001" 
+              value="{{ infoInvoices.0.tipo_cambio }}" 
+              required=""
+              class="form-control" 
+              >            
+            </div>
+      </div>
+      <div class="col-md-4">      
+      <br>
+      <br>
+      <br>
+        <button class="btn btn-sm btn-default"><span class="fa fa-save"></span> 
+        Registrar y Continuar
+        </button>
+      </div>
+          </div>
+          <div class="modal-footer">
+        <a href="#" data-dismiss="modal" class="btn btn-sm btn-default">
+        <span class="fa fa-ban"></span>
+        Cancelar & Cerrar
+        </a>
         </form>
       </div>
     </div>

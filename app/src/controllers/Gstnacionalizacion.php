@@ -398,64 +398,7 @@ class Gstnacionalizacion extends MY_Controller
         ]));
     }
 
-    /**
-     * Calcula lis impuestos para un pedido y una factura informativa
-     *
-     * @param string $tipo
-     *            => PD => Pedido | FI => Factura Informativa
-     * @param string $id
-     *            => nro_pedido | id_factura_informativa
-     */
-    public function impuestosFI(string $idInfoInvoice)
-    {
-        $infoInvoice = $this->modelInfoInvoice->get($idInfoInvoice);
-        if ($infoInvoice == false) {
-            return ($this->index());
-        }
-        
-        $h = $this->initialCIFOrderVal($infoInvoice['nro_pedido']);
-        $k = $this->currentCIFOrderVal($infoInvoice['nro_pedido']);
-        
-        $valuesPartial = [
-            'flete_parcial' => $infoInvoice['flete_aduana'],
-            'seguro_parcial' => $infoInvoice['seguro_aduana'],
-            'fob' => ($infoInvoice['valor'] * $infoInvoice['tipo_cambio'])
-        ];
-        
-        $infoInvoice['detail'] = $this->modelInfoInvoiceDetail->
-                                            getByFacInformative($idInfoInvoice);
-        
-        foreach ($infoInvoice['detail'] as $item => $detail) {
-            
-            $orderDetail = $this->modelOrderInvoiceDetail->
-                                         get($detail['detalle_pedido_factura']);
-            
-            $detail['product'] = $this->modelProduct->get(
-                                                  $orderDetail['cod_contable']
-                                                         );
-            
-            $detail['unidades'] = (
-                    $detail['nro_cajas'] * $detail['product']['cantidad_x_caja']
-                                  );
-            
-            
-            $detail['costo_caja'] = $orderDetail['costo_caja'];
-            $detail['fob_item'] = (
-                               $detail['nro_cajas'] * $orderDetail['costo_caja']
-                                    );
-            
-            $detail['fob_parcial'] = (
-                                    $detail['fob_item'] / $valuesPartial['fob']
-                                     );
-            
-            $infoInvoice['detail'][$item] = $detail;
-        }
-        
-        print '<pre>';
-        print_r($infoInvoice);
-        print '</pre>';
-    }
-    
+   
 
     /**
      * Elimina un gasto de nacionalizacion
@@ -491,10 +434,18 @@ class Gstnacionalizacion extends MY_Controller
         
         $expense = $_POST;
         $expense['fecha'] = date('Y-m-d', strtotime($expense['fecha']));
-        //$expense['fecha_fin'] = date('Y-m-d', strtotime($expense['fecha_fin']));
+        if($expense['fecha_fin'] == ''){
+            $expense['fecha_fin'] = date(
+                                       'Y-m-d', strtotime($expense['fecha_fin'])
+                                        );
+        }else{
+            $expense['fecha_fin'] = null;
+        }
         $expense['id_user'] = $this->session->userdata('id_user');
         $expense['tipo'] = 'NACIONALIZACION';
-        $expense['valor_provisionado'] = floatval($expense['valor_provisionado']);
+        $expense['valor_provisionado'] = floatval(
+                                                 $expense['valor_provisionado']
+                                                );
         $expense['last_update'] = date('Y-m-d H:m:s');
         if ($this->modelExpenses->update($expense)) {
             return ($this->redirectPage('validar70', $expense['id_parcial']));
@@ -576,6 +527,7 @@ class Gstnacionalizacion extends MY_Controller
                 );
     }
 
+    
     /*
      * Envia la respuestas html al navegador
      * @param array $config Arreglo con info de la plantilla

@@ -34,22 +34,16 @@
       <div class="col-md-3">
         <div class="form-group">
           <label>Fecha Arribo Puerto</label>
-            <div class="input-group">
             <input 
                type="text" 
-               class="form-control fecha" 
+               class="form-control" 
                id="fecha_arribo" 
-               required="" 
-               readonly="" 
                name="fecha_arribo" 
+               readonly
                {% if fecha_arribo != null %}
-                  value="{{ fecha_arribo | date('d/m/Y') }}" 
+                  value="{{ fecha_arribo | date('d/m/Y') | raw }}"
                {% endif %}
                >
-            <div class="input-group-addon">
-               <span class="glyphicon glyphicon-th"></span>
-            </div>
-         </div>
         </div>
       </div>
       <div class="col-md-3">
@@ -152,6 +146,10 @@
   
    //Calcula la diferencia de fechas en dias
    function calcDiffDays( dateStart, dateEnd){
+	  dateStart = dateStart.split('/');
+	  dateEnd = dateEnd.split('/');
+	  dateStart = dateStart[1] + '/' + dateStart[0] + '/' + dateStart[2];
+	  dateEnd = dateEnd[1] + '/' + dateEnd[0] + '/' + dateEnd[2];
       var dateStart =  new Date(dateStart);
       var dateEnd = new Date(dateEnd);
       var timeDiff = Math.abs(dateEnd.getTime() - dateStart.getTime());

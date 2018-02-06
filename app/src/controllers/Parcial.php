@@ -162,8 +162,7 @@ class Parcial extends MY_Controller
         $this->modelLog->warningLog('No se puede crear un parcial mientras uno esté activo' . current_url() );
         return ($this->redirectPage('presentOrder', $nroOrder));        
     }
-    
-    
+        
     
     /**
      * Elimina un parcial vacio
@@ -216,7 +215,7 @@ class Parcial extends MY_Controller
         return 0;
     }
     
-
+    
     /*
      * Redenderiza la informacion y la envia al navegador
      * @param array $config informacion de la plantilla

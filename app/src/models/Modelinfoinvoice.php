@@ -161,7 +161,10 @@ class Modelinfoinvoice extends CI_Model
         if($this->db->update($this->table, $infoInvoice)){
             return true;
         }
-        $this->modelLog->errorLog('Modelinfoinvoice,update,No se puede actualizar');
+        $this->modelLog->errorLog(
+                        'No es posible actualizar la factura informativa',
+                        $this->db->last_query()
+                        );
         return false;
     }
     

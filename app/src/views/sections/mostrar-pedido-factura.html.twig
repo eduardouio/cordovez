@@ -8,9 +8,9 @@
     {% set unidades = 0 %}
     {% for detail in invoiceDetail %} 
     {% set unidades = unidades + detail.nro_cajas %}
-    {% set suma = (suma +  (detail.total_item * invoice.tipo_cambio) ) %}
+    {% set suma = (suma +  (detail.total_item) ) %}
     {% endfor %}
-    {% set diferencia =  ((invoice.valor * invoice.tipo_cambio) - suma) | number_format(2) %}
+    {% set diferencia =  ((invoice.valor) - suma) | number_format(2) %}
     {% set nro_cajas = 0 %}
   
 <h4 class="text-info">{{ supplier[0].nombre }}

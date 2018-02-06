@@ -89,8 +89,8 @@
                class="form-control fecha" 
                id="fecha_arribo" 
                name="fecha_arribo" 
-               {% if fecha_arribo != null%}
-                  value="{{order.fecha_arribo | date('d/m/Y')}}" 
+               {% if order.fecha_arribo != null%}
+                  value="{{ order.fecha_arribo | date('d/m/Y') | raw}}" 
                {% endif %}
                >
                 <div class="input-group-addon">

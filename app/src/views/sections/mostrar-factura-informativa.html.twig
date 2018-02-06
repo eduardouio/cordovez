@@ -2,7 +2,8 @@
 {%  for detail in infoInvoice.details %}
 	{% set valor_justificado = valor_justificado + ((detail.oderDetail.costo_caja)*(detail.nro_cajas)) %}
 {% endfor %}
-{% set saldoFactura = (valor_justificado - infoInvoice.valor)  %}
+
+{% set saldoFactura = (infoInvoice.valor - valor_justificado)  %}
 {% set moneda = '&euro;' %}
 {% if infoInvoice.moneda == 'DOLARES' %}
 {% set moneda = '$' %}

@@ -70,8 +70,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | The $query_builder variables lets you determine whether or not to load
 | the query builder class.
 */
-$active_group = 'pruebas';
-#$active_group = 'demo2';
+#$active_group = 'pruebas';
+$active_group = 'korora';
 #$active_group = 'produccion';
 $query_builder = TRUE;
 $db['pruebas'] = array(
@@ -118,12 +118,12 @@ $db['produccion'] = array(
         'save_queries' => TRUE
 );
 
-$db['demo2'] = array(
+$db['korora'] = array(
     'dsn'	=> '',
     'hostname' => 'localhost',
-    'username' => 'appCordovez',
-    'password' => '\DBGfW<7;vBa5(LB',
-    'database' => 'demo2',
+    'username' => 'root',
+    'password' => 'BU}cw@7>Nu4KjG{<',
+    'database' => 'cordovezApp',
     'dbdriver' => 'mysqli',
     'dbprefix' => '',
     'pconnect' => FALSE,

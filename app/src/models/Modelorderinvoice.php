@@ -203,11 +203,17 @@ class Modelorderinvoice extends CI_Model
     {
         $orderInvoices = $this->getbyOrder($nroOrder);
         
-        foreach ($orderInvoices as $item => $invoice){
-            if($invoice['moneda'] == 'EUROS'){
-                return true;
+        if (is_array($orderInvoices)){
+            foreach ($orderInvoices as $item => $invoice){
+                if($invoice['moneda'] == 'EUROS'){
+                    return true;
+                }
             }
         }
+        $this->modelLog->generalLog(
+                'Pedido sin Facturas en modeda extrangera',
+                $nroOrder
+                                    );
         return false;
     }
     

@@ -1,7 +1,7 @@
 <div class="text-tittle">Detalle de Facturas Informativas Del Parcial</div>
 <br>
 <small class="text-primary">
-FACTURAS EN DÓLARES
+FACTURAS INFORMATIVAS
 </small>
       <table class="table table-condensed table-hover table-striped">
          <thead>
@@ -10,9 +10,10 @@ FACTURAS EN DÓLARES
                <th>Factura Informativa</th>
                <th>Almacenera</th>
                <th>F Emisión</th>
+               <th>Moneda</th>
                <th>FOB</th>
-               <th>FLETE</th>
-               <th>SEGURO</th>
+               <th>Flete</th>
+               <th>Seguro</th>
                <th>Cajas</th>
                <th>Unidades</th>
             </tr>
@@ -44,6 +45,7 @@ FACTURAS EN DÓLARES
                      {{ infoInvoice.fecha_emision | date('d/m/Y') }}
                   {% endif %}
             </td>
+            <td>{{ infoInvoice.moneda }}	</td>
                <td>{{ infoInvoice.valor }}</td>
                <td>{{ infoInvoice.flete_aduana }}</td>
                <td>{{ infoInvoice.seguro_aduana }}</td>

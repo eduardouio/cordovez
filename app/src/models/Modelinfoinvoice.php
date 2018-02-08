@@ -76,7 +76,10 @@ class Modelinfoinvoice extends CI_Model
         if((gettype($invoices) == 'array') && (count($invoices) > 0)){
             return $invoices;
         }
-        $this->modelLog->warningLog('Parcial Sin facturas informativas', $this->db->last_query());
+        $this->modelLog->warningLog(
+                                    'Parcial Sin facturas informativas', 
+                                    $this->db->last_query()
+                                 );
         return false;
     }
     

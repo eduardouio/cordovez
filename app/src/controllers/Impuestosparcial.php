@@ -13,7 +13,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @filesource
  */
 
-class Impuestos extends MY_Controller
+class Impuestosparcial extends MY_Controller
 {
     private $controller = "impuestos";
     private $template = '/pages/pageImpuestos.html';
@@ -64,7 +64,7 @@ class Impuestos extends MY_Controller
         $this->modelSupplier = new Modelsupplier();
         $this->modelOrderInvoice = new Modelorderinvoice();
         $this->modelParcial = new Modelparcial();
-        $this->modelExpense = new Modelexpenses();
+        $this->modelExpenses = new Modelexpenses();
         $this->modelProduct = new Modelproduct();
         $this->modelUser = new Modeluser();
         $this->modelLog = new Modellog();
@@ -98,39 +98,28 @@ class Impuestos extends MY_Controller
      */
     public function validarParcial(int $idParcial)
     {
-        $parcial = $this->modelParcial->get($idParcial);
-        
-        if($parcial == false){
-            $this->modelLog->errorLog(
-                'El parcial no existe, ingreso directo por URL',
-                current_url()
-                );
-            return $this->index();
-        }
-        
+        $parcial = $this->modelParcial->get($idParcial);        
         $infoInvoices =  $this->modelInfoInvoice->getByParcial($idParcial);
         $order = $this->modelOrder->get($parcial['nro_pedido']);
         
-        if($infoInvoices == false){
-            $this->modelLog->errorLog(
-                'Parcial sin facturas informativas',
-                current_url()
-                );
+        if($parcial == false){
+            $this->modelLog->errorLog('No Existe El parcial para nacionalizar');
+            return $this->index();
         }
+        $params = $this->getParamsParcial($parcial, $order);
+        $params['etiquetas_fiscales'] = 0.0;
         
         foreach ($infoInvoices as $index => $invoice){
-            $invoice['products'] = 
-                             $this->modelInfoInvoiceDetail->getCompleteDetail(
-                                              $invoice['id_factura_informativa']
-                                                                              );
-           
+            $invoice['products'] = $this->modelInfoInvoiceDetail->
+                           getCompleteDetail($invoice['id_factura_informativa']);
+            
+            foreach ($invoice['products'] as $item => $row){
+                $params['etiquetas_fiscales'] += (0.13  * $row['nro_cajas'] * $row['cantidad_x_caja'] );                   
+            }
+            
             $infoInvoices[$index] = $invoice;
         }
-            $orderInvoices = $this->modelOrderInvoice->getbyOrder(
-                                                         $parcial['nro_pedido']
-                                                                );
-            $orderInvoices = $orderInvoices[0];
-            
+        
         
         return( $this->responseHttp([
             'titleContent' => 'Previsualizacion de Impuestos Pedido [' . 
@@ -138,48 +127,71 @@ class Impuestos extends MY_Controller
                                 $parcial['id_parcial'] . ']' ,
             'infoInvoices' => $infoInvoices,
             'order' => $order,
-            'orderInvoice' => $orderInvoices,
-            'originExpenses' => $this->modelInitExpenses->getOriginExpenses(
-                                                                        $order
-                                                                            ),
+            'parcial' => $parcial,
             'numberInfoInvoices' => count($infoInvoices),
-            'originExpenses' => $this->modelInitExpenses->getAll($order),
-            'flete' => '12',
+            'params' => $params,
             
-                        
         ]));
         
         
+    }
+        
+    
+    /**
+     * Retorna los parametros de nacionalizacion de un parcial
+     * @param array $order
+     * @param array $parcial 
+     * @return array $params [
+     *                          incoterm => float, 
+     *                          seguro => float, 
+     *                          flete => float, 
+     *                          moneda => float, 
+     *                          tipo_cambio => float, 
+     *                          ]
+     */
+    private function getParamsParcial(array $parcial, array $order):array
+    {
+        $orderInvoice = $this->modelOrderInvoice->getbyOrder(
+            $parcial['nro_pedido']
+            );
+        
+        $expenses = $this->getTotalExpense($parcial['id_parcial']);
+        
+        return([   
+            'incoterm' => $order['incoterm'],
+            'seguro_aduana' => floatval($expenses['seguro_aduana']),
+            'fob' => floatval($expenses['fob']),
+            'flete_aduana' => floatval($expenses['flete_aduana']),
+            'moneda' => $orderInvoice[0]['moneda'],
+            'tipo_cambio' => floatval($parcial['tipo_cambio']),
+        ]);
     }
     
     
     
     /**
-     * Genera los impuestos para un pedido en general
-     * @param string $nroOrder
+     * Retrona la suma para un gasto de nacionalizacion compartidos en el 
+     * parcial 
+     * @param int $idparcial identificador del parcial al que pertenece
+     * @return array $expenses [seuro, flete]
      */
-    public function validateOrder(string $nroOrder)
+    private function getTotalExpense( int $idparcial): array
     {
-        $order = $this->modelOrder->get($nroOrder);
+        $infoInvoices = $this->modelInfoInvoice->getByParcial($idparcial);
         
-        if($order == false){
-            $this->modelLog->errorLog(
-                'El pedido no existe, ingreso directo por URL',
-                current_url()
-                );
-            return $this->index();
+        $expenses = [
+            'seguro_aduana' => 0.0,
+            'flete_aduana' => 0.0,
+            'fob' => 0.0,
+        ];
+        
+        foreach ($infoInvoices as $item => $invoice){
+          $expenses['seguro_aduana'] += $invoice['seguro_aduana'];  
+          $expenses['flete_aduana'] += $invoice['flete_aduana'];
+          $expenses['fob'] += $invoice['valor'];
         }
         
-        $orderInvoices = $this->modelOrderInvoice->getbyOrder($nroOrder);
-        
-        if($orderInvoices == false){
-            $this->modelLog->errorLog(
-                'Parcial sin facturas de producto',
-                current_url()
-                );
-        }
-        
-        
+        return $expenses;
     }
     
     /*

@@ -1,8 +1,8 @@
-<div class="container">
-   <div class="row">
-      <div class="col-md-4">
-         <div class="text-tittle">Gastos compatidos por el parcial </div>
-         <table class="table">
+</pre>
+<div class="row">
+   <div class="col-md-4">
+        <div class="text-tittle">Gastos compatidos por el parcial </div>
+         <table class="table table-condensed table-bordered table-hover">
             <thead>
                <tr>
                   <th>Concepto</th>
@@ -12,45 +12,45 @@
             <tbody>
                <tr>
                   <td class="text-right brackground-gray"><strong>Nro Facturas Infomativas</strong></td>
-                  <td class="text-right">{{ numberInfoInvoices }}</td>
+                  <td class="text-right">{{ numberInfoInvoices | number_format(0,',','.') }}</td>
                </tr>
                <tr>
                   <td class="text-right brackground-gray"><strong>Moneda</strong></td>
-                  <td class="text-right">{{ orderInvoice.moneda }}</td>
+                  <td class="text-right">{{ params.moneda }}</td>
                </tr>
                <tr>
                   <td class="text-right brackground-gray"><strong>Tipo de Cambio</strong></td>
-                  <td class="text-right">{{ order.tipo_cambio_almaceneraR70 }}</td>
+                  <td class="text-right">{{ params.tipo_cambio | number_format(6,',','.') }}</td>
                </tr>
                <tr>
                   <td class="text-right brackground-gray"><strong>Etiquetas Fiscales</strong></td>
-                  <td class="text-right">1</td>
-               </tr>
-               <tr>
-                  <td class="text-right brackground-gray"><strong>Gastos en Origen</strong></td>
-                  <td class="text-right">{{ originExpenses | number_format(2,',','.') }}</td>
+                  <td class="text-right">{{ params.etiquetas_fiscales | number_format(2,',','.') }}</td>
                </tr>
                <tr>
                   <td class="text-right brackground-gray"><strong>FOB</strong></td>
-                  <td class="text-right">3918.21</td>
+                  <td class="text-right">{{ params.fob | number_format(2,',','.') }}</td>
                </tr>
                <tr>
                   <td class="text-right brackground-gray"><strong>Flete</strong></td>
-                  <td class="text-right">2143121</td>
+                  <td class="text-right">{{ params.flete_aduana | number_format(2,',','.') }}</td>
                </tr>
                <tr>
                   <td class="text-right brackground-gray"><strong>Seguro</strong></td>
-                  <td class="text-right">12321</td>
+                  <td class="text-right">{{ params.seguro_aduana | number_format(2,',','.') }}</td>
                </tr>
             </tbody>
          </table>
-      </div>
-      <form>
-         <div class="col-md-8">
-            <div class="row">
-               <div class="col-md-1"></div>
-               <div class="col-md-3">
-                  <h4 class="text-primary">Pedido <strong>091/17</strong></h4>
+   </div>
+   <div class="col-md-8">
+   	<div class="text-tittle">
+   		Parámetros de Calculo Impuestos
+   	</div>
+   	<br>
+   	<br>
+   	<form action="{{rute_url}}impuestos/actualizarParametros" method="post">
+      <div class="row">
+          <div class="col-md-3">
+                  <h4 class="text-primary">&nbsp;&nbsp;&nbsp;&nbsp;Pedido <strong>091/17</strong></h4>
                </div>
                <div class="col-md-3">
                   <div class="form-group">
@@ -60,8 +60,8 @@
                         name="moneda" 
                         value="EUROS"
                         class="form-control" 
-                        value="{{ orderInvoice.moneda }}" 
-                        required="" 
+                        value="{{ params.moneda }}" 
+                        required=""
                         disabled="" 
                         >
                   </div>
@@ -75,11 +75,11 @@
                         class="form-control" 
                         step="0.0000001"
                         required="" 
-                        value="{{ parcial.tipo_cambio }}" 
+                        value="{{ params.tipo_cambio }}" 
                         >
                   </div>
                </div>
-               <div class="col-md-2">
+               <div class="col-md-3">
                   <br>
                   <div class="form-group">
                      <button class="btn btn-sm btn-default" type="submit" value="span">
@@ -87,34 +87,21 @@
                      </button> 
                   </div>
                </div>
-            </div>
-            <div class="row">
-               <div class="col-md-4"></div>
-               <div class="col-md-3">
-                  <div class="form-group">
-                     <label>Seguro</label>
-                     <input 
-                        type="number" 
-                        name="seguro_aduana" 
-                        value="{{ seguro_aduana | number_format(2,',','.')}}" 
-                        class="form-control" 
-                        required=""
-                        >
-                  </div>
-               </div>
-               <div class="col-md-3">
-                  <div class="form-group">
-                     <label>Flete</label>
-                     <input 
-                        type="number" 
-                        name="flete" 
-                        value="{{ flete | number_format(2,',','.') }}" 
-                        class="form-control" 
-                        required="">
-                  </div>
-               </div>
-            </div>
-            <div class="row">
+      </div>  
+      <div class="row">
+ 			<div class="col-md-3"></div>
+ 			<div class="col-md-6">
+ 				<div class="form-gruop">
+ 				<label class="control control-checkbox">
+ 					Tomar en cuenta Etiquetas
+               <input type="checkbox" name="bg_have_etiquetas_fisclaes" checked="true">
+                  <div class="control_indicator"></div>
+               </label>
+ 				</div>
+ 			</div>
+      </div>
+      <br>
+                  <div class="row">
                <div class="col-md-1"></div>
                <div class="col-md-10">
                   <div class="row well well-sm">
@@ -124,13 +111,14 @@
                      <div class="col-md-3">Pais: <strong>{{ order.pais_origen }}</strong> </div>
                   </div>
                </div>
-            </div>
-         </div>
-      </form>
+                  <div class="col-md-1"></div>
+            </div> 
+        </form>
    </div>
+</div>
    <div class="row">
-      <div class="table-responsive">
-         <div class="text-tittle">Resumen  </div>
+      <div class="col-md-12">
+      <div class="table-responsive">         
          <table class="table table-condensed table-bordered table-hover table-striped">
             <tr>
                <th>#</th>
@@ -170,9 +158,19 @@
                <td>{{ product.nro_cajas * product.cantidad_x_caja }}</td>
                <td>{{ product.costo_caja | number_format(2,',','.')}}</td>
                <td>{{ (product.costo_caja * product.nro_cajas) | number_format(2,',','.') }}</td>
+            </tr>
                {% endfor %}
                {% endfor %}
          </table>
       </div>
    </div>
-</div>
+   </div>
+<br>
+   <div class="row">
+      <div class="col-md-6"></div>
+      <dic class="col-md-6 text-right">
+         <a href="#" class="btn btn-sm btn-default"> <span class="fa fa-check"></span> Aplicar Y Cerrar</a>
+         <a href="#" class="btn btn-sm btn-default"> <span class="fa fa-file-pdf-o"></span> Liquidacion PDF</a>
+         <a href="{{rute_url}}parcial/presentar/{{parcial.id_parcial}}" class="btn btn-sm btn-default"> <span class="fa fa-arrow-left"></span> Volver A Parcial</a>
+      </dic>
+   </div>

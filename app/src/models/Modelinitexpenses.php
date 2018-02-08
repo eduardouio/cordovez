@@ -27,8 +27,7 @@ class Modelinitexpenses extends CI_Model
         $this->modelLog = new Modellog();
     }
     
-    
-    
+            
     /**
      * Recupera todos los gastos iniciales de un pedido
      * @param string $nroOrder

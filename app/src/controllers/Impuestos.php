@@ -28,6 +28,7 @@ class Impuestos extends MY_Controller
     private $modelLog;
     private $modelInfoInvoice;
     private $modelInfoInvoiceDetail;
+    private $modelInitExpenses;
     
     
     /**
@@ -48,7 +49,7 @@ class Impuestos extends MY_Controller
         $this->load->model('Modelorder');
         $this->load->model('Modelorderinvoicedetail');
         $this->load->model('Modelsupplier');
-        $this->load->model('parcial');
+        $this->load->model('Modelparcial');
         $this->load->model('Modelorderinvoice');
         $this->load->model('Modelexpenses');
         $this->load->model('Modelproduct');
@@ -56,6 +57,8 @@ class Impuestos extends MY_Controller
         $this->load->model('Modellog');
         $this->load->model('Modelinfoinvoice');
         $this->load->model('Modelinfoinvoicedetail');
+        $this->load->model('Modelinitexpenses');
+        $this->modelInitExpenses = new Modelinitexpenses();
         $this->modelOrder = new Modelorder();
         $this->ModelOrderInvoiceDetail = new Modelorderinvoicedetail();
         $this->modelSupplier = new Modelsupplier();
@@ -93,7 +96,7 @@ class Impuestos extends MY_Controller
      * @param int $idParcial
      * @retunr arrat template
      */
-    public function validateParcial(int $idParcial)
+    public function validarParcial(int $idParcial)
     {
         $parcial = $this->modelParcial->get($idParcial);
         
@@ -106,6 +109,7 @@ class Impuestos extends MY_Controller
         }
         
         $infoInvoices =  $this->modelInfoInvoice->getByParcial($idParcial);
+        $order = $this->modelOrder->get($parcial['nro_pedido']);
         
         if($infoInvoices == false){
             $this->modelLog->errorLog(
@@ -113,6 +117,38 @@ class Impuestos extends MY_Controller
                 current_url()
                 );
         }
+        
+        foreach ($infoInvoices as $index => $invoice){
+            $invoice['products'] = 
+                             $this->modelInfoInvoiceDetail->getCompleteDetail(
+                                              $invoice['id_factura_informativa']
+                                                                              );
+           
+            $infoInvoices[$index] = $invoice;
+        }
+            $orderInvoices = $this->modelOrderInvoice->getbyOrder(
+                                                         $parcial['nro_pedido']
+                                                                );
+            $orderInvoices = $orderInvoices[0];
+            
+        
+        return( $this->responseHttp([
+            'titleContent' => 'Previsualizacion de Impuestos Pedido [' . 
+                                $order['nro_pedido'] . '] Parcial [' . 
+                                $parcial['id_parcial'] . ']' ,
+            'infoInvoices' => $infoInvoices,
+            'order' => $order,
+            'orderInvoice' => $orderInvoices,
+            'originExpenses' => $this->modelInitExpenses->getOriginExpenses(
+                                                                        $order
+                                                                            ),
+            'numberInfoInvoices' => count($infoInvoices),
+            'originExpenses' => $this->modelInitExpenses->getAll($order),
+            'flete' => '12',
+            
+                        
+        ]));
+        
         
     }
     
@@ -145,6 +181,24 @@ class Impuestos extends MY_Controller
         
         
     }
+    
+    /*
+     * Redenderiza la informacion y la envia al navegador
+     * @param array $config informacion de la plantilla
+     */
+    private function responseHttp($config)
+    {
+        return(
+            $this->twig->display($this->template, array_merge($config,[
+                'title' => 'Impuestos',
+                'base_url' => base_url(),
+                'rute_url' => base_url() . 'index.php/',
+                'controller' => $this->controller,
+                'iconTitle' => 'fa-money',
+                'content' => 'home']))
+            );
+    }
+    
     
 }
 

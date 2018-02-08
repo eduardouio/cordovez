@@ -343,7 +343,7 @@ class Pedido extends MY_Controller
         if ($pedido['fecha_arribo'] == '') {
             unset($pedido['fecha_arribo']);
         } else {
-            $pedido['fecha_arribo'] = str_replace( '/', '-', $pedido['fecha_arribo']); 
+            $pedido['fecha_arribo'] = str_replace('/', '-', $pedido['fecha_arribo']); 
             $pedido['fecha_arribo'] = date('Y-m-d', strtotime($pedido['fecha_arribo']));
         }
         if (! isset($pedido['id_pedido'])) {

@@ -28,6 +28,11 @@
 	color: #444;
 }
 
+.title-impuestos{
+	background-color:#007bff!important;
+	color: #444;
+}
+
 .title-detalle_pedido_factura {
 	background-color: #0097a7 !important;
 	color: #fff;
@@ -402,4 +407,9 @@ th {
 .btn-black:hover {
 	background-color: #666;
 	color:#fff;
+}
+
+
+.brackground-gray{
+	background-color: #eee;
 }

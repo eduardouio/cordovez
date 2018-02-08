@@ -1,0 +1,178 @@
+<div class="container">
+   <div class="row">
+      <div class="col-md-4">
+         <div class="text-tittle">Gastos compatidos por el parcial </div>
+         <table class="table">
+            <thead>
+               <tr>
+                  <th>Concepto</th>
+                  <th>Valor</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td class="text-right brackground-gray"><strong>Nro Facturas Infomativas</strong></td>
+                  <td class="text-right">{{ numberInfoInvoices }}</td>
+               </tr>
+               <tr>
+                  <td class="text-right brackground-gray"><strong>Moneda</strong></td>
+                  <td class="text-right">{{ orderInvoice.moneda }}</td>
+               </tr>
+               <tr>
+                  <td class="text-right brackground-gray"><strong>Tipo de Cambio</strong></td>
+                  <td class="text-right">{{ order.tipo_cambio_almaceneraR70 }}</td>
+               </tr>
+               <tr>
+                  <td class="text-right brackground-gray"><strong>Etiquetas Fiscales</strong></td>
+                  <td class="text-right">1</td>
+               </tr>
+               <tr>
+                  <td class="text-right brackground-gray"><strong>Gastos en Origen</strong></td>
+                  <td class="text-right">{{ originExpenses | number_format(2,',','.') }}</td>
+               </tr>
+               <tr>
+                  <td class="text-right brackground-gray"><strong>FOB</strong></td>
+                  <td class="text-right">3918.21</td>
+               </tr>
+               <tr>
+                  <td class="text-right brackground-gray"><strong>Flete</strong></td>
+                  <td class="text-right">2143121</td>
+               </tr>
+               <tr>
+                  <td class="text-right brackground-gray"><strong>Seguro</strong></td>
+                  <td class="text-right">12321</td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+      <form>
+         <div class="col-md-8">
+            <div class="row">
+               <div class="col-md-1"></div>
+               <div class="col-md-3">
+                  <h4 class="text-primary">Pedido <strong>091/17</strong></h4>
+               </div>
+               <div class="col-md-3">
+                  <div class="form-group">
+                     <label>Moneda</label>
+                     <input 
+                        type="text" 
+                        name="moneda" 
+                        value="EUROS"
+                        class="form-control" 
+                        value="{{ orderInvoice.moneda }}" 
+                        required="" 
+                        disabled="" 
+                        >
+                  </div>
+               </div>
+               <div class="col-md-3">
+                  <div class="form-group">
+                     <label>Tipo de Cambio</label>
+                     <input 
+                        type="number" 
+                        name="tipo_cambio"
+                        class="form-control" 
+                        step="0.0000001"
+                        required="" 
+                        value="{{ parcial.tipo_cambio }}" 
+                        >
+                  </div>
+               </div>
+               <div class="col-md-2">
+                  <br>
+                  <div class="form-group">
+                     <button class="btn btn-sm btn-default" type="submit" value="span">
+                     <span class="fa fa-refresh"></span> Actualizar
+                     </button> 
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-md-4"></div>
+               <div class="col-md-3">
+                  <div class="form-group">
+                     <label>Seguro</label>
+                     <input 
+                        type="number" 
+                        name="seguro_aduana" 
+                        value="{{ seguro_aduana | number_format(2,',','.')}}" 
+                        class="form-control" 
+                        required=""
+                        >
+                  </div>
+               </div>
+               <div class="col-md-3">
+                  <div class="form-group">
+                     <label>Flete</label>
+                     <input 
+                        type="number" 
+                        name="flete" 
+                        value="{{ flete | number_format(2,',','.') }}" 
+                        class="form-control" 
+                        required="">
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-md-1"></div>
+               <div class="col-md-10">
+                  <div class="row well well-sm">
+                     <div class="col-md-2">Regimen: <strong>{{ order.regimen }}</strong></div>
+                     <div class="col-md-3">Incoterm: <strong>{{ order.incoterm }}</strong></div>
+                     <div class="col-md-3">Puerto: <strong>{{ order.ciudad_origen }}</strong></div>
+                     <div class="col-md-3">Pais: <strong>{{ order.pais_origen }}</strong> </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </form>
+   </div>
+   <div class="row">
+      <div class="table-responsive">
+         <div class="text-tittle">Resumen  </div>
+         <table class="table table-condensed table-bordered table-hover table-striped">
+            <tr>
+               <th>#</th>
+               <th>Producto</th>
+               <th>Cajas</th>
+               <th>Unds</th>
+               <th>Costo Caja </th>
+               <th>FOB </th>
+               <th>Seguro</th>
+               <th>Flete</th>
+               <th>CIF</th>
+               <th>Fodinfa</th>
+               <th>CIF + Fodinfa</th>
+               <th>Arancel Advaloren</th>
+               <th>Arancel Especifico</th>
+               <th>Etiquetas Fiscales</th>
+               <th>Ex aduana unitario</th>
+               <th>Base advaloren legal</th>
+               <th>Presentacion</th>
+               <th>% Alcoholico</th>
+               <th>Arancel especifico unitario</th>
+               <th>Arancel advalores</th>
+               <th>ICE unitario</th>
+               <th>total ICE</th>
+               <th>prorrateo del costo indirectos</th>
+               <th>costo total de importacion</th>
+               <th>costo unitario botella</th>
+               <th>indirectos para precio entrega</th>
+               <th>costo unitario por caja</th>
+            </tr>
+            {% for infoInvoice in infoInvoices  %}
+            {% for product in infoInvoice.products %}
+            <tr>
+               <td> {{ loop.index }}</td>
+               <td nowrap=""> {{ product.nombre }} </td>
+               <td>{{ product.nro_cajas }}</td>
+               <td>{{ product.nro_cajas * product.cantidad_x_caja }}</td>
+               <td>{{ product.costo_caja | number_format(2,',','.')}}</td>
+               <td>{{ (product.costo_caja * product.nro_cajas) | number_format(2,',','.') }}</td>
+               {% endfor %}
+               {% endfor %}
+         </table>
+      </div>
+   </div>
+</div>

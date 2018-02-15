@@ -1,1 +1,0 @@
-select * fron nacionalizacion_factura_informativa;

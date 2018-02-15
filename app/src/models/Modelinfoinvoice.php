@@ -173,6 +173,26 @@ class Modelinfoinvoice extends CI_Model
     
     
     /**
+     * Actualiza el tipo_cambio en todas las facturas del parcial
+     * @param array $paramsUpdate => [tipo_cambio, id_parcial]
+     * @return bool
+     */
+    public function updateMoney($paramsUpdate):bool
+    {
+        $this->db->where('id_parcial', $paramsUpdate['id_parcial']);
+        if($this->db->update($this->table, $paramsUpdate)){
+            $this->modelLog->susessLog('Se actualiza el registro!');
+            return true;
+        }
+        $this->modelLog->errorLog(
+            'No se puede actualizar las facturas informativas',
+            $this->db->last_query()
+            );
+        return false;
+    }
+    
+    
+    /**
      * Obtiene la cantidad de parciales para un pedido
      * @param string $nroOrder nro de pedido
      * @return int numero de parciales

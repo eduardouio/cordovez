@@ -120,6 +120,7 @@ class MY_Controller extends CI_Controller
             'presentInvoiceOrder' =>  'index.php/pedidofactura/presentar',
             'validar70' =>  'index.php/gstnacionalizacion/validar70',
             'newParcial' => 'index.php/parcial/nuevo',
+            'showTaxesParcial' => 'index.php/impuestosparcial/v',
             
         ];
         header('Status: 301 Moved Permanently', false, 301);

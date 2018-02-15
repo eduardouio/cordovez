@@ -42,6 +42,7 @@ class Modelrateexpenses extends CI_Model {
         return false;
 	}
 	
+	
 	/**
 	 * ontiene el regitro de uin gasto incial
 	 * @param int $idRateExpense identificador tabla
@@ -103,8 +104,8 @@ class Modelrateexpenses extends CI_Model {
     }
     
     /**
-     * retorna las taifas de gastos para los gastos de nacionalizacion de un parcial
-     * solo aplica para regimen 70
+     * retorna las taifas de gastos para los gastos de nacionalizacion 
+     * de un parcial solo aplica para regimen 70
      * @return array | boolean
      */
     public function getPartialRates()
@@ -122,4 +123,26 @@ class Modelrateexpenses extends CI_Model {
         }
         return false;
     }
+    
+    
+    /**
+     * recupera el costo de la etiquetas, registrado en la base de datos
+     */
+    public function getParcialRates()
+    {
+        
+        
+        $rates = [
+            'ETIQUETAS FISCALES' => 0.13,
+            'ADVALOREM' => 4.32,
+            'ICE ESPECIFICO' => 7.22,
+            'ICE' => 0.0,
+            'IVA' => 12.00,
+        ];
+        return ($rates);
+        
+    }
+    
+    
+    
 }

@@ -12,42 +12,67 @@
  * @filesource
  */
 class Report extends MY_Controller{
+    private $modelOrder;
+    private $modelProduct; 
+    private $modelSupplier;
+    private $modelParcial;
+    private $modelUser; 
+    private $modelExpenses;
+    private $modelInitExpenses;
+    private $modelPaids;
+    private $modelPaidDetail;
+    private $modelLog;
     
     function __construct(){
         parent::__construct();
+        $this->init();
+        
+    }
+    
+    /**
+     * Inicia los modelos de la clase
+     */
+    public function init(){
         $this->load->library('Pdf');
+
+        $this->load->model('Modelorder');
+        $this->load->model('Modelproduct');
+        $this->load->model('Modelsupplier');
+        $this->load->model('Modelparcial');
+        $this->load->model('Modeluser');
+        $this->load->model('Modelexpenses');
+        $this->load->model('Modelinitexpenses');
+        $this->load->model('Modelpaid');
+        $this->load->model('Modelpaiddetail');
+        $this->load->model('Modellog');
         
+
+        $this->modelOrder = new Modelorder();
+        $this->modelProduct = new Modelproduct();
+        $this->modelSupplier = new Modelsupplier();
+        $this->modelParcial = new Modelparcial();
+        $this->modelUser = new Modeluser();
+        $this->modelExpenses = new Modelexpenses();
+        $this->modelInitExpenses = new Modelinitexpenses();
+        $this->modelPaid = new Modelpaid();
+        $this->modelPaidDetail = new Modelpaiddetail();
+        $this->modelLog = new Modellog();
+        
+        return true;
     }
-    
-    public function index(){
-        $pdf = new Pdf('P', 'mm', 'A4', true, 'UTF-8', false);
-        $pdf->SetTitle('My Title');
-        $pdf->SetHeaderMargin(30);
-        $pdf->SetTopMargin(20);
-        $pdf->setFooterMargin(20);
-        $pdf->SetAutoPageBreak(true);
-        $pdf->SetAuthor('Cordovez');
-        $pdf->SetDisplayMode('real', 'default');
         
-        $pdf->AddPage();
-        
-        $pdf->Write(5, 'Some sample text');
-        $pdf->Output('My-File-Name.pdf', 'I');
-    }
-    
-    
     
     public function nuevo(){
         $pdf = new Pdf('P', 'mm', 'A4', true, 'UTF-8', false);
         // set document information
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor('Importadora Cordovez');
-        $pdf->SetTitle('Reporte General Del Pedido 111-12');
+        $pdf->SetTitle('Reporte General Del Pedido Cordovez');
         $pdf->SetSubject('Reporte General');
         $pdf->SetKeywords('Importaciones, PDF, pedidos');
         
         // set default header data
-        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 048', PDF_HEADER_STRING);
+        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, '/t Genial', PDF_HEADER_STRING);
         
         // set header and footer fonts
         $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
@@ -81,13 +106,13 @@ class Report extends MY_Controller{
         // add a page
         $pdf->AddPage();
         
-        $pdf->Write(0, 'Example of HTML tables', '', 0, 'L', true, 0, false, false, 0);
+        $pdf->Write(0, 'Lista de Productos', '', 0, 'L', true, 0, false, false, 0);
         
         $pdf->SetFont('helvetica', '', 8);
         
         // -----------------------------------------------------------------------------
         
-        $tbl = <<<EOD
+        $tbl = '
 <table cellspacing="0" cellpadding="1" border="1">
     <tr>
         <td rowspan="3">COL 1 - ROW 1<br />COLSPAN 3</td>
@@ -103,7 +128,7 @@ class Report extends MY_Controller{
     </tr>
     
 </table>
-EOD;
+';
         
         $pdf->writeHTML($tbl, true, false, false, false, '');
         

@@ -29,6 +29,8 @@ class Impuestosparcial extends MY_Controller
     private $modelInfoInvoice;
     private $modelInfoInvoiceDetail;
     private $modelInitExpenses;
+    private $modelRatesExpenses;
+    private $ratesValues;
     
     
     /**
@@ -58,6 +60,7 @@ class Impuestosparcial extends MY_Controller
         $this->load->model('Modelinfoinvoice');
         $this->load->model('Modelinfoinvoicedetail');
         $this->load->model('Modelinitexpenses');
+        $this->load->model('Modelrateexpenses');
         $this->modelInitExpenses = new Modelinitexpenses();
         $this->modelOrder = new Modelorder();
         $this->ModelOrderInvoiceDetail = new Modelorderinvoicedetail();
@@ -70,6 +73,8 @@ class Impuestosparcial extends MY_Controller
         $this->modelLog = new Modellog();
         $this->modelInfoInvoice = new Modelinfoinvoice();
         $this->modelInfoInvoiceDetail = new Modelinfoinvoicedetail();
+        $this->modelRatesExpenses = new Modelrateexpenses();
+        $this->ratesValues =  $this->modelRatesExpenses->getParcialRates();
         
     }
     
@@ -96,7 +101,7 @@ class Impuestosparcial extends MY_Controller
      * @param int $idParcial
      * @retunr arrat template
      */
-    public function validarParcial(int $idParcial)
+    public function v(int $idParcial)
     {
         $parcial = $this->modelParcial->get($idParcial);        
         $infoInvoices =  $this->modelInfoInvoice->getByParcial($idParcial);
@@ -106,22 +111,36 @@ class Impuestosparcial extends MY_Controller
             $this->modelLog->errorLog('No Existe El parcial para nacionalizar');
             return $this->index();
         }
+        
         $params = $this->getParamsParcial($parcial, $order);
         $params['etiquetas_fiscales'] = 0.0;
         
+        $moneyOrder = [
+            'moneda' => '',
+            'tipo_cambio' => 0.0,
+        ];
+        
         foreach ($infoInvoices as $index => $invoice){
+            if($index == 0){
+                $moneyOrder['moneda'] = $invoice['moneda'];
+                $moneyOrder['tipo_cambio'] = floatval($invoice['tipo_cambio']);
+            }
             $invoice['products'] = $this->modelInfoInvoiceDetail->
                            getCompleteDetail($invoice['id_factura_informativa']);
             
             foreach ($invoice['products'] as $item => $row){
-                $params['etiquetas_fiscales'] += (0.13  * $row['nro_cajas'] * $row['cantidad_x_caja'] );                   
+                $params['etiquetas_fiscales'] += 
+                            ($this->ratesValues['ETIQUETAS FISCALES']  * $row['nro_cajas'] * 
+                                                    $row['cantidad_x_caja']);                   
             }
             
             $infoInvoices[$index] = $invoice;
+            if($parcial['bg_have_etiquetas_fiscales'] == 0){
+                $params['etiquetas_fiscales'] = 0.0;
+            }
         }
         
-        
-        return( $this->responseHttp([
+       return( $this->responseHttp([
             'titleContent' => 'Previsualizacion de Impuestos Pedido [' . 
                                 $order['nro_pedido'] . '] Parcial [' . 
                                 $parcial['id_parcial'] . ']' ,
@@ -130,10 +149,51 @@ class Impuestosparcial extends MY_Controller
             'parcial' => $parcial,
             'numberInfoInvoices' => count($infoInvoices),
             'params' => $params,
-            
+            'moneyOrder' => $moneyOrder,
         ]));
+    }
+    
+    
+    
+    /**
+     * Actualiza los parametros de calculo de impuestos para el Parcial
+     * @param $tipo_cambio float 
+     * @param $etiquetas_fiscales boolean
+     * @return string redirect
+     */
+    public function actualizar()
+    {
+        $paramsInfoInvoice = [
+            'id_parcial' => $_POST['id_parcial'],
+            'tipo_cambio' => $_POST['tipo_cambio'],
+        ];
         
+        $paramsParcial = [
+            'id_parcial' => $_POST['id_parcial'],
+            'bg_have_etiquetas_fiscales' => 0,
+        ];
         
+        if(
+            isset($_POST['bg_have_etiquetas_fiscales']) && 
+                 $_POST['bg_have_etiquetas_fiscales'] == 'on'
+          ){
+          $paramsParcial['bg_have_etiquetas_fiscales'] = 1;  
+        }
+        
+        if (
+            $this->modelParcial->updateLabelsParcial($paramsParcial)
+            &&
+            $this->modelInfoInvoice->updateMoney($paramsInfoInvoice)
+            ){
+              $this->modelLog->susessLog(
+                                  'Parametros moneda y etiquetas modificadas');
+        }else{            
+            $this->modelLog->errorLog(
+            'Uno de los cambios no se realizo en el parcial o facturas informativas'
+                );
+        }
+        
+        return ($this->redirectPage('showTaxesParcial', $_POST['id_parcial']));
     }
         
     
@@ -145,54 +205,33 @@ class Impuestosparcial extends MY_Controller
      *                          incoterm => float, 
      *                          seguro => float, 
      *                          flete => float, 
-     *                          moneda => float, 
-     *                          tipo_cambio => float, 
-     *                          ]
+     *                          ];
      */
     private function getParamsParcial(array $parcial, array $order):array
     {
-        $orderInvoice = $this->modelOrderInvoice->getbyOrder(
-            $parcial['nro_pedido']
-            );
-        
-        $expenses = $this->getTotalExpense($parcial['id_parcial']);
-        
-        return([   
-            'incoterm' => $order['incoterm'],
-            'seguro_aduana' => floatval($expenses['seguro_aduana']),
-            'fob' => floatval($expenses['fob']),
-            'flete_aduana' => floatval($expenses['flete_aduana']),
-            'moneda' => $orderInvoice[0]['moneda'],
-            'tipo_cambio' => floatval($parcial['tipo_cambio']),
-        ]);
-    }
-    
-    
-    
-    /**
-     * Retrona la suma para un gasto de nacionalizacion compartidos en el 
-     * parcial 
-     * @param int $idparcial identificador del parcial al que pertenece
-     * @return array $expenses [seuro, flete]
-     */
-    private function getTotalExpense( int $idparcial): array
-    {
-        $infoInvoices = $this->modelInfoInvoice->getByParcial($idparcial);
+
+        $infoInvoices = $this->modelInfoInvoice->getByParcial(
+                                                        $parcial['id_parcial']
+                                                            );
         
         $expenses = [
+            'incoterm' => $order['incoterm'],
             'seguro_aduana' => 0.0,
             'flete_aduana' => 0.0,
             'fob' => 0.0,
         ];
         
         foreach ($infoInvoices as $item => $invoice){
-          $expenses['seguro_aduana'] += $invoice['seguro_aduana'];  
-          $expenses['flete_aduana'] += $invoice['flete_aduana'];
-          $expenses['fob'] += $invoice['valor'];
+            $expenses['seguro_aduana'] += $invoice['seguro_aduana'];
+            $expenses['flete_aduana'] += $invoice['flete_aduana'];
+            $expenses['fob'] += $invoice['valor'];
         }
         
         return $expenses;
+        
     }
+    
+   
     
     /*
      * Redenderiza la informacion y la envia al navegador

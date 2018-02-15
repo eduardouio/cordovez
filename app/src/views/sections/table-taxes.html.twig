@@ -1,4 +1,3 @@
-</pre>
 <div class="row">
    <div class="col-md-4">
         <div class="text-tittle">Gastos compatidos por el parcial </div>
@@ -16,11 +15,11 @@
                </tr>
                <tr>
                   <td class="text-right brackground-gray"><strong>Moneda</strong></td>
-                  <td class="text-right">{{ params.moneda }}</td>
+                  <td class="text-right">{{ moneyOrder.moneda }}</td>
                </tr>
                <tr>
                   <td class="text-right brackground-gray"><strong>Tipo de Cambio</strong></td>
-                  <td class="text-right">{{ params.tipo_cambio | number_format(6,',','.') }}</td>
+                  <td class="text-right">{{ moneyOrder.tipo_cambio | number_format(6,',','.') }}</td>
                </tr>
                <tr>
                   <td class="text-right brackground-gray"><strong>Etiquetas Fiscales</strong></td>
@@ -42,66 +41,10 @@
          </table>
    </div>
    <div class="col-md-8">
-   	<div class="text-tittle">
-   		Parámetros de Calculo Impuestos
-   	</div>
-   	<br>
-   	<br>
-   	<form action="{{rute_url}}impuestos/actualizarParametros" method="post">
-      <div class="row">
-          <div class="col-md-3">
-                  <h4 class="text-primary">&nbsp;&nbsp;&nbsp;&nbsp;Pedido <strong>091/17</strong></h4>
-               </div>
-               <div class="col-md-3">
-                  <div class="form-group">
-                     <label>Moneda</label>
-                     <input 
-                        type="text" 
-                        name="moneda" 
-                        value="EUROS"
-                        class="form-control" 
-                        value="{{ params.moneda }}" 
-                        required=""
-                        disabled="" 
-                        >
-                  </div>
-               </div>
-               <div class="col-md-3">
-                  <div class="form-group">
-                     <label>Tipo de Cambio</label>
-                     <input 
-                        type="number" 
-                        name="tipo_cambio"
-                        class="form-control" 
-                        step="0.0000001"
-                        required="" 
-                        value="{{ params.tipo_cambio }}" 
-                        >
-                  </div>
-               </div>
-               <div class="col-md-3">
-                  <br>
-                  <div class="form-group">
-                     <button class="btn btn-sm btn-default" type="submit" value="span">
-                     <span class="fa fa-refresh"></span> Actualizar
-                     </button> 
-                  </div>
-               </div>
-      </div>  
-      <div class="row">
- 			<div class="col-md-3"></div>
- 			<div class="col-md-6">
- 				<div class="form-gruop">
- 				<label class="control control-checkbox">
- 					Tomar en cuenta Etiquetas
-               <input type="checkbox" name="bg_have_etiquetas_fisclaes" checked="true">
-                  <div class="control_indicator"></div>
-               </label>
- 				</div>
- 			</div>
+      <div class="text-tittle">
+         Parámetros de Calculo Impuestos
       </div>
-      <br>
-                  <div class="row">
+                        <div class="row">
                <div class="col-md-1"></div>
                <div class="col-md-10">
                   <div class="row well well-sm">
@@ -113,6 +56,66 @@
                </div>
                   <div class="col-md-1"></div>
             </div> 
+   	<br>
+   	<br>
+   	<form action="{{rute_url}}impuestosparcial/actualizar" method="post">
+         <input type="hidden" name="id_parcial" value="{{ parcial.id_parcial }}">
+      <div class="row">
+          <div class="col-md-3">
+                  <h4 class="text-primary label-order" >Pedido <strong>{{parcial.nro_pedido}}</strong></h4>
+               </div>
+               <div class="col-md-3">
+                  <div class="form-group">
+                     <label>Moneda</label>
+                     <input 
+                        type="text" 
+                        name="moneda"
+                        value="{{ moneyOrder.moneda }}" 
+                        required=""
+                        disabled="" 
+                        >
+                  </div>
+               </div>
+               <div class="col-md-3">
+                  <div class="form-group">
+                     <label>Tipo de Cambio</label>
+                     <input 
+                        type="number" 
+                        name="tipo_cambio"
+                        step="0.0000001"
+                        required="" 
+                        value="{{ moneyOrder.tipo_cambio }}" 
+                        >
+                  </div>
+               </div>
+               <div class="col-md-3">
+                  <br>
+                  <div class="form-group">
+                     <button class="btn btn-sm btn-default" type="submit">
+                     <span class="fa fa-refresh"></span> Actualizar
+                     </button> 
+                  </div>
+               </div>
+      </div>  
+      <div class="row">
+ 			<div class="col-md-3"></div>
+ 			<div class="col-md-6">
+ 				<div class="form-gruop">
+ 				<label class="control control-checkbox">
+ 					Tomar en cuenta Etiquetas
+               <input 
+               type="checkbox" 
+               name="bg_have_etiquetas_fiscales" 
+               {% if parcial.bg_have_etiquetas_fiscales == 1 %}
+                  checked="true"
+               {% endif %}
+               >
+                  <div class="control_indicator"></div>
+               </label>
+ 				</div>
+ 			</div>
+      </div>
+      <br>
         </form>
    </div>
 </div>

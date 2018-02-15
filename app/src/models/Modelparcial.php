@@ -306,9 +306,35 @@ class Modelparcial extends CI_Model
         $this->db->where('id_parcial', $parcial['id_parcial']);
         
         if($this->db->update($this->table, $parcial)){
+            $this->modelLog->susessLog('Parcial actualizado correnctamente');
             return true;
         }
         
+        $this->modelLog->errorLog(
+            'No se puede actualizar el parcial',
+            $this->db->last_query()
+            );
+        
+        return false;
+    }
+    
+    /**
+     * Actualiza el status de las etiquetas en el parcial
+     * @param array $parcial
+     * @return bool
+     */
+    public function updateLabelsParcial(array $parcial):bool
+    {
+        $this->db->where('id_parcial', $parcial['id_parcial']);
+        if ($this->db->update($this->table, $parcial)){
+            $this->modelLog->susessLog('Etiquetas actualizadas en parcaial');
+            return true;
+        }
+        
+        $this->modelLog->errorLog(
+            'problema al actualizar registro', 
+            $this->db->last_query()
+            );
         return false;
     }
     
@@ -324,11 +350,13 @@ class Modelparcial extends CI_Model
         if($this->db->delete($this->table)){
             return true;
         }
-        $this->modelLog->warningLog('No se puede eliminar el parcial', $this->db->last_query());
+        $this->modelLog->warningLog(
+            'No se puede eliminar el parcial', 
+            $this->db->last_query()
+            );
         return false;
     }
-    
-    
+        
     
     
 }

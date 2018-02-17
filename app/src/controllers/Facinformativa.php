@@ -11,7 +11,7 @@
  * @since Version 1.0.0
  * @filesource
  */
-class Facinformativa extends MY_Controller
+class Facinformativa extends MY_Controller 
 {
     private $controller = "factura_informativa";
     private $template = '/pages/pageFactutaInformativa.html';

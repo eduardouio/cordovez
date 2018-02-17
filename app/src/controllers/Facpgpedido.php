@@ -1,5 +1,4 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
 /**
  * Valida los datos de las provisiones, ditribuyendo las facturas a los pedidos
  * y luego estos a los diferntes rubros:

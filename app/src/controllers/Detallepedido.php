@@ -13,7 +13,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @since    Version 1.0.0
  * @filesource
  */
-class Detallepedido extends MY_Controller {
+class Detallepedido extends MY_Controller 
+{
 	private $controller= "detalle_pedido_factura";
 	private $template = '/pages/pagePedidoFacturaDetalle.html';
 	private $modelSupplier;

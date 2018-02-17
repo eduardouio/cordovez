@@ -12,7 +12,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @since Version 1.0.0
  * @filesource
  */
-class Detallefacpago extends \MY_Controller
+class Detallefacpago extends MY_Controller
 {
     private $template = "/pages/pageFacturasDetalles.html";
     private $controller = 'detalle_documento_pago';

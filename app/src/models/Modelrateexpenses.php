@@ -112,6 +112,7 @@ class Modelrateexpenses extends CI_Model {
     {
         $rateExpenses = $this->modelBase->get_table([
             'table' => $this->table,
+            
             'where' => [
                 'tipo_gasto' => 'GASTO NACIONALIZACION',
             ],
@@ -131,12 +132,12 @@ class Modelrateexpenses extends CI_Model {
     public function getParcialRates()
     {
         
-        
         $rates = [
             'ETIQUETAS FISCALES' => 0.13,
-            'ADVALOREM' => 4.32,
+            'AD VALOREM' => 4.32,
             'ICE ESPECIFICO' => 7.22,
             'ICE' => 0.0,
+            'MULTAS' => 0.0,
             'IVA' => 12.00,
         ];
         return ($rates);
@@ -146,3 +147,4 @@ class Modelrateexpenses extends CI_Model {
     
     
 }
+

@@ -1,179 +1,236 @@
 <div class="row">
-   <div class="col-md-4">
+    <div class="col-md-4">
         <div class="text-tittle">Gastos compatidos por el parcial </div>
-         <table class="table table-condensed table-bordered table-hover">
+        <table class="table table-condensed table-bordered table-hover">
             <thead>
-               <tr>
-                  <th>Concepto</th>
-                  <th>Valor</th>
-               </tr>
+                <tr>
+                    <th>Concepto</th>
+                    <th>Valor</th>
+                </tr>
             </thead>
             <tbody>
-               <tr>
-                  <td class="text-right brackground-gray"><strong>Nro Facturas Infomativas</strong></td>
-                  <td class="text-right">{{ numberInfoInvoices | number_format(0,',','.') }}</td>
-               </tr>
-               <tr>
-                  <td class="text-right brackground-gray"><strong>Moneda</strong></td>
-                  <td class="text-right">{{ moneyOrder.moneda }}</td>
-               </tr>
-               <tr>
-                  <td class="text-right brackground-gray"><strong>Tipo de Cambio</strong></td>
-                  <td class="text-right">{{ moneyOrder.tipo_cambio | number_format(6,',','.') }}</td>
-               </tr>
-               <tr>
-                  <td class="text-right brackground-gray"><strong>Etiquetas Fiscales</strong></td>
-                  <td class="text-right">{{ params.etiquetas_fiscales | number_format(2,',','.') }}</td>
-               </tr>
-               <tr>
-                  <td class="text-right brackground-gray"><strong>FOB</strong></td>
-                  <td class="text-right">{{ params.fob | number_format(2,',','.') }}</td>
-               </tr>
-               <tr>
-                  <td class="text-right brackground-gray"><strong>Flete</strong></td>
-                  <td class="text-right">{{ params.flete_aduana | number_format(2,',','.') }}</td>
-               </tr>
-               <tr>
-                  <td class="text-right brackground-gray"><strong>Seguro</strong></td>
-                  <td class="text-right">{{ params.seguro_aduana | number_format(2,',','.') }}</td>
-               </tr>
+                <tr>
+                    <td class="text-right brackground-gray"><strong>Nro Facturas Infomativas</strong></td>
+                    <td class="text-right">{{ numberInfoInvoices | number_format(0,',','.') }}</td>
+                </tr>
+                <tr>
+                    <td class="text-right brackground-gray"><strong>Moneda</strong></td>
+                    <td class="text-right">{{ moneyOrder.moneda }}</td>
+                </tr>
+                <tr>
+                    <td class="text-right brackground-gray"><strong>Tipo de Cambio</strong></td>
+                    <td class="text-right">{{ moneyOrder.tipo_cambio | number_format(6,',','.') }}</td>
+                </tr>
+                <tr>
+                    <td class="text-right brackground-gray"><strong>FOB</strong></td>
+                    <td class="text-right">{{ params.fob | number_format(2,',','.') }}</td>
+                </tr>
+                <tr>
+                    <td class="text-right brackground-gray"><strong>Flete</strong></td>
+                    <td class="text-right">{{ params.flete_aduana | number_format(2,',','.') }}</td>
+                </tr>
+                <tr>
+                    <td class="text-right brackground-gray"><strong>Seguro</strong></td>
+                    <td class="text-right">{{ params.seguro_aduana | number_format(2,',','.') }}</td>
+                </tr>
+                <tr>
+                    <td class="text-right brackground-gray"><strong>ICE</strong></td>
+                    <td class="text-right">{{ params.etiquetas_fiscales | number_format(2,',','.') }}</td>
+                </tr>
+                <tr>
+                    <td class="text-right brackground-gray"><strong>Etiquetas Fiscales</strong></td>
+                    <td class="text-right">{{ params.etiquetas_fiscales | number_format(2,',','.') }}</td>
+                </tr>
+                <tr>
+                    <td class="text-right brackground-gray"><strong>IVA</strong></td>
+                    <td class="text-right">{{ params.etiquetas_fiscales | number_format(2,',','.') }}</td>
+                </tr>
+                <tr>
+                    <td class="text-right brackground-gray"><strong>Base Advalorem</strong></td>
+                    <td class="text-right">{{ params.etiquetas_fiscales | number_format(2,',','.') }}</td>
+                </tr>
+                <tr>
+                    <td class="text-right brackground-gray"><strong>Fodinfa</strong></td>
+                    <td class="text-right">{{ params.etiquetas_fiscales | number_format(2,',','.') }}</td>
+                </tr>
+                <tr>
+                    <td class="text-right brackground-gray"><strong>ICE Específico</strong></td>
+                    <td class="text-right">{{ params.etiquetas_fiscales | number_format(2,',','.') }}</td>
+                </tr>
+                <tr>
+                    <td class="text-right brackground-gray"><strong>Otros</strong></td>
+                    <td class="text-right">{{ params.etiquetas_fiscales | number_format(2,',','.') }}</td>
+                </tr>
             </tbody>
-         </table>
-   </div>
-   <div class="col-md-8">
-      <div class="text-tittle">
-         Parámetros de Calculo Impuestos
-      </div>
-                        <div class="row">
-               <div class="col-md-1"></div>
-               <div class="col-md-10">
-                  <div class="row well well-sm">
-                     <div class="col-md-2">Regimen: <strong>{{ order.regimen }}</strong></div>
-                     <div class="col-md-3">Incoterm: <strong>{{ order.incoterm }}</strong></div>
-                     <div class="col-md-3">Puerto: <strong>{{ order.ciudad_origen }}</strong></div>
-                     <div class="col-md-3">Pais: <strong>{{ order.pais_origen }}</strong> </div>
-                  </div>
-               </div>
-                  <div class="col-md-1"></div>
-            </div> 
-   	<br>
-   	<br>
-   	<form action="{{rute_url}}impuestosparcial/actualizar" method="post">
-         <input type="hidden" name="id_parcial" value="{{ parcial.id_parcial }}">
-      <div class="row">
-          <div class="col-md-3">
-                  <h4 class="text-primary label-order" >Pedido <strong>{{parcial.nro_pedido}}</strong></h4>
-               </div>
-               <div class="col-md-3">
-                  <div class="form-group">
-                     <label>Moneda</label>
-                     <input 
-                        type="text" 
-                        name="moneda"
-                        value="{{ moneyOrder.moneda }}" 
-                        required=""
-                        disabled="" 
-                        >
-                  </div>
-               </div>
-               <div class="col-md-3">
-                  <div class="form-group">
-                     <label>Tipo de Cambio</label>
-                     <input 
-                        type="number" 
-                        name="tipo_cambio"
-                        step="0.0000001"
-                        required="" 
-                        value="{{ moneyOrder.tipo_cambio }}" 
-                        >
-                  </div>
-               </div>
-               <div class="col-md-3">
-                  <br>
-                  <div class="form-group">
-                     <button class="btn btn-sm btn-default" type="submit">
-                     <span class="fa fa-refresh"></span> Actualizar
-                     </button> 
-                  </div>
-               </div>
-      </div>  
-      <div class="row">
- 			<div class="col-md-3"></div>
- 			<div class="col-md-6">
- 				<div class="form-gruop">
- 				<label class="control control-checkbox">
- 					Tomar en cuenta Etiquetas
-               <input 
-               type="checkbox" 
-               name="bg_have_etiquetas_fiscales" 
-               {% if parcial.bg_have_etiquetas_fiscales == 1 %}
-                  checked="true"
-               {% endif %}
-               >
-                  <div class="control_indicator"></div>
-               </label>
- 				</div>
- 			</div>
-      </div>
-      <br>
+        </table>
+    </div>
+    <div class="col-md-8">
+        <div class="text-tittle">
+            Parámetros de Calculo Impuestos
+        </div>
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                <div class="row well well-sm">
+                    <div class="col-md-2">Regimen: <strong>{{ order.regimen }}</strong></div>
+                    <div class="col-md-3">Incoterm: <strong>{{ order.incoterm }}</strong></div>
+                    <div class="col-md-3">Puerto: <strong>{{ order.ciudad_origen }}</strong></div>
+                    <div class="col-md-3">Pais: <strong>{{ order.pais_origen }}</strong> </div>
+                </div>
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+        <form action="{{rute_url}}impuestosparcial/actualizar" method="post">
+            <input type="hidden" name="id_parcial" value="{{ parcial.id_parcial }}">
+            <table class="table borderless">
+                <tr class="text-right">
+                    <td class="text-primary">
+                        <div class="form-group">
+                            <label>Moneda</label>
+                            <input 
+                                type="text" 
+                                name="moneda"
+                                value="{{ moneyOrder.moneda }}" 
+                                required=""
+                                disabled="" 
+                                >
+                        </div>
+                        <div class="form-group"
+                            >               <label>Otros Impuestos</label>
+                            <input 
+                                type="number" 
+                                name="otros" 
+                                value="{{parcial.otros}}" 
+                                step="0.01"
+                                >
+                        </div>
+                    </td>
+                    <td>
+                        <label>Tipo de Cambio</label>
+                        <input 
+                            type="number" 
+                            name="tipo_cambio"
+                            step="0.0000000000001"
+                            required="" 
+                            value="{{ moneyOrder.tipo_cambio }}" 
+                            >
+                        <br>
+                        <br>
+                        <div class="form-gruop pull-right" >
+                            <label class="control control-checkbox">
+                                Tomar Etiquetas Fiscales
+                                <input 
+                                type="checkbox" 
+                                name="bg_have_etiquetas_fiscales" 
+                                {% if parcial.bg_have_etiquetas_fiscales == 1 %}
+                                checked="true"
+                                {% endif %}
+                                >
+                                <div class="control_indicator"></div>
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="text-right">
+                    <td colspan="2">
+                        <button class="btn btn-sm btn-default" type="submit">
+                        <span class="fa fa-refresh"></span> Actualizar
+                        </button> 
+                    </td>
+                </tr>
+            </table>
         </form>
-   </div>
+        <div class="row text-left">
+            <div class="col-md-1"></div>
+            <div class="col-md-3">
+                <h4>Liquidación: <br><strong>$/ 120.076,21</strong></h4>
+            </div>
+            <div class="col-md-3">
+                <h4>Prorrateo: <br><strong> $/ 25.000,00</strong></h4>
+            </div>
+            <div class="col-md-3">
+                <h4>Costo Caja: <br><strong> $/ 34,88</strong></h4>
+            </div>
+            <div class="col-md-2">
+                <h4>Costo Und: <br><strong> $/ 12,23 </strong></h4>
+            </div>
+        </div>
+    </div>
 </div>
-   <div class="row">
-      <div class="col-md-12">
-      <div class="table-responsive">         
-         <table class="table table-condensed table-bordered table-hover table-striped">
-            <tr>
-               <th>#</th>
-               <th>Producto</th>
-               <th>Cajas</th>
-               <th>Unds</th>
-               <th>Costo Caja </th>
-               <th>FOB </th>
-               <th>Seguro</th>
-               <th>Flete</th>
-               <th>CIF</th>
-               <th>Fodinfa</th>
-               <th>CIF + Fodinfa</th>
-               <th>Arancel Advaloren</th>
-               <th>Arancel Especifico</th>
-               <th>Etiquetas Fiscales</th>
-               <th>Ex aduana unitario</th>
-               <th>Base advaloren legal</th>
-               <th>Presentacion</th>
-               <th>% Alcoholico</th>
-               <th>Arancel especifico unitario</th>
-               <th>Arancel advalores</th>
-               <th>ICE unitario</th>
-               <th>total ICE</th>
-               <th>prorrateo del costo indirectos</th>
-               <th>costo total de importacion</th>
-               <th>costo unitario botella</th>
-               <th>indirectos para precio entrega</th>
-               <th>costo unitario por caja</th>
-            </tr>
-            {% for infoInvoice in infoInvoices  %}
-            {% for product in infoInvoice.products %}
-            <tr>
-               <td> {{ loop.index }}</td>
-               <td nowrap=""> {{ product.nombre }} </td>
-               <td>{{ product.nro_cajas }}</td>
-               <td>{{ product.nro_cajas * product.cantidad_x_caja }}</td>
-               <td>{{ product.costo_caja | number_format(2,',','.')}}</td>
-               <td>{{ (product.costo_caja * product.nro_cajas) | number_format(2,',','.') }}</td>
-            </tr>
-               {% endfor %}
-               {% endfor %}
-         </table>
-      </div>
-   </div>
-   </div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="table-responsive">
+            <table class="table table-condensed table-bordered table-hover table-striped">
+                <tr>
+                    <th>#</th>
+                    <th>Producto</th>
+                    <th>Cajas</th>
+                    <th>Unds</th>
+                    <th>Costo Caja </th>
+                    <th>FOB </th>
+                    <th>Seguro</th>
+                    <th>Flete</th>
+                    <th>CIF</th>
+                    <th>Fodinfa</th>
+                    <th>Etiquetas Fiscales</th>
+                    <th>Exaduana </th>
+                    <th>Exaduana U</th>
+                    <th>Presentacion</th>
+                    <th>% Alcoholico</th>
+                    <th>ICE Esp U</th>
+                    <th>B Advaloren</th>
+                    <th>ICE Avalorem</th>
+                    <th>total ICE</th>
+                    <th>costo total de importacion</th>
+                    <th>costo unitario por caja</th>
+                    <th>costo unitario botella</th>
+                </tr>
+                {% for infoInvoice in infoInvoices  %}
+                {% for tax in infoInvoice.taxes %}
+                <tr>
+                    <td> {{ loop.index }}</td>
+                    <td nowrap=""> {{ tax.producto }} </td>
+                    <td class="text-right">{{ tax.nro_cajas | number_format(0,',','.') }} </td>
+                    <td class="text-right">{{ tax.unidades | number_format(0,',','.') }}</td>
+                    <td class="text-right">{{ tax.costo_caja  | number_format(3,',','.') }}</td>
+                    <td class="text-right">{{ tax.fob  | number_format(3,',','.') }}</td>
+                    <td class="text-right">{{  tax.seguro_aduana  | number_format(3,',','.') }}</td>
+                    <td class="text-right">{{  tax.flete_aduana  | number_format(3,',','.') }}</td>
+                    <td class="text-right">{{  tax.cif  | number_format(3,',','.') }}</td>
+                    <td class="text-right">{{  tax.fodinfa  | number_format(3,',','.') }}</td>
+                    <td class="text-right">{{  tax.etiquetas_fiscales  | number_format(3,',','.') }}</td>
+                    <td class="text-right">{{  tax.exaduana  | number_format(3,',','.') }}</td>
+                    <td class="text-right">{{  (tax.exaduana / tax.unidades)  | number_format(3,',','.') }}</td>
+                    <td class="text-right">{{  (tax.presentacion)  | number_format(0,',','.') }}</td>
+                    <td class="text-right">{{  (tax.grado_alcoholico)  | number_format(3,',','.') }}</td>
+                    <td class="text-right">{{  (tax.ice_especifico / tax.unidades)  | number_format(3,',','.') }}</td>
+                    <td class="text-right">{{  (tax.base_advalorem)  | number_format(3,',','.') }}</td>
+                    <td class="text-right">{{  (tax.ice_advalorem / tax.unidades)  | number_format(3,',','.') }}</td>
+                    <td class="text-right text-primary">
+                        {{  (tax.ice_advalorem + tax.ice_especifico + tax.etiquetas_fiscales)  | number_format(3,',','.') }}
+                    </td>
+                    <td class="text-right text-primary">
+                        {{  (tax.cif + tax.fodinfa + tax.ice_advalorem + tax.ice_especifico + tax.etiquetas_fiscales )  | number_format(3,',','.') }}
+                    </td>
+                    <td class="text-right text-primary">
+                        {{  (tax.cif + tax.fodinfa + tax.ice_advalorem + tax.ice_especifico + tax.etiquetas_fiscales ) / tax.nro_cajas  | number_format(3,',','.') }}
+                    </td>
+                    <td class="text-right text-primary">
+                        {{  (tax.cif + tax.fodinfa + tax.ice_advalorem + tax.ice_especifico + tax.etiquetas_fiscales )/ tax.unidades  | number_format(3,',','.') }}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
 <br>
-   <div class="row">
-      <div class="col-md-6"></div>
-      <dic class="col-md-6 text-right">
-         <a href="#" class="btn btn-sm btn-default"> <span class="fa fa-check"></span> Aplicar Y Cerrar</a>
-         <a href="#" class="btn btn-sm btn-default"> <span class="fa fa-file-pdf-o"></span> Liquidacion PDF</a>
-         <a href="{{rute_url}}parcial/presentar/{{parcial.id_parcial}}" class="btn btn-sm btn-default"> <span class="fa fa-arrow-left"></span> Volver A Parcial</a>
-      </dic>
-   </div>
+<div class="row">
+    <div class="col-md-6"></div>
+    <div class="col-md-6 text-right">
+        <a href="#" class="btn btn-sm btn-default"> <span class="fa fa-check"></span> Aplicar Y Cerrar</a>
+        <a href="#" class="btn btn-sm btn-default"> <span class="fa fa-file-pdf-o"></span> Liquidacion PDF</a>
+        <a href="{{rute_url}}parcial/presentar/{{parcial.id_parcial}}" class="btn btn-sm btn-default"> <span class="fa fa-arrow-left"></span> Volver A Parcial</a>
+    </div>
+</div>

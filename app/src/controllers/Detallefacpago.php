@@ -35,7 +35,6 @@ class Detallefacpago extends MY_Controller
         $this->init();      
     }
     
-    
     /**
      * Inicia los modelos de la clase
      */

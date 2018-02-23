@@ -213,6 +213,7 @@ class Modelinfoinvoice extends CI_Model
     }
     
     
+    
     /**
      * Verifica si un registro ya existe en la base de datos
      * @param array $informativeInvoice

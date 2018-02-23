@@ -1,5 +1,6 @@
-<?php
-defined('BASEPATH') or exit('No direct script access allowed');
+<?php defined('BASEPATH') or exit('No direct script access allowed');
+
+require 'lib/taxesCalc.php';
 
 /**
  * Controller encargado del calculo de impuestos
@@ -12,7 +13,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @since Version 1.0.0
  * @filesource
  */
-
 class Impuestosparcial extends MY_Controller
 {
     private $controller = "impuestos";
@@ -31,17 +31,17 @@ class Impuestosparcial extends MY_Controller
     private $modelInitExpenses;
     private $modelRatesExpenses;
     private $ratesValues;
-    
+
     
     /**
-     * Contructor de la clase 
+     * Contructor de la clase
      */
     function __construct()
     {
         parent::__construct();
         $this->init();
     }
-    
+
     
     /**
      * Inicia los modelos de la clase
@@ -74,90 +74,114 @@ class Impuestosparcial extends MY_Controller
         $this->modelInfoInvoice = new Modelinfoinvoice();
         $this->modelInfoInvoiceDetail = new Modelinfoinvoicedetail();
         $this->modelRatesExpenses = new Modelrateexpenses();
-        $this->ratesValues =  $this->modelRatesExpenses->getParcialRates();
-        
+        $this->ratesValues = $this->modelRatesExpenses->getParcialRates();
     }
-    
-    
-    
+
     /**
      * funcion por defecto del controller, se usa para redireccionar al home
      */
     public function index()
     {
-        $this->modelLog->warningLog(
-            'Redirecionamiento desde el controller de impuestos'
-            );
+        $this->modelLog->warningLog('Redirecionamiento desde el controller de impuestos');
         
         return ($this->redirectPage('home'));
-        
     }
-    
-    
+
     /**
      * Genera los impuestos para un parcial, el valor del flete y seguro
      * son sumados de cada una de las facturas informativas
      * Todos los pedidos R70 pasan por este filtro
+     * 
      * @param int $idParcial
-     * @retunr arrat template
+     *            @retunr arrat template
      */
     public function v(int $idParcial)
     {
-        $parcial = $this->modelParcial->get($idParcial);        
-        $infoInvoices =  $this->modelInfoInvoice->getByParcial($idParcial);
+        $parcial = $this->modelParcial->get($idParcial);
+        $infoInvoices = $this->modelInfoInvoice->getByParcial($idParcial);
         $order = $this->modelOrder->get($parcial['nro_pedido']);
         
-        if($parcial == false){
+        $parcialParams = [
+            'moneda' => '',
+            'tipo_cambio' => 1,
+            'otros_impuestos' => 0.0,
+            'fob' => 0.0,
+            'flete' => $this->getParamTaxes('FLETE'),
+            
+        ];
+        
+        
+        
+        if ($parcial == false) {
             $this->modelLog->errorLog('No Existe El parcial para nacionalizar');
             return $this->index();
         }
         
-        $params = $this->getParamsParcial($parcial, $order);
-        $params['etiquetas_fiscales'] = 0.0;
-        
-        $moneyOrder = [
-            'moneda' => '',
-            'tipo_cambio' => 0.0,
-        ];
-        
-        foreach ($infoInvoices as $index => $invoice){
-            if($index == 0){
-                $moneyOrder['moneda'] = $invoice['moneda'];
-                $moneyOrder['tipo_cambio'] = floatval($invoice['tipo_cambio']);
+        foreach ($infoInvoices as $index => $invoice) {
+            if($parcialParams['moneda'] == ''){
+                $parcialParams['moneda'] = $invoice['moneda'];
+                $parcialParams['tipo_cambio'] = $invoice['tipo_cambio'];
             }
-            $invoice['products'] = $this->modelInfoInvoiceDetail->
-                           getCompleteDetail($invoice['id_factura_informativa']);
             
-            foreach ($invoice['products'] as $item => $row){
-                $params['etiquetas_fiscales'] += 
-                            ($this->ratesValues['ETIQUETAS FISCALES']  * $row['nro_cajas'] * 
-                                                    $row['cantidad_x_caja']);                   
+            $invoice['products'] = $this->modelInfoInvoiceDetail->
+                                getCompleteDetail(
+                                               $invoice['id_factura_informativa']
+                                                  );
+            
+            foreach ($invoice['products'] as $item => $row) {
+                
+                $cifItem = $this->getValueParcial(
+                    $row['nro_cajas'] *
+                    $row['cantidad_x_caja'],
+                    $row['id_factura_informativa_detalle'],
+                    $invoice
+                    );
+                                
+                $taxes = new productTaxes([
+                    'unidades' => $row['nro_cajas'] * $row['cantidad_x_caja'],
+                    'etiquetas' => $this->getParamTaxes('ETIQUETAS FISCALES'),
+                    'grado_alcolico' => $row['grado_alcoholico'],
+                    'fondinfa' => $this->getParamTaxes('FODINFA'),
+                    'ice_especifico' => $this->getParamTaxes('ICE ESPECIFICO'),
+                    'base_ice_advalorem' => $this->getParamTaxes(
+                                                                'BASE ADVALOREM'
+                                                                ),
+                    'iva_param' => $this->getParamTaxes('IVA'),
+                    'seguro_value' => $cifItem['seguro_item'], 
+                    'flete_value' => $cifItem['flete_item'],
+                    'fob_value' => (
+                                $cifItem['fob_item'] * $invoice['tipo_cambio']
+                                    ),
+                    'percent_item' => $cifItem['percent_item'],
+                    'otros' => $parcial['otros'],
+                    'producto' => $row['nombre'],
+                    'capacidad_ml' => $row['capacidad_ml'],
+                    'nro_cajas' => $row['nro_cajas'],
+                    'costo_caja' => $row['costo_caja'],
+                ]);
+                
+                $invoice['taxes'][$index] = $taxes->getTaxes();
             }
             
             $infoInvoices[$index] = $invoice;
-            if($parcial['bg_have_etiquetas_fiscales'] == 0){
-                $params['etiquetas_fiscales'] = 0.0;
-            }
         }
         
-       return( $this->responseHttp([
+        return ($this->responseHttp([
             'titleContent' => 'Previsualizacion de Impuestos Pedido [' . 
                                 $order['nro_pedido'] . '] Parcial [' . 
-                                $parcial['id_parcial'] . ']' ,
+                                $parcial['id_parcial'] . ']',
             'infoInvoices' => $infoInvoices,
             'order' => $order,
             'parcial' => $parcial,
             'numberInfoInvoices' => count($infoInvoices),
-            'params' => $params,
-            'moneyOrder' => $moneyOrder,
+            'paramsParcial' => $parcialParams,
         ]));
     }
-    
-    
-    
+
     /**
      * Actualiza los parametros de calculo de impuestos para el Parcial
-     * @param $tipo_cambio float 
+     * 
+     * @param $tipo_cambio float
      * @param $etiquetas_fiscales boolean
      * @return string redirect
      */
@@ -165,91 +189,107 @@ class Impuestosparcial extends MY_Controller
     {
         $paramsInfoInvoice = [
             'id_parcial' => $_POST['id_parcial'],
-            'tipo_cambio' => $_POST['tipo_cambio'],
+            'tipo_cambio' => $_POST['tipo_cambio']
         ];
         
         $paramsParcial = [
             'id_parcial' => $_POST['id_parcial'],
-            'bg_have_etiquetas_fiscales' => 0,
+            'bg_have_etiquetas_fiscales' => 0
         ];
         
-        if(
-            isset($_POST['bg_have_etiquetas_fiscales']) && 
-                 $_POST['bg_have_etiquetas_fiscales'] == 'on'
-          ){
-          $paramsParcial['bg_have_etiquetas_fiscales'] = 1;  
+        if (isset($_POST['bg_have_etiquetas_fiscales']) && $_POST['bg_have_etiquetas_fiscales'] == 'on') {
+            $paramsParcial['bg_have_etiquetas_fiscales'] = 1;
         }
         
-        if (
-            $this->modelParcial->updateLabelsParcial($paramsParcial)
-            &&
-            $this->modelInfoInvoice->updateMoney($paramsInfoInvoice)
-            ){
-              $this->modelLog->susessLog(
-                                  'Parametros moneda y etiquetas modificadas');
-        }else{            
-            $this->modelLog->errorLog(
-            'Uno de los cambios no se realizo en el parcial o facturas informativas'
-                );
+        if ($this->modelParcial->updateLabelsParcial($paramsParcial) && $this->modelInfoInvoice->updateMoney($paramsInfoInvoice)) {
+            $this->modelLog->susessLog('Parametros moneda y etiquetas modificadas');
+        } else {
+            $this->modelLog->errorLog('Uno de los cambios no se realizo en el parcial o facturas informativas');
         }
         
         return ($this->redirectPage('showTaxesParcial', $_POST['id_parcial']));
     }
-        
-    
-    /**
-     * Retorna los parametros de nacionalizacion de un parcial
-     * @param array $order
-     * @param array $parcial 
-     * @return array $params [
-     *                          incoterm => float, 
-     *                          seguro => float, 
-     *                          flete => float, 
-     *                          ];
-     */
-    private function getParamsParcial(array $parcial, array $order):array
-    {
 
-        $infoInvoices = $this->modelInfoInvoice->getByParcial(
-                                                        $parcial['id_parcial']
-                                                            );
+    /**
+     * Obtiene el valor que le corresponde al item en la factura informativa
+     * 
+     * @param int $unities
+     * @param array $infoInfoice arreglo de toda la factura informariva
+     * @param string $concept [flete | seguro | fob]
+     * @return float valor del concepto
+     */
+    private function getValueParcial(   
+                                        int $unities, 
+                                        int $idInfoInvoiceDetail,
+                                        array $infoInfoice 
         
-        $expenses = [
-            'incoterm' => $order['incoterm'],
-            'seguro_aduana' => 0.0,
-            'flete_aduana' => 0.0,
-            'fob' => 0.0,
+                                    ): array
+    {
+        $itemValues = [
+            'fob_item' => 0.0,
+            'seguro_item' => 0.0,
+            'flete_item' => 0.0,
+            'percent_item' => 0.0,
         ];
         
-        foreach ($infoInvoices as $item => $invoice){
-            $expenses['seguro_aduana'] += $invoice['seguro_aduana'];
-            $expenses['flete_aduana'] += $invoice['flete_aduana'];
-            $expenses['fob'] += $invoice['valor'];
+        foreach($infoInfoice['products'] as $item => $detail){
+            if ( 
+               $detail['id_factura_informativa_detalle'] == $idInfoInvoiceDetail 
+                ){
+                $itemValues['fob_item'] = floatval(
+                                                 $detail['costo_caja'] *
+                                                 $detail['nro_cajas']
+                                                 );
+                $itemValues['percent_item'] = floatval(
+                                                 $itemValues['fob_item'] /
+                                                 $infoInfoice['valor']
+                                                 );
+                $itemValues['flete_item'] = floatval(
+                                                 $infoInfoice['flete_aduana'] *
+                                                 $itemValues['percent_item']
+                                                 );
+                $itemValues['seguro_item'] = floatval(
+                                                 $infoInfoice['seguro_aduana'] *
+                                                 $itemValues['percent_item']
+                                                 );
+                return $itemValues;
+            }
         }
-        
-        return $expenses;
-        
     }
-    
-   
-    
+
+    /**
+     * Retorna un parametr basado en el nombre el impueto
+     * 
+     * @param string $taxeName
+     *            nombre del impuesto
+     * @return float valor del impuesto
+     */
+    private function getParamTaxes(string $taxeName): float
+    {   
+        foreach ($this->ratesValues as $index => $rate) {
+            if ($rate['concepto'] == $taxeName) {
+                $this->modelLog->susessLog("Valor para $taxeName " . $rate['valor'] );
+                return $rate['valor'];
+            }
+        }
+
+        $this->modelLog->errorLog("El impuesto  $taxeName solicitado no Existe");
+        return false;
+    }
+
     /*
      * Redenderiza la informacion y la envia al navegador
      * @param array $config informacion de la plantilla
      */
     private function responseHttp($config)
     {
-        return(
-            $this->twig->display($this->template, array_merge($config,[
-                'title' => 'Impuestos',
-                'base_url' => base_url(),
-                'rute_url' => base_url() . 'index.php/',
-                'controller' => $this->controller,
-                'iconTitle' => 'fa-money',
-                'content' => 'home']))
-            );
+        return ($this->twig->display($this->template, array_merge($config, [
+            'title' => 'Impuestos',
+            'base_url' => base_url(),
+            'rute_url' => base_url() . 'index.php/',
+            'controller' => $this->controller,
+            'iconTitle' => 'fa-money',
+            'content' => 'home'
+        ])));
     }
-    
-    
 }
-

@@ -15,51 +15,61 @@
 
 .title-proveedor {
 	background-color: #21610B !important;
+	height: 45px;
 	color: #fff;
 }
 
 .title-factura_informativa {
 	background-color: #333 !important;
+	height: 45px;
 	color: #333;
 }
 
 .title-factura_informativa_detalle {
 	background-color: #444 !important;
+	height: 45px;
 	color: #444;
 }
 
 .title-impuestos{
 	background-color:#007bff!important;
+	height: 45px;
 	color: #444;
 }
 
 .title-detalle_pedido_factura {
 	background-color: #0097a7 !important;
+	height: 45px;
 	color: #fff;
 }
 
 .title-pedido_factura {
 	background-color: #0097a7 !important;
+	height: 45px;
 	color: #fff;
 }
 
 .title-justificacion_gasto_nacionalizacion {
 	background-color: #0000a7 !important;
+	height: 45px;
 	color: #fff;
 }
 
 .title-inicio {
 	background-color: #778899 !important;
+	height: 45px;
 	color: #fff;
 }
 
 .title-parcial {
 	background-color: #666 !important;
+	height: 45px;
 	color: #fff;
 }
 
 .title-gastos_nacionalizacion {
 	background-color: #7b1fa2 !important;
+	height: 45px;
 	color: #fff;
 }
 
@@ -74,6 +84,7 @@
 
 .title-pedido {
 	background-color: #e3001b;
+	
 }
 
 .title-producto {
@@ -425,4 +436,11 @@ th {
 	margin: 10px;
 	padding: 5px;
 	border-radius: 5px; 
+}
+
+.borderless{
+    border-top-style: none;
+    border-left-style: none;
+    border-right-style: none;
+    border-bottom-style: none;
 }

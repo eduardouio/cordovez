@@ -16,11 +16,21 @@ class Modelrateexpenses extends CI_Model {
     
     private $table = 'tarifa_gastos';
     private $modelBase;
+    private $modelLog;
 
 	function __construct(){
 		parent::__construct();
-		$this->load->model('Modelbase');
-		$this->modelBase = new ModelBase();
+		$this->init();
+	}
+	
+	/**
+	 * inicia los modelos de la clase
+	 */
+	public function init(){
+	    $this->load->model('Modelbase');
+	    $this->load->model('Modellog');
+	    $this->modelBase = new ModelBase();
+	    $this->modelLog = new Modellog();
 	}
     
 	/**
@@ -39,6 +49,12 @@ class Modelrateexpenses extends CI_Model {
         if(gettype($rateExpenses) == 'array' && count($rateExpenses) > 0){
             return $rateExpenses;
         }
+        
+        $this->modelLog->errorLog(
+            'La base de datos no tiene tarifas de gastos',
+            $this->db->last_query()
+            );
+        
         return false;
 	}
 	
@@ -60,6 +76,12 @@ class Modelrateexpenses extends CI_Model {
      if(gettype($rateExpense) == 'array' && count($rateExpense) > 0){
          return $rateExpense[0];
      }
+     
+     $this->modelLog->errorLog(
+        'La base de datos no tiene tarifas de gastos',
+        $this->db->last_query()
+         );
+     
      return false;     
     }
     
@@ -74,6 +96,12 @@ class Modelrateexpenses extends CI_Model {
         if($this->db->insert($this->table, $rateExpense)){
             return $this->db->insert_id();
         }
+        
+        $this->modelLog->errorLog(
+            'No se puede crear la tarifa gasto',
+            $this->db->last_query()
+            );
+
         return false;
     }
     
@@ -87,6 +115,9 @@ class Modelrateexpenses extends CI_Model {
         if($this->db->update($this->table, $rateExpense)){
             return true;
         }
+        $this->modelLog->errorLog('No se puede actualizar la tarifa gastos',
+            $this->db->last_query()
+            );
         return false;
     }
     
@@ -100,9 +131,16 @@ class Modelrateexpenses extends CI_Model {
         if($this->db->delete($this->table)){
             return true;
         }
+
+        $this->modelLog->errorLog(
+            'no se puede eliminar tarifas de gastos',
+            $this->db->last_query()
+            );
+
         return false;
     }
     
+
     /**
      * retorna las taifas de gastos para los gastos de nacionalizacion 
      * de un parcial solo aplica para regimen 70
@@ -122,6 +160,12 @@ class Modelrateexpenses extends CI_Model {
         if(gettype($rateExpenses) == 'array' && count($rateExpenses) > 0){
             return $rateExpenses;
         }
+        
+        $this->modelLog->errorLog(
+            'La base de datos no tiene tarifas de gastos',
+            $this->db->last_query()
+            );
+        
         return false;
     }
     
@@ -130,21 +174,32 @@ class Modelrateexpenses extends CI_Model {
      * recupera el costo de la etiquetas, registrado en la base de datos
      */
     public function getParcialRates()
-    {
+    {   
+        $etiquetasFiscales = $this->modelBase->get_table([
+            'table' => $this->table,
+            'where' => [
+                'concepto' => 'ETIQUETAS FISCALES',
+            ],
+        ]);
         
-        $rates = [
-            'ETIQUETAS FISCALES' => 0.13,
-            'AD VALOREM' => 4.32,
-            'ICE ESPECIFICO' => 7.22,
-            'ICE' => 0.0,
-            'MULTAS' => 0.0,
-            'IVA' => 12.00,
-        ];
-        return ($rates);
+        $rates = $this->modelBase->get_table([
+            'table' => $this->table,
+            'where' => [
+                'tipo_gasto' => 'IMPUESTO',
+                'estado' => 1,
+            ],
+        ]);
         
+        if(is_array($rates) && count($rates) > 0){
+            return ( array_merge($rates, $etiquetasFiscales));
+        }
+        
+        $this->modelLog->errorLog(
+            'La base de datos no tiene tarifas de gastos',
+            $this->db->last_query()
+            );
+
+        return false;
     }
     
-    
-    
 }
-

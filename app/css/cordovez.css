@@ -444,3 +444,7 @@ th {
     border-right-style: none;
     border-bottom-style: none;
 }
+
+.btn-default{
+	background-color: #eee;
+}

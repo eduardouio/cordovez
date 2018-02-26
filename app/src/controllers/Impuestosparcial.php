@@ -104,13 +104,21 @@ class Impuestosparcial extends MY_Controller
         $parcialParams = [
             'moneda' => '',
             'tipo_cambio' => 1,
-            'otros_impuestos' => 0.0,
-            'fob' => 0.0,
-            'flete' => $this->getParamTaxes('FLETE'),
+            'otros_impuestos' => $parcial['otros'],
+            'fondinfa' => $this->getParamTaxes('FODINFA'),
+            'ice_especifico' => $this->getParamTaxes('ICE ESPECIFICO'),
+            'base_ice_advalorem' => $this->getParamTaxes(
+                'BASE ADVALOREM'
+                ),
+            'etiquetas_fiscales' => $this->getParamTaxes('ETIQUETAS FISCALES'),
+            'iva_param' => $this->getParamTaxes('IVA'),
+            'fob_parcial' => 0.0,
+            'flete_parcial' => 0.0,
+            'seguro_parcial' => 0.0,
+            'fodinfa_parcial' => 0.0,
+            'val_etiquetas_fiscales' => 0.0,
             
-        ];
-        
-        
+        ];     
         
         if ($parcial == false) {
             $this->modelLog->errorLog('No Existe El parcial para nacionalizar');
@@ -161,11 +169,19 @@ class Impuestosparcial extends MY_Controller
                 ]);
                 
                 $invoice['taxes'][$index] = $taxes->getTaxes();
+                
+                $parcialParams['fob_parcial'] += ($cifItem['fob_item'] * $invoice['tipo_cambio'] );
+                $parcialParams['seguro_parcial'] += $cifItem['seguro_item'];
+                $parcialParams['flete_parcial'] += $cifItem['flete_item'];
+                $parcialParams['val_etiquetas_fiscales'] += $invoice['taxes'][0]['etiquetas_fiscales'];
+                $parcialParams['fodinfa_parcial'] += $invoice['taxes'][0]['fodinfa'];
+                
             }
             
             $infoInvoices[$index] = $invoice;
         }
         
+                
         return ($this->responseHttp([
             'titleContent' => 'Previsualizacion de Impuestos Pedido [' . 
                                 $order['nro_pedido'] . '] Parcial [' . 
@@ -194,15 +210,20 @@ class Impuestosparcial extends MY_Controller
         
         $paramsParcial = [
             'id_parcial' => $_POST['id_parcial'],
-            'bg_have_etiquetas_fiscales' => 0
+            'bg_have_etiquetas_fiscales' => 0,
+            'observaciones' => $_POST['observaciones'],
+            'otros' => $_POST['otros'],
         ];
         
         if (isset($_POST['bg_have_etiquetas_fiscales']) && $_POST['bg_have_etiquetas_fiscales'] == 'on') {
             $paramsParcial['bg_have_etiquetas_fiscales'] = 1;
         }
         
-        if ($this->modelParcial->updateLabelsParcial($paramsParcial) && $this->modelInfoInvoice->updateMoney($paramsInfoInvoice)) {
-            $this->modelLog->susessLog('Parametros moneda y etiquetas modificadas');
+        if ($this->modelParcial->updateLabelsParcial($paramsParcial) && 
+            $this->modelInfoInvoice->updateMoney($paramsInfoInvoice)) {
+            $this->modelLog->susessLog(
+                'Parametros moneda, etiquetas y otros impuestos modificadas'
+                );
         } else {
             $this->modelLog->errorLog('Uno de los cambios no se realizo en el parcial o facturas informativas');
         }
@@ -256,6 +277,7 @@ class Impuestosparcial extends MY_Controller
             }
         }
     }
+
 
     /**
      * Retorna un parametr basado en el nombre el impueto

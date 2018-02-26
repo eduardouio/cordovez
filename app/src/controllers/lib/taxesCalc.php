@@ -117,7 +117,7 @@ class productTaxes {
     private function getEtiquetasFiscales(): float 
     {   
             $this->etiquetasFiscalesValue = (
-                $this->unidadesParam * $this->etiquetasFiscalesValue
+                $this->unidadesParam * $this->etiquetasParam
                 );
             
         return $this->etiquetasFiscalesValue;
@@ -200,7 +200,6 @@ class productTaxes {
      * @return array
      */
     public function getTaxes(){
-
         return([
             'seguro_aduana' => $this->seguroValue,
             'flete_aduana' => $this->fleteValue,
@@ -211,6 +210,7 @@ class productTaxes {
             'costo_caja' => $this->costoCaja,
             'producto' => $this->prodcutoParam,
             'fodinfa' => $this->getFodinfa(),
+            'fodinfa_unitario' => ($this->getFodinfa() / $this->unidadesParam),
             'etiquetas_fiscales' => $this->getEtiquetasFiscales(),
             'exaduana' => $this->getExaduana(),
             'base_advalorem' => $this->getAdvaloremBase(),
@@ -218,7 +218,6 @@ class productTaxes {
             'grado_alcoholico' => $this->gradoAlcoholicoParam,
             'ice_especifico' => $this->getICEEspecifico(),
             'ice_advalorem' => $this->getIceAdvalorem(),
-            
         ]);
     }
 }

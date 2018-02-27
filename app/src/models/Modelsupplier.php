@@ -17,14 +17,11 @@ class Modelsupplier extends CI_Model
 {
 
     private $modelBase;
-
     private $table = 'proveedor';
-
     private $modelInvoice;
-
     private $modelOrder;
-    
     private $myModel;
+    private $modelLog;
 
     function __construct()
     {
@@ -40,9 +37,11 @@ class Modelsupplier extends CI_Model
         $this->load->model('Modelbase');
         $this->load->model('Modelorder');
         $this->load->model('Mymodel');
+        $this->load->model('Modellog');
         $this->modelBase = new ModelBase();
         $this->modelOrder = new Modelorder();
         $this->myModel = new Mymodel();
+        $this->modelLog = new Modellog();
     }
 
     /**
@@ -52,6 +51,7 @@ class Modelsupplier extends CI_Model
      */
     public function getAll()
     {
+        $this->modelLog->susessLog('Se listan los proveedores');
         return ($this->modelBase->get_table([
             'table' => $this->table,
             'orderby' => [
@@ -78,6 +78,11 @@ class Modelsupplier extends CI_Model
         if ((gettype($supplier) == 'array') && (count($supplier) > 0)) {
             return $supplier[0];
         }
+        
+        $this->modelLog->errorLog(
+            'El proveedor Solicitado no existe' ,
+             $this->db->last_query()
+            );
         return false;
     }
     
@@ -98,6 +103,12 @@ class Modelsupplier extends CI_Model
         if ((gettype($supplier) == 'array') && (count($supplier) > 0)) {
             return $supplier[0];
         }
+        
+        $this->modelLog->errorLog(
+            'El proveedor Solicitado no existe' ,
+            $this->db->last_query()
+            );
+        
         return false;
     }
     
@@ -115,6 +126,10 @@ class Modelsupplier extends CI_Model
                 'nombre' => 'ASC', 
             ],
         ];
+        $this->modelLog->susessLog(
+                    'Listado de proveedores por categoria ' . 
+                    $category
+                    );
         return ($this->myModel->searchDb($this->table, $querySearchParams));
     }
     
@@ -136,6 +151,7 @@ class Modelsupplier extends CI_Model
           ],
           'searchCriteria' => $searchCriteria,
       ];
+      $this->modelLog->susessLog('realiza busqueda de proveedores');
       return ($this->myModel->searchDb($this->table, $querySearchParams));
     }
     
@@ -162,6 +178,10 @@ class Modelsupplier extends CI_Model
         if ((gettype($suppliers) == 'array') && (count($suppliers) > 0)){
             return $suppliers;
         }
+        $this->modelLog->errorLog(
+            'El grupo de registros solicitados no existen' ,
+            $this->db->last_query()
+            );
         return false;
     }
     
@@ -175,8 +195,15 @@ class Modelsupplier extends CI_Model
     public function update($idSupplier, $supplier){
         $this->db->where('id_proveedor', $idSupplier);
         if($this->db->update($this->table, $supplier)){
+            $this->modelLog->warningLog('proveedor actualizado');      
             return true;
         }
+        
+        $this->modelLog->errorLog(
+            'No es posible actualizar un proveedor',
+            $this->db->last_query()
+            );
+        
         return false;
     }
     
@@ -188,8 +215,15 @@ class Modelsupplier extends CI_Model
      */
     public function create($supplier){
         if($this->db->insert($this->table, $supplier)){
+            $this->modelLog->susessLog('Nuevo Proveedor registrado');
             return ($this->db->insert_id());
         }
+        
+        $this->modelLog->errorLog(
+            'No es posible registrar un proveedor',
+            $this->db->last_query()
+            );
+        return false;
     }
     
     
@@ -202,8 +236,13 @@ class Modelsupplier extends CI_Model
     {
         $this->db->where('id_proveedor', $idSupplier);
         if ($this->db->delete($this->table)){
+            $this->modelLog->warningLog('Provedor Eliminado' . $idSupplier );
             return true;
         }
+        $this->modelLog->errorLog(
+            'No es posible eliminar un proveedor',
+            $this->db->last_query()
+            );
         return false;
     }
 
@@ -219,6 +258,10 @@ class Modelsupplier extends CI_Model
      */
     public function getAllInfo(string $supplierId)
     {
+        $this->modelLog->susessLog(
+            'Se solicita Toda la informacion de un proveedor ' . $supplierId 
+            );
+        
         return ([
             'info' => $this->get($supplierId),
             'orders' => $this->modelOrder->getBysupplier($supplierId),

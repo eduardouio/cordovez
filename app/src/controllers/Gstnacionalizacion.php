@@ -1,5 +1,6 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
 
+require_once 'lib/warenHouseParcial.php';
 /**
  * Modulo encargado de Gestionar los gastos de nacionaliacion para
  * regimn 70 (parciales) y 10
@@ -31,6 +32,7 @@ class Gstnacionalizacion extends MY_Controller
     private $modelRateExpenses;
     private $modelParcial;
 
+    
     /**
      * constructor de la clase
      */
@@ -40,6 +42,7 @@ class Gstnacionalizacion extends MY_Controller
         $this->init();
     }
 
+    
     /**
      * Redirecciona a pedidos, sucede por entradas directas
      * por url al metodo del controller
@@ -462,17 +465,24 @@ class Gstnacionalizacion extends MY_Controller
      */
     public function validarbodegaparcial(int $idParcial)
     {
-       $parcial = $this->modelParcial->get($idParcial);
+        
+        $parcial = $this->modelParcial->get($idParcial);
         if ($parcial == false) {
             return ($this->index());
         }
         
+        
         $infoInvoicesOrder = $this->modelInfoInvoice->getByParcial($idParcial);
         $order = $this->modelOrder->get($parcial['nro_pedido']);
-
         
+        $parcialWarenhouse = new warenHouseParcial($order, $parcial);
+        
+        $lastWarenHouseParcial = $parcialWarenhouse->getLastWarenhouseParcial();
+
         return ($this->responseHttp([
-            'titleContent' => 'Generar Provisiones Por Bodega Del Parcial Pedido [' . $order['nro_pedido'] . '] Parcial [' . $parcial['id_parcial'] . ']',
+            'titleContent' => 'Generar Provisiones Por Bodega Del Parcial Pedido [' 
+                                . $order['nro_pedido'] . 
+                                '] Parcial [' . $parcial['id_parcial'] . ']',
             'validWarenHouse' => 'true',
             'lastDateWarenhouse' => $this->lastDataWarenhouse($order),
             'order' => $order,

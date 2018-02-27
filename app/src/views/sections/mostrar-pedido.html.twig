@@ -1,4 +1,4 @@
-a{% set fob = (order.valuesOrder.valInvoices) %}
+{% set fob = (order.valuesOrder.valInvoices) %}
 {% set cif = (fob + order.valuesOrder.valSecureExpense + order.valuesOrder.valSecureExpense + order.valuesOrder.valShipExpnese)  %}
 {% set nacionalizado = 0 %}
 {% if order.bg_isclosed == 1 %}

@@ -59,7 +59,7 @@
             <td class="text-right"> <b>Fecha de Registro:</b></td>
             <td> 
               {% if supplier.date_create != null %}
-                {{ supplier.date_create  date('d/m/Y H:m')}}               
+                {{ supplier.date_create | date('d/m/Y H:m')}}               
               {% endif %}
           </td>
           </tr>

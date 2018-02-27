@@ -1,4 +1,3 @@
-
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 /**
@@ -84,7 +83,8 @@ class Detallepedido extends MY_Controller
             'create' => true,
             'products' => $products,
             'productsarray' => json_encode($products),
-            'invoice' => $invoiceOrder
+            'invoice' => $invoiceOrder,
+		    'supplier' => $supplier,
         ]);
 	}
 

@@ -27,6 +27,38 @@
           <td>{{ order.regimen }}</td>
         </tr>
         <tr>
+          <td class="text-right"><b>Moneda:</b></td>
+          <td> 
+            {% if sumsValues.valInvoicesEuros == 0 %}
+              DOLARES
+            {% else %}
+              EUROS
+            {% endif %}
+           </td>
+        </tr>
+        <tr>
+          <td class="text-right"><b>Tipo de Cambio:</b></td>
+          <td> 
+            {% if sumsValues.valInvoicesEuros > 0 %}
+                1.25
+              {% else %}
+                  1
+            {% endif %}
+           </td>
+        </tr>
+        <tr>
+          <td class="text-right"><b>FOB:</b></td>
+          <td>{{ order.fob }}</td>
+        </tr>
+        <tr>
+          <td class="text-right"><b>Seguro Aduana:</b></td>
+          <td>{{ order.seguro_aduana }}</td>
+        </tr>
+        <tr>
+          <td class="text-right"><b>Flete Aduana:</b></td>
+          <td>{{ order.flete_aduana }}</td>
+        </tr>
+        <tr>
           <td class="text-right"><b>Incoterm:</b></td>
           <td>{{ order.incoterm }}</td>
         </tr>

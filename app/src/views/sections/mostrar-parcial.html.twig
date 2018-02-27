@@ -6,7 +6,7 @@
 			<strong>Flete Parcial:</strong> <span>{{ supplier.identificacion_proveedor }}</span>
 		</div>
 		<div class="col-md-2">
-			<strong>Seguro Parcial:</strong> <span>{{ infoInvoice.fecha_emision  }}</span>
+			<strong>Seguro Parcial:</strong> <span>{{ infoInvoice.seguro_aduana  }}</span>
 		</div>
 		<div class="col-md-2">
 			<strong>Cajas Parcial:</strong> {{infoInvoice.seguro_aduana }}
@@ -90,7 +90,7 @@
       	 {% include 'sections/subsections/tab-gastos-nacionalizacion-parcial.html.twig' %}
       </div>
       <!-- /Gastos nacionalizacion factura informativa -->
-      <!-- Tab Facturas Servicios factura informativa -->
+      <!-- Tab Facturas Servicios factura informativa --> 	
       <div role="tabpanel" class="tab-pane" id="servicios">
          {% include 'sections/subsections/tab-facturas-servicios-parcial.html.twig' %}
       </div>

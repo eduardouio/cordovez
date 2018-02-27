@@ -215,7 +215,7 @@ class Pedido extends MY_Controller
             }
             $paidsDetails = $paidsDetailsTemp;
         }
-        
+                
         return($this->responseHttp([
             'show_order' => true,
             'order' => $order,
@@ -397,6 +397,7 @@ class Pedido extends MY_Controller
             return true;
         }
     }
+    
     
     /**
      * retorna las estadisticas de los pedidos para la cabecera de la lista

@@ -349,7 +349,7 @@ class Facinformativa extends MY_Controller
             }           
         }
         
-        return($this->redirectPage('nationalization'));
+        return($this->redirectPage('impuestosparcial', $id_pacial));
     }
     
     

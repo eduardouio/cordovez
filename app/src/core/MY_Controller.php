@@ -15,6 +15,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 class MY_Controller extends CI_Controller
 {
     private $modelBase;
+    private $modelLog;
     
     public function __construct()
     {
@@ -29,7 +30,10 @@ class MY_Controller extends CI_Controller
     private function init(){
         $this->_checkSession();
         $this->load->model('modelbase');
+        $this->load->model('Modellog');
         $this->modelBase = new ModelBase();
+        $this->modelLog = new Modellog();
+
     }
     
     /**
@@ -85,7 +89,8 @@ class MY_Controller extends CI_Controller
     
     
     /**
-     * Redirecciona a cualquier pagina del sitio
+     * Redirecciona a cualquier pagina del sitio, se registra en el log 
+     * los redireccionamientos
      * htttp://ip/index.php/controller/method/params/
      *
      * @param $page => pagename
@@ -96,6 +101,13 @@ class MY_Controller extends CI_Controller
      */
     public function redirectPage(string $page, $id = false, $id2 = false)
     {
+        $this->modelLog->generalLog(
+            'Llamada a redireccionamiento ' . 
+            $page . 
+            ' id: ' . $id  . 
+            ' id2:' . $id2
+            );
+
         $target = [
             'loginForm' =>  'index.php/login/',
             'home' =>  'index.php/home',
@@ -105,6 +117,7 @@ class MY_Controller extends CI_Controller
             'infoInvoiceNew' => 'index.php/facinformativa/nuevo',
             'newProductInfoInvoice' => 'index.php/facinfdetalle/nuevo',
             'nationalizationNew' => 'index.php/nacionalizacion/nuevo',
+            'impuestosparcial' => 'index.php/impuestosparcial/v',
             'presentOrder' =>  'index.php/pedido/presentar',
             'paidsList' => 'index.php/facturapagos/listar/',
             'paidPresent' => 'index.php/facturapagos/presentar',
@@ -120,23 +133,33 @@ class MY_Controller extends CI_Controller
             'presentInvoiceOrder' =>  'index.php/pedidofactura/presentar',
             'validar70' =>  'index.php/gstnacionalizacion/validar70',
             'newParcial' => 'index.php/parcial/nuevo',
-            'showTaxesParcial' => 'index.php/impuestosparcial/v',
-            
+            'showTaxesParcial' => 'index.php/impuestosparcial/v',            
         ];
+
+
         header('Status: 301 Moved Permanently', false, 301);
         if ($id) {
             if($id2){
-                header(
-                    'Location: ' . base_url() . $target[$page] 
-                        . '/' . $id  . '/' . $id2
-                    );
-                return true;
+                return(header(
+                                'Location: ' . 
+                                 base_url() . 
+                                $target[$page] . 
+                                '/' . 
+                                $id  . 
+                                '/' . 
+                                $id2
+                            ));
             }
-            header('Location: ' . base_url() . $target[$page] . '/' . $id);
-            return true;
+            
+            return( header(
+                            'Location: ' . 
+                            base_url() . 
+                            $target[$page] . 
+                            '/' . 
+                            $id
+                        ));
         }
-        header('Location: ' . base_url() . $target[$page]);
-        return true;
+        return ( header('Location: ' . base_url() . $target[$page]));
     }
     
     /**

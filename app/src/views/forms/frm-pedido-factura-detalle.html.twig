@@ -1,21 +1,38 @@
-
+<div class="well well-sm">
+   <div class="row">
+      <div class="col-md-3">
+         Proveedor: <span class="text-primary">{{ supplier.nombre }}</span>
+      </div>
+      <div class="col-md-3">
+         Fecha: <span class="text-primary"> {{ invoice.fecha_emision }} </span>
+      </div>
+      <div class="col-md-3"> Moneda/TC: <span class="text-primary">{{ invoice.moneda }} / {{ invoice.tipo_cambio | number_format(2,',','.')  }}</span> </div>
+      <div class="col-md-3">Valor: <span class="text-primary"> {{ invoice.valor | number_format(2,',','.') }} </span></div>
+   </div>
+</div>
 <form method="post" action="{{rute_url}}detallepedido/validar">
    <input type="hidden" name="id_pedido_factura" value="{{invoice.id_pedido_factura}}">
    <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-4">
          <div class="form-group">
             <label>Producto &nbsp;&nbsp; <a href="{{ rute_url }}producto/nuevo"> <span class="fa fa-plus"></span>Nuevo Producto</a></label>
-            <select 
+            <input
             class="form-control" 
             name="cod_contable" 
-            id="cod_contable" 
-            required="true" 
+            id="autocomplete"
             >  
-               <option selected="" disabled="">Seleccione ... </option>
-               {% for product in products %}
-               <option value="{{product.cod_contable}}"> {{ product.nombre }}</option>
-               {% endfor %}
-            </select>
+         </div>
+      </div>
+      <div class="col-md-2">
+         <div class="form-group">
+            <label>Cod Contable</label>
+            <input 
+            type="text" 
+            name="cod_contable"
+            id="cod_contable"
+            readonly="" 
+            class="form-control" 
+            >
          </div>
       </div>
             <div class="col-md-1">
@@ -122,27 +139,7 @@ var maxValueInvoice = {{invoice.valor}};
 
 <script type="text/javascript">
    var products = {{ productsarray | raw }};
-
-   $('#cod_contable').change(function(){
-   		$('#nro_cajas').val('');
-      var e = $(this).val();
-      $.each(products, function(key, value){
-         if(e === value.cod_contable){
-            $('#grado_alcoholico').val('');
-            $('#costo_caja').val('');
-            $('#costo_und').val('');
-            $('#cantidad_caja').val('');
-            $('#unidades').val('');
-            $('#capacidad_ml').val('');
-            $('#grado_alcoholico').val(value.grado_alcoholico);
-            $('#costo_caja').val(value.costo_caja);
-            $('#costo_und').val(Math.round((value.costo_caja/value.cantidad_x_caja) * 100)/100);
-            $('#cantidad_caja').val(value.cantidad_x_caja);
-            $('#capacidad_ml').val(value.capacidad_ml);
-         }
-      });      
-   });
-
+   
 	$('#nro_cajas').change(function(){
 		var numBoxes = parseFloat(this.value);
 		var itemPerBox = parseFloat($('#cantidad_caja').val());
@@ -188,3 +185,39 @@ $('#costo_caja').change(function(){
       }
    });
 </script>
+
+
+<script type="text/javascript">
+   var productsII = {{ products | json_encode() | raw }};
+   var productsIIKey = [];
+   console.dir(productsII);
+
+  $.each(productsII, function( k, v ){
+    productsIIKey.push(v.nombre);
+  });
+
+  console.dir(productsIIKey);
+  
+  $( "#autocomplete" ).autocomplete({
+    source: productsIIKey,
+  });
+
+  $("#autocomplete").on("autocompletechange", function(){
+    var value = this.value;
+    $.each(productsII, function(k,v){
+      if(value === v.nombre){
+        console.log('Nuevo Valor Seleccionado ');
+        $("#cod_contable").val(v.cod_contable);
+        $('#nro_cajas').val('');
+        $('#grado_alcoholico').val(v.grado_alcoholico);
+        $('#costo_caja').val(v.costo_caja);
+        $('#costo_und').val(Math.round((v.costo_caja/v.cantidad_x_caja) * 100)/100);
+        $('#cantidad_caja').val(v.cantidad_x_caja);
+        $('#capacidad_ml').val(v.capacidad_ml);
+        $('#nro_cajas').focus();
+
+      }
+   });
+});
+</script>
+

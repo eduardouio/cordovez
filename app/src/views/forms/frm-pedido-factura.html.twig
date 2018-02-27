@@ -1,4 +1,5 @@
 <form method="post" action="{{rute_url}}pedidofactura/validar/">
+  <input type="hidden" name="identificacion_proveedor" id="identificacion_proveedor" value="">
   <div class="row">
     <div class="col-md-1">
        <div class="form-group">
@@ -14,17 +15,14 @@
     </div>
     <div class="col-md-4">
       <div class="form-group">
-      <label>Proveedor &nbsp;&nbsp; <a href="{{ rute_url }}proveedor/nuevo"> <span class="fa fa-plus"></span>Nuevo Proveedor</a></label>
-    <select
-    name="identificacion_proveedor"
-    class="form-control"
-    required = "required"
-    > 
-    <option selected disabled  value="">Seleccione...</option>
-    {% for supplier in suppliers %}
-      <option value="{{supplier.identificacion_proveedor}}"> {{supplier.nombre}} </option>
-    {% endfor %}
-    </select>
+      <label>
+        Proveedor &nbsp;&nbsp; <a href="{{ rute_url }}proveedor/nuevo"> <span class="fa fa-plus"></span>Nuevo Proveedor</a>
+      </label>
+      <input 
+          type="text" 
+          id="autocomplete" 
+          class="form-control"
+          >
     </div>
     </div>
             <div class="col-md-2">
@@ -47,7 +45,6 @@
                type="text" 
                class="form-control fecha" 
                id="fecha_emision" 
-               readonly="" 
                required="required" 
                name="fecha_emision" 
                >
@@ -76,7 +73,6 @@
           <div class="input-group">
             <input 
                type="text" 
-               readonly="readonly"
                class="form-control fecha" 
                required="required" 
                name="vencimiento_pago"
@@ -175,6 +171,32 @@
       </div>
    </div>
 </form>
+
+<script type="text/javascript">
+  var suppliers = {{ suppliers | json_encode() | raw }};
+  var suppliersKey = [];
+  console.dir(suppliers);
+
+  $.each(suppliers, function( k, v ){
+    suppliersKey.push(v.nombre);
+  });
+  
+  $( "#autocomplete" ).autocomplete({
+    source: suppliersKey,
+  });
+
+  $("#autocomplete").on("autocompletechange", function(){
+    var value = this.value;
+    $.each(suppliers, function(k,v){
+      if(value === v.nombre){
+        console.log('Nuevo Valor Seleccionado ');
+        $("#identificacion_proveedor").val(v.identificacion_proveedor);
+      }
+    });
+
+  })
+
+</script>
 
 <script type="text/javascript">   
   $('#moneda').change(function(){

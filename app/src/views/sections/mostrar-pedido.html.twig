@@ -1,4 +1,4 @@
-{% set fob = (order.valuesOrder.valInvoices) %}
+a{% set fob = (order.valuesOrder.valInvoices) %}
 {% set cif = (fob + order.valuesOrder.valSecureExpense + order.valuesOrder.valSecureExpense + order.valuesOrder.valShipExpnese)  %}
 {% set nacionalizado = 0 %}
 {% if order.bg_isclosed == 1 %}
@@ -19,7 +19,7 @@
          <strong>Valor FOB Total:</strong> 
          <span class="text-primary">
          <strong>
-         $ {{fob | number_format(2, '.', ',') }}      
+         $ {{ fob | number_format(2, '.', ',') }}      
          </strong>
          </span>  
       </div>
@@ -45,7 +45,7 @@
          <strong>
          CIF Total:</strong>
          <span class="text-primary">   
-         {{ cif |  number_format(2, '.', ',') }}
+         {{ (order.seguro_aduana + order.flete_aduana) |  number_format(2, '.', ',') }}
          </span>
       </div>
    </div>

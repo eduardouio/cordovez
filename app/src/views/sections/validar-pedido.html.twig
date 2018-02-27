@@ -306,15 +306,14 @@
           </p>
           <form action="{{rute_url}}pedido/ingresoAlmacenera" method="post">
             <div class="row">
-            <input type="hidden" name="nro_pedido" value="{{order.nro_pedido}}">
+            <input type="hidden" name="nro_pedido" value="{{ order.nro_pedido }}">
             <div class="col-md-6">
-              <label>Feha Ingreso Almacenera Pública:</label>
+              <label>Fecha Ingreso Almacenera Pública:</label>
                 <input 
                   type="text" 
                   class="form-control fecha" 
                   name="fecha_ingreso_almacenera" 
-                  readonly="" 
-                  required="" 
+                  required="true" 
                   >
             </div>
             {% if haveEuros == true %}

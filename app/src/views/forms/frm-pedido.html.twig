@@ -101,7 +101,6 @@
                type="text" 
                class="form-control  fecha" 
                id="fecha_arribo" 
-               readonly="" 
                name="fecha_arribo" 
                >
                 <div class="input-group-addon">
@@ -121,7 +120,33 @@
             >
          </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-2">
+      	<div class="form-group">
+      		<label>Seguro Aduana</label>
+      		<input 
+      		type="number" 
+      		name="seguro_aduana"
+      		step="0.01" 
+      		required="true" 
+      		value="{{order.flete_aduana}}" 
+      		class="form-control" 
+      		>
+      	</div>
+      </div>
+      <div class="col-md-2">
+      	<div class="form-group">
+      		<label>Flete Aduana</label>
+      		<input 
+      		type="number" 
+      		name="flete_aduana"
+      		step="0.01" 
+      		required="true" 
+      		value="{{order.seguro_aduana}}" 
+      		class="form-control" 
+      		>
+      	</div>
+      </div>
+      <div class="col-md-4">
          <div class="form-group">
             <label>Comentarios</label>
             <textarea 

@@ -326,35 +326,6 @@ class Facinformativa extends MY_Controller
     
     
     /**
-     * Actualiza el tipo de cambio de una factura informativa antes de realizar 
-     * el calculo de los impuestos, luego redirecciona para ver el calculo de 
-     * los impuestos si el parcial tiene varias facturas informativas el tipo 
-     * de cambio se es aplicado a todas las facturas
-     *  @param array $_POST con il id de Facinformativa
-     *  @return string template
-     */
-    public function updateExchangeRate()
-    {
-        
-        $infoInvoices = $this->modelInfoInvoice->getByParcial(
-                                                            $_POST['id_pacial']
-                                                              );
-        
-        foreach ($infoInvoices as $item => $invoice){
-            $invoice['tipo_cambio'] = $_POST['tipo_cambio'];
-            if($this->modelInfoInvoice->update($invoice)){
-                $this->modelLog->susessLog(
-                    'Tipo de cambio actualizado antes de calculo de impuestos'
-                    );
-            }           
-        }
-        
-        return($this->redirectPage('impuestosparcial', $id_pacial));
-    }
-    
-    
-    
-    /**
      * Verifica si el pedido tiene una factura en euros
      *
      * @param $nroOrder =>
@@ -374,7 +345,6 @@ class Facinformativa extends MY_Controller
         }
         return false;
     }
-    
     
     
     /**

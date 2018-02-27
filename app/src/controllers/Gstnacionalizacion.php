@@ -471,6 +471,7 @@ class Gstnacionalizacion extends MY_Controller
             return ($this->index());
         }
         
+        $parcial['expenses'] = $this->modelExpenses->getPartialExpenses($idParcial);
         
         $infoInvoicesOrder = $this->modelInfoInvoice->getByParcial($idParcial);
         $order = $this->modelOrder->get($parcial['nro_pedido']);
@@ -484,31 +485,13 @@ class Gstnacionalizacion extends MY_Controller
                                 . $order['nro_pedido'] . 
                                 '] Parcial [' . $parcial['id_parcial'] . ']',
             'validWarenHouse' => 'true',
-            'lastDateWarenhouse' => $this->lastDataWarenhouse($order),
+            'lastWarenHouseParcial' => $lastWarenHouseParcial,
             'order' => $order,
             'parcial' => $parcial,
             'fobSaldo' => $this->getWarenhousePartialValue($idParcial),
         ]));
     }
     
-    
-    /**
-     * Retorna la ultima fecha que se ha facturado el bodegaje parcial
-     * @param string $nroOrder
-     * @return string
-     */
-    private function lastDataWarenhouse(array $order):string
-    {
-        $oldParcial = $this->modelParcial->getClosedParcials(
-                                          $order['nro_pedido']
-                                                              );       
-        if( $oldParcial == false ) {
-            return( $order['fecha_ingreso_almacenera'] );            
-        }
-        
-        return( $oldParcial['proximo_almacenaje_desde'] );
-        
-    }
 
     /**
      * Obtiene el tiempo en dias de un pedido en la almacenera publica

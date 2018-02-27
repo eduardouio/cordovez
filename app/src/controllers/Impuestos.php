@@ -13,7 +13,7 @@ require 'lib/taxesCalc.php';
  * @since Version 1.0.0
  * @filesource
  */
-class Impuestosparcial extends MY_Controller
+class Impuestos extends MY_Controller
 {
     private $controller = "impuestos";
     private $template = '/pages/pageImpuestos.html';
@@ -95,7 +95,7 @@ class Impuestosparcial extends MY_Controller
      * @param int $idParcial
      *            @retunr arrat template
      */
-    public function v(int $idParcial)
+    public function pc(int $idParcial)
     {
         $parcial = $this->modelParcial->get($idParcial);
         $infoInvoices = $this->modelInfoInvoice->getByParcial($idParcial);
@@ -124,7 +124,7 @@ class Impuestosparcial extends MY_Controller
             $this->modelLog->errorLog('No Existe El parcial para nacionalizar');
             return $this->index();
         }
-        
+                
         foreach ($infoInvoices as $index => $invoice) {
             if($parcialParams['moneda'] == ''){
                 $parcialParams['moneda'] = $invoice['moneda'];
@@ -193,7 +193,112 @@ class Impuestosparcial extends MY_Controller
             'paramsParcial' => $parcialParams,
         ]));
     }
-
+    
+        
+    /**
+     * Genera impuestos para R10 de un pedido
+     * @param string $nroOrder
+     */
+    public function pd(string $nroOrder){
+        
+        $order = $this->modelOrder->get($nroOrder);
+        $orderInvoices = $this->modelOrderInvoice->getbyOrder($nroOrder);
+        
+        $orderParams = [
+            'moneda' => '',
+            'tipo_cambio' => 1,
+            'otros_impuestos' => $parcial['otros'],
+            'fondinfa' => $this->getParamTaxes('FODINFA'),
+            'ice_especifico' => $this->getParamTaxes('ICE ESPECIFICO'),
+            'base_ice_advalorem' => $this->getParamTaxes(
+                'BASE ADVALOREM'
+                ),
+            'etiquetas_fiscales' => $this->getParamTaxes('ETIQUETAS FISCALES'),
+            'iva_param' => $this->getParamTaxes('IVA'),
+            'fob_pedido' => 0.0,
+            'flete_pedido' => 0.0,
+            'seguro_pedido' => 0.0,
+            'fodinfa_pedido' => 0.0,
+            'val_etiquetas_fiscales' => 0.0,
+            
+        ];
+        
+        if ($order == false) {
+            $this->modelLog->errorLog('No Existe El pedido a nacionalizar');
+            return $this->index();
+        }
+        
+        foreach ($infoInvoices as $index => $invoice) {
+            if($parcialParams['moneda'] == ''){
+                $parcialParams['moneda'] = $invoice['moneda'];
+                $parcialParams['tipo_cambio'] = $invoice['tipo_cambio'];
+            }
+            
+            $invoice['products'] = $this->modelInfoInvoiceDetail->
+            getCompleteDetail(
+                $invoice['id_factura_informativa']
+                );
+            
+            foreach ($invoice['products'] as $item => $row) {
+                
+                $cifItem = $this->getValueParcial(
+                    $row['nro_cajas'] *
+                    $row['cantidad_x_caja'],
+                    $row['id_factura_informativa_detalle'],
+                    $invoice
+                    );
+                
+                $taxes = new productTaxes([
+                    'unidades' => $row['nro_cajas'] * $row['cantidad_x_caja'],
+                    'etiquetas' => $this->getParamTaxes('ETIQUETAS FISCALES'),
+                    'grado_alcolico' => $row['grado_alcoholico'],
+                    'fondinfa' => $this->getParamTaxes('FODINFA'),
+                    'ice_especifico' => $this->getParamTaxes('ICE ESPECIFICO'),
+                    'base_ice_advalorem' => $this->getParamTaxes(
+                        'BASE ADVALOREM'
+                        ),
+                    'iva_param' => $this->getParamTaxes('IVA'),
+                    'seguro_value' => $cifItem['seguro_item'],
+                    'flete_value' => $cifItem['flete_item'],
+                    'fob_value' => (
+                        $cifItem['fob_item'] * $invoice['tipo_cambio']
+                        ),
+                    'percent_item' => $cifItem['percent_item'],
+                    'otros' => $parcial['otros'],
+                    'producto' => $row['nombre'],
+                    'capacidad_ml' => $row['capacidad_ml'],
+                    'nro_cajas' => $row['nro_cajas'],
+                    'costo_caja' => $row['costo_caja'],
+                ]);
+                
+                $invoice['taxes'][$index] = $taxes->getTaxes();
+                
+                $parcialParams['fob_parcial'] += ($cifItem['fob_item'] * $invoice['tipo_cambio'] );
+                $parcialParams['seguro_parcial'] += $cifItem['seguro_item'];
+                $parcialParams['flete_parcial'] += $cifItem['flete_item'];
+                $parcialParams['val_etiquetas_fiscales'] += $invoice['taxes'][0]['etiquetas_fiscales'];
+                $parcialParams['fodinfa_parcial'] += $invoice['taxes'][0]['fodinfa'];
+                
+            }
+            
+            $infoInvoices[$index] = $invoice;
+        }
+        
+        
+        return ($this->responseHttp([
+            'titleContent' => 'Previsualizacion de Impuestos Pedido [' .
+            $order['nro_pedido'] . '] Parcial [' .
+            $parcial['id_parcial'] . ']',
+            'infoInvoices' => $infoInvoices,
+            'order' => $order,
+            'parcial' => $parcial,
+            'numberInfoInvoices' => count($infoInvoices),
+            'paramsParcial' => $parcialParams,
+        ]));
+    }
+    
+    
+    
     /**
      * Actualiza los parametros de calculo de impuestos para el Parcial
      * 

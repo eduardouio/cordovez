@@ -29,7 +29,7 @@
 class warenHouseParcial 
 {
     private $order = [];
-    private $parcials = [];
+    private $parcial = [];
     
     
     /**
@@ -37,9 +37,9 @@ class warenHouseParcial
      * @param array $order
      * @param array $parcials
      */
-    function __construct(array $order, array $parcials){
+    function __construct(array $order, array $parcial){
         $this->order = $order;
-        $this->parcials = $parcials;
+        $this->parcial = $parcial;
     }
     
     
@@ -51,26 +51,33 @@ class warenHouseParcial
     public function getLastWarenhouseParcial(){
         $lastParcial = $this->getLastParcial();
         $warenHouses = []; 
+        
+        if($lastParcial['expenses']){
+            foreach ( $lastParcial['expenses'] as $expensesNationalization => $v) {
+                if($this->isWarenhouse($v['concepto'])){
+                    array_push($warenHouses, $v);
+                }
+            }
+        
+            $keys = [];
 
-        foreach ( $lastParcial as $expensesNationalization => $v) {
-            if($this->isWarenhouse($v['concepto'])){
-                array_push($warenHouses, $v);
+            foreach ($warenHouses as $item => $expense){
+                if($expense['tipo'] == 'NACIONALIZACION'){
+                    array_push($keys, $expense['id_gastos_nacionalizacion']);
+                }
             }
-        }
         
-        $keys = [];
-        foreach ($warenHouses as $item => $expense){
-            if($expense['tipo'] == 'NACIONALIZACION'){
-                array_push($keys, $expense['id_gasto_nacionalizacion']);
+            $lastWarenHouseId = max($keys);
+        
+            foreach ($warenHouses as $item => $expense){
+                if($expense['id_gastos_nacionalizacion'] == $lastWarenHouseId){
+                    $date = date('Y-m-d' , strtotime('+1 day', strtotime($expense['fecha_fin'])));
+                    $expense['fecha_fin'] = strval($date);
+                    return $expense;
+                }
             }
-        }
-        
-        $lastWarenHouseId = max($keys);
-        
-        foreach ($warenHouses as $item => $expense){
-            if($expense['id_gasto_nacionalizacion'] == $lastWarenHouseId){
-                return $expense;
-            }
+        }else{
+            return false;
         }
         
      }
@@ -84,10 +91,12 @@ class warenHouseParcial
       */
      private function getLastParcial()
      {
+         return $this->parcial;
+         
          $keys = [];
          
          foreach ($this->parcials as $parcial => $item){
-             array_push($keys, $item.id_parcial);
+             array_push($keys, $item['id_parcial']);
          }
          
          $lastParcialId = max($keys);

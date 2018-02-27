@@ -15,16 +15,19 @@
          <input type="hidden" name="nro_pedido" value="{{order.nro_pedido}}">
          <div class="col-md-3">
             <div class="form-group">
-               <label>Ingreso Almacenera</label>
+               <label>Inicio Periodo</label>
                   <input 
-                     type="date" 
+                     type="text" 
                      class="form-control" 
+                     disabled="" 
                      id="fecha_ingreso_almacenera" 
-                     disabled=""
                      name="fecha_ingreso_almacenera" 
-                     {% if lastDateWarenhouse != null %}
-                        value="{{lastDateWarenhouse | date('d/m/Y') }}" 
-                     {% endif %}                     >
+                        {% if lastWarenHouseParcial == false %}
+                            value="{{ order.fecha_ingreso_almacenera  | date('d/m/Y') }}"
+                        {% else %}
+                            value="{{ lastWarenHouseParcial.fecha_fin | date('d/m/Y') }}"
+                        {% endif %}
+                       >
                </div>
          </div>
          <div class="col-md-4">
@@ -35,7 +38,6 @@
                      class="form-control fecha" 
                      id="fecha_nacionalizacion_parcial" 
                      required="" 
-                     readonly="" 
                      name="fecha_nacionalizacion_parcial" 
                      >
             </div>

@@ -87,7 +87,8 @@ class productTaxes {
         $this->fodinfaValue = (
             $this->getCIF() * $this->fodinfaParam
         );
-
+        
+        print $this->fodinfaParam;
         return $this->fodinfaValue;
     }
 

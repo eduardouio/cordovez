@@ -83,7 +83,6 @@ class Impuestos extends MY_Controller
     public function index()
     {
         $this->modelLog->warningLog('Redirecionamiento desde el controller de impuestos');
-        
         return ($this->redirectPage('home'));
     }
 
@@ -207,7 +206,7 @@ class Impuestos extends MY_Controller
         $orderParams = [
             'moneda' => '',
             'tipo_cambio' => 1,
-            'otros_impuestos' => $parcial['otros'],
+            'otros_impuestos' => $order['otros'],
             'fondinfa' => $this->getParamTaxes('FODINFA'),
             'ice_especifico' => $this->getParamTaxes('ICE ESPECIFICO'),
             'base_ice_advalorem' => $this->getParamTaxes(
@@ -228,24 +227,23 @@ class Impuestos extends MY_Controller
             return $this->index();
         }
         
-        foreach ($infoInvoices as $index => $invoice) {
-            if($parcialParams['moneda'] == ''){
-                $parcialParams['moneda'] = $invoice['moneda'];
-                $parcialParams['tipo_cambio'] = $invoice['tipo_cambio'];
+        foreach ($orderInvoices as $index => $invoice) {
+            if($orderParams['moneda'] == ''){
+                $orderParams['moneda'] = $invoice['moneda'];
+                $orderParams['tipo_cambio'] = $invoice['tipo_cambio'];
             }
             
-            $invoice['products'] = $this->modelInfoInvoiceDetail->
+            $invoice['products'] = $this->ModelOrderInvoiceDetail->
             getCompleteDetail(
-                $invoice['id_factura_informativa']
+                $invoice['id_pedido_factura']
                 );
-            
             foreach ($invoice['products'] as $item => $row) {
-                
-                $cifItem = $this->getValueParcial(
+                $cifItem = $this->getValueOrder(
                     $row['nro_cajas'] *
                     $row['cantidad_x_caja'],
-                    $row['id_factura_informativa_detalle'],
-                    $invoice
+                    $row['detalle_pedido_factura'],
+                    $invoice,
+                    $order
                     );
                 
                 $taxes = new productTaxes([
@@ -264,7 +262,7 @@ class Impuestos extends MY_Controller
                         $cifItem['fob_item'] * $invoice['tipo_cambio']
                         ),
                     'percent_item' => $cifItem['percent_item'],
-                    'otros' => $parcial['otros'],
+                    'otros' => $order['otros'],
                     'producto' => $row['nombre'],
                     'capacidad_ml' => $row['capacidad_ml'],
                     'nro_cajas' => $row['nro_cajas'],
@@ -272,29 +270,72 @@ class Impuestos extends MY_Controller
                 ]);
                 
                 $invoice['taxes'][$index] = $taxes->getTaxes();
-                
-                $parcialParams['fob_parcial'] += ($cifItem['fob_item'] * $invoice['tipo_cambio'] );
-                $parcialParams['seguro_parcial'] += $cifItem['seguro_item'];
-                $parcialParams['flete_parcial'] += $cifItem['flete_item'];
-                $parcialParams['val_etiquetas_fiscales'] += $invoice['taxes'][0]['etiquetas_fiscales'];
-                $parcialParams['fodinfa_parcial'] += $invoice['taxes'][0]['fodinfa'];
-                
             }
             
-            $infoInvoices[$index] = $invoice;
+            $orderInvoices[$index] = $invoice;
         }
         
         
         return ($this->responseHttp([
             'titleContent' => 'Previsualizacion de Impuestos Pedido [' .
-            $order['nro_pedido'] . '] Parcial [' .
-            $parcial['id_parcial'] . ']',
-            'infoInvoices' => $infoInvoices,
+            $order['nro_pedido'] ,
+            'orderInvoices' => $orderInvoices,
             'order' => $order,
-            'parcial' => $parcial,
-            'numberInfoInvoices' => count($infoInvoices),
-            'paramsParcial' => $parcialParams,
+            'regimen' => 'R10',
+            'orderParams' => $orderParams,
+            'numberInvoices' => count($orderInvoices),
         ]));
+    }
+    
+    
+    /**
+     * Obtiene el valor que le corresponde al item en la factura informativa
+     *
+     * @param int $unities
+     * @param array $infoInfoice arreglo de toda la factura informariva
+     * @param string $concept [flete | seguro | fob]
+     * @param array $order orden relaxionado
+     * @return float valor del concepto
+     */
+    private function getValueOrder(
+        int $unities,
+        int $idOrderInvoiceDetail,
+        array $orderInvoice,
+        array $order
+        ): array
+        {
+        
+            $itemValues = [
+                'fob_item' => 0.0,
+                'seguro_item' => 0.0,
+                'flete_item' => 0.0,
+                'percent_item' => 0.0,
+            ];
+            
+            
+            foreach($orderInvoice['products'] as $item => $detail){
+                if (
+                    $detail['detalle_pedido_factura'] == $idOrderInvoiceDetail
+                    ){
+                        $itemValues['fob_item'] = floatval(
+                            $detail['costo_caja'] *
+                            $detail['nro_cajas']
+                            );
+                        $itemValues['percent_item'] = floatval(
+                            $itemValues['fob_item'] /
+                            $orderInvoice['valor']
+                            );
+                        $itemValues['flete_item'] = floatval(
+                            $order['flete_aduana'] *
+                            $itemValues['percent_item']
+                            );
+                        $itemValues['seguro_item'] = floatval(
+                            $order['seguro_aduana'] *
+                            $itemValues['percent_item']
+                            );
+                        return $itemValues;
+                }
+            }
     }
     
     
@@ -382,7 +423,8 @@ class Impuestos extends MY_Controller
             }
         }
     }
-
+    
+    
 
     /**
      * Retorna un parametr basado en el nombre el impueto

@@ -49,13 +49,14 @@ if (!function_exists('searchOrderCeroValues')) {
  */
 if (! function_exists('dateDiffInDays')){
     function dateDiffInDays(string $dateBegin, string $dateEndUp  ) : int
-    {  
+    {          
         if($dateBegin == $dateEndUp){
             return 1;
         }
         
         $dateBegin = strtotime($dateBegin);
         $dateEndUp = strtotime($dateEndUp);
+                
         $dateDiffInSeconds = ($dateEndUp - $dateBegin);
         return (floor($dateDiffInSeconds/(60 * 60 * 24)) + 1);
     }

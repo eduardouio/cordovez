@@ -17,7 +17,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
  */
 class Pedido extends MY_Controller
 {
-    
     private $controller = 'pedido';
     private $listPerPage = 12;
     private $seguroVal = 2.2;

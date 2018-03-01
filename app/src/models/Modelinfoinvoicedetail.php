@@ -115,10 +115,13 @@ class Modelinfoinvoicedetail extends CI_Model
         $result = $this->db->query($sql);
         
         if($result->num_rows() > 0){
-            
+            $this->modelLog->susessLog('Se realiza SQL exitoso');
             return $result->result_array();
         }
-        
+        $this->modelLog->errorLog(
+            'Falla la consulta directa',
+            $this->db->last_query()
+            );
         return false;
     }
 

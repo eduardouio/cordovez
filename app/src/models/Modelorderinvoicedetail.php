@@ -5,12 +5,15 @@ class Modelorderinvoicedetail extends CI_Model
 
     private $table = 'detalle_pedido_factura';
     private $modelBase;
+    private $modelLog;
     
     public function __construct()
     {
         parent::__construct();
         $this->load->model('modelbase');
+        $this->load->model('Modellog');
         $this->modelBase = new ModelBase();
+        $this->modelLog = new Modellog();
     }
     
     
@@ -154,6 +157,41 @@ class Modelorderinvoicedetail extends CI_Model
         }
         
     }
+    
+    
+    /**
+     * Retorna el detalle completo de una factura 
+     * inclutendo el costo por caja que se encuentra en la tabla de detalle
+     * pedido factura
+     *
+     * @param int $idInfoInvoice
+     * @return array arreglo de prodyucto
+     *
+     */
+    public function getCompleteDetail($idInvoice)
+    {
+        $sql = "SELECT
+        	a.*,
+            c.*
+        FROM
+        	detalle_pedido_factura AS a
+        JOIN
+        	producto as c using(cod_contable)
+        WHERE id_pedido_factura = $idInvoice;
+            ";
+        $result = $this->db->query($sql);
+        
+        if($result->num_rows() > 0){
+            $this->modelLog->susessLog('Se realiza SQL exitoso');
+            return $result->result_array();
+        }
+        $this->modelLog->errorLog(
+            'Falla la consulta directa',
+            $this->db->last_query()
+            );
+        return false;
+    }
+    
     
     /**
      * Retorna el listado de stock activo por regimen,

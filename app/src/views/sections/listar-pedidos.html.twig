@@ -21,7 +21,7 @@
             <small>Pedidos Cerrados:</small> 
             <span id="suma"> 
                 {{ simbolo | raw }}
-                {% set colsedOrders = infoBase.totalOrders -infoBase.activeOrders %}
+                {% set colsedOrders = infoBase.totalOrders - infoBase.activeOrders %}
                 {{ colsedOrders | number_format(0, '.', ',') }}
             </span>
          </h4>

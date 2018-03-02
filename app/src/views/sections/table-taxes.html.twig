@@ -45,15 +45,15 @@
                     <td class="text-right brackground-gray"><strong>Otros Impuestos</strong></td>
                     <td class="text-right">$ {{ parcial.otros | number_format(2,',','.') }}</td>
                 </tr>
-              <!--   <tr>
+               <tr>
                     <td class="text-right brackground-gray"><strong>Parámetro Etiquetas Fiscales</strong></td>
                     <td class="text-right">$ {{ paramsParcial.etiquetas_fiscales | number_format(2,',','.') }}</td>
-                </tr> -->
-                <!-- <tr>
+                </tr> 
+                <tr>
                     <td class="text-right brackground-gray"><strong>Parámetro IVA</strong></td>
                     <td class="text-right">{{ (paramsParcial.iva_param * 100) | number_format(2,',','.') }} %</td>
                 </tr>
-                <tr>
+                <!-- <tr>
                     <td class="text-right brackground-gray"><strong>Parámetro Fodinfa</strong></td>
                     <td class="text-right">{{ (paramsParcial.fondinfa *100) | number_format(2,',','.') }} %</td>
                 </tr> -->
@@ -84,45 +84,15 @@
             </div>
             <div class="col-md-1"></div>
         </div>
+        <div class="col-md-1"></div>
         <form action="{{ rute_url }}impuestosparcial/actualizar" method="post">
-            <input type="hidden" name="id_parcial" value="{{ parcial.id_parcial }}">
-            <table class="table borderless">
-                <tr class="text-right">
-                    <td>
-                         <div class="form-group">
-                            <label>Moneda</label>
-                            <input 
-                                type="text" 
-                                name="moneda"
-                                value="{{ paramsParcial.moneda }}" 
-                                required=""
-                                disabled="" 
-                                >
-                        </div>
-                        <div class="form-group"
-                            >               <label>Otros Impuestos</label>
-                            <input 
-                                type="number" 
-                                name="otros" 
-                                value="{{parcial.otros}}" 
-                                step="0.01"
-                                >
-                        </div>
-                    </td>
-                    <td>
-                         <div class="form-group">
-                            <label>Tipo de Cambio</label>
-                        <input 
-                            type="number" 
-                            name="tipo_cambio"
-                            step="0.0000000000001"
-                            required="" 
-                            value="{{ paramsParcial.tipo_cambio }}" 
-                            >
-                        </div>                        
-                        <div class="form-gruop pull-right" >
+        <input type="hidden" name="id_parcial" value="{{ parcial.id_parcial }}">
+        <div class="col-md-5" style="background-color: #f9f9f9; padding:22px">
+                   <div class="row">
+                    <div class="col-md-12">
+                              <div class="form-group" >
                             <label class="control control-checkbox">
-                                Tomar Etiquetas Fiscales
+                                Etiquetas Fiscales
                                 <input 
                                 type="checkbox" 
                                 name="bg_have_etiquetas_fiscales" 
@@ -133,44 +103,155 @@
                                 <div class="control_indicator"></div>
                             </label>
                         </div>
-                    </td>
-                    <td>
-                        <textarea 
-                        style="width:90%;" 
+                    </div>   
+                   </div>
+
+                                       <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Moneda</label>
+                            <input 
+                                type="text" 
+                                name="moneda"
+                                value="{{ paramsParcial.moneda }}" 
+                                required=""
+                                disabled="" 
+                                style="width:100%" 
+                                >
+                        </div>
+                    </div>
+                    </div>
+
+                    <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Seguro Aduana</label>
+                            <input 
+                            type="number" 
+                            name="seguro_aduana"
+                            required=""
+                            step="0.01" 
+                            style="width:100%" 
+                            value="{{ paramsParcial.seguro_parcial}}" 
+                            >
+                        </div>
+                    </div>
+                    </div>
+              <div class="row">
+                    <div class="col-md-12">
+                         <div class="form-group">
+                            <label>Otros Impuestos</label>
+                            <input 
+                                type="number" 
+                                name="otros" 
+                                value="{{ parcial.otros }}" 
+                                step="0.01"
+                                style="width:100%" 
+                                >
+                        </div>
+                    </div>
+                    </div>          
+                 <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Observaciones</label>
+                          <textarea 
+                        style="width:100%;" 
+                        rows="1" 
                         name="observaciones" 
                         placeholder="Observaciones" 
                         maxlength="250" 
                         required="" 
                         class="form-control pull-right" 
                         >{{ parcial.observaciones }}</textarea>
-                    </td>
-                </tr>
-                <tr class="text-right">
-                    <td colspan="3">
+                        </div>
+                    </div>
+                    </div>
+        
+        </div>    
+        
+        <div class="col-md-5" style="background-color: #f9f9f9; padding:22px">
+                <div class="row">
+                    <div class="col-md-12">
+                              <div class="form-group" >
+                            <label class="control control-checkbox">
+                                Tasa de Control
+                                <input 
+                                type="checkbox" 
+                                name="bg_have_tasa_control" 
+                                {% if parcial.bg_have_tasa_control == 1 %}
+                                checked="true"
+                                {% endif %}
+                                >
+                                <div class="control_indicator"></div>
+                            </label>
+                        </div>
+                    </div>   
+                   </div>
+
+                   <div class="row">
+                    <div class="col-md-12">
+                                    <div class="form-group">
+                            <label>Tipo de Cambio</label>
+                        <input 
+                            type="number" 
+                            name="tipo_cambio"
+                            step="0.0000000000001"
+                            required="" 
+                            value="{{ paramsParcial.tipo_cambio }}" 
+                            style="width:100%" 
+                            >
+                        </div>
+                    </div>
+                   </div>
+
+                       <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Flete Aduana</label>
+                            <input 
+                            type="number" 
+                            name="flete_aduana"
+                            required=""
+                            step="0.01" 
+                            style="width:100%" 
+                            >
+                        </div>
+                    </div>
+                    </div>
+         <div class="row">
+                    <div class="col-md-12">
+                         <div class="form-group">
+                            <label>Exoneracion Arancel</label>
+                            <input 
+                                type="number" 
+                                name="otros" 
+                                value="{{ parcial.otros }}" 
+                                step="0.01"
+                                style="width:100%" 
+                                >
+                        </div>
+                    </div>
+                    </div>         
+                    <br>
+                    <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group pull-right">
                         <button class="btn btn-sm btn-default" type="submit">
                         <span class="fa fa-refresh"></span> Actualizar
                         </button> 
-                    </td>
-                </tr>
-            </table>
+                        </div>
+                    </div>
+                    </div>
+
+            </div>    
         </form>
-        <div class="row text-left">
-            <div class="col-md-1"></div>
-            <div class="col-md-3">
-                <h4>Liquidación: <br><strong>$ {{ liquidacion | number_format(2,',','.')}}</strong></h4>
-            </div>
-            <div class="col-md-3">
-                <h4>Prorrateo: <br><strong>$ {{ prorrateo_parcial | number_format(2,',','.') }}</strong></h4>
-            </div>
-            <div class="col-md-3">
-                <h4>Costo Caja: <br><strong> $ {{ costo_caja | number_format(2,',','.')}} </strong></h4>
-            </div>
-            <div class="col-md-2">
-                <h4>Costo Und: <br><strong> $ {{ costo_unidad | number_format(2,',','.') }} </strong></h4>
-            </div>
-        </div>
+
+        <div class="col-md-1"></div>
     </div>
 </div>
+
+
 <div class="row">
     <div class="col-md-12">
         <div class="table-responsive">
@@ -187,6 +268,7 @@
                     <th>CIF</th>
                     <th>Fodinfa</th>
                     <th>Etiquetas Fiscales</th>
+                    <th>Tasa Control</th>
                     <th>Exaduana </th>
                     <th>Exaduana U</th>
                     <th>Presentacion</th>
@@ -211,8 +293,9 @@
                     <td class="text-right">{{  tax.seguro_aduana  | number_format(3,',','.') }}</td>
                     <td class="text-right">{{  tax.flete_aduana  | number_format(3,',','.') }}</td>
                     <td class="text-right">{{  tax.cif  | number_format(3,',','.') }}</td>
-                    <td class="text-right">{{  tax.fodinfa_unitario  | number_format(3,',','.') }}</td>
+                    <td class="text-right">{{  tax.fodinfa  | number_format(3,',','.') }}</td>
                     <td class="text-right">{{  tax.etiquetas_fiscales  | number_format(3,',','.') }}</td>
+                    <td class="text-right">{{  tax.tasa_control  | number_format(3,',','.') }}</td>
                     <td class="text-right">{{  tax.exaduana  | number_format(3,',','.') }}</td>
                     <td class="text-right">{{  (tax.exaduana / tax.unidades)  | number_format(3,',','.') }}</td>
                     <td class="text-right">{{  (tax.presentacion)  | number_format(0,',','.') }}</td>

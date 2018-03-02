@@ -3,11 +3,12 @@
 	{% set valor_justificado = valor_justificado + ((detail.oderDetail.costo_caja)*(detail.nro_cajas)) %}
 {% endfor %}
 
-{% set saldoFactura = (infoInvoice.valor - valor_justificado)  %}
+{% set saldoFactura = (infoInvoice.valor - valor_justificado) | number_format(2) %}
 {% set moneda = '&euro;' %}
 {% if infoInvoice.moneda == 'DOLARES' %}
 {% set moneda = '$' %}
 {% endif %}
+
 <div class="well well-sm">
 	<div class="row">
 		<div class="col-md-3">

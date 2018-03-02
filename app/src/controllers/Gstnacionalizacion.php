@@ -344,6 +344,7 @@ class Gstnacionalizacion extends MY_Controller
         return $rateExpenses;
     }
 
+    
     /**
      * Pesenta la informacion completa del rgistro de gasto inicial
      *
@@ -353,20 +354,32 @@ class Gstnacionalizacion extends MY_Controller
     public function presentar(int $idInitExpense)
     {
         $initExpense = $this->modelExpenses->getExpense($idInitExpense);
+        
         if ($initExpense == false) {
+            $this->modelLog->errorLog(
+                'Acceso a gasto nacionalizacion inexistente',
+                $this->db->last_query()
+                );
             $this->redirectPage('ordersList');
             return false;
         }
-        ;
-        $infoInvoice = $this->modelInfoInvoice->get($initExpense['id_factura_informativa']);
-        $order = $this->modelOrder->get($infoInvoice['nro_pedido']);
+                
+        $infoInvoice = $this->modelInfoInvoice->get($initExpense['id_parcial']);
+        
+        $nroOrder = $this->modelParcial->getNroOrderByParcial(
+            $initExpense['id_parcial']
+            );
+        
+        $order = $this->modelOrder->get($nroOrder);
+        
         $this->responseHttp([
             'infoInvoice' => $infoInvoice,
             'initExpense' => $initExpense,
             'supplier' => $this->modelSupplier->get($initExpense['identificacion_proveedor']),
             'user' => $this->modelUser->get($infoInvoice['id_user']),
-            'titleContent' => 'Descripción De Gasto Inicial Pedido:' . $order['nro_pedido'] . ' Factura Informativa [' . $infoInvoice['nro_factura_informativa'] . ']',
-            'show' => true
+            'titleContent' => 'Descripción De Gasto Nacionalización Pedido:' . $order['nro_pedido'] . ' Factura Informativa [' . $infoInvoice['nro_factura_informativa'] . ']',
+            'show' => true,
+            'order' => $order,
         ]);
     }
 
@@ -385,7 +398,12 @@ class Gstnacionalizacion extends MY_Controller
         }
         
         $parcial = $this->modelParcial->get($expense['id_parcial']);
-        $order = $this->modelOrder->get($parcial['nro_pedido']);
+        
+        $nroOrder = $this->modelParcial->getNroOrderByParcial(
+                                                          $expense['id_parcial']
+                                                             );
+        $order = $this->modelOrder->get($nroOrder);
+        
         return ($this->responseHttp([
             'titleContent' => 'Actulalizar Gasto Nacionalizacion Pedido [' . 
                                 $order['nro_pedido'] . '] Parcial [' . 

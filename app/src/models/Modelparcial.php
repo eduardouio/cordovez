@@ -276,6 +276,27 @@ class Modelparcial extends CI_Model
     }
     
     
+    /**
+     * Retorna el numero de orden a partir del id de un parcial
+     * @param int $idParcial identificacion del parcial
+     * @return string nro del parcial
+     */
+    public function getNroOrderByParcial(int $idParcial) : string
+    {
+        $parcial = $this->get($idParcial);
+        
+        if($parcial == false){
+            $this->modelLog->errorLog(
+                'El parcial que busca no existe',
+                $this->db->last_query()
+                );
+            return false;
+        }
+        
+        return ($parcial['nro_pedido']);
+    }
+    
+    
     
     /**
      * Actualiza un parcial, se usa para cambiar las fechas de salida 

@@ -106,6 +106,8 @@ class Facturapagos extends MY_Controller
         ]);
     }
 
+
+    
     /**
      * Presenta el formulario para el registro de un nuevo documento de Pago
      * @return mixed

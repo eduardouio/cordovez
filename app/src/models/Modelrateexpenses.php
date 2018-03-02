@@ -190,6 +190,7 @@ class Modelrateexpenses extends CI_Model {
             ],
         ]);
         
+
         if(is_array($rates) && count($rates) > 0){
             return ( array_merge($rates, $etiquetasFiscales));
         }

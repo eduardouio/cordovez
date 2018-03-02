@@ -150,6 +150,44 @@ class Modelpaiddetail extends \CI_Model
     
     
     /**
+     * Retorna las justificaciones para un parcial
+     * 
+     * @param string $nroOrder
+     * @return array | boolean
+     */
+    public function getByParcial($idParcial)
+    {
+        $query = "  SELECT
+                            a.*,
+                            b.nro_pedido,
+                            c.nro_factura,
+                            c.identificacion_proveedor,
+                            c.fecha_emision,
+                            b.concepto
+                    FROM detalle_documento_pago AS a
+                    JOIN gastos_nacionalizacion AS b
+                    USING(id_gastos_nacionalizacion)
+                    JOIN documento_pago as c
+                    USING(id_documento_pago)
+                    WHERE id_parcial=  '" . $idParcial ."' ORDER BY b.concepto DESC";
+        
+        $paidsDetails = $this->db->query($query);
+        $this->modelLog->warningLog('Se ejecuta sentencia SQL directa', $query);
+        $paidsDetails = $paidsDetails->result_array();
+        
+        if(gettype($paidsDetails) == 'array' && count($paidsDetails) > 0){
+            return $paidsDetails;
+        }
+        
+        $this->modelLog->warningLog(
+            'la sentencia directa a retornado un valor vacio',
+            $query
+            );
+        return false;
+    }
+    
+    
+    /**
      * Crea un nuevo detalle de factura
      * @param array $paidDetail
      * @return int

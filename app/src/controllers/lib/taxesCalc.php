@@ -34,6 +34,8 @@ class productTaxes {
     private $iceEspecificoParam;
     private $baseIceAdvaloremParam;
     private $ivaParam;
+    private $exaduana;
+    private $tasaControl;
     
     
     /**
@@ -57,6 +59,7 @@ class productTaxes {
         $this->capacidadValue = intval( $params['capacidad_ml'] );
         $this->nroCajas = intval( $params['nro_cajas'] );
         $this->costoCaja = floatval( $params['costo_caja'] );
+        $this->tasaControl = floatval($params['tasa_control']);
     }
     
 
@@ -88,11 +91,10 @@ class productTaxes {
             $this->getCIF() * $this->fodinfaParam
         );
         
-        print $this->fodinfaParam;
         return $this->fodinfaValue;
     }
 
-
+    
     /**
      * Retorna el valor del ICE
      * 7,24*CAPACIDAD/1000*GRADO ALCOHOLICO/100*No. Botellas
@@ -131,13 +133,22 @@ class productTaxes {
      * ARANCEL ESDPECIFICO+OTROS+ETIQUETAS FISCALES)/No. Botellas
      * @return float 
      */
-    private function getExaduana() : float 
+    private function getExaduana()
     {
-        return (
+        $array = [
+            'cif' =>  $this->getCIF(), 
+            'fodinfa' =>  $this->getFodinfa(), 
+            'otros' =>  $this->otrosValue ,
+            'ef' =>  $this->getEtiquetasFiscales(),
+            'tasa_control' => $this->tasaControl,
+        ];
+        
+        $this->exaduana = (
             $this->getCIF() + 
             $this->getFodinfa() +
             $this->otrosValue + 
-            $this->getEtiquetasFiscales()
+            $this->getEtiquetasFiscales() +
+            $this->tasaControl
             );
     }
     
@@ -165,11 +176,11 @@ class productTaxes {
     private function getIceAdvalorem() : float 
     {
         if(
-            ($this->getExaduana()/ $this->unidadesParam) >
+            ($this->exaduana / $this->unidadesParam) >
             $this->getAdvaloremBase()
             ){
             return (
-                    ($this->getExaduana() * $this->baseIceAdvaloremParam) * 
+                    ($this->exaduana * $this->baseIceAdvaloremParam) * 
                     $this->unidadesParam
                 );
         }
@@ -201,6 +212,8 @@ class productTaxes {
      * @return array
      */
     public function getTaxes(){
+        $this->getExaduana();
+        
         return([
             'seguro_aduana' => $this->seguroValue,
             'flete_aduana' => $this->fleteValue,
@@ -213,12 +226,13 @@ class productTaxes {
             'fodinfa' => $this->getFodinfa(),
             'fodinfa_unitario' => ($this->getFodinfa() / $this->unidadesParam),
             'etiquetas_fiscales' => $this->getEtiquetasFiscales(),
-            'exaduana' => $this->getExaduana(),
             'base_advalorem' => $this->getAdvaloremBase(),
+            'exaduana' => $this->exaduana,
             'presentacion' => $this->capacidadValue,
             'grado_alcoholico' => $this->gradoAlcoholicoParam,
             'ice_especifico' => $this->getICEEspecifico(),
             'ice_advalorem' => $this->getIceAdvalorem(),
+            'tasa_control' => $this->tasaControl,
         ]);
     }
 }

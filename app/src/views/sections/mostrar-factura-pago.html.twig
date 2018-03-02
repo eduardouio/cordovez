@@ -226,7 +226,7 @@
 					dólares o una parte del mismo.
             	</p>
             	<div class="row">
-            		<form action="{{rute_url}}/detallefacpago/noProvisionado" method="post">
+            		<form action="{{rute_url}}detallefacpago/noProvisionado" method="post">
             			<input type="hidden" name="id_documento_pago" value="{{document.id_documento_pago}}">
             		<div class="col-md-3">
             			<div class="form-group">
@@ -243,7 +243,7 @@
             			<div class="form-group">
             				<label>Parcial</label>
             			<select class="form-control" name="id_parcial" id="id_parcial" disabled="">
-            				<option disabled="" selected="">Seleccione...</option>
+            				<option disabled="" selected="" >Seleccione...</option>
             			</select>
             			</div>
             		</div>
@@ -340,7 +340,7 @@ $('#nro_pedido').change(function(){
 	if( found.regimen === 70 && found.parcials != false){
 		$('#id_parcial option').remove();
 		$('#id_parcial').removeAttr('disabled');
-		$('#id_parcial').append('<option desabled selected>Seleccione...</option>');
+		$('#id_parcial').append('<option desabled selected value="0">Aplicar al Pedido</option>');
 		$.each(found.parcials, function(key, value){
 			var item =  '<option value="' + value.id_parcial + '">' + value.ordinalNumber + "<option>";
 			$('#id_parcial').append(item);

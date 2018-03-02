@@ -25,6 +25,7 @@ class Parcial extends MY_Controller
     private $modelUser;
     private $modelExpenses;
     private $modelSupplier;
+    private $modelPaidDetail;
 
     /**
      * constructor de clase
@@ -51,6 +52,7 @@ class Parcial extends MY_Controller
         $this->load->model('Modeluser');        
         $this->load->model('Modelexpenses');        
         $this->load->model('Modelsupplier');        
+        $this->load->model('Modelpaiddetail');        
         $this->modelParcial = new Modelparcial();
         $this->modelOrder = new Modelorder();
         $this->modelInfoInvoice = new Modelinfoinvoice();
@@ -60,6 +62,7 @@ class Parcial extends MY_Controller
         $this->modelUser = new Modeluser();
         $this->modelExpenses = new Modelexpenses();
         $this->modelSupplier = new Modelsupplier();
+        $this->modelPaidDetail = new Modelpaiddetail();
     }
 
     /**
@@ -118,6 +121,7 @@ class Parcial extends MY_Controller
             'parcial' => $parcial,
             'expenses' => $expenses,
             'infoInvoices' => $infoInvoices,
+            'paidsDetails' => $this->modelPaidDetail->getByParcial($idParcial),
             'partialNumber' => $this->getNumberParcial($order['nro_pedido']),
         ]));
     }

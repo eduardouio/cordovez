@@ -162,12 +162,14 @@ class Impuestos extends MY_Controller
                     'flete_value' => $cifItem['flete_item'],
                     'fob_value' => ($cifItem['fob_item'] * $invoice['tipo_cambio']),
                     'percent_item' => $cifItem['percent_item'],
-                    'otros' => $parcial['otros'],
+                    'otros_value' => $parcial['otros'] * $cifItem['percent_item'],
+                    'exoneracion_value' => $parcial['exoneracion_arancel'] * $cifItem['percent_item'],
                     'producto' => $row['nombre'],
                     'capacidad_ml' => $row['capacidad_ml'],
                     'nro_cajas' => $row['nro_cajas'],
                     'costo_caja' => $row['costo_caja'],
                     'tasa_control' => $this->getTasaControl($row, $parcial),
+                    'prorrateo_parcial' => $this->getProrrateoItem($parcial['id_parcial'], $cifItem['percent_item'])
                 ]);
                 
                 $invoice['taxes'][$index] = $taxes->getTaxes();
@@ -194,7 +196,7 @@ class Impuestos extends MY_Controller
 
     /**
      * Genera impuestos para R10 de un pedido
-     * 
+     *
      * @param string $nroOrder
      */
     public function pd(string $nroOrder)
@@ -250,7 +252,8 @@ class Impuestos extends MY_Controller
                     'producto' => $row['nombre'],
                     'capacidad_ml' => $row['capacidad_ml'],
                     'nro_cajas' => $row['nro_cajas'],
-                    'costo_caja' => $row['costo_caja']
+                    'costo_caja' => $row['costo_caja'],
+                    'prorrateo_parcial' => $this->getProrrateoItem($parcial['id_parcial'])
                 ]);
                 
                 $invoice['taxes'][$index] = $taxes->getTaxes();
@@ -268,6 +271,7 @@ class Impuestos extends MY_Controller
             'numberInvoices' => count($orderInvoices)
         ]));
     }
+    
 
     /**
      * Obtiene el valor que le corresponde al item en la factura informativa
@@ -317,13 +321,19 @@ class Impuestos extends MY_Controller
         
         $paramsParcial = [
             'id_parcial' => $_POST['id_parcial'],
+            'bg_have_tasa_control' => 0,
             'bg_have_etiquetas_fiscales' => 0,
             'observaciones' => $_POST['observaciones'],
-            'otros' => $_POST['otros']
+            'otros' => $_POST['otros'],
+            'exoneracion_arancel' => $_POST['exoneracion_arancel']
         ];
         
         if (isset($_POST['bg_have_etiquetas_fiscales']) && $_POST['bg_have_etiquetas_fiscales'] == 'on') {
             $paramsParcial['bg_have_etiquetas_fiscales'] = 1;
+        }
+        
+        if (isset($_POST['bg_have_tasa_control']) && $_POST['bg_have_tasa_control'] == 'on') {
+            $paramsParcial['bg_have_tasa_control'] = 1;
         }
         
         if ($this->modelParcial->updateLabelsParcial($paramsParcial) && $this->modelInfoInvoice->updateMoney($paramsInfoInvoice)) {
@@ -345,8 +355,7 @@ class Impuestos extends MY_Controller
      *            [flete | seguro | fob]
      * @return float valor del concepto
      */
-    private function getValueParcial(int $unities, int $idInfoInvoiceDetail, array $infoInfoice): 
-    array
+    private function getValueParcial(int $unities, int $idInfoInvoiceDetail, array $infoInfoice): array
     {
         $itemValues = [
             'fob_item' => 0.0,
@@ -368,24 +377,71 @@ class Impuestos extends MY_Controller
 
     /**
      * Retorna el valor de la tasa de control para un producto en la lista
-     * 
+     *
      * @param array $producto
      * @return float
      */
     private function getTasaControl(array $product, $parcial): float
     {
-        
-        if($parcial['bg_have_tasa_control'] == 1){
+        if ($parcial['bg_have_tasa_control'] == 0) {
             return 0;
         }
         
         $tasaServicio = (((intval($product['capacidad_ml']) / 2000) * 0.10) * ($product['nro_cajas'] * $product['cantidad_x_caja']));
+        
         if ($tasaServicio < 700) {
-           return $tasaServicio;
+            return $tasaServicio;
         } else {
             return 700;
         }
     }
+
+    /**
+     * Retorna los valores prorrateados del parcial
+     * 
+     * @param int $idParcial
+     * @param int $percentIntem
+     * @return float
+     */
+    private function getProrrateoItem(int $idParcial, float $percentIntem): array
+    {
+        $parcialExpenses = $this->modelExpenses->getPartialExpenses($idParcial);
+        
+        $almacenaje = [];
+        
+        foreach ($parcialExpenses as $item => $expense) {
+            $result = preg_match('/[a-zA-Z]-[0-9]/' , $expense['concepto'] );
+            if($result){
+                array_push($almacenaje, $expense);
+                unset($parcialExpenses[$item]);
+            }
+        }        
+
+        return [];
+    }
+    
+    
+
+    /**
+     * Obtiene una lista de los gastos iniciales de un pedido para el pedido
+     * Los gastos iniciales se obtiene de acuerdo al procentaje indicado
+     * 
+     * @param $nroOrder =>
+     *            orden de la que se necesita obtener la info
+     * @param $percentItem ->
+     *            Procentaje a obtener de los valores
+     * @return arreglo con los costos y
+     */
+    private function getProrrateoPedido(string $nroOrder, float $percentIntem): array
+    {
+        $initEpenses = $this->modelExpenses->getInitialExpenses($nroOrder);
+        print '<pre>';
+        print_r($initEpenses);
+        print '</pre>';
+        return [];
+    }
+    
+    
 
     /**
      * Retorna un parametr basado en el nombre el impueto

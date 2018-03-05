@@ -27,6 +27,7 @@ class productTaxes {
     private $advaloremValue;
     private $ivaValue;
     private $otrosValue;
+    private $exoneracionArancel;
     private $unidadesParam;
     private $etiquetasParam;
     private $gradoAlcoholicoParam;
@@ -36,6 +37,7 @@ class productTaxes {
     private $ivaParam;
     private $exaduana;
     private $tasaControl;
+
     
     
     /**
@@ -55,7 +57,8 @@ class productTaxes {
         $this->seguroValue = floatval( $params['seguro_value'] );
         $this->prodcutoParam = $params['producto'];
         $this->fleteValue = floatval( $params['flete_value'] );
-        $this->otrosValue = floatval( $params['otros'] );
+        $this->otrosValue = floatval( $params['otros_value'] );
+        $this->exoneracionArancel = floatval( $params['exoneracion_value'] );
         $this->capacidadValue = intval( $params['capacidad_ml'] );
         $this->nroCajas = intval( $params['nro_cajas'] );
         $this->costoCaja = floatval( $params['costo_caja'] );
@@ -148,7 +151,8 @@ class productTaxes {
             $this->getFodinfa() +
             $this->otrosValue + 
             $this->getEtiquetasFiscales() +
-            $this->tasaControl
+            $this->tasaControl - 
+            $this->exoneracionArancel
             );
     }
     
@@ -233,6 +237,8 @@ class productTaxes {
             'ice_especifico' => $this->getICEEspecifico(),
             'ice_advalorem' => $this->getIceAdvalorem(),
             'tasa_control' => $this->tasaControl,
+            'otros_value' => $this->otrosValue,
+            'exoneracion_value' => $this->exoneracionArancel,
         ]);
     }
 }

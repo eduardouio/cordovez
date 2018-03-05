@@ -238,8 +238,7 @@ class Modelexpenses extends CI_Model
         $this->modelLog->generalLog("Parcial $idParcial sin Gastos");
         return false;
     }
-    
-    
+        
   
     /**
      * Obtiene todos los gastos iniciales activos, sin justificar

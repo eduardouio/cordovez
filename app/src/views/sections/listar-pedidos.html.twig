@@ -1,4 +1,4 @@
-<!--tabPedido-->
+
 <div class="pedido">
    <div class="row">
       <div class="col-sm-5">
@@ -60,6 +60,7 @@
                <th>FOB</th>
                <th>Nacionalizado</th>
                <th>Saldo FOB</th>
+               <th>Observaciones</th>
                <th>Acciones</th>
             </tr>
          </thead>
@@ -117,6 +118,9 @@
                </td>
                <td class="text-right {{ text_class }}">$ 
                    {{ (fob - order.nationalized) | number_format(2, '.', ',')}}
+               </td>
+               <td class="text-right">
+                  {{ order.observaciones }}
                </td>
                <td>
                   {% if order.bg_isclosed == '0' %}

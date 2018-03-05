@@ -101,13 +101,7 @@ class MY_Controller extends CI_Controller
      */
     public function redirectPage(string $page, $id = false, $id2 = false)
     {
-        $this->modelLog->generalLog(
-            'Llamada a redireccionamiento ' . 
-            $page . 
-            ' id: ' . $id  . 
-            ' id2:' . $id2
-            );
-
+      
         $target = [
             'loginForm' =>  'index.php/login/',
             'home' =>  'index.php/home',
@@ -133,7 +127,7 @@ class MY_Controller extends CI_Controller
             'presentInvoiceOrder' =>  'index.php/pedidofactura/presentar',
             'validar70' =>  'index.php/gstnacionalizacion/validar70',
             'newParcial' => 'index.php/parcial/nuevo',
-            'showTaxesParcial' => 'index.php/impuestosparcial/v',            
+            'showTaxesParcial' => 'index.php/impuestos/pc',            
         ];
 
 

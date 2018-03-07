@@ -42,7 +42,7 @@
 	</div>
 <div class="col-sm-2">
 		<div class="form-group">
-			<label>Fecha</label>
+			<label>Fecha (Desde)</label>
 			         <div class="input-group">
             <input 
                type="text" 
@@ -51,7 +51,7 @@
                required="required" 
                name="fecha" 
                {% if initExpense.fecha != null%}
-               		value="{{ initExpense.fecha | date ('d/m/Y')}}" 
+               		value="{{ initExpense.fecha | date ('d/m/Y') |raw}}" 
                {% endif %}
                >
             <div class="input-group-addon">

@@ -1,5 +1,5 @@
 {% if order.fecha_arribo != null %}
-   {% set fecha_arribo = order.fecha_arribo | date('m/d/Y') %}
+   {% set fecha_arribo = order.fecha_arribo | date('d/m/Y') %}
    {% else %}
    <div class="alert alert-danger">
      <h3 class="text-danger">Registre la fecha de arribo en el pedido para continuar</h3>
@@ -9,7 +9,7 @@
      <br>
 {% endif %}
 {% if order.fecha_salida_bodega_puerto != null %}
-   {% set fecha_salida_bodega_puerto = order.fecha_salida_bodega_puerto | date('m/d/Y') %}
+   {% set fecha_salida_bodega_puerto = order.fecha_salida_bodega_puerto | date('d/m/Y') %}
 {% endif %}
 {% set dias_libres = 0 %}
 {% if order.dias_libres != null %}
@@ -36,12 +36,12 @@
           <label>Fecha Arribo Puerto</label>
             <input 
                type="text" 
-               class="form-control" 
+               class="form-control fecha" 
                id="fecha_arribo" 
                name="fecha_arribo" 
                readonly
                {% if fecha_arribo != null %}
-                  value="{{ fecha_arribo | date('d/m/Y') | raw }}"
+                  value="{{ fecha_arribo }}"
                {% endif %}
                >
         </div>
@@ -55,7 +55,6 @@
                class="form-control fecha" 
                id="fecha_salida_bodega_puerto" 
                required="" 
-               readonly="" 
                name="fecha_salida_bodega_puerto" 
                {% if fecha_salida_bodega_puerto != null %}
                  value="{{ fecha_salida_bodega_puerto | date('d/m/Y')}}" 

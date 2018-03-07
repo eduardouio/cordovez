@@ -64,7 +64,7 @@
             <td class="text-right"> <b>Fecha:</b></td>
             <td>
               {% if initExpense.fecha != null %}
-                {{ initExpense.fecha | date('m/d/Y') }}
+                {{ initExpense.fecha | date('d/m/Y') }}
               {% endif %}
           </td>
           </tr>         
@@ -72,7 +72,7 @@
             <td class="text-right"> <b>Fecha Fin:</b></td>
             <td>
               {% if initExpense.fecha_fin != null %}
-                {{ initExpense.fecha_fin | date('m/d/Y') }}
+                {{ initExpense.fecha_fin | date('d/m/Y') }}
               {% endif %}
           </td>
           </tr>          
@@ -110,7 +110,7 @@
             <td class="text-right"> <b>Creado El:</b></td>
             <td> 
               {% if initExpense.date_create != null %}
-                  {{ initExpense.date_create | date('m/d/Y H:m') }} 
+                  {{ initExpense.date_create | date('d/m/Y H:m') }} 
               {% endif %}
               
           </td>
@@ -119,7 +119,7 @@
             <td class="text-right"> <b>Ultima Actualización:</b></td>
             <td> 
               {% if initExpense.last_update != null %}
-                  {{ initExpense.last_update | date('m/d/Y H:m') }} 
+                  {{ initExpense.last_update | date('d/m/Y H:m') }} 
               {% endif %}
               
           </td>

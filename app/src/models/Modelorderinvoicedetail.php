@@ -66,7 +66,16 @@ class Modelorderinvoicedetail extends CI_Model
     {
         if($this->db->insert($this->table, $orderInvoiceDetail)){
             return $this->db->insert_id();
+            $this->modelLog->susessLog(
+                'Nueo item en factura regiatrado Correctamente'
+                );
         }
+        
+        $this->modelLog->errorLog(
+            'No se puede registrar el item de producto factura',
+            $this->db->last_query()
+            );
+        
         return false;
     }
 

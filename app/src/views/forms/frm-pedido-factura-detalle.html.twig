@@ -1,4 +1,3 @@
-
 <div class="well well-sm">
    <div class="row">
       <div class="col-md-3">
@@ -36,6 +35,17 @@
             >
          </div>
       </div>
+      <div class="col-md-2">
+         <div class="form-group">
+            <label>Cod ICE</label>
+            <input 
+            type="text" 
+            id="cod_ice"
+            disabled="" 
+            class="form-control" 
+            >
+         </div>
+      </div>
             <div class="col-md-1">
          <label>Cajas</label>
          <input 
@@ -55,9 +65,9 @@
          id="chage_params" 
          >
       </div>
-      <div class="col-md-2">
+      <div class="col-md-1">
          <div class="form-group">
-            <label>Grado Alcoholico</label>
+            <label>Grado Alc</label>
             <input 
             class="form-control" 
             type="number" 
@@ -72,7 +82,7 @@
       </div>
 
 
-      <div class="col-md-2">
+      <div class="col-md-1">
          <label>Costo Caja</label>
          <input 
          type="number" 
@@ -81,7 +91,6 @@
          id="costo_caja"
          required="true" 
          step="0.0000000001"
-         readonly="true" 
          >
 
    </div>
@@ -191,7 +200,6 @@ $('#costo_caja').change(function(){
 <script type="text/javascript">
    var productsII = {{ products | json_encode() | raw }};
    var productsIIKey = [];
-   console.dir(productsII);
 
   $.each(productsII, function( k, v ){
     productsIIKey.push(v.nombre);
@@ -208,16 +216,20 @@ $('#costo_caja').change(function(){
     $.each(productsII, function(k,v){
       if(value === v.nombre){
         console.log('Nuevo Valor Seleccionado ');
-        $("#cod_contable").val(v.cod_contable);
+        $('#cod_contable').val(v.cod_contable);
+        $('#cod_ice').val(v.cod_ice);
         $('#nro_cajas').val('');
         $('#grado_alcoholico').val(v.grado_alcoholico);
-        $('#costo_caja').val(v.costo_caja);
         $('#costo_und').val(Math.round((v.costo_caja/v.cantidad_x_caja) * 100)/100);
         $('#cantidad_caja').val(v.cantidad_x_caja);
         $('#capacidad_ml').val(v.capacidad_ml);
         $('#nro_cajas').focus();
-
-      }
+        if(v.costo_caja == 0){
+          $('#costo_caja').val('');
+        }else{
+          $('#costo_caja').val(v.costo_caja);
+        }
+    }
    });
 });
 </script>

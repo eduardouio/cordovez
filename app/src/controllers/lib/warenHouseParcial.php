@@ -66,8 +66,10 @@ class warenHouseParcial
                     array_push($keys, $expense['id_gastos_nacionalizacion']);
                 }
             }
-        
-            $lastWarenHouseId = max($keys);
+            
+            #evita el warning para un solo elemento
+            @$lastWarenHouseId = max($keys);
+            
         
             foreach ($warenHouses as $item => $expense){
                 if($expense['id_gastos_nacionalizacion'] == $lastWarenHouseId){

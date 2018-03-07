@@ -148,17 +148,24 @@ class Detallepedido extends MY_Controller
 	       $this->index();
 	       return false;
 	    }
+	    
 		$invoiceOrderDetail =  $this->input->post();
 		$invoiceOrderDetail['id_user'] = $this->session->userdata('id_user');
    
 	    $status = $this->_validData($invoiceOrderDetail);
+	    
 	    if ($status['status']){
 			if (!isset($invoiceOrderDetail['detalle_pedido_factura'])){
-			    $lastId = $this->modelOrderInvoiceDetail->create($invoiceOrderDetail);
+			    $lastId = $this->modelOrderInvoiceDetail->create(
+			                                                 $invoiceOrderDetail
+			                                                     );
+			    
 			    $product = $this->modelProduct->get($invoiceOrderDetail['cod_contable']);
 			    $product['costo_caja'] = $invoiceOrderDetail['costo_caja'];
 			    $this->modelProduct->update($product);
-			    $this->modelLog->generalLog('Actualizando producto', $this->db->last_query());
+			    $this->modelLog->generalLog(
+			        'Actualizando producto', $this->db->last_query()
+			        );
 			    return(
 			        $this->redirectPage('orderInvoicePresent', $invoiceOrderDetail['id_pedido_factura'])
 			        );

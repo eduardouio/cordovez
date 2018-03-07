@@ -185,6 +185,11 @@
       		<span class="fa fa-file-text-o"></span> Provisiones Justificadas
       	</a>
       </li>
+            <li role="presentation">
+         <a href="#saldos" role="tab" data-toggle="tab" aria-controls="saldos">
+            <span class="fa fa-bar-chart-o"></span> Saldos Pedidos
+         </a>
+      </li>
    </ul>
    <br>
    <div class="tab-content">
@@ -231,6 +236,13 @@
          {% include 'sections/subsections/tab-facturas-servicios.html.twig' %}            
       </div>
       <!-- /Tab Facturas Servicios -->
+
+      <!-- Tab Facturas Saldos -->
+      <div role="tabpanel" class="tab-pane" id="saldos">
+         {% include 'sections/subsections/tab-pedido-saldos.html.twig' %}            
+      </div>
+      <!-- /Tab Facturas Servicios -->
+
    </div>
 </div>
 <!--/tabs-->

@@ -54,7 +54,7 @@
                required="required" 
                name="fecha" 
                {% if expense.fecha != null %}
-               		value="{{ expense.fecha | date ('m/d/Y')}}" 
+               		value="{{ expense.fecha | date ('d/m/Y')}}" 
                {% endif %}
                
                >

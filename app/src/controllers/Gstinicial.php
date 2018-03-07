@@ -181,9 +181,13 @@ class Gstinicial extends MY_Controller
             $this->redirectPage('ordersList');
         }
         
+        
         $initExpense = $this->input->post();
         $initExpense['id_user'] = $this->session->userdata('id_user');
         $initExpense['fecha'] = date('Y-m-d', strtotime($initExpense['fecha']));
+        $initExpense['fecha_fin'] = date('Y-m-d', strtotime($initExpense['fecha_fin']));
+        
+        
         if (isset($initExpense['fecha_fin'])) {
             $initExpense['fecha_fin'] = date('Y-m-d', strtotime($initExpense['fecha_fin']));
         }

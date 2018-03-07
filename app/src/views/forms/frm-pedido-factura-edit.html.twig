@@ -50,10 +50,9 @@
                class="form-control fecha" 
                id="fecha_emision" 
                required="required" 
-               readonly="" 
                name="fecha_emision" 
                {% if invoice.fecha_emision != null %}
-                    value="{{invoice.fecha_emision | date('m/d/Y') }}" 
+                    value="{{invoice.fecha_emision | date('d/m/Y') }}" 
                {% endif %}
                >
             <div class="input-group-addon">
@@ -69,7 +68,6 @@
             <input 
                type="text" 
                class="form-control fecha" 
-               readonly="" 
                name="vencimiento_pago" 
               {% if invoice.vencimiento_pago != null %}
                 value="{{invoice.vencimiento_pago | date('d/m/Y') }}" 

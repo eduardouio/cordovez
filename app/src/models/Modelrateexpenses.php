@@ -171,6 +171,25 @@ class Modelrateexpenses extends CI_Model {
     
     
     /**
+     * Retorna el listado de los impuestos que se aplican a una liquidacion
+     * 
+     * @return array
+     */
+    public  function getTaxesParams():array
+    {
+        $rates = $this->modelBase->get_table([
+            'table' => $this->table,
+            'where' => [
+                'tipo_gasto' => 'IMPUESTO',
+                'estado' => 1,
+            ],
+        ]);
+        
+        
+        return $rates;
+    }
+    
+    /**
      * recupera el costo de la etiquetas, registrado en la base de datos
      */
     public function getParcialRates()

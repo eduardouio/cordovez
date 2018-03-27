@@ -52,10 +52,15 @@ class Modelparcial extends CI_Model
             ],
         ]);
         
-        if( (is_array($parcial)) && (!empty($parcial)) ){
+        if( (is_array($parcial)) && (!empty($parcial)) )
+        {
             return $parcial[0];
         }
-        $this->modelLog->warningLog('El parcial no existe', $this->db->last_query());
+        
+        $this->modelLog->warningLog(
+                                        'El parcial no existe', 
+                                        $this->db->last_query()
+                                    );
         return false;
     }
     
@@ -119,7 +124,9 @@ class Modelparcial extends CI_Model
         ]);
         
         if(is_array($lastParcias) && count($lastParcias) > 1){
-            $this->modelLog->warningLog('Revisar que el primero sea el ultimo parcial', $this->db->last_query());
+            $this->modelLog->warningLog(
+                                'Revisar que el primero sea el ultimo parcial', 
+                                $this->db->last_query());
             return $lastParcias[1];
         }
         return false;        
@@ -377,7 +384,6 @@ class Modelparcial extends CI_Model
             );
         return false;
     }
-        
-    
+            
     
 }

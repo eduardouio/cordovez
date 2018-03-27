@@ -124,6 +124,7 @@ class Gstnacionalizacion extends MY_Controller
         return ($this->redirectPage('validar70', $idParcial));
     }
 
+    
     /**
      * Retorna el stock en la aduana del FOB, FLETE, y SEGURO aplica para todos
      * los régimenes
@@ -272,6 +273,7 @@ class Gstnacionalizacion extends MY_Controller
     }
 
     
+    
     /**
      * retorna el costo de la bodega para el parcial, aplicando una formula
      * 
@@ -316,6 +318,7 @@ class Gstnacionalizacion extends MY_Controller
         
     }
 
+    
     /**
      * Retorna los parametros de tarifas para gastos de nacionalizacion
      * si no existen retorna false

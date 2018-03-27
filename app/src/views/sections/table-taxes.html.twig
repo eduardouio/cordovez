@@ -190,14 +190,22 @@
             <div class="row">
                <div class="col-md-12">
                   <div class="form-group">
-                     <label>Exoneración Arancel</label>
+                     <label>Exoneración Arancel (% Base Avalorem)</label>
                      <input 
                         type="number" 
-                        name="exoneracion_arancel" 
+                        name="exoneracion_arancel"
+                        id="exoneracion_arancel" 
                         value="{{ parcial.exoneracion_arancel }}" 
                         step="0.01"
-                        style="width:100%" 
+                        style="width:30%" 
                         >
+                        <label for=""> 
+                        <span class="text-primari" id='total_base_av'>
+                        ({{ base_advalorem }})</span> 
+                        </label>
+                        <label for="">
+                        <span class="text-info" id="descuento"></span>
+                        </label>
                   </div>
                </div>
             </div>
@@ -247,8 +255,10 @@
                <th>costo unitario por caja</th>
                <th>costo unitario botella</th>
             </tr>
+            {% set base_advalorem = 0 %}
             {% for infoInvoice in infoInvoices  %}
             {% for tax in infoInvoice.taxes %}
+            {% set base_advalorem =  base_advalorem + tax.base_advalorem%}
             <tr>
                <td> {{ loop.index }}</td>
                <td nowrap=""> {{ tax.producto }} </td>
@@ -303,3 +313,17 @@
       <a href="{{rute_url}}parcial/presentar/{{parcial.id_parcial}}" class="btn btn-sm btn-default"> <span class="fa fa-arrow-left"></span> Volver A Parcial</a>
    </div>
 </div>
+<script>
+	var base_advalorem = {{base_advalorem | number_format(3,'.')}}
+	$('#total_base_av').text(base_advalorem)	
+
+	$('#descuento').text('(' + (($('#exoneracion_arancel').val()) * base_advalorem)/100 + ')') 
+	 
+	$('#exoneracion_arancel').keyup(function(){
+		
+		value = ((($('#exoneracion_arancel').val()) * base_advalorem)/100)
+		$('#descuento').text('(' + value + ')')
+			
+		})
+	
+</script>

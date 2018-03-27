@@ -205,5 +205,26 @@ class Modelpaiddetail extends \CI_Model
     }
     
     
+    
+    /**
+     * Elimina un pago detalle del sustema
+     * @param int $idPaidDetail
+     * @return bool
+     */
+    public function deletePaidDetail(int $idPaidDetail):bool
+    {
+       $this->modelLog->errorLog('Implemenatar el eliminado del registro','as');
+       return false;
+    }
+    
+    /**
+     * Actualiza del detalle de un pago
+     * @param array $ipaidDetail
+     * @return bool
+     */
+    public function updatePaidDetail(array $paidDetail) : bool
+    {
+        $this->modelLog->errorLog('Funcion no implementada');
+        return false;
+    }
 }
-

@@ -130,6 +130,6 @@ class Modellog extends CI_Model{
             error_log(" [query] " . $sql , 3 , $this->path);
         }
     }
-
-
+    
+    
 }

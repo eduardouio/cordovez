@@ -1,9 +1,8 @@
 <?php
-use PhpParser\Node\Expr\Print_;
-
 defined('BASEPATH') or exit('No direct script access allowed');
 
-require 'lib/TaxesCalc.php';
+require 'lib/TaxesCalcR70.php';
+require 'lib/TaxesCalcR10.php';
 require 'lib/Prorrateo.php';
 
 /**
@@ -132,6 +131,11 @@ class Impuestos extends MY_Controller
         return ($this->responseHttp([
             'titleContent' => 'Resumen de impuestos Pedido ' . 
                                         $init_data['order']['nro_pedido'],
+            'init_data' => $init_data,
+            'parcial_taxes' => $parcialtaxes,
+            'prorrateos' => $prorrateos,
+            'regimen' => 'R70',
+            'user' => $this->modelUser->get($init_data['parcial']['id_user']),
         ]));
     }
 
@@ -227,9 +231,96 @@ class Impuestos extends MY_Controller
      */
     public function pd(string $nroOrder)
     {
-        return TRUE;
+        $init_data = $this->getOrderDataR10($nroOrder);
+        $param_taxes = $this->modelRatesExpenses->getTaxesParams();
+        
+        $orderTaxes = [];
+        
+        foreach ($init_data['order_invoice_detail'] as $item => $product){
+            $taxes = new productTaxesR10();
+            
+            array_push(
+                $orderTaxes,
+                $taxes->getTaxesProduct(
+                    $init_data,
+                    $product,
+                    $param_taxes
+                    )
+                );
+        }
+        
+        return ($this->responseHttp([
+            'titleContent' => 'Resumen de impuestos Pedido ' .
+                                              $init_data['order']['nro_pedido'],
+            'init_data' => $init_data,
+            'parcial_taxes' => $orderTaxes,
+            'regimen' => 'R10',
+            'user' => $this->modelUser->get($init_data['order']['id_user']),
+        ]));
     }
-
+    
+    
+    /**
+     * Retorna la data incial para el calculo de impuestoas en R10 y 70
+     *
+     * @param string $nro_order
+     * @param int $id_parcial
+     * @return array Costos Iniciales
+     */
+    private function getOrderDataR10( string $nro_pedido ): array
+    {
+        $order = $this->modelOrder->get($nro_pedido);
+        
+        if ($order == false) {
+            $this->modelLog->errorLog(
+                'El pedido no Existe'
+                );
+            return $this->index();
+        }
+        
+        $order_detail = [];
+        $products_base = [];
+       
+        
+        $order_invoices = $this->modelOrderInvoice->getbyOrder(
+            $nro_pedido
+            );
+        
+        $order_invoice_detail = [];
+        
+        foreach ($order_invoices as $item => $invoice){
+            $detail = $this->ModelOrderInvoiceDetail->getByOrderInvoice(
+                $invoice['id_pedido_factura']
+                );
+            
+            foreach ($detail as $idx => $dt){
+                array_push($order_invoice_detail, $dt);
+                
+                $product =  $this->modelProducts->get(
+                    $dt['cod_contable']
+                    );
+                
+                $product['detalle_pedido_factura'] = $dt['detalle_pedido_factura'];
+                
+                array_push($products_base, $product);
+                
+                
+                
+            }
+        }
+        
+        return([
+            'order' => $order,
+            'order_invoices' => $order_invoices,
+            'order_invoice_detail' => $order_invoice_detail,
+            'products_base' => $products_base,
+            'init_expenses' => $this->modelInitExpenses->getAll($order),
+        ]);
+        
+    }
+    
+    
+    
     /**
      * Obtiene el valor que le corresponde al item en la factura informativa
      *
@@ -275,35 +366,78 @@ class Impuestos extends MY_Controller
      */
     public function actualizar()
     {
-        $paramsInfoInvoice = [
-            'id_parcial' => $_POST['id_parcial'],
-            'tipo_cambio' => $_POST['tipo_cambio']
-        ];
-        
         $paramsParcial = [
             'id_parcial' => $_POST['id_parcial'],
             'bg_have_tasa_control' => 0,
             'bg_have_etiquetas_fiscales' => 0,
             'observaciones' => $_POST['observaciones'],
+            'tipo_cambio' => $_POST['tipo_cambio'],
             'otros' => $_POST['otros'],
-            'exoneracion_arancel' => $_POST['exoneracion_arancel']
+            'exoneracion_arancel' => $_POST['exoneracion_arancel'],
         ];
         
-        if (isset($_POST['bg_have_etiquetas_fiscales']) && $_POST['bg_have_etiquetas_fiscales'] == 'on') {
+        if (isset($_POST['bg_have_etiquetas_fiscales']) && 
+            $_POST['bg_have_etiquetas_fiscales'] == 'on') 
+        {
             $paramsParcial['bg_have_etiquetas_fiscales'] = 1;
         }
         
-        if (isset($_POST['bg_have_tasa_control']) && $_POST['bg_have_tasa_control'] == 'on') {
+        if (isset($_POST['bg_have_tasa_control']) && 
+            $_POST['bg_have_tasa_control'] == 'on') 
+        {
             $paramsParcial['bg_have_tasa_control'] = 1;
         }
         
-        if ($this->modelParcial->updateLabelsParcial($paramsParcial) && $this->modelInfoInvoice->updateMoney($paramsInfoInvoice)) {
-            $this->modelLog->susessLog('Parametros moneda, etiquetas y otros impuestos modificadas');
+        if ($this->modelParcial->updateLabelsParcial($paramsParcial)) {
+            $this->modelLog->susessLog(
+                'Parametros moneda, etiquetas y otros impuestos modificadas'
+                );
         } else {
-            $this->modelLog->errorLog('Uno de los cambios no se realizo en el parcial o facturas informativas');
+            $this->modelLog->errorLog(
+                'No se realizaron los cambios en el parcial',
+                $this->db->last_query()
+                );
         }
         
         return ($this->redirectPage('showTaxesParcial', $_POST['id_parcial']));
+    }
+    
+    
+    /**
+     * Actualiza los parametros de calculo de impuestos para 
+     * Regimen 10
+     * @parms array $params
+     * @return $redirect
+     */
+    public function actualizarR10()
+    {   
+        
+        if($_POST['have_etiquetas_fiscales'] == 'on'){
+            $_POST['have_etiquetas_fiscales'] = 1;
+        }else{
+            $_POST['have_etiquetas_fiscales'] = 0;
+        }
+        
+        if($_POST['bg_have_tasa_control'] == 'on'){
+            $_POST['bg_have_tasa_control'] = 1;
+        }else{
+            $_POST['bg_have_tasa_control'] = 0;
+        }
+        
+        
+        if ($this->modelOrder->update($_POST)){
+            $this->modelLog->susessLog(
+                'Se ha actualizado correctamente los parameros de impuestos'
+                );
+            
+            return $this->redirectPage('showTaxesOrder', $_POST['nro_pedido']); 
+            
+        }else{
+            $this->modelLog->errorLog(
+                'No se pueden actualizar los parametros de impuestos'
+                );
+        }
+        
     }
 
 
@@ -322,7 +456,10 @@ class Impuestos extends MY_Controller
             return 0;
         }
         
-        $tasaServicio = (((intval($product['capacidad_ml']) / 2000) * 0.10) * ($product['nro_cajas'] * $product['cantidad_x_caja']));
+        $tasaServicio = (
+            ((intval($product['capacidad_ml']) / 2000) * 0.10) 
+            * 
+            ($product['nro_cajas'] * $product['cantidad_x_caja']));
         
         if ($tasaServicio < 700) {
             return $tasaServicio;
@@ -414,7 +551,7 @@ class Impuestos extends MY_Controller
 
     
     /**
-     * Actualiza el rgistro de prorrateos de un parcial
+     * Actualiza el registro de prorrateos de un parcial
      * 
      * @param array $prorrateo prorrateo Calculado para el parcial
      * @param array $prorrateoDetail DEtalle del prorrateo calculado
@@ -562,7 +699,7 @@ class Impuestos extends MY_Controller
             ]);
         }
     }
-
+    
     
     /*
      * Redenderiza la informacion y la envia al navegador
@@ -571,7 +708,7 @@ class Impuestos extends MY_Controller
     private function responseHttp($config)
     {
         return ($this->twig->display($this->template, array_merge($config, [
-            'title' => 'Impuestos',
+            'title' => 'Impuestos Aduana',
             'base_url' => base_url(),
             'rute_url' => base_url() . 'index.php/',
             'controller' => $this->controller,

@@ -355,7 +355,7 @@ class Modelparcial extends CI_Model
     {
         $this->db->where('id_parcial', $parcial['id_parcial']);
         if ($this->db->update($this->table, $parcial)){
-            $this->modelLog->susessLog('Etiquetas actualizadas en parcaial');
+            $this->modelLog->susessLog('Actulizamos el parcial');
             return true;
         }
         

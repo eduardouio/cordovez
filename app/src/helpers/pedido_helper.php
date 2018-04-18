@@ -19,6 +19,8 @@ if (!function_exists('searchOrderCeroValues')) {
         }
         
         unset($dataArray['statusOrder']['have_gasto_origen']);
+        
+   
         foreach ($dataArray as $key) {
             if ($key == false){
                 return false;

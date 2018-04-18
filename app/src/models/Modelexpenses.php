@@ -48,13 +48,13 @@ class Modelexpenses extends CI_Model
             'table' => 'tarifa_gastos',
             'where' => [
                 'tipo_gasto' => 'GASTO INICIAL',
-
             ],
             'andnotwhere' => ['regimen' => 'R' . $regExclude],
             'orderby' => [
                 'concepto' => 'ASC',
             ],
         ]);
+        
         $this->modelLog->generalLog($this->db->last_query());
         if (empty($rateExpenses)) {
             $this->modelLog->errorLog(
@@ -65,7 +65,7 @@ class Modelexpenses extends CI_Model
         }
 
         $result = [];
-
+                
         foreach ($rateExpenses as $key => $value) {
             $supplier = $this->modelBase->get_table([
                 'table' => 'proveedor',
@@ -74,10 +74,11 @@ class Modelexpenses extends CI_Model
                         $value['identificacion_proveedor'],
                 ],
             ]);
+                   
             $value['nombre'] = $supplier[0]['nombre'];
             $result[$key] = $value;
         }
-
+        
         return $result;
     }
     
@@ -314,6 +315,10 @@ class Modelexpenses extends CI_Model
     public function create(array $expense)
     {
         if($this->db->insert($this->table, $expense)){
+            $this->modelLog->generalLog(
+                'Gasto de de Nacionalizacion Creado Exitosamente',
+                $this->db->last_query()
+                );
             return($this->db->insert_id());
         }
         $this->modelLog->errorLog('No se puede crear un gasto Nacionalizaicon',

@@ -135,8 +135,8 @@ class Modelorderinvoice extends CI_Model
                 
         $cifInitial = [
             'fob' => 0.0,
-            'seguro' => floatval($initSeguro[0]),
-            'flete' => floatval($initFlete[0]),
+            'seguro' => 0,
+            'flete' => 0,
         ];
 
         if (is_array($orderInvoices)){

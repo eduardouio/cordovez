@@ -97,7 +97,16 @@
                {% for expense in expenses  %}
                {% set sumExpenses = sumExpenses + expense.valor_provisionado %}
                <tr>
-                  <td>{{expense.concepto }}</td>
+                  <td>
+                {% if expense.bg_closed == 0 %}
+               <small class="label label-danger"> &nbsp;Justificar&nbsp;</small>
+               {%  else %}
+               <small class="label label-success">Justificado</small>               
+               {% endif %}
+                  
+               {{expense.concepto }}
+               
+               </td>
                   <td>{{ expense.fecha | date('d/m/Y')}}</td>
                   {% if ((expense.fecha_fin == null) or (expense.fecha_fin == '0000-00-00')) %}
                   <td class="text-center"> --- </td>
@@ -108,7 +117,7 @@
                   {% if expense.valor_provisionado > 0 %}
                   <td class="success pull-rigth" style=" width: 1px; white-space: nowrap;">
                      OK <a href="{{rute_url}}gstnacionalizacion/editar/{{expense.id_gastos_nacionalizacion}}">
-                     <span class="fa fa-pencil"></span>
+                     <span class="fa fa-pencil"></span> editar
                      </a>
                      <a href="{{rute_url}}gstnacionalizacion/eliminar/{{expense.id_gastos_nacionalizacion}}" class="text-danger">
                      <span class="fa fa-trash"></span>
@@ -121,7 +130,7 @@
                      Registrar                           
                      </a>
                      <a href="{{rute_url}}gstnacionalizacion/eliminar/{{expense.id_gastos_nacionalizacion}}" class="text-danger">
-                     <span class="fa fa-trash"></span> 
+                     <span class="fa fa-trash"></span> eliminar 
                      </a>
                   </td>
                   {% endif %}

@@ -128,6 +128,7 @@ class MY_Controller extends CI_Controller
             'validar70' =>  'index.php/gstnacionalizacion/validar70',
             'newParcial' => 'index.php/parcial/nuevo',
             'showTaxesParcial' => 'index.php/impuestos/pc',            
+            'showTaxesOrder' => 'index.php/impuestos/pd',            
         ];
 
 

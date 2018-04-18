@@ -137,7 +137,14 @@
             {% for expense in minimal.initExpenses %}
             {% set sumExpenses = sumExpenses + expense.valor_provisionado %}
             <tr>
-               <td>{{expense.concepto }}</td>
+               <td>
+               {% if expense.bg_closed == 0 %}
+               <small class="label label-danger"> &nbsp;Justificar&nbsp;</small>
+               {%  else %}
+               <small class="label label-success">Justificado</small>               
+               {% endif %}
+               {{ expense.concepto }}               
+               </td>
                {% if expense.concepto == 'GASTO ORIGEN' %}
                {% if minimal.statusOrder.have_gasto_origen != false %}
                <td>
@@ -231,7 +238,7 @@
 </div>
 <!-- Button trigger modal -->
 <!-- Modal -->
-{% if (isOk == true and order.regimen == 70) %}
+{% if ( isOk == true and order.regimen == 70) %}
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 <div class="modal-dialog" role="document">
    <div class="modal-content">

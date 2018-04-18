@@ -481,12 +481,15 @@ class Modelorder extends CI_Model
      * @return bool
      */
     public function update(array $order):bool
-    {   
+    {           
         $this->db->where('nro_pedido', $order['nro_pedido']);
         if($this->db->update($this->table, $order)){
             return true;
         }
-        $this->modelLog->errorLog('No se puede actualizar Pedido ' . $order['nro_pedido'] . ' '. current_url());
+        $this->modelLog->errorLog(
+               'No se puede actualizar Pedido ' . $order['nro_pedido'] . ' '. current_url(),
+            $this->db->last_query()
+            );
         return false;
     }
     

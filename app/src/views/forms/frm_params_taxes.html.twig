@@ -1,0 +1,136 @@
+      <form action="{{ rute_url }}impuestos/actualizar" method="post">
+         <input type="hidden" name="id_parcial" value="{{ init_data.parcial.id_parcial }}">
+         <div class="col-md-6" style="background-color: #f9f9f9; padding:22px">
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="form-group" >
+                     <label class="control control-checkbox">
+                        Etiquetas Fiscales
+                        <input 
+                        type="checkbox" 
+                        name="bg_have_etiquetas_fiscales" 
+                        {% if init_data.parcial.bg_have_etiquetas_fiscales == 1 %}
+                        checked="true"
+                        {% endif %}
+                        >
+                        <div class="control_indicator"></div>
+                     </label>
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="form-group">
+                     <label>Moneda</label>
+                     <input 
+                        type="text" 
+                        name="moneda"
+                        value="{{ init_data.order_invoices.0.moneda }}" 
+                        required=""
+                        disabled="" 
+                        style="width:100%" 
+                        >
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="form-group">
+                     <label>Otros Gastos</label>
+                     <input 
+                        type="number" 
+                        name="otros" 
+                        value="{{ init_data.parcial.otros }}" 
+                        step="0.01"
+                        style="width:100%" 
+                        >
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="form-group">
+                     <label>Observaciones</label>
+                     <textarea 
+                        style="width:100%;" 
+                        rows="1" 
+                        name="observaciones" 
+                        placeholder="Observaciones" 
+                        maxlength="250" 
+                        required="" 
+                        class="form-control pull-right" 
+                        >{{ init_data.parcial.observaciones }}</textarea>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-6" style="background-color: #f9f9f9; padding:22px">
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="form-group" >
+                     <label class="control control-checkbox">
+                        Tasa de Control
+                        <input 
+                        type="checkbox" 
+                        name="bg_have_tasa_control"
+                        {% if init_data.parcial.bg_have_tasa_control == 1 %}
+                        checked="true"
+                        {% endif %}
+                        >
+                        <div class="control_indicator"></div>
+                     </label>
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="form-group">
+                     <label>Tipo de Cambio</label>
+                     <input 
+                        type="number" 
+                        name="tipo_cambio"
+                        step="0.0000000000001"
+                        required="" 
+                        value="{{ init_data.parcial.tipo_cambio }}" 
+                        style="width:100%" 
+                        {% if init_data.parcial.moneda == 'DOLARES' %}
+                        readonly=""
+                        {% endif %}
+                        >
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="form-group">
+                     <label>Exoneración Arancel (% Base Avalorem)</label>
+                     <input 
+                        type="number" 
+                        name="exoneracion_arancel"
+                        id="exoneracion_arancel" 
+                        value="{{ init_data.parcial.exoneracion_arancel }}" 
+                        step="0.01"
+                        style="width:30%" 
+                        >
+                        <label for=""> 
+                        <span class="text-primari" id='total_base_av'>
+                        ({{ base_advalorem }})</span> 
+                        </label>
+                        <label for="">
+                        <span class="text-info" id="descuento"></span>
+                        </label>
+                  </div>
+               </div>
+            </div>
+            <br>
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="form-group pull-right">
+                     <button class="btn btn-sm btn-default" type="submit">
+                     <span class="fa fa-refresh"></span> Actualizar
+                     </button> 
+                  </div>
+               </div>
+            </div>
+         </div>
+      </form>

@@ -271,13 +271,22 @@ class Gstinicial extends MY_Controller
         $invoicesOrder = $this->modelOrder->getInvoices($nroOrder);
         $initExpenses = $this->modelExpenses->getInitialExpenses($nroOrder);
         $minimal = $this->getMinimalParams($order, $initExpenses);
-        $minimal['valuesOrder'] = $this->calcValuesOrderItems($order, $invoicesOrder, $initExpenses);
+        $minimal['valuesOrder'] = $this->calcValuesOrderItems(
+                                                        $order, 
+                                                        $invoicesOrder, 
+                                                        $initExpenses
+            );
                 
         return ($this->responseHttp([
             'validateExpenses' => true,
-            'titleContent' => 'Generar Gastos Iniciales Pedido: [' . $nroOrder . '] ' . ' <small>Validar Información</small>',
+            'titleContent' => 'Generar Gastos Iniciales Pedido: [' . 
+                                $nroOrder . '] ' . 
+                                ' <small>Validar Información</small>',
             'rateExpenses' => $rateExpenses,
-            'unusedExpenses' => $this->calcExpensesDiff($rateExpenses, $initExpenses),
+            'unusedExpenses' => $this->calcExpensesDiff(
+                                                        $rateExpenses, 
+                                                        $initExpenses
+                ),
             'warenHouseDays' => $this->getWarenHouseDaysInitial($order),
             'invoicesOrder' => $invoicesOrder,
             'initExpenses' => $initExpenses,
@@ -370,17 +379,22 @@ class Gstinicial extends MY_Controller
             if ($this->modelOrder->update([
                 'nro_pedido' => $_POST['nro_pedido'],
                 'fecha_arribo' => date('Y-m-d', strtotime($_POST['fecha_arribo'])),
-                'fecha_salida_bodega_puerto' => date('Y-m-d', strtotime($_POST['fecha_salida_bodega_puerto'])),
+                'fecha_salida_bodega_puerto' => date('Y-m-d', strtotime(
+                                                str_replace(
+                                                   '/', '-', $_POST['fecha_salida_bodega_puerto']
+                                                    )
+                                                                         )),
                 'dias_libres' => $_POST['dias_libres']
             ])) {
                 $this->modelExpenses->create([
                     'nro_pedido' => $_POST['nro_pedido'],
                     'id_parcial' => 0,
-                    'fecha' => date('y-m-d'),
+                    'fecha' => date('Y-m-d'),
                     'identificacion_proveedor' => 0,
                     'concepto' => 'ALMACENAJE INICIAL',
                     'tipo' => 'INICIAL',
-                    'valor_provisionado' => $_POST['bodegaje_inicial']
+                    'valor_provisionado' => $_POST['bodegaje_inicial'],
+                    'id_user' => $this->session->userdata('id_user'),
                 ]);
                 
                 if (isset($_POST['demoraje'])) {
@@ -390,7 +404,8 @@ class Gstinicial extends MY_Controller
                         'identificacion_proveedor' => 0,
                         'concepto' => 'DEMORAJE',
                         'tipo' => 'INICIAL',
-                        'valor_provisionado' => $_POST['demoraje']
+                        'valor_provisionado' => $_POST['demoraje'],
+                        'id_user' => $this->session->userdata('id_user'),
                     ]);
                 }
             }
@@ -424,6 +439,8 @@ class Gstinicial extends MY_Controller
         ]));
     }
 
+    
+    
     /**
      * Elimina y Crea gastos iniciales, sin tomar en cuenta FLETE y GASTOS ORIGEN
      *
@@ -435,6 +452,7 @@ class Gstinicial extends MY_Controller
         if (! $_POST) {
             return ($this->redirectPage('ordersList'));
         }
+        
         $initExpensesInput = $this->input->post();
         
         $initExpensesRates = [];
@@ -469,7 +487,7 @@ class Gstinicial extends MY_Controller
             ];
             if ($value['concepto'] == 'ISD') {
                 $insertExpense['valor_provisionado'] = $valuesOrder['isd'];
-            } elseif ($value['concepto'] == 'SEGURO') {
+            } elseif ($value['concepto'] == 'POLIZA SEGURO') {
                 $insertExpense['valor_provisionado'] = $valuesOrder['seguro'];
             } elseif ($value['concepto'] == 'ETIQUETAS FISCALES') {
                 $insertExpense['valor_provisionado'] = $valuesOrder['etiquetas_fiscales'];
@@ -522,8 +540,15 @@ class Gstinicial extends MY_Controller
         
         if ($invoicesOrder) {
             foreach ($invoicesOrder as $key => $invoice) {
-                $valuesOrder['totalInvoices'] += floatval($invoice['valor'] * floatval($invoice['tipo_cambio']));
-                $valuesOrder['invoicesSum'] += (floatval($invoice['detailInvoice']['sums']['valueItems']) * floatval($invoice['tipo_cambio']));
+                $valuesOrder['totalInvoices'] += (
+                        floatval($invoice['valor'] * 
+                        floatval($invoice['tipo_cambio']))
+                    );
+                
+                $valuesOrder['invoicesSum'] += (
+                    floatval($invoice['detailInvoice']['sums']['valueItems']) * 
+                    floatval($invoice['tipo_cambio'])
+                    );
             }
             if ($valuesOrder['totalInvoices'] == $valuesOrder['invoicesSum']) {
                 $valuesOrder['statusInvoices'] = true;
@@ -533,7 +558,10 @@ class Gstinicial extends MY_Controller
         if (gettype($initExpenses) == 'array') {
             foreach ($initExpenses as $key => $value) {
                 if ($value['concepto'] == 'GASTO ORIGEN') {
-                    $valuesOrder['gastos_origen'] = floatval($value['valor_provisionado']);
+                    $valuesOrder['gastos_origen'] = floatval(
+                        $value['valor_provisionado']
+                        );
+                    
                 } elseif ($value['concepto'] == 'FLETE') {
                     $valuesOrder['flete'] = floatval($value['valor_provisionado']);
                 }
@@ -541,27 +569,62 @@ class Gstinicial extends MY_Controller
         }
         
         if ($valuesOrder['statusInvoices']) {
-            $valuesOrder['fob'] = (($paramsIncoterm[$valuesOrder['incoterm']] * $valuesOrder['gastos_origen']) + $valuesOrder['totalInvoices']);
+            $valuesOrder['fob'] = (
+                   (
+                    $paramsIncoterm[$valuesOrder['incoterm']] * 
+                    $valuesOrder['gastos_origen']
+                   ) 
+                    + $valuesOrder['totalInvoices']
+                );
             
             if ($order['incoterm'] == 'CFR') {
-                $valuesOrder['isd'] = (($valuesOrder['totalInvoices'] + $valuesOrder['flete']) * $this->isdPer);
+                $valuesOrder['isd'] = (
+                    ($valuesOrder['totalInvoices'] + $valuesOrder['flete']) * 
+                    $this->isdPer
+                    );
             } else {
-                $valuesOrder['isd'] = ($valuesOrder['totalInvoices'] * $this->isdPer);
+                $valuesOrder['isd'] = (
+                    $valuesOrder['totalInvoices'] * $this->isdPer
+                    );
             }
             
-            $valuesOrder['seguro'] = ((($valuesOrder['fob'] + $valuesOrder['flete']) * 2.2) * $this->securePercent);
+            $base_seguro = (
+                (
+                    ($valuesOrder['fob'] + $valuesOrder['flete']) * 2.2) * 
+                    $this->securePercent
+                );
+            
+            $valuesOrder['seguro'] = ($base_seguro + 
+                                    ($base_seguro * 0.035) + 
+                                    ($base_seguro * 0.005) +
+                                    0.45);
+            
         }
+        
+        
+        
         
         if (($order['incoterm'] == 'CFR') || ($order['incoterm'] == 'FOB')) {
             unset($valuesOrder['gastos_origen']);
         }
         
         $valLabels = 0.0;
-        $initialStockProducts = $this->ModelOrderInvoiceDetail->getActiveStokProductsByOrder($order['nro_pedido']);
+        $initialStockProducts = $this->ModelOrderInvoiceDetail->
+                            getActiveStokProductsByOrder($order['nro_pedido']);
         if ($initialStockProducts != false) {
             foreach ($initialStockProducts as $item => $product) {
-                $valLabels += (($this->labelCost) * ($product['nro_cajas'] * $product['cantidad_x_caja']));
-                $tasaServicio = (((intval($product['capacidad_ml']) / 2000) * 0.10) * ($product['nro_cajas'] * $product['cantidad_x_caja']));
+                
+                $valLabels += (
+                    ($this->labelCost) * 
+                    ($product['nro_cajas'] * 
+                    $product['cantidad_x_caja'])
+                    );
+                
+                $tasaServicio = (
+                    (
+                        (intval($product['capacidad_ml']) / 2000) * 0.10) * 
+                        ($product['nro_cajas'] * $product['cantidad_x_caja'])
+                    );
                 if ($tasaServicio < 700) {
                     $valuesOrder['tasa_de_servicio_aduanero'] += $tasaServicio;
                 } else {
@@ -571,10 +634,84 @@ class Gstinicial extends MY_Controller
         }
         
         $valuesOrder['etiquetas_fiscales'] = $valLabels;
+        $this->addDefaultExpenses($valuesOrder, $order);
         
         return $valuesOrder;
     }
+    
+    
+    
+    /**
+     * Agrega automanticamete al pedido los gastos iniciales autocalculados,
+     * en caso de que ya esten registrados no hace nada 
+     * 
+     * @param array $valuesOrder
+     * @param array $order
+     * @return bool
+     */
+    private function addDefaultExpenses(array  $valuesOrder, array $order): bool
+    {
+        $data = [
+                    0 => [
+                            'nro_pedido' => $order['nro_pedido'],
+                            'identificacion_proveedor' => 0,
+                            'concepto' => 'ISD',
+                            'valor_provisionado' => $valuesOrder['isd'],
+                            'comentarios' => 'REGISTRO AGREGADO POR EL ASISTENTE',
+                            'fecha' => date('Y-m-d H:m:s'),
+                            'id_user' => $this->session->userdata('id_user'),
+                        ],
+                    1 => [
+                            'nro_pedido' => $order['nro_pedido'],
+                            'identificacion_proveedor' => 0,
+                            'concepto' => 'ETIQUETAS FISCALES',
+                            'valor_provisionado' => $valuesOrder['etiquetas_fiscales'],
+                            'comentarios' => 'REGISTRO AGREGADO POR EL ASISTENTE',
+                            'fecha' => date('Y-m-d H:m:s'),
+                            'id_user' => $this->session->userdata('id_user'),
+                          ]
+                ];
+        
+        
+        $init_expenses = $this->modelExpenses->getInitialExpenses(
+            $order['nro_pedido']
+            );
+        
+        foreach ( $init_expenses as $item => $expense ){
+            if($expense['concepto'] == 'ISD'){
+                unset($data[0]);
+            }
+            
+            if($expense['concepto'] == 'ETIQUETAS FISCALES'){
+                unset($data[1]);
+            }
+            
+            if(count($data) == 0){
+                $this->modelLog->warningLog(
+                    'Etiquetas fiscales e ISD ya estan registrados'
+                    );
+                return False;
+            }
+        }
+                
+        foreach ( $data as $item => $expense){
+            if ( $this->modelExpenses->create($expense) == False ){
+                $this->modelLog->errorLog(
+                    'No fue posible agregar de forma automatica los gastos iniciales'
+                    );
+                return  false;
+            }
+        }
+        
+        $this->modelLog->susessLog(
+            'los gastos iniciales ISD y Etiquetas fueron agregados correctamente'
+            );
+     
+        return true;   
+    }
 
+    
+    
     /**
      * Obtiene el numero minimo de parametros que debe tener una oren de compra
      *
@@ -594,8 +731,13 @@ class Gstinicial extends MY_Controller
             'initExpenses' => $initExpenses
         ];
         
-        $minimal['statusOrder']['fecha_arribo'] = ($order['fecha_arribo']) ? $order['fecha_arribo'] : false;
-        $minimal['statusOrder']['dias_libres'] = ($order['dias_libres'] > 0) ? $order['dias_libres'] : false;
+        $minimal['statusOrder']['fecha_arribo'] = ($order['fecha_arribo']) ? 
+                                                    $order['fecha_arribo'] : 
+                                                                      false;
+        
+        $minimal['statusOrder']['dias_libres'] = ($order['dias_libres'] > 0) ? 
+                                                     $order['dias_libres'] : 
+                                                                      false;
         
         if (($order['incoterm'] == 'FOB') || $order['incoterm'] == 'CFR') {
             $minimal['statusOrder']['have_gasto_origen'] = false;
@@ -603,6 +745,7 @@ class Gstinicial extends MY_Controller
         return $minimal;
     }
 
+    
     /**
      * Calcula la diferencia entre los gastos iniciales
      *

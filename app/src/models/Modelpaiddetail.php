@@ -195,6 +195,7 @@ class Modelpaiddetail extends \CI_Model
     public function create(array $paidDetail)
     {
         if($this->db->insert($this->table, $paidDetail)){
+            $this->modelLog->queryInsrertLog($this->db->last_query());
             return $this->db->insert_id();
         }
         $this->modelLog->errorLog(
@@ -213,9 +214,20 @@ class Modelpaiddetail extends \CI_Model
      */
     public function deletePaidDetail(int $idPaidDetail):bool
     {
-       $this->modelLog->errorLog('Implemenatar el eliminado del registro','as');
+        $this->db->where('id_detalle_documento_pago', $idPaidDetail);
+        if($this->db->delete($this->table)){
+            return True;
+        }
+        
+        $this->modelLog->errorLog(
+            'No se puede eliminar el documento pago',
+            $this->db->last_query()
+            );
+        
        return false;
     }
+    
+    
     
     /**
      * Actualiza del detalle de un pago
@@ -224,7 +236,18 @@ class Modelpaiddetail extends \CI_Model
      */
     public function updatePaidDetail(array $paidDetail) : bool
     {
-        $this->modelLog->errorLog('Funcion no implementada');
+        $this->db->where(
+                'id_detalle_documento_pago', 
+                $paidDetail['id_detalle_documento_pago']
+            );
+        if($this->db->update($this->table, $paidDetail)){
+            $this->modelLog->queryUpdateLog($this->db->last_query());
+            return True;
+        }
+        $this->modelLog->errorLog(
+            'No es posible actualizar el detalle documento pago',
+            $this->db->last_query());
+        
         return false;
     }
 }

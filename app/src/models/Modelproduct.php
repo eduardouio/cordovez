@@ -115,7 +115,7 @@ class Modelproduct extends CI_Model{
     public  function update(array $product) : bool{
         $this->db->where('id_producto', $product['id_producto']);
         if($this->db->update($this->table, $product)){
-            $this->modelLog->warningLog('producto modificado', $this->db->last_query());
+            $this->modelLog->queryUpdateLog($this->db->last_query());
             return true;
         }
         $this->modelLog->errorLog('No se puede actualizar un producto', $this->db->last_query());
@@ -130,6 +130,7 @@ class Modelproduct extends CI_Model{
      */
     public function create( array $product ){
         if($this->db->insert($this->table, $product)){
+            $this->modelLog->queryInsrertLog($this->db->last_query());
             return true;   
         }
         return false;

@@ -195,7 +195,7 @@ class Modelsupplier extends CI_Model
     public function update($idSupplier, $supplier){
         $this->db->where('id_proveedor', $idSupplier);
         if($this->db->update($this->table, $supplier)){
-            $this->modelLog->warningLog('proveedor actualizado');      
+            $this->modelLog->queryUpdateLog($this->db->last_query());      
             return true;
         }
         
@@ -215,7 +215,7 @@ class Modelsupplier extends CI_Model
      */
     public function create($supplier){
         if($this->db->insert($this->table, $supplier)){
-            $this->modelLog->susessLog('Nuevo Proveedor registrado');
+            $this->modelLog->queryInsrertLog($this->db->last_query());
             return ($this->db->insert_id());
         }
         

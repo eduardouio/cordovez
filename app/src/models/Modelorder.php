@@ -484,6 +484,7 @@ class Modelorder extends CI_Model
     {           
         $this->db->where('nro_pedido', $order['nro_pedido']);
         if($this->db->update($this->table, $order)){
+            $this->modelLog->queryUpdateLog($this->db->last_query());
             return true;
         }
         $this->modelLog->errorLog(

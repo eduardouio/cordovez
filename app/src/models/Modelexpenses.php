@@ -300,10 +300,14 @@ class Modelexpenses extends CI_Model
     {
         $this->db->where('id_gastos_nacionalizacion', $expense['id_gastos_nacionalizacion']);
         if($this->db->update($this->table, $expense)){
+            $this->modelLog->queryUpdateLog($this->db->last_query());
             return true;
         }
-        $this->modelLog->errorLog('No se puede acceder a la base');
-        $this->modelLog->errorLog($this->db->last_query());
+        
+        $this->modelLog->errorLog(
+                'No se puede acceder a la base',
+                $this->db->last_query()
+            );
         return false;
     }
         
@@ -315,14 +319,12 @@ class Modelexpenses extends CI_Model
     public function create(array $expense)
     {
         if($this->db->insert($this->table, $expense)){
-            $this->modelLog->generalLog(
-                'Gasto de de Nacionalizacion Creado Exitosamente',
-                $this->db->last_query()
-                );
+            $this->modelLog->queryInsrertLog($this->db->last_query());
             return($this->db->insert_id());
         }
-        $this->modelLog->errorLog('No se puede crear un gasto Nacionalizaicon',
-            $this->db->last_query()
+        $this->modelLog->errorLog(
+                'No se puede crear un gasto Nacionalizaicon',
+                $this->db->last_query()
             );
         return false;
     }

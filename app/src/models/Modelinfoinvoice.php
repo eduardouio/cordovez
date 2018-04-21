@@ -147,6 +147,7 @@ class Modelinfoinvoice extends CI_Model
      */
     public function create(array $infoInvoice){
         if($this->db->insert($this->table, $infoInvoice)){
+            $this->modelLog->queryInsrertLog($this->db->last_query());
             return $this->db->insert_id();
         }
         $this->modelLog->errorLog('Modelinfoinvoice,create,No se puede crear', $this->db->last_query());
@@ -162,6 +163,7 @@ class Modelinfoinvoice extends CI_Model
     public function update(array $infoInvoice):bool{
         $this->db->where('id_factura_informativa', $infoInvoice['id_factura_informativa']);
         if($this->db->update($this->table, $infoInvoice)){
+            $this->modelLog->queryUpdateLog($this->db->last_query());
             return true;
         }
         $this->modelLog->errorLog(

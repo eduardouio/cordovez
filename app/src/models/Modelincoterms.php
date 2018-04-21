@@ -42,6 +42,7 @@ class Modelincoterms extends CI_Model {
 	public function create(array $incoterm)
 	{
 	    if($this->db->insert($this->table, $incoterm)){
+	        $this->modelLog->queryInsrertLog($this->db->last_query());
 	        return $this->db->insert_id();
 	    }
 	    return false;
@@ -56,6 +57,7 @@ class Modelincoterms extends CI_Model {
 	{
 	    $this->db->where('id_incoterm', $incoterm['id_incoterm']);
 	    if($this->db->update($this->table, $incoterm)){
+	        $this->modelLog->queryUpdateLog($this->db->last_query());
 	        return true;
 	    }
 	    return false;

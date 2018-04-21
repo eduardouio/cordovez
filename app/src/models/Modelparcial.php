@@ -96,10 +96,13 @@ class Modelparcial extends CI_Model
     {
                
         if($this->db->insert($this->table, $parcial)){
-            $this->modelLog->susessLog('Se crea un nuevo parcual abierto ' . $this->db->insert_id());
+            $this->modelLog->queryInsrertLog($this->db->last_query());
             return $this->db->insert_id();
         }
-        if($this->modelLog->errorLog('No se puede insertar un parcial' , $this->db->last_query()));
+        if($this->modelLog->errorLog(
+                'No se puede insertar un parcial' , 
+                $this->db->last_query())
+            );
         return false;
     }
     
@@ -313,28 +316,10 @@ class Modelparcial extends CI_Model
      */
     public function update(array $parcial): bool {
         
-        $parcial['last_update'] = date('Y-m-d H:i:s');
-        
-        $parcial['fecha_salida_almacenera'] = str_replace( 
-                                            '/', 
-                                            '-', 
-                                            $parcial['fecha_salida_almacenera']
-                                                        );
-        
-        $parcial['fecha_salida_almacenera'] = date(
-                                 'Y-m-d',
-                                 strtotime($parcial['fecha_salida_almacenera'])
-                                                  );
-                
-        $parcial['proximo_almacenaje_desde'] = date(
-            'Y-m-d',
-            strtotime($parcial['proximo_almacenaje_desde'] . ' +1 day')
-            );
-       
         $this->db->where('id_parcial', $parcial['id_parcial']);
         
         if($this->db->update($this->table, $parcial)){
-            $this->modelLog->susessLog('Parcial actualizado correnctamente');
+            $this->modelLog->queryUpdateLog($this->db->last_query());
             return true;
         }
         
@@ -355,7 +340,7 @@ class Modelparcial extends CI_Model
     {
         $this->db->where('id_parcial', $parcial['id_parcial']);
         if ($this->db->update($this->table, $parcial)){
-            $this->modelLog->susessLog('Actulizamos el parcial');
+            $this->modelLog->queryUpdateLog($this->db->last_query());
             return true;
         }
         

@@ -94,6 +94,7 @@ class Modelrateexpenses extends CI_Model {
     public function create(array $rateExpense)
     {
         if($this->db->insert($this->table, $rateExpense)){
+            $this->modelLog->queryInsrertLog($this->db->last_query());
             return $this->db->insert_id();
         }
         
@@ -105,6 +106,7 @@ class Modelrateexpenses extends CI_Model {
         return false;
     }
     
+    
     /**
      * Actualiza una tarifa
      * @param array $rateExpense arreglo de tarigfa
@@ -113,6 +115,7 @@ class Modelrateexpenses extends CI_Model {
     public function update(array $rateExpense):bool{
         $this->db->where('id_tarifa_gastos', $rateExpense['id_tarifa_gastos']);
         if($this->db->update($this->table, $rateExpense)){
+            $this->modelLog->queryUpdateLog($this->db->last_query());
             return true;
         }
         $this->modelLog->errorLog('No se puede actualizar la tarifa gastos',
@@ -120,6 +123,7 @@ class Modelrateexpenses extends CI_Model {
             );
         return false;
     }
+    
     
     /**
      * Elimna una tarifa del sistema

@@ -183,10 +183,11 @@ class Modelorderinvoice extends CI_Model
     public function create(array $invoiceOrder)
     {
         if($this->db->insert($this->table, $invoiceOrder)){
+            $this->modelLog->queryInsrertLog($this->db->last_query());
             return $this->db->insert_id();
         }
         $this->modelLog->errorLog(
-            'No se puede crear un registro',
+            'No se puede crear la factura de pedido',
             $this->db->last_query()
             );
         return false;
@@ -244,6 +245,7 @@ class Modelorderinvoice extends CI_Model
     {
         $this->db->where('id_pedido_factura',$idInvoiceOrder);
         if($this->db->delete($this->table)){
+            $this->modelLog->queryUpdateLog($this->db->last_query());
             return true;
         }
         $this->modelLog->errorLog(

@@ -11,7 +11,25 @@
  * @filesource
  */
 class Modellog extends CI_Model{
+    
+    # los paths son diferentes para facilitar la lectura e inspeccion
     private $path = '/var/www/html/cordovezapp/app/src/logs/app.log';
+    private $pathInsert = '/var/www/html/cordovezapp/app/src/logs/insert.log';
+    private $pathUpdate = '/var/www/html/cordovezapp/app/src/logs/update.log';
+    
+    
+    # Loggin app Options
+    # loggin => write in log file messages for success, errors, warnings, and info
+    # insertLoggin => write in log file messages for insert SQL
+    # updateLoggin => write in log file messages for update SQL
+    
+    private $optionsLog = [
+        'loggin' => True,
+        'insertLoggin' => True,
+        'updateLoggin' => False,
+    ];
+    
+    
     private $modelUser;
     private $user;
 
@@ -46,6 +64,10 @@ class Modellog extends CI_Model{
      */
     public function susessLog(string $message)
     {
+        if($this->optionsLog['loggin'] == False){
+            return False;
+        }
+        
         error_log("\n[Success][" . $this->input->ip_address() .  "][" .
                     date("d m Y H:i:s") . '] '.
                     $message .' [' .
@@ -62,6 +84,10 @@ class Modellog extends CI_Model{
      */
     public function generalLog(string $message,  $string = false)
     {
+        if($this->optionsLog['loggin'] == False){
+            return False;
+        }
+        
         error_log( "\n[Log][" . $this->input->ip_address() ."][" .
                     date("d m Y H:i:s") . '] '. $message . ' [' .
                     $this->user['nombres'] . ']' ,
@@ -81,6 +107,10 @@ class Modellog extends CI_Model{
      */
     public function warningLog(string $message, string $sql = NULL)
     {
+        if($this->optionsLog['loggin'] == False){
+            return False;
+        }
+        
         error_log("\n[warning][". $this->input->ip_address() ."][" .
                    date("d m Y H:i:s") . '] ' .
                     $message . ' [' .
@@ -100,6 +130,10 @@ class Modellog extends CI_Model{
      */
     public function redirectLog(string $message, string $url = NULL)
     {
+        if($this->optionsLog['loggin'] == False){
+            return False;
+        }
+        
         error_log("\n[redirect][" . $this->input->ip_address() ."][" .
                      date("d m Y H:i:s") . ']' .
                     $message . ' [' .
@@ -119,6 +153,10 @@ class Modellog extends CI_Model{
      */
     public function errorLog(string $message, string $sql = NULL)
     {
+        if($this->optionsLog['loggin'] == False){
+            return False;
+        }
+        
         error_log("\n[error][" . $this->input->ip_address() ."][" .
                     date("d m Y H:i:s") . '] '.
                     $message . ' [' .
@@ -131,5 +169,35 @@ class Modellog extends CI_Model{
         }
     }
     
+    
+    /**
+     * Registra todas las consultas de insert en el log
+     * 
+     * @param string $sql
+     */
+    public function queryInsrertLog(string $sql)
+    {
+        if($this->optionsLog['insertLoggin'] == False){
+            return False;
+        }
+        
+        error_log($sql . '\n', 3 , $this->pathInsert );
+        
+    }
+    
+    
+    /**
+     * Registra todas las consultas update en el Log
+     * 
+     * @param string $sql
+     */
+    public function queryUpdateLog(string $sql)
+    {
+        if($this->optionsLog['updateLoggin'] == False){
+            return False;
+        }
+        
+        error_log($sql . '\n', 3 , $this->pathUpdate );
+    }
     
 }

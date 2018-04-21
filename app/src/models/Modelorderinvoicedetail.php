@@ -65,10 +65,8 @@ class Modelorderinvoicedetail extends CI_Model
     public function create(array $orderInvoiceDetail)
     {
         if($this->db->insert($this->table, $orderInvoiceDetail)){
+            $this->modelLog->queryInsrertLog($this->db->last_query());
             return $this->db->insert_id();
-            $this->modelLog->susessLog(
-                'Nueo item en factura regiatrado Correctamente'
-                );
         }
         
         $this->modelLog->errorLog(
@@ -89,6 +87,7 @@ class Modelorderinvoicedetail extends CI_Model
     {
         $this->db->where('detalle_pedido_factura', $orderInvoiceDetail['detalle_pedido_factura']);
         if($this->db->update($this->table, $orderInvoiceDetail)){
+            $this->modelLog->queryUpdateLog($this->db->last_query());
             return true;
         }
         return false;

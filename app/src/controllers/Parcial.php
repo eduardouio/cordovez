@@ -75,6 +75,7 @@ class Parcial extends MY_Controller
         return ($this->redirectPage('ordersList'));
     }
 
+    
     /**
      * Genera un nuevo parcial en la base de datos
      * luego redirecciona al formulario de factura informativa
@@ -128,7 +129,7 @@ class Parcial extends MY_Controller
     
     /**
      * Genera un nuevo parcial y luego lleva a la creacion de una factura 
-     * informativa Se compruaba que no exista otro parcial abierto
+     * informativa Se comprueba que no exista otro parcial abierto
      * 
      * @param string $nroOrder
      * @return string template 
@@ -139,9 +140,12 @@ class Parcial extends MY_Controller
         $hasActiveParcial = false;
         
         if($order == false){
-            $this->modelLog->errorLog('No se puede crear un parcial para un pedido inexistente');
+            $this->modelLog->errorLog(
+                'No se puede crear un parcial para un pedido inexistente'
+                );
             return $this->index();
         }
+        
         $olderParcials = $this->modelParcial->getByOrder($nroOrder);
         
         $parcial = [

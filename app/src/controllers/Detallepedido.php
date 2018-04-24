@@ -144,6 +144,7 @@ class Detallepedido extends MY_Controller
 	* @return array template html
 	*/
 	public function validar(){
+	    
 	    if(!$_POST){
 	       $this->index();
 	       return false;
@@ -155,32 +156,26 @@ class Detallepedido extends MY_Controller
 	    $status = $this->_validData($invoiceOrderDetail);
 	    
 	    if ($status['status']){
+	        $this->updateProduct($invoiceOrderDetail);
+	        
 			if (!isset($invoiceOrderDetail['detalle_pedido_factura'])){
 			    $lastId = $this->modelOrderInvoiceDetail->create(
-			                                                 $invoiceOrderDetail
-			                                                     );
+                         $invoiceOrderDetail
+                     );
 			    
-			    $product = $this->modelProduct->get($invoiceOrderDetail['cod_contable']);
-			    $product['costo_caja'] = $invoiceOrderDetail['costo_caja'];
-			    $this->modelProduct->update($product);
-			    $this->modelLog->generalLog(
-			        'Actualizando producto', $this->db->last_query()
-			        );
-			    return(
-			        $this->redirectPage('orderInvoicePresent', $invoiceOrderDetail['id_pedido_factura'])
-			        );
+			    return($this->redirectPage(
+			            'orderInvoicePresent', 
+			            $invoiceOrderDetail['id_pedido_factura']
+			           ));
+			    
 			}else{
 				$invoiceOrderDetail['last_update'] = date('Y-m-d H:i:s');
 				$this->modelOrderInvoiceDetail->update($invoiceOrderDetail);
-				$product = $this->modelProduct->get($invoiceOrderDetail['cod_contable']);
-				if(gettype($product) == 'array'){
-				    $product['costo_caja'] = $invoiceOrderDetail['costo_caja'];
-				    $this->modelProduct->update($product);
-				    $this->modelLog->generalLog('Actualizando producto', $this->db->last_query());
-				}
-				return(
-				    $this->redirectPage('orderInvoicePresent', $invoiceOrderDetail['id_pedido_factura'])
-				    );
+				
+				return($this->redirectPage(
+    				    'orderInvoicePresent', 
+    				    $invoiceOrderDetail['id_pedido_factura']
+				    ));
 				}
 		}else{
 			return($this->responseHttp([
@@ -192,7 +187,27 @@ class Detallepedido extends MY_Controller
 		}	
 	}
 
-
+    
+	
+	/**
+	 * Actualiza el costo del producto cuando este tiene un costo diferente 
+	 * 
+	 * @param array $invoideDetail
+	 */
+	private function  updateProduct(array $invoideDetail)
+	{
+	    $product = $this->modelProduct->get($invoideDetail['cod_contable']);
+	    if( 
+	        $product &&
+	        $product['costo_caja'] != $invoideDetail['costo_caja']
+	       )
+	    {
+	        $product['costo_caja'] = $invoideDetail['costo_caja'];
+	        $this->modelProduct->update($product);
+	    }
+	}
+	
+	
 	/**
 	 * se validan los datos que deben estar para que la consulta no falle
 	 * @return [array] | [bolean]

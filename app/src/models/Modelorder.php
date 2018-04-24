@@ -475,6 +475,24 @@ class Modelorder extends CI_Model
         return $result;
     }
     
+    
+    /**
+     * Registra un pedido en la base de datos
+     * @param array $order
+     */
+    public function create(array $order)
+    {
+        if($this->db->insert($this->table, $order)){
+            $this->modelLog->queryInsrertLog($this->db->last_query());
+            return $this->db->insert_id();
+        }else{
+            $this->modelLog->errorLog(
+                'No se puede registrar el pedido en la base',
+                $this->db->last_query()
+                );
+        }
+    }
+    
     /**
      * Actualiza una orden en la base de datos
      * @param array $order arreglo con datos de la orden

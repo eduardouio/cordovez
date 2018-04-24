@@ -151,7 +151,10 @@ class Gstinicial extends MY_Controller
         $initExpense = $this->modelExpenses->getExpense($idInitExpense);
         
         if ($initExpense == false) {
-            $this->modelLog->redirectLog('Acceso dirtecto a editar', current_url());
+            $this->modelLog->redirectLog(
+                'Se intenta acceder directamente a editar desde url sin id', 
+                current_url()
+                );
             return ($this->index());
         }
         
@@ -168,6 +171,8 @@ class Gstinicial extends MY_Controller
         ]));
     }
 
+    
+    
     /**
      * Valida la informacion de registro de un gasto inicial
      *
@@ -184,12 +189,32 @@ class Gstinicial extends MY_Controller
         
         $initExpense = $this->input->post();
         $initExpense['id_user'] = $this->session->userdata('id_user');
-        $initExpense['fecha'] = date('Y-m-d', strtotime($initExpense['fecha']));
-        $initExpense['fecha_fin'] = date('Y-m-d', strtotime($initExpense['fecha_fin']));
+        $initExpense['fecha'] = str_replace('/', '-', $initExpense['fecha']);
+        $initExpense['fecha'] = date(
+                                'Y-m-d', 
+                                strtotime($initExpense['fecha'])
+            );
         
+        if(isset($initExpense['fecha_fin'])){
+            $initExpense['fecha_fin'] = str_replace(
+                                        '/', 
+                                        '-', 
+                                        $initExpense['fecha_fin']
+                );
+            
+            $initExpense['fecha_fin'] = date(
+                'Y-m-d', strtotime($initExpense['fecha_fin'])
+                );
+        }else{
+            $initExpense['fecha_fin'] = NULL;
+        }
+        
+       
         
         if (isset($initExpense['fecha_fin'])) {
-            $initExpense['fecha_fin'] = date('Y-m-d', strtotime($initExpense['fecha_fin']));
+            $initExpense['fecha_fin'] = date(
+                'Y-m-d', strtotime($initExpense['fecha_fin'])
+                );
         }
         
         if (! isset($initExpense['id_gastos_nacionalizacion'])) {
@@ -215,7 +240,12 @@ class Gstinicial extends MY_Controller
                 return true;
             } else {
                 $initExpense['last_update'] = date('Y-m-d H:i:s');
-                $this->db->where('id_gastos_nacionalizacion', $initExpense['id_gastos_nacionalizacion']);
+                
+                $this->db->where(
+                    'id_gastos_nacionalizacion', 
+                    $initExpense['id_gastos_nacionalizacion']
+                    );
+                
                 $this->db->update($this->controller, $initExpense);
                 $this->redirectPage('validargi', $initExpense['nro_pedido']);
                 return true;
@@ -241,14 +271,23 @@ class Gstinicial extends MY_Controller
         $initialExpense = $this->modelExpenses->getExpense($idInitExpense);
         
         if ($initialExpense == false) {
-            $this->modelLog->warningLog('Intendo de Eliminar un gasto inicial directamente', $this->db->last_query());
+            $this->modelLog->warningLog(
+                'Intendo de Eliminar un gasto inicial directamente', 
+                $this->db->last_query()
+                );
             return ($this->redirectPage('ordersList'));
         }
         
         if ($this->modelExpenses->delete($idInitExpense)) {
-            return ($this->redirectPage('validargi', $initialExpense['nro_pedido']));
+            return ($this->redirectPage(
+                'validargi', 
+                $initialExpense['nro_pedido'])
+                );
         }
-        $this->modelLog->errorLog('Error al eliminar un gasto Inicial, ya se encuentra justificado', $this->db->last_query());
+        $this->modelLog->errorLog(
+            'Error al eliminar un gasto Inicial, ya se encuentra justificado', 
+            $this->db->last_query()
+            );
         return ($this->redirectPage('validargi', $initialExpense['nro_pedido']));
     }
 
@@ -318,7 +357,10 @@ class Gstinicial extends MY_Controller
         }
         $incoterms = $this->modelExpenses->getIncotermsParams($order);
         if ($incoterms == false) {
-            $this->modelLog->warningLog($this->controller . ' No se encuentra incoterms ' . current_url());
+            $this->modelLog->warningLog(
+                $this->controller . ' No se encuentra incoterms ' . 
+                current_url()
+                );
             $this->redirectPage('presentOrder', $nroOrder);
         }
         
@@ -359,14 +401,21 @@ class Gstinicial extends MY_Controller
         
         foreach ($initExpenses as $key => $expense) {
             
-            if (($expense['concepto'] == 'GASTO ORIGEN') || ($expense['concepto'] == 'FLETE')) {
-                $this->db->where('id_gastos_nacionalizacion', $expense['id_gastos_nacionalizacion']);
+            if (($expense['concepto'] == 'GASTO ORIGEN') || 
+                ($expense['concepto'] == 'FLETE')) 
+            {
+                $this->db->where(
+                    'id_gastos_nacionalizacion', 
+                    $expense['id_gastos_nacionalizacion']
+                    );
                 $this->db->delete($this->controller);
             }
         }
         $this->putIncoterms($nroOrder);
     }
 
+    
+    
     /**
      * Inicia el asistente para establecer las provisiones de bodega inicial
      * y las provisiones de demoraje
@@ -376,14 +425,36 @@ class Gstinicial extends MY_Controller
     public function validarbodegainicial(string $nroOrder = '')
     {
         if ($_POST) {
+            
+            $this->modelLog->warningLog(
+                'acceso a la funcion validarbodegainicial es por POST'
+                );
+            $_POST['fecha_arribo'] = str_replace(
+                '/', 
+                '-', 
+                $_POST['fecha_arribo']
+                );
+            
+            $_POST['fecha_salida_bodega_puerto'] = str_replace(
+                '/', 
+                '-', 
+                $_POST['fecha_salida_bodega_puerto']
+                );
+            
+            $_POST['fecha_arribo'] = date(
+                'Y-m-d', 
+                strtotime($_POST['fecha_arribo'])
+                );
+            
+            $_POST['fecha_salida_bodega_puerto'] = date(
+                'Y-m-d', 
+                strtotime($_POST['fecha_salida_bodega_puerto'])
+                );
+            
             if ($this->modelOrder->update([
                 'nro_pedido' => $_POST['nro_pedido'],
-                'fecha_arribo' => date('Y-m-d', strtotime($_POST['fecha_arribo'])),
-                'fecha_salida_bodega_puerto' => date('Y-m-d', strtotime(
-                                                str_replace(
-                                                   '/', '-', $_POST['fecha_salida_bodega_puerto']
-                                                    )
-                                                                         )),
+                'fecha_arribo' => $_POST['fecha_arribo'],
+                'fecha_salida_bodega_puerto' => $_POST['fecha_salida_bodega_puerto'],
                 'dias_libres' => $_POST['dias_libres']
             ])) {
                 $this->modelExpenses->create([
@@ -409,8 +480,13 @@ class Gstinicial extends MY_Controller
                     ]);
                 }
             }
+            
             return ($this->redirectPage('validargi', $_POST['nro_pedido']));
         }
+        
+        $this->modelLog->warningLog(
+            'acceso a la funcion validarbodegainicial es por GET'
+            );
         
         $order = $this->modelOrder->get($nroOrder);
         if ($order == false) {
@@ -428,6 +504,8 @@ class Gstinicial extends MY_Controller
                 }
             }
         }
+        
+        
         
         return ($this->responseHttp([
             'titleContent' => 'Asistente cálculo de Bodegaje Inicial y Demoraje Pedido [' . $order['nro_pedido'] . ']',

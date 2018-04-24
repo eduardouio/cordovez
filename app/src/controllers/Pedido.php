@@ -23,7 +23,6 @@ class Pedido extends MY_Controller
     private $template = '/pages/pagePedido.html';
     private $modelOrder;
     private $modelSupplier;
-    private $modelNationalization;
     private $modelProduct;
     private $modelInfoInvoice;
     private $modelInfoInvoiceDetail;
@@ -56,7 +55,6 @@ class Pedido extends MY_Controller
         $this->load->model('modelorder');
         $this->load->model('modelsupplier');
         $this->load->model('modelproduct');
-        $this->load->model('modelnationalization');
         $this->load->model('modelinfoinvoice');
         $this->load->model('modelinfoinvoicedetail');
         $this->load->model('mymodel');
@@ -70,7 +68,6 @@ class Pedido extends MY_Controller
         $this->modelOrder = new Modelorder();
         $this->modelSupplier = new Modelsupplier();
         $this->modelProduct = new Modelproduct();
-        $this->modelNationalization = new Modelnationalization();
         $this->modelBase = new ModelBase();
         $this->modelInfoInvoice = new Modelinfoinvoice();
         $this->modelInfoInvoiceDetail = new Modelinfoinvoicedetail();
@@ -118,7 +115,6 @@ class Pedido extends MY_Controller
         $orderList = [];
         foreach ($orders as $item => $order) {
             $order['invoices'] = $this->modelOrder->getInvoices($order['nro_pedido']);
-            $order['nationalized'] = $this->modelNationalization->getNationalizedVal($order);
             $order['warenHouseDays'] = $this->getWarenHouseDaysInitial($order);
             $orderList[$item] = $order;
         }
@@ -232,6 +228,7 @@ class Pedido extends MY_Controller
     }
     
     
+    
     /**
      * Muestra el formulario para crear un pedido
      */
@@ -245,6 +242,8 @@ class Pedido extends MY_Controller
             'create_order' => true,
         ]));
     }
+    
+    
     
     /**
      * Muestra el formulario de edicion
@@ -262,9 +261,10 @@ class Pedido extends MY_Controller
                                                    'table' => 'tarifa_incoterm'
                                 ])),
             'titleContent'  => 'Se Encuentra Editando El Pedido [<b>' 
-                                                            . $nroOrder . ']</b>',
+                                                          . $nroOrder . ']</b>',
         ]));
     }
+    
     
     
     /**
@@ -304,6 +304,8 @@ class Pedido extends MY_Controller
         return false;
     }
     
+    
+    
     /**
      * elimina un pedido de la tabla, solo lo elimina sino tiene parciales
      */
@@ -339,13 +341,23 @@ class Pedido extends MY_Controller
         
         $pedido = $_POST;
         $pedido['id_user'] = $this->session->userdata('id_user');
-        if ($pedido['fecha_arribo'] == '') {
+        
+        if ($pedido['fecha_arribo'] == '' || $pedido['fecha_arribo'] == NULL) {
             unset($pedido['fecha_arribo']);
         } else {
-            $pedido['fecha_arribo'] = str_replace('/', '-', $pedido['fecha_arribo']); 
-            $pedido['fecha_arribo'] = date('Y-m-d', strtotime($pedido['fecha_arribo']));
+            $pedido['fecha_arribo'] = str_replace(
+                    '/', 
+                    '-', 
+                    $pedido['fecha_arribo']
+                ); 
+            
+            $pedido['fecha_arribo'] = date(
+                    'Y-m-d', 
+                    strtotime($pedido['fecha_arribo'])
+                );
             
         }
+        
         if (! isset($pedido['id_pedido'])) {
             if ((int) $pedido['n_pedido'] < 100 && intval($pedido['n_pedido']) > 9) {
                 $pedido['n_pedido'] = '0' . intval($pedido['n_pedido']);
@@ -355,6 +367,7 @@ class Pedido extends MY_Controller
             }
             
             $pedido['nro_pedido'] = $pedido['n_pedido'] . '-' . $pedido['y_pedido'];
+            
             unset($pedido['n_pedido']);
             unset($pedido['y_pedido']);
             
@@ -373,13 +386,15 @@ class Pedido extends MY_Controller
         $status = $this->validData($pedido);
         if ($status['status']) {
             if (! isset($pedido['id_pedido'])) {
-                $this->db->insert($this->controller, $pedido);
-                $this->redirectPage('putIncoterms', $pedido['nro_pedido']);
-                return true;
+                $this->modelOrder->create($pedido);
+                return (
+                    $this->redirectPage(
+                        'putIncoterms', 
+                        $pedido['nro_pedido'])
+                    );
             } else {
                 $pedido['last_update'] = date('Y-m-d H:i:s');
-                $this->db->where('nro_pedido', $pedido['nro_pedido']);
-                $this->db->update($this->controller, $pedido);
+                $this->modelOrder->update($pedido);
                 $this->redirectPage('replaceIncoterms', $pedido['nro_pedido']);
                 return true;
             }
@@ -397,6 +412,7 @@ class Pedido extends MY_Controller
             return true;
         }
     }
+    
     
     
     /**
@@ -427,7 +443,7 @@ class Pedido extends MY_Controller
                 $info['activeOrders'] ++;
             }
         }
-        // se quita por el pedido cero
+        // se resta uno por el pedido cero
         $info['consumeOrders'] --;
         $info['totalOrders'] --;
         $info['activeOrders'] --;

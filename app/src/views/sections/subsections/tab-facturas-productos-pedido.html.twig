@@ -65,7 +65,7 @@
 							 &nbsp;F[{{orderInvoice.id_factura_proveedor}}]
 					</a>
 				</td>
-					<td class="text-right">{{orderInvoice.fecha_emision}}</td>
+					<td class="text-right">{{orderInvoice.fecha_emision | date('d/m/Y')}}</td>
 					<td class="text-right">
 						{% if orderInvoice.vencimiento_pago != null %}
 							{{ orderInvoice.vencimiento_pago | date('d/m/Y') }}

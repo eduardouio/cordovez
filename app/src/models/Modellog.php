@@ -26,7 +26,7 @@ class Modellog extends CI_Model{
     private $optionsLog = [
         'loggin' => True,
         'insertLoggin' => True,
-        'updateLoggin' => False,
+        'updateLoggin' => True,
     ];
     
     
@@ -177,11 +177,13 @@ class Modellog extends CI_Model{
      */
     public function queryInsrertLog(string $sql)
     {
+        $this->susessLog('llamada al log de insert');
+
         if($this->optionsLog['insertLoggin'] == False){
             return False;
         }
         
-        error_log($sql . '\n', 3 , $this->pathInsert );
+        error_log('\n[query]' . $sql , 3 , $this->pathInsert );
         
     }
     
@@ -193,11 +195,13 @@ class Modellog extends CI_Model{
      */
     public function queryUpdateLog(string $sql)
     {
+        $this->susessLog('llamada al log de update');
+        
         if($this->optionsLog['updateLoggin'] == False){
             return False;
         }
         
-        error_log($sql . '\n', 3 , $this->pathUpdate );
+        error_log('\n[query]' . $sql , 3 , $this->pathUpdate );
     }
     
 }

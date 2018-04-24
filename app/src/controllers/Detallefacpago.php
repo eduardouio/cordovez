@@ -212,6 +212,7 @@ class Detallefacpago extends MY_Controller
             $this->redirectPage('paidsList');
             return false;
         }
+        
         $justification = $this->input->post();
         $justification['id_user'] = $this->session->userdata('id_user');
         
@@ -224,8 +225,11 @@ class Detallefacpago extends MY_Controller
             }else{
                 $this->insertDB($justification, 'insert');
             }
-            $this->redirectPage('paidPresent', $justification['id_documento_pago']);
+            $this->redirectPage('paidPresent', 
+                    $justification['id_documento_pago']
+                );
             return true;
+            
         } else {
             $this->responseHttp([
                 'viewMessage' => true,
@@ -307,7 +311,9 @@ class Detallefacpago extends MY_Controller
      */
     private function insertDB(array $row, string $action): bool
     {
-        $provision = $this->modelExpenses->getExpense($row['id_gastos_nacionalizacion']);
+        $provision = $this->modelExpenses->getExpense(
+                                            $row['id_gastos_nacionalizacion']
+            );
         $details = $this->modelPaidDetail->getByExpense($row['id_gastos_nacionalizacion']);
         $valRegister = 0.0;
         $provisonUpdate = [
@@ -336,7 +342,11 @@ class Detallefacpago extends MY_Controller
         }        
         if ($action == 'insert'){
             if($this->db->insert($this->controller, $row)){
-                $this->db->where('id_gastos_nacionalizacion', $provision['id_gastos_nacionalizacion']);
+                
+                $this->db->where(
+                            'id_gastos_nacionalizacion', 
+                            $provision['id_gastos_nacionalizacion']
+                    );
                 $this->db->update('gastos_nacionalizacion', $provisonUpdate);
                 return true;
             }
@@ -344,7 +354,9 @@ class Detallefacpago extends MY_Controller
             $this->db->where('id_detalle_documento_pago',
                 $row['id_detalle_documento_pago']);
             if($this->db->update($this->controller, $row)){
-                $this->db->where('id_gastos_nacionalizacion', $provision['id_gastos_nacionalizacion']);
+                $this->db->where(
+                    'id_gastos_nacionalizacion', 
+                    $provision['id_gastos_nacionalizacion']);
                 $this->db->update('gastos_nacionalizacion', $provisonUpdate);
                 return true;
             }

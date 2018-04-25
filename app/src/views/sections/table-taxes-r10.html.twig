@@ -80,6 +80,14 @@
                <td class="text-right brackground-gray"><strong>Otros Impuestos</strong></td>
                <td class="text-right">$ {{ init_data.order.otros | number_format(2,',','.') }}</td>
             </tr>
+            <tr>
+            <td class="text-right brackground-gray"><strong>Base Arancel Específico</strong></td>
+            <td class="text-right">{{ parcial_taxes.0.params_taxes['ICE ESPECIFICO'] | number_format(2, ',', '.') }}</td>
+            </tr>
+            <tr>
+            <td class="text-right brackground-gray"><strong>Base Advalorem</strong></td>
+            <td class="text-right">{{ parcial_taxes.0.params_taxes['BASE ADVALOREM'] | number_format(2, ',', '.') }}</td>
+            </tr>
          </tbody>
       </table>
    </div>
@@ -118,16 +126,18 @@
                <th>Otros</th>
                <th>Exaduana </th>
                <th>Exaduana U</th>
+               <th>B Advalorem</th>
                <th>Presentacion</th>
-               <th>% Alcoholico</th>
-               <th>B Advaloren</th>
-               <th>Base ICE Esp</th>
+               <th>% Alch</th>
+               <th>Arancel Esp U</th>
+               <th>Arancel Adv U</th>
                <th>ICE Especifico</th>
                <th>ICE Avalorem</th>
-               <th>total ICE</th>
-               <th>costo Prorrateos</th>
-               <th>costo unitario por caja</th>
-               <th>costo unitario botella</th>
+               <th>ICE U</th>
+               <th>Total ICE</th>
+               <th>Prorrateos</th>
+               <th>Costo Caja</th>
+               <th>Costo Botella</th>
             </tr>
             {% for tax in parcial_taxes  %}
             <td> {{ loop.index }} </td>
@@ -145,17 +155,18 @@
             <td class="text-right">{{ tax.taxes_product.otros | number_format(2, ',', '.') }}</td>
             <td class="text-right">{{ tax.taxes_product.exaduana | number_format(2, ',', '.') }}</td>
             <td class="text-right">{{ (tax.taxes_product.exaduana / tax.product.unidades) | number_format(2, ',', '.') }}</td>
+            <td class="text-right">{{ tax.taxes_product.base_advalorem | number_format(2, ',', '.') }}</td>
             <td class="text-right">{{ tax.product.capacidad_ml }}</td>
             <td class="text-right">{{ tax.product.grado_alcoholico | number_format(2, ',', '.') }}</td>
-            <td class="text-right">{{ parcial_taxes.0.params_taxes['BASE ADVALOREM'] | number_format(2, ',', '.') }}</td>
-            <td class="text-right">{{ parcial_taxes.0.params_taxes['ICE ESPECIFICO'] | number_format(2, ',', '.') }}</td>
+            <td class="text-right">{{ (tax.taxes_product.ice_especifico / tax.product.unidades) | number_format(2, ',', '.') }}</td>
+            <td class="text-right">{{ (tax.taxes_product.ice_advalorem  / tax.product.unidades) | number_format(2, ',', '.') }}</td>
             <td class="text-right">{{ tax.taxes_product.ice_especifico | number_format(2, ',', '.') }}</td>
             <td class="text-right">{{ tax.taxes_product.ice_advalorem | number_format(2, ',', '.') }}</td>
+            <td class="text-right">{{((tax.taxes_product.ice_especifico + tax.taxes_product.ice_advalorem) / tax.product.unidades) | number_format(2, ',', '.') }}</td>
             <td class="text-right">{{(tax.taxes_product.ice_especifico + tax.taxes_product.ice_advalorem) | number_format(2, ',', '.') }}</td>
             <td class="text-right">{{ tax.taxes_product.prorrateos_item | number_format(2, ',', '.') }}</td>
             <td class="text-right">0</td>
             <td class="text-right">0</td>
-            
             {% endfor %}
             <tr>
             </tr>

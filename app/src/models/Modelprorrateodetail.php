@@ -91,7 +91,7 @@ class Modelprorrateodetail extends CI_Model
     {
         if($this->db->insert($this->table, $prorrateoDetail))
         {
-            $this->modelLog->queryInsrertLog($this->last_query());
+            $this->modelLog->queryInsrertLog($this->db->last_query());
             return $this->db->insert_id();
         }
         

@@ -175,8 +175,8 @@ class productTaxesR10 {
                 'otros' => $init_data['order']['otros'],
                 'exoneracion_exaduana' => $init_data['order']['exoneracion_arancel'] ,
                 'exaduana' => $exaduana,
-                'base_advalorem' =>  $this->taxes_rates['BASE ADVALOREM'],
-                'ice_advalorem' => $ice_advalorem,
+                'base_advalorem' =>  $ice_advalorem['base'],
+                'ice_advalorem' => $ice_advalorem['value'],
                 'base_iva' => $this->taxes_rates['IVA'],
                 'iva' => $this->getIvaItem($cif_item),
                 'cif_item' => $cif_item,
@@ -203,20 +203,24 @@ class productTaxesR10 {
      * GRAVA EL ICE ADVALOREN TARIFA ES 0,75 DEL EXADUANA POR NUMERO DE BOTELLAS
      * @return float
      */
-    private function getIceAdvalorem(float $exaduana, array $product) : float
+    private function getIceAdvalorem(float $exaduana, array $product) : array
     {
         $exaduana = ($exaduana / $product['unidades']);
         
+        $iceAdvalorem = [
+            'base' => ($this->taxes_rates['BASE ADVALOREM']  *
+                $product['capacidad_ml'])/1000,
+            'value' => 0.0,
+        ];
+        
+        
         if( $exaduana > $this->taxes_rates['BASE ADVALOREM']){
-            
-            return (
-                (($exaduana - $this->taxes_rates['BASE ADVALOREM'])  * 
-                ($this->taxes_rates['BASE ADVALOREM']/100)) *
-                $product['unidades']
-                );
+            $iceAdvalorem['value'] = ( $exaduana - $iceAdvalorem['base'] ) 
+            * .75
+            * $product['unidades'];
         }
         
-        return 0;
+        return $iceAdvalorem;
     }
     
     
@@ -231,10 +235,11 @@ class productTaxesR10 {
     {
         
         return ((
-            ($this->taxes_rates['ICE ESPECIFICO'] * $product['capacidad_ml'] / 1000)
-            *
+            ($product['capacidad_ml'] / 1000)    *
             ($product['grado_alcoholico'] / 100)
-            ) * $product['unidades']);
+            ) * $this->taxes_rates['ICE ESPECIFICO']
+            * $product['unidades']
+            );
     }
     
     

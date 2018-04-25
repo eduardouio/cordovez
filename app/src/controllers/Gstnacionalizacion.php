@@ -53,6 +53,7 @@ class Gstnacionalizacion extends MY_Controller
         return ($this->redirectPage('ordersList'));
     }
 
+    
     /**
      * inicia los modelos para la clase
      */
@@ -86,7 +87,6 @@ class Gstnacionalizacion extends MY_Controller
         $this->modelParcial = new Modelparcial();
     }
 
-   
     
     /**
      * *
@@ -104,9 +104,13 @@ class Gstnacionalizacion extends MY_Controller
         $expensesInput = $this->input->post();
         $idParcial = $expensesInput['id_parcial'];
         unset($expensesInput['id_factura_informativa']);
+        unset($expensesInput['id_parcial']);
         $expenses = [];
+        
+        $this->checkFormsCost($idParcial);
+        
         foreach ($expensesInput as $input => $val) {
-            $expenseRate = $this->modelRateExpenses->get($val);
+            $expenseRate = $this->modelRateExpenses->get($val);            
             $this->modelExpenses->create([
                 'nro_pedido' => '000-00',
                 'id_parcial' => $idParcial,
@@ -116,14 +120,54 @@ class Gstnacionalizacion extends MY_Controller
                 'valor_provisionado' => $expenseRate['valor'],
                 'fecha' => date('Y-m-d'),
                 'date_create' => date('Y-m-d H:m:s'),
-                'id_user' => $this->session->userdata('id_user')
-            
+                'id_user' => $this->session->userdata('id_user'),
             ]);
         }
         
         return ($this->redirectPage('validar70', $idParcial));
     }
+    
+    
+    
+    /**
+     * Comprueba si en los gastos iniciales se encuentran los formularios 
+     * si no esta lo pone 
+     * 
+     * @param int $idParcias
+     */
+    public function checkFormsCost(int $idParcial){
+        $expenseRate = $this->modelRateExpenses->get(51);
+        
+        if ($expenseRate && $expenseRate['concepto'] == 'FORMULARIOS' ){
+            $this->modelExpenses->create([
+                'nro_pedido' => '000-00',
+                'id_parcial' => $idParcial,
+                'identificacion_proveedor' => $expenseRate['identificacion_proveedor'],
+                'concepto' => $expenseRate['concepto'],
+                'tipo' => 'NACIONALIZACION',
+                'valor_provisionado' => $expenseRate['valor'],
+                'fecha' => date('Y-m-d'),
+                'date_create' => date('Y-m-d H:m:s'),
+                'id_user' => $this->session->userdata('id_user'),
+            ]);
 
+            $this->modelLog->warningLog(
+                'Intento Fallido al insertar provision de formularios',
+                $this->db->last_query()
+                );
+            
+            return true;
+        }
+        
+        $this->modelLog->errorLog(
+            'No se puede encontrar la tarifa gastos para Formularios',
+            $this->db->last-query()
+            );
+        
+        return false;
+    }
+
+    
     
     /**
      * Retorna el stock en la aduana del FOB, FLETE, y SEGURO aplica para todos

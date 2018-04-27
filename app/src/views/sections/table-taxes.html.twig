@@ -78,6 +78,15 @@
                <td class="text-right brackground-gray"><strong>Otros Impuestos</strong></td>
                <td class="text-right">$ {{ init_data.parcial.otros | number_format(2,',','.') }}</td>
             </tr>
+                 <tr>
+            <td class="text-right brackground-gray"><strong>Base Arancel Específico</strong></td>
+            <td class="text-right">{{ parcial_taxes.0.params_taxes['ICE ESPECIFICO'] | number_format(2, ',', '.') }}</td>
+            </tr>
+            <tr>
+            <td class="text-right brackground-gray"><strong>Base Advalorem</strong></td>
+            <td class="text-right">{{ parcial_taxes.0.params_taxes['BASE ADVALOREM'] | number_format(2, ',', '.') }}</td>
+            </tr>
+            
          </tbody>
       </table>
    </div>
@@ -100,7 +109,7 @@
       <div class="table-responsive">
       
          <table class="table table-condensed table-bordered table-hover table-striped">
-            <tr>
+      <tr>
                <th>#</th>
                <th>Producto</th>
                <th>Cajas</th>
@@ -116,18 +125,46 @@
                <th>Otros</th>
                <th>Exaduana </th>
                <th>Exaduana U</th>
+               <th>B Advalorem</th>
                <th>Presentacion</th>
-               <th>% Alcoholico</th>
-               <th>B Advaloren</th>
-               <th>Base ICE Esp</th>
+               <th>% Alch</th>
+               <th>Arancel Esp U</th>
+               <th>Arancel Adv U</th>
                <th>ICE Especifico</th>
                <th>ICE Avalorem</th>
-               <th>total ICE</th>
-               <th>costo Prorrateos</th>
-               <th>costo unitario por caja</th>
-               <th>costo unitario botella</th>
+               <th>ICE U</th>
+               <th>Total ICE</th>
+               <th>Prorrateos</th>
+               <th>Total Costo</th>
+               <th>Costo Caja</th>
+               <th>Costo Botella</th>
             </tr>
+            {% set costo_total = 0 %}
+            {% set cajas_total = 0 %}
+            {% set etiquetas_total = 0 %}
+            {% set total_prorrateos = 0 %}
+            {% set tasa_total = 0 %}
+            {% set unidades_total = 0 %}
+            {% set fob_total = 0 %}
+            {% set cif_total = 0 %}
+            {% set fodinfa_total = 0 %}
+            {% set ice_advalorem = 0 %}
+            {% set ice_especifico = 0 %}            
+            
             {% for tax in parcial_taxes  %}
+            {% set costo_total_item =  (tax.taxes_product.prorrateos_item + tax.taxes_product.fodinfa + tax.cif_item.fob + tax.taxes_product.ice_especifico + tax.taxes_product.ice_advalorem) %}
+            {% set fob_total = fob_total +  tax.cif_item.fob %}
+            {% set cif_total = cif_total +  (tax.cif_item.fob + tax.cif_item.seguro_aduana + tax.cif_item.flete_aduana) %}
+            {% set total_prorrateos =  total_prorrateos + tax.taxes_product.prorrateos_item %}
+            {% set costo_total = costo_total +  costo_total_item   %}
+            {% set etiquetas_total = etiquetas_total + tax.taxes_product.etiquetas_fiscales %}
+            {% set tasa_total = tasa_total +  tax.taxes_product.tasa_servicio_aduanero %}
+            {% set fodinfa_total = fodinfa_total + tax.taxes_product.fodinfa %}
+            {% set ice_advalorem = ice_advalorem +  tax.taxes_product.ice_advalorem %}
+            {% set ice_especifico = ice_especifico + tax.taxes_product.ice_especifico %}
+            {% set cajas_total = cajas_total + tax.product.nro_cajas %}
+            {% set unidades_total = unidades_total + tax.product.unidades %}
+            
             <td> {{ loop.index }} </td>
             <td nowrap>{{ tax.product.producto }}</td>
             <td class="text-right">{{ tax.product.nro_cajas | number_format(0)}}</td>
@@ -143,22 +180,66 @@
             <td class="text-right">{{ tax.taxes_product.otros | number_format(2, ',', '.') }}</td>
             <td class="text-right">{{ tax.taxes_product.exaduana | number_format(2, ',', '.') }}</td>
             <td class="text-right">{{ (tax.taxes_product.exaduana / tax.product.unidades) | number_format(2, ',', '.') }}</td>
+            <td class="text-right">{{ tax.taxes_product.base_advalorem | number_format(2, ',', '.') }}</td>
             <td class="text-right">{{ tax.product.capacidad_ml }}</td>
             <td class="text-right">{{ tax.product.grado_alcoholico | number_format(2, ',', '.') }}</td>
-            <td class="text-right">{{ parcial_taxes.0.params_taxes['BASE ADVALOREM'] | number_format(2, ',', '.') }}</td>
-            <td class="text-right">{{ parcial_taxes.0.params_taxes['ICE ESPECIFICO'] | number_format(2, ',', '.') }}</td>
+            <td class="text-right">{{ (tax.taxes_product.ice_especifico / tax.product.unidades) | number_format(2, ',', '.') }}</td>
+            <td class="text-right">{{ (tax.taxes_product.ice_advalorem  / tax.product.unidades) | number_format(2, ',', '.') }}</td>
             <td class="text-right">{{ tax.taxes_product.ice_especifico | number_format(2, ',', '.') }}</td>
             <td class="text-right">{{ tax.taxes_product.ice_advalorem | number_format(2, ',', '.') }}</td>
+            <td class="text-right">{{((tax.taxes_product.ice_especifico + tax.taxes_product.ice_advalorem) / tax.product.unidades) | number_format(2, ',', '.') }}</td>
             <td class="text-right">{{(tax.taxes_product.ice_especifico + tax.taxes_product.ice_advalorem) | number_format(2, ',', '.') }}</td>
             <td class="text-right">{{ tax.taxes_product.prorrateos_item | number_format(2, ',', '.') }}</td>
-            <td class="text-right">0</td>
-            <td class="text-right">0</td>
-            
-            {% endfor %}
-            <tr>
+            <td class="text-right">
+            {{  costo_total_item | number_format(2, ',', '.') }}
+            </td>
+            <td class="text-right">{{  (costo_total_item / tax.product.nro_cajas )| number_format(2, ',', '.') }}</td>
+            <td class="text-right">{{  (costo_total_item / tax.product.unidades) | number_format(2, ',', '.') }}</td>
+            {% endfor %}            
+            <tr style="background-color:#2E86C1; color:#fff; font-weight:bold;">
+            <td colspan="2">Sumas:</td>
+            <td>{{ cajas_total  }}</td> 
+            <td>{{ unidades_total }}</td>
+            <td></td>
+            <td>{{ fob_total | number_format(2,',','.') }}</td>
+            <td colspan="2"></td>
+            <td>{{ cif_total | number_format(2,',','.') }}</td>
+            <td>{{ fodinfa_total | number_format(2,',','.') }}</td>
+            <td> {{ etiquetas_total | number_format(2,',','.') }}</td>
+            <td>{{ tasa_total | number_format(2,',','.') }}</td>
+            <td colspan="8"></td>
+            <td>{{ ice_especifico | number_format(2,',','.') }}</td>
+            <td>{{ ice_advalorem | number_format(2,',','.')}}</td>
+            <td></td>
+            <td>
+            {{ (ice_especifico + ice_advalorem ) | number_format(2,',','.') }}
+            </td>
+            <td> {{ total_prorrateos | number_format(2,',','.')}}</td>  
+            <td> {{ costo_total | number_format(2,',','.')}}</td>
+            <td></td>
+            <td></td>
             </tr>
             </table>
-      
+            {% set iva_liquidacion = ((ice_especifico + ice_advalorem + fodinfa_total + cif_total) * 12/100) %}
+            <div class="well well-sm" style="font-size: 14px;height: 40px;">
+            <span class="col-md-3">
+            IVA Liquidación: 
+            <strong>{{ iva_liquidacion  | number_format(3,',','.')}}</strong>
+            </span>
+            <span class="col-md-3">
+            ICE Específico Liquidación: 
+            <strong>{{ (ice_especifico)  | number_format(3,',','.')}}</strong>
+            </span>
+            <span class="col-md-3">
+            ICE Advalorem Liquidación: 
+            <strong>{{ (ice_advalorem)  | number_format(3,',','.')}}</strong>
+            </span>
+            <span class="col-md-3">
+            Total Liquidación: 
+            <strong>{{ (ice_especifico + ice_advalorem + fodinfa_total + iva_liquidacion)  | number_format(3,',','.')}}</strong>
+            </span>
+            </div>
+            
       </div>
       </div>
       </div>

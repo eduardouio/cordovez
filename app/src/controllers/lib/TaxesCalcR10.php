@@ -180,7 +180,41 @@ class productTaxesR10 {
                 'base_iva' => $this->taxes_rates['IVA'],
                 'iva' => $this->getIvaItem($cif_item),
                 'cif_item' => $cif_item,
+                'product_expenses' => $this->getProrrateoItem($init_data['init_expenses']),
             ]);
+    }
+    
+    
+    /**
+     * Retorna el valor del prorrateo de los gastos iniciales y del parcial
+     * para el fob de item
+     */
+    private function getProrrateoItem(array $product_expenses): float
+    {
+        $prorrateo_item = 0.0;
+        
+        foreach($product_expenses as $item => $expense)
+        {
+            
+            if($this->have_labels == False){
+                if($expense['concepto'] == 'ETIQUETAS FISCALES'){
+                    $expense['valor_provisionado'] = 0;
+                }
+            }
+            
+            if($this->have_control_tasa == False){
+                if($expense['concepto'] == 'TASA DE SERVICIO ADUANERO'){
+                    $expense['valor_provisionado'] = 0;
+                }
+            }
+            
+            $prorrateo_item += (
+                $expense['valor_provisionado'] * $this->fob_product_percent
+                );
+            
+        }
+               
+        return $prorrateo_item;
     }
     
     

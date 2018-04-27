@@ -655,6 +655,7 @@ class Gstinicial extends MY_Controller
                     + $valuesOrder['totalInvoices']
                 );
             
+            
             if ($order['incoterm'] == 'CFR') {
                 $valuesOrder['isd'] = (
                     ($valuesOrder['totalInvoices'] + $valuesOrder['flete']) * 

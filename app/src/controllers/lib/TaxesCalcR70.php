@@ -177,8 +177,8 @@ class productTaxes {
         'otros' => $init_data['parcial']['otros'],
         'exoneracion_exaduana' => $init_data['parcial']['exoneracion_arancel'] ,
         'exaduana' => $exaduana,
-        'base_advalorem' =>  $this->taxes_rates['BASE ADVALOREM'],
-        'ice_advalorem' => $ice_advalorem,
+        'base_advalorem' =>  $ice_advalorem['base'],
+        'ice_advalorem' => $ice_advalorem['value'],
         'base_iva' => $this->taxes_rates['IVA'],
         'iva' => $this->getIvaItem($cif_item),
         'cif_item' => $cif_item,
@@ -238,22 +238,27 @@ class productTaxes {
      * Retorna el ice advalorem
      * SI EX ADUANA ANTES ETIQUETAS FISCALES ES MAYOR QUE CAPACIDAD*4,33/1000
      * GRAVA EL ICE ADVALOREN TARIFA ES 0,75 DEL EXADUANA POR NUMERO DE BOTELLAS
-     * @return float
+     * @return array
      */
-    private function getIceAdvalorem(float $exaduana, array $product) : float
+    private function getIceAdvalorem(float $exaduana, array $product) : array
     {
         $exaduana = ($exaduana / $product['unidades']);
         
+        $iceAdvalorem = [
+            'base' => ($this->taxes_rates['BASE ADVALOREM']  *
+                $product['capacidad_ml'])/1000,
+            'value' => 0.0,
+        ];
+        
+        
         if( $exaduana > $this->taxes_rates['BASE ADVALOREM']){
-            
-            return (
-                (($exaduana - $this->taxes_rates['BASE ADVALOREM'])  * 
-                ($this->taxes_rates['BASE ADVALOREM']/100)) *
-                $product['unidades']
-                );
+            $iceAdvalorem['value'] = ( $exaduana - $iceAdvalorem['base'] )
+            * .75
+            * $product['unidades'];
         }
         
-        return 0;
+        return $iceAdvalorem;
+        
     }
     
     

@@ -81,6 +81,8 @@ class Modelprorrateodetail extends CI_Model
         return false;
     }
     
+    
+    
     /***
      * Crea una registro
      * 

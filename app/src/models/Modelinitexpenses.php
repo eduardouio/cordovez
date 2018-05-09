@@ -45,10 +45,13 @@ class Modelinitexpenses extends CI_Model
         $initExpenses = $this->db->query($query);
         $initExpenses = $initExpenses->result_array();
         if(empty($initExpenses)){
-        $this->modelLog->warningLog('Pedido sin Gastos Ininiciales' , 
-                                                       $this->db->last_query());
-        return false;                        
+            $this->modelLog->warningLog(
+                'Pedido sin Gastos Ininiciales' , 
+                $this->db->last_query()
+                );
+            return false;                        
         }
+        
         return $initExpenses;
             
     }

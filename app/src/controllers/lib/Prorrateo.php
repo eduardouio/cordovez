@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Calcula los prorrateos de para cada uno de los parciales
  * 
@@ -9,33 +9,43 @@
  * @package Controllers
  */
 class Prorrateo {    
+      
+    private $parcialParams;
+    /**
+     * Funcion costructora de la case 
+     *  
+     */
+    public function __construct($parcialParams){
+       $this->parcialParams = $parcialParams;
+    }
+    
     
     /**
      * Obtiene los valores de prorrateo para el calculo de impuestos
      * 
      * @return array
      */
-    public function getValues(array $parcialParams) : array
+    public function getValues() : array
     {   
         
         $fobsParcial = $this->getFobParcialAndFobOrder(
-            $parcialParams['orderInvoices'],
-            $parcialParams['infoInvoices']
+            $this->parcialParams['orderInvoices'],
+            $this->parcialParams['infoInvoices']
             );
         
         $insuranceFreight = $this->getInsuranceAndFreight( 
-                $parcialParams['order'],
+                $this->parcialParams['order'],
                 $fobsParcial['porcentaje_parcial']
             );
                 
         $warenhoses = $this->getWarenhouses(
-            $parcialParams['lastProrrateo'],
-            $parcialParams['parcialExpenses'],
+            $this->parcialParams['lastProrrateo'],
+            $this->parcialParams['parcialExpenses'],
             $fobsParcial['porcentaje_parcial']
             );
-        
+                
         return([
-            'id_parcial' => $parcialParams['parcial']['id_parcial'],
+            'id_parcial' => $this->parcialParams['parcial']['id_parcial'],
             'fob_parcial' => $fobsParcial['fob_parcial'],
             'porcentaje_parcial' => $fobsParcial['porcentaje_parcial'],
             
@@ -52,8 +62,8 @@ class Prorrateo {
                                     $warenhoses['saldo_bodega_proximo_parcial'],
             
             'details' => $this->getProrrateoDetail( 
-                                    $parcialParams['initExpenses'],
-                                    $parcialParams['parcialExpenses'],
+                                    $this->parcialParams['initExpenses'],
+                                    $this->parcialParams['parcialExpenses'],
                                     $fobsParcial['porcentaje_parcial']
                                                   ), 
         ]);
@@ -78,7 +88,11 @@ class Prorrateo {
         
         foreach ($parcialExpenses as $item => $expenses)
         {
-            if(! preg_match('/[a-zA-Z]-[0-9]/' , $expenses['concepto'] ) )
+            if(
+                ! preg_match('/[a-zA-Z]-[0-9]/' , $expenses['concepto'] )
+                &&
+                $expenses['concepto'] != 'FORMULARIOS'
+                )
             {
                 array_push(
                     $parcialExpensesWithoutWarenhouse,
@@ -110,7 +124,7 @@ class Prorrateo {
                 ]
                 );
         }
-                
+        
         return $parcialExpensesWithoutWarenhouse;
     }
     

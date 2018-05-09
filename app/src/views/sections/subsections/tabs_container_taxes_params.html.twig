@@ -63,9 +63,7 @@
             </table>
            
           {% else %}
-          
-          
-          
+                    
            <table class="table table-condensed table-striped table-hover" style="font-size:10px">
             <thead>
             <tr>
@@ -78,16 +76,24 @@
             <tbody>
             {% set gastos_parcial = 0  %}
             {% set gastos_iniciales = 0  %}
-            
+            {% set gastos_parcial = gastos_parcial +  prorrateos.prorrateo.bodegaje_prorrateado %}
+            <tr>
+            <td>1</td>
+            <td>BODEGAJE PARCIAL</td>
+            <td>GASTO PARCIAL</td>
+            <td class = "text-right">
+            {{ prorrateos.prorrateo.bodegaje_prorrateado | number_format('2',',','.') }}
+            </td>
+            </tr>
             {% for prorrateo in prorrateos.prorrateo_detail  %}
             </tr>
             {% if prorrateo.tipo == 'prorrateo' %}
-            {% set gastos_parcial = gastos_parcial +  prorrateo.valor_prorrateado %}
-            <td>{{ loop.index }}</td>
-            <td>{{ prorrateo.concepto }}</td>
-            <td>GASTO PARCIAL</td>
-            <td class = "text-right">{{ prorrateo.valor_prorrateado | number_format('2',',','.')}}</td>
-            </tr>
+                {% set gastos_parcial = gastos_parcial +  prorrateo.valor_prorrateado %}
+                <td>{{ loop.index + 1 }}</td>
+                <td>{{ prorrateo.concepto }}</td>
+                <td>GASTO PARCIAL</td>
+                <td class = "text-right">{{ prorrateo.valor_prorrateado | number_format('2',',','.')}}</td>
+                </tr>
             {% endif %}
             {% endfor  %}
             <tr style="background-color:#2E86C1; color:#fff; font-weight:bold;" class="text-right">
@@ -96,6 +102,7 @@
             </tr>
             </tbody>
             </table>
+            
             <table class="table table-condensed table-striped table-hover" style="font-size:10px">
             <thead>
             <tr>

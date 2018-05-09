@@ -13,16 +13,22 @@
 class Modellog extends CI_Model{
     
     # los paths son diferentes para facilitar la lectura e inspeccion
+    #Development Env
     private $path = '/var/www/html/cordovezapp/app/src/logs/app.log';
     private $pathInsert = '/var/www/html/cordovezapp/app/src/logs/insert.log';
     private $pathUpdate = '/var/www/html/cordovezapp/app/src/logs/update.log';
     
+    #Prouccion
+    #private $path = '/var/www/html/src/logs/app.log';
+    #private $pathInsert = '/var/www/src/logs/insert.log';
+    #private $pathUpdate = '/var/www/src/logs/update.log';
     
-    # Loggin app Options
-    # loggin => write in log file messages for success, errors, warnings, and info
-    # insertLoggin => write in log file messages for insert SQL
-    # updateLoggin => write in log file messages for update SQL
     
+    /** Loggin app Options
+     loggin => write in log file messages for success, errors, warnings, and info
+     insertLoggin => write in log file messages for insert SQL
+     updateLoggin => write in log file messages for update SQL
+     */
     private $optionsLog = [
         'loggin' => True,
         'insertLoggin' => True,

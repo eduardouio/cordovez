@@ -110,18 +110,20 @@ class Gstnacionalizacion extends MY_Controller
         $this->checkFormsCost($idParcial);
         
         foreach ($expensesInput as $input => $val) {
-            $expenseRate = $this->modelRateExpenses->get($val);            
-            $this->modelExpenses->create([
-                'nro_pedido' => '000-00',
-                'id_parcial' => $idParcial,
-                'identificacion_proveedor' => $expenseRate['identificacion_proveedor'],
-                'concepto' => $expenseRate['concepto'],
-                'tipo' => 'NACIONALIZACION',
-                'valor_provisionado' => $expenseRate['valor'],
-                'fecha' => date('Y-m-d'),
-                'date_create' => date('Y-m-d H:m:s'),
-                'id_user' => $this->session->userdata('id_user'),
-            ]);
+            $expenseRate = $this->modelRateExpenses->get($val);
+            if ($expenseRate['concepto'] != 'FORMULARIOS'){
+                $this->modelExpenses->create([
+                    'nro_pedido' => '000-00',
+                    'id_parcial' => $idParcial,
+                    'identificacion_proveedor' => $expenseRate['identificacion_proveedor'],
+                    'concepto' => $expenseRate['concepto'],
+                    'tipo' => 'NACIONALIZACION',
+                    'valor_provisionado' => $expenseRate['valor'],
+                    'fecha' => date('Y-m-d'),
+                    'date_create' => date('Y-m-d H:m:s'),
+                    'id_user' => $this->session->userdata('id_user'),
+                ]);
+            }
         }
         
         return ($this->redirectPage('validar70', $idParcial));
@@ -131,16 +133,27 @@ class Gstnacionalizacion extends MY_Controller
     
     /**
      * Comprueba si en los gastos iniciales se encuentran los formularios 
-     * si no esta lo pone 
+     * si no esta lo pone, solo funciona con los fomrularios 
      * 
      * @param int $idParcias
      */
     public function checkFormsCost(int $idParcial){
-        $expenseRate = $this->modelRateExpenses->get(51);
         
-        if ($expenseRate && $expenseRate['concepto'] == 'FORMULARIOS' ){
-            $this->modelExpenses->create([
-                'nro_pedido' => '000-00',
+        $expenseRate = $this->getFormRateExpense();
+        
+        
+        if (boolval($expenseRate['estado']) == False){
+            $this->modelLog->warningLog(
+                'La tarifa de formularios se encuentra deshabilitada',
+                $this->db->last_query()
+                );
+            return True;
+        }
+        
+        $parcial = $this->modelParcial->get($idParcial);
+              
+        $last_id = $this->modelExpenses->create([
+                'nro_pedido' => $parcial['nro_pedido'],
                 'id_parcial' => $idParcial,
                 'identificacion_proveedor' => $expenseRate['identificacion_proveedor'],
                 'concepto' => $expenseRate['concepto'],
@@ -156,17 +169,53 @@ class Gstnacionalizacion extends MY_Controller
                 $this->db->last_query()
                 );
             
-            return true;
-        }
+            return True;
         
         $this->modelLog->errorLog(
             'No se puede encontrar la tarifa gastos para Formularios',
             $this->db->last-query()
             );
         
-        return false;
+        return False;
     }
-
+    
+    
+    /**
+     * Retorna el id del la tarifa para Gasto de nacionalizacion para
+     * el gasto de nacionalizacion de formularios en el regimen 70
+     * Si no existe el parametro e la provisionm retorna cero
+     * @return int
+     */
+    private function getFormRateExpense()  
+    {
+        $rate = $this->modelBase->get_table([
+            'table' => 'tarifa_gastos',
+            'where' => [
+                'concepto' => 'FORMULARIOS',
+                'tipo_gasto' => 'GASTO NACIONALIZACION',
+                'regimen' => 'R70'
+            ]
+        ]);
+        
+        if( is_array($rate) && count($rate) > 0){
+            $rate = $rate[0];
+            return $rate;
+        }
+        
+        $this->modelLog->errorLog(
+            'No exiete la tarifa de formularios en el sistema',
+            $this->db->last_query()
+            );
+        return ([
+            'identificacion_proveedor' => 0,
+            'regimen' => R70,
+            'tipo_gasto' => 'GASTO NACIONALIZACION',
+            'concepto' => 'FORMULARIOS',
+            'valor' => 0,
+            'estado' => 1,
+        ]);
+        
+    }
     
     
     /**
@@ -412,7 +461,7 @@ class Gstnacionalizacion extends MY_Controller
             $this->redirectPage('ordersList');
             return false;
         }
-                
+        
         $infoInvoice = $this->modelInfoInvoice->get($initExpense['id_parcial']);
         
         $nroOrder = $this->modelParcial->getNroOrderByParcial(
@@ -424,9 +473,14 @@ class Gstnacionalizacion extends MY_Controller
         $this->responseHttp([
             'infoInvoice' => $infoInvoice,
             'initExpense' => $initExpense,
-            'supplier' => $this->modelSupplier->get($initExpense['identificacion_proveedor']),
+            'supplier' => $this->modelSupplier->get(
+                        $initExpense['identificacion_proveedor']
+                    ),
             'user' => $this->modelUser->get($infoInvoice['id_user']),
-            'titleContent' => 'Descripción De Gasto Nacionalización Pedido:' . $order['nro_pedido'] . ' Factura Informativa [' . $infoInvoice['nro_factura_informativa'] . ']',
+            'titleContent' => 'Descripción De Gasto Nacionalización Pedido:' . 
+                                $order['nro_pedido'] . 
+                                ' Factura Informativa [' . 
+                                $infoInvoice['nro_factura_informativa'] . ']',
             'show' => true,
             'order' => $order,
         ]);

@@ -19,6 +19,7 @@ class Modelpaid extends CI_Model{
     private $modelSupplier;
     private $modelExpenses;
     private $modelPaidDetail;
+    private $modelLog;
     
     function __construct(){
         parent::__construct();
@@ -33,10 +34,12 @@ class Modelpaid extends CI_Model{
         $this->load->model('modelsupplier');
         $this->load->model('modelexpenses');
         $this->load->model('modelpaiddetail');
+        $this->load->model('modellog');
         $this->modelBase = new Modelbase();
         $this->modelSupplier = new Modelsupplier();
         $this->modelExpenses = new Modelexpenses();
         $this->modelPaidDetail = new Modelpaiddetail();
+        $this->modelLog = new Modellog();
     }
 
     /**
@@ -107,6 +110,27 @@ class Modelpaid extends CI_Model{
         }
         return false;
     }    
+    
+    
+    
+    /**
+     * Obtiene una lista de todas las facturas que corresponden a un pedido
+     * para hacer los calculos
+     * @param string $nro_order
+     */
+    public function getAllPaidsFromOrder(string $nro_order){
+        
+        $documents = $this->modelBase->get_table([
+            'nro_pedido'
+        ]);
+        
+        if ($documents == False){
+            $this->model
+            return False;
+        }
+        
+        
+    }
     
     
 }

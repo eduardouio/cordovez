@@ -236,7 +236,10 @@ class Modelexpenses extends CI_Model
             return $partialExpenses;
         }
         
-        $this->modelLog->generalLog("Parcial $idParcial sin Gastos");
+        $this->modelLog->generalLog(
+            "Parcial $idParcial sin Gastos"
+            );
+        
         return false;
     }
         

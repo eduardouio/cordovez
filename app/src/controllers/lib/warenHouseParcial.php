@@ -1,6 +1,7 @@
 <?php
 /**
  * Clase de validacion de almacenra publica
+ * 
  * @author eduardo
  * @param array  $order[
  *                  nro_order => ** 
@@ -38,6 +39,8 @@ class warenHouseParcial
      * @param array $parcials
      */
     function __construct(array $order, array $parcial){
+        
+        print('Este es el warenhouse de Parcial');
         $this->order = $order;
         $this->parcial = $parcial;
     }

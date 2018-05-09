@@ -161,7 +161,8 @@ class Modelorder extends CI_Model
         ];
         return $result;
     }
-
+    
+    
     /**
      * Lista las facturas pedido por proveedor
      * @param (string) $suplierId

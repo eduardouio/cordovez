@@ -138,6 +138,7 @@ class Impuestos extends MY_Controller
             'user' => $this->modelUser->get($init_data['parcial']['id_user']),
         ]));
     }
+    
 
     
     /**
@@ -500,9 +501,7 @@ class Impuestos extends MY_Controller
     {
         $this->checkTypeChange($init_data['info_invoices'], $init_data['order']);
         
-        $prorrateoParams = new Prorrateo();
-        
-        $prorrateoValues = $prorrateoParams->getValues([
+        $prorrateoParams = new Prorrateo([
             'infoInvoices' => $init_data['info_invoices'],
             'order' => $init_data['order'],
             'orderInvoices' => $init_data['order_invoices'],
@@ -511,6 +510,8 @@ class Impuestos extends MY_Controller
             'parcialExpenses' => $init_data['parcial_expenses'],
             'lastProrrateo' => $init_data['last_prorrateo'],
         ]);
+        
+        $prorrateoValues = $prorrateoParams->getValues();
         
         return $this->putDeleteUpdateProrrateoParcial($prorrateoValues);
     }
@@ -524,6 +525,7 @@ class Impuestos extends MY_Controller
      */
     private function putDeleteUpdateProrrateoParcial(array $prorrateo): array
     {
+        
         $prorrateo['id_user'] = $this->session->userdata['id_user'];
         $prorrateoDetail = $prorrateo['details'];
         unset($prorrateo['details']);
@@ -534,7 +536,6 @@ class Impuestos extends MY_Controller
         
         
         if ($prorrateoParcial) {
-            
             return $this->updateProrrateo(
                                             $prorrateo, 
                                             $prorrateoDetail,
@@ -564,7 +565,7 @@ class Impuestos extends MY_Controller
                                      array $prorrateoParcial
         ): array
     {
-        
+             
         $prorrateoParcial = $prorrateoParcial[0];
         
         $prorrateo['last_update'] = date('Y-m-d H:m:s');
@@ -584,7 +585,12 @@ class Impuestos extends MY_Controller
                 );
         }
         
-        return false;
+        $this->modelLog->errorLog(
+            'Error al actualizar el prorrateo en la base de datos',
+            $this->db->last_query()
+            );
+        
+        return [];
     }
     
 
@@ -600,9 +606,11 @@ class Impuestos extends MY_Controller
                                     array $prorrateoDetail
         )
     {
+        
         $id_prorrateo_insert_db = $this->modelProrrateo->createProrrateo(
             $prorrateo
             );
+
         
         $prorrateo['id_prorrateo'] = $id_prorrateo_insert_db;
         $prorrateoDetailTemp = [];

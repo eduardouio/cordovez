@@ -11,13 +11,13 @@
  * @package Controllers
  */
 
-
 class productTaxes {
     
     private $fob_product_percent = 0.0;
     private $type_change = 0.0;
     private $have_labes = True;
     private $have_control_tasa = True;
+    private $current_prorrateo = [];
     private $taxes_rates = [
         'FODINFA' => 0.0,
         'BASE ADVALOREM' => 0.0,
@@ -47,6 +47,8 @@ class productTaxes {
                                     array $param_taxes
         ): array
     {       
+    
+        $this->current_prorrateo = $prorrateo;
         
         $this->have_labes = boolval(
             $init_data['parcial']['bg_have_etiquetas_fiscales']
@@ -62,10 +64,7 @@ class productTaxes {
                                 $prorrateo['prorrateo']
             
             );
-        
         $cif = $this->getCIF($prorrateo['prorrateo']);
-                    
-        
         $product = $this->getProductData(
                                         $producto, 
                                         $init_data,
@@ -84,7 +83,7 @@ class productTaxes {
                                             $product_expenses,
                                             $init_data
             );
-        
+                
         return([
             'percent_product' => $this->fob_product_percent,
             'tipo_cambio' => $this->type_change,
@@ -169,6 +168,7 @@ class productTaxes {
         
         $ice_advalorem = $this->getIceAdvalorem($exaduana, $product);
         
+        
         return([
         'fodinfa' => ($cif_item * $this->taxes_rates['FODINFA']),
         'etiquetas_fiscales' => $etiquetas_fiscales,
@@ -193,8 +193,8 @@ class productTaxes {
      */
     private function getProrrateoItem(array $product_expenses): float
     {   
-        $prorrateo_item = 0.0;
         
+        $prorrateo_item = 0.0;
         foreach($product_expenses as $item => $expense)
         {
             
@@ -212,13 +212,16 @@ class productTaxes {
             
             $prorrateo_item += (
                 $expense['valor_prorrateado'] * $this->fob_product_percent
-                );              
-            
+                );
+         
             
         }        
         
-        
-        return $prorrateo_item;
+        $percent_warenhouse = (
+            $this->current_prorrateo['prorrateo']['bodegaje_prorrateado'] * 
+            $this->fob_product_percent
+            );
+        return ($prorrateo_item + $percent_warenhouse);
     }
     
     /**
@@ -272,7 +275,8 @@ class productTaxes {
     {
         
         return ((
-            ($this->taxes_rates['ICE ESPECIFICO'] * $product['capacidad_ml'] / 1000)
+            ($this->taxes_rates['ICE ESPECIFICO'] * 
+            $product['capacidad_ml'] / 1000)
             * 
             ($product['grado_alcoholico'] / 100)
             ) * $product['unidades']);
@@ -421,13 +425,11 @@ class productTaxes {
                                 * 
                                 $this->fob_product_percent
                 ),
-            
             'seguro_aduana' => (
                                 $prorrateo['prorrateo_seguro_aduana'] 
                                 * 
                                 $this->fob_product_percent
                 ),
-            
             'fob' => (
                                 $prorrateo['fob_parcial'] 
                                 *

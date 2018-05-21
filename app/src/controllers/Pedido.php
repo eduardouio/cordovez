@@ -1,4 +1,7 @@
 <?php
+
+require 'lib/StockOrder.php';
+
 defined('BASEPATH') or exit('No direct script access allowed');
 /**
  * Modulo encargado de manejar los pedidos, CRUD y validaciones
@@ -35,8 +38,7 @@ class Pedido extends MY_Controller
     private $modelOrderInvoice;
     private $modelOrderInvoiceDetail;
     private $modelPaidDetail;
-    private $modelParcial;
-    
+    private $modelParcial;    
     
     /**
      * constructor de la clase
@@ -46,6 +48,7 @@ class Pedido extends MY_Controller
         parent::__construct();
         $this->init();
     }
+    
     
     /**
      * Carga e inicia los modelos usados por la clase
@@ -91,6 +94,7 @@ class Pedido extends MY_Controller
         $this->redirectPage('ordersList');
         return true;
     }
+    
     
     /**
      * Presenta la lista de los pedidos, y las acciones para cada
@@ -213,6 +217,7 @@ class Pedido extends MY_Controller
                 
         return($this->responseHttp([
             'show_order' => true,
+            'current_stock' => $this->getStock($order),
             'order' => $order,
             'ubicacion' => $this->whereIsOrder($order),
             'warenHouseDays' => $this->getWarenHouseDaysInitial($order),
@@ -557,5 +562,87 @@ class Pedido extends MY_Controller
                 'iconTitle' => 'fa-cubes',
                 'content' => 'home']))
             );
+    }
+    
+    
+    
+    /**
+     * retorna el saldo de productos en un pedido, el pedido no tiene
+     * producto registrado retorna False
+     * 
+     * @param array $order
+     * @return array | bool
+     */
+    private function getStock($order)
+    {
+        $stockOrder = new StockOrder();
+        $infoInvoicesDetail = [];
+        $orderInvoicesDetail = [];
+        
+        $order_invoices = $this->modelOrderInvoice->getbyOrder(
+            $order['nro_pedido']
+            );
+        
+        if($order_invoices == False){
+            $this->modelLog->warningLog(
+                'El pedido no tiene facturas de pedido'
+                );
+            #si no hay facturas de pedidos se termina la funcion
+            return False;
+        }
+        
+        
+        foreach ($order_invoices as $item => $invoice)
+        {
+            $details = $this->modelOrderInvoiceDetail->getByOrderInvoice(
+                $invoice['id_pedido_factura']
+                );
+            
+            if($details != False)
+            {
+                foreach ($details as $idx => $det){
+                    $det['product'] = $this->modelProduct->get(
+                        $det['cod_contable']
+                        );
+                    array_push($orderInvoicesDetail, $det);
+                }
+            }
+        }
+        
+        
+        $parcials = $this->modelParcial->getByOrder($order['nro_pedido']);
+        
+        if ($parcials != False){
+            foreach ($parcials as $item => $parcial){
+                $invoices = $this->modelInfoInvoice->getByParcial(
+                    $parcial['id_parcial']
+                );
+                
+                if ($invoices != False){
+                    foreach ($invoices as $idx => $invoice){
+                        
+                        $details = $this->modelInfoInvoiceDetail->getByFacInformative(
+                            $invoice['id_factura_informativa']
+                            );
+                        if($details != False){
+                            foreach ($details as $i => $det){
+                                array_push($infoInvoicesDetail, $det);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+            
+        
+        return (
+            $stockOrder->getCurrentOrderStock(
+                $order, 
+                $orderInvoicesDetail, 
+                $infoInvoicesDetail
+                )
+            );
+        
+        
     }
 }

@@ -127,7 +127,7 @@ class productTaxes {
                     +
                     $cif['flete_aduana'] 
                     +
-                    ($cif['fob'] * $this->type_change )
+                    ($cif['fob'])
             );
         
   
@@ -395,7 +395,6 @@ class productTaxes {
            }
        }
        
-       
        return ([
            'unidades' => (
                             $product_base['cantidad_x_caja'] 
@@ -403,7 +402,7 @@ class productTaxes {
                             $product['nro_cajas']
                ),
            'nro_cajas' => $product['nro_cajas'],
-           'costo_caja' => $product_box_value,
+           'costo_caja' => $product_box_value * $this->type_change,
            'producto' => $product_base['nombre'],
            'capacidad_ml' => $product_base['capacidad_ml'] ,
            'grado_alcoholico' =>$product['grado_alcoholico'],

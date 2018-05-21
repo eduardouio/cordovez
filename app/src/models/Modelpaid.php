@@ -1,5 +1,4 @@
 <?php
-
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
@@ -112,7 +111,6 @@ class Modelpaid extends CI_Model{
     }    
     
     
-    
     /**
      * Obtiene una lista de todas las facturas que corresponden a un pedido
      * para hacer los calculos
@@ -131,6 +129,5 @@ class Modelpaid extends CI_Model{
         
         
     }
-    
-    
+        
 }

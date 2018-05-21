@@ -139,9 +139,13 @@
             <tr>
                <td>
                {% if expense.bg_closed == 0 %}
-               <small class="label label-danger"> &nbsp;Justificar&nbsp;</small>
+               <small class="label label-danger"> &nbsp;Provisión&nbsp;</small>
                {%  else %}
-               <small class="label label-success">Justificado</small>               
+               <small class="label label-success">Justificado</small>
+               				
+                          <pre>
+                          {{ dump(expense) }}
+                          </pre>
                {% endif %}
                {{ expense.concepto }}               
                </td>

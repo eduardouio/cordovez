@@ -31,6 +31,7 @@ class Gstinicial extends MY_Controller
     private $modelProducts;
     private $modelUser;
     private $modelLog;
+    private $modelPaidDetail;
 
     /**
      * Constructor de la funcion
@@ -57,6 +58,7 @@ class Gstinicial extends MY_Controller
         $this->load->model('modellog');
         $this->load->model('Modelorderinvoice');
         $this->load->model('Modelorderinvoicedetail');
+        $this->load->model('Modelpaiddetail');
         $this->modelOrderInvoice= new Modelorderinvoice();
         $this->modelOrder = new Modelorder();
         $this->modelSupplier = new Modelsupplier();
@@ -68,16 +70,23 @@ class Gstinicial extends MY_Controller
         $this->modelUser = new Modeluser();
         $this->modelLog = new Modellog();
         $this->ModelOrderInvoiceDetail = new Modelorderinvoicedetail();
+        $this->modelPaidDetail = new Modelpaiddetail();
     }
 
+    
     /**
      * Redirecciona a la lista de los pedidos
      */
     public function index()
     {
+        $this->modelLog->warningLog(
+            'Redireccionamiento desde gasto inicial'
+            );
+        
         return ($this->redirectPage('ordersList'));
     }
 
+    
     /**
      * Pesenta la informacion completa del rgistro de gasto inicial
      *
@@ -290,6 +299,7 @@ class Gstinicial extends MY_Controller
             );
         return ($this->redirectPage('validargi', $initialExpense['nro_pedido']));
     }
+    
 
     /**
      * Verifica Los gastos iniciales de una Order, indica al isuario
@@ -315,7 +325,22 @@ class Gstinicial extends MY_Controller
                                                         $invoicesOrder, 
                                                         $initExpenses
             );
-                
+        $have_initial_warenhouse = False;
+        $temp_Expenses = [];
+        
+        foreach( $initExpenses as $item => $expense){
+            if($expense['concepto'] == 'ALMACENAJE INICIAL'){
+                $have_initial_warenhouse = True;
+            }
+            
+            $expense['paids'] = $this->modelPaidDetail->
+                                         getPaidsDetailsFromInitExpense(
+                                    $expense['id_gastos_nacionalizacion']
+                                    );
+            array_push($temp_Expenses, $expense);
+            
+        }
+        
         return ($this->responseHttp([
             'validateExpenses' => true,
             'titleContent' => 'Generar Gastos Iniciales Pedido: [' . 
@@ -328,7 +353,8 @@ class Gstinicial extends MY_Controller
                 ),
             'warenHouseDays' => $this->getWarenHouseDaysInitial($order),
             'invoicesOrder' => $invoicesOrder,
-            'initExpenses' => $initExpenses,
+            'initExpenses' => $temp_Expenses,
+            'have_initial_warenhouse' => $have_initial_warenhouse,
             'order' => $order,
             'minimal' => $minimal,
             'user' => $this->modeluser->get($order['id_user']),

@@ -136,7 +136,7 @@
   <div class="row">
     <div class="col-md-2">
       <div class="form-group">
-        <label>Valor</label>
+        <label>Valor Porducto</label>
         <input 
         class="form-control" 
         required="required" 
@@ -145,6 +145,24 @@
         id="valor"
         step="0.01" 
         value="{{invoice.valor}}" 
+        >
+      </div>
+    </div>
+     <div class="col-md-2">
+      <div class="form-group">
+        <label>Gastos Origen</label>
+        <input 
+        class="form-control" 
+        required="required" 
+        type="number" 
+        name="gasto_origen"
+        id="gasto_origen"
+        step="0.01" 
+        {% if  invoice.gasto_origen == 0 %}
+        	value = 0
+        {% else %}
+            value="{{ invoice.gasto_origen }}"
+        {% endif %} 
         >
       </div>
     </div>
@@ -176,22 +194,44 @@
 </form>
 
 <script type="text/javascript">
+
 if( $('#modenda').val() == 'EUROS' ){
 	 $('#tipo_cambio').removeAttr('readonly');
 }
- 
 
-  $('#moneda').change(function(){
+
+$('#moneda').change(function(){
     if($(this).val() === 'EUROS'){
       $('#tipo_cambio').removeAttr('readonly');
     }else{
       $('#tipo_cambio').attr('readonly', true);
       $('#tipo_cambio').val(1);
     }
+
+    actualizarValores();
+    
   });
-  
-  $('#valor').keyup(function(){
-    $('#total').val($('#valor').val() * $('#tipo_cambio').val());  
+
+$('#valor').keyup(function(){
+	actualizarValores();
   })
-  
+ 
+$('#gasto_origen').keyup(function(){
+	actualizarValores();
+});
+
+/**
+ * Actualiza los valores del formulario
+ */
+function actualizarValores(){
+
+    $('#total').val(
+			(
+			parseFloat($('#gasto_origen').val()) + 
+			parseFloat( $('#valor').val()) 
+			) * $('#tipo_cambio').val()
+    	    );  
+}
+
+actualizarValores();
 </script>

@@ -91,7 +91,6 @@
 </div>
 <div class="col-md-7 text-right">
 	{% if order.bg_isclosed == '0' %}
-	{% if (order.bg_haveExpenses == 0) %}
 	<a
 			href="{{rute_url}}gstinicial/validargi/{{order.nro_pedido}}">
 			<button type="button" class="btn btn-default btn-sm">
@@ -111,7 +110,6 @@
 				<span class="fa fa-plus"></span> Agregar Productos
 			</button>
 		</a>
-      {%  endif %}
 		
 		<a
 			href="{{rute_url}}facturapagos/nuevo/{{order.nro_pedido}}">
@@ -120,14 +118,7 @@
 			</button>
 		</a>
 		{% endif %}
-		 <a
-			href="http://localhost/cordovezapp/app/index.php/report/nuevo">
-			<button class="btn btn-sm btn-default">
-				<span class="fa fa-file-pdf-o"></span> Informe General
-			</button>
-		</a>
 		{% if order.bg_isclosed == '0' %}
-		
 		<a
 			href="{{rute_url}}pedido/eliminar/{{order.nro_pedido}}">
 			<button class="btn btn-sm btn-danger">
@@ -157,34 +148,13 @@
       	<a href="#facturas" role="tab" data-toggle="tab" aria-controls="facturas">
       	<span class="fa fa-file"></span> Facturas Productos</a>
       </li>
-      <li role="presentation">
-      	<a href="#gastos" role="tab" data-toggle="tab" aria-controls="gastos">
-      		<span class="fa fa-list"></span> Gastos Iniciales
-      	</a>
-      </li>
-      {% if order.regimen == 10 %}
-      <li role="presentation">
-      	<a href="#nacionalizaciones" role="tab" data-toggle="tab" aria-controls="nacionalizaciones">
-      		<span class="fa fa-archive"></span> Gastos Nacionalizacion
-      	</a>
-      </li>
-      {% else %}
-      <li role="presentation"
-      {% if (order.bg_haveExpenses == 1) %}
-      class="active"
-         {% endif %} 
-      >
+      <li>
+      {% if order.regimen == 'R70' %}
       	<a href="#facturas-informativas" role="tab" data-toggle="tab" aria-controls="facturas-informativas">
       		<span class="fa fa-list-ol"></span> Parciales del Pedido
       	</a>
       </li>
       {%  endif %}
-      
-      <li role="presentation">
-      	<a href="#servicios" role="tab" data-toggle="tab" aria-controls="servicios">
-      		<span class="fa fa-file-text-o"></span> Provisiones Justificadas
-      	</a>
-      </li>
             <li role="presentation">
          <a href="#saldos" role="tab" data-toggle="tab" aria-controls="saldos">
             <span class="fa fa-bar-chart-o"></span> Saldos Pedidos
@@ -206,13 +176,7 @@
       " id="facturas">
          {% include 'sections/subsections/tab-facturas-productos-pedido.html.twig' %}            
       </div>
-      <!-- /Tab Facturas-->
-      <!-- Gastos iniciales -->
-      <div role="tabpanel" class="tab-pane" id="gastos">
-         {% include 'sections/subsections/tab-gastos-iniciales.html.twig' %}            
-      </div>
-      <!-- /Gastos iniciales -->
-      
+      <!-- /Tab Facturas-->      
        {% if order.regimen == 10 %}
       <!-- factura Nacionalizaciones -->
       <div role="tabpanel" class="tab-pane" id="nacionalizaciones">
@@ -231,18 +195,79 @@
       <!-- /factura Informativas -->
      {% endif %}
       
-      <!-- Tab Facturas Servicios -->
-      <div role="tabpanel" class="tab-pane" id="servicios">
-         {% include 'sections/subsections/tab-facturas-servicios.html.twig' %}            
-      </div>
       <!-- /Tab Facturas Servicios -->
 
       <!-- Tab Facturas Saldos -->
       <div role="tabpanel" class="tab-pane" id="saldos">
-         {% include 'sections/subsections/tab-pedido-saldos.html.twig' %}            
+      <div class="row">
+      	<div class="col-md-8">
+      	<canvas id="chart"></canvas>
+      	</div>
+      	<div class="col-md-4">
+      	<div class="text-tittle">Saldo de Productos</div>
+            <table class="table table-bordered table-hover table-condensed table-striped ">
+            <thead>
+            <tr>
+        	<th>Producto</th>
+        	<th>Imp</th>
+        	<th>Nac</th>
+        	<th>Stock C</th>
+        	<th>Stock U</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            {% set totalItems = 0 %}
+            {% set totalUnds = 0 %}
+            
+            {% for product in current_stock %}
+            {% set totalItems = totalItems + product.stock  %}
+            {% set totalUnds = totalUnds + (product.stock * product.cantidad_x_caja)  %}
+            
+            <tr>
+		        <td>{{ product.nombre }} (x {{ product.cantidad_x_caja }})</td>
+		        <td class="text-right">{{ product.nro_cajas }}</td>
+		        <td class="text-right">{{ product.nationalized }}</td>
+		        <td class="text-right success"> <strong class="text-success">{{ product.stock }} </strong></td>
+		        <td class="text-right success"> <strong class="text-success">{{ product.stock * product.cantidad_x_caja }} </strong></td>
+		     </tr>
+            {% endfor %}
+            </tr>
+            
+            <tr style="background-color:#2E86C1; color:#fff; font-weight:bold;">
+            <td colspan="3" class="text-right">SUMAS: &nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td class="text-right">{{ totalItems }}</td>
+            <td class="text-right">{{ totalUnds }}</td>            
+          </tr>
+            </tbody>
+            </table>      	
+      	</div>
+      	
+      </div>      
+                     
       </div>
       <!-- /Tab Facturas Servicios -->
 
    </div>
 </div>
 <!--/tabs-->
+
+<script type="text/javascript">
+
+var ctx = document.getElementById("chart").getContext('2d');
+var barChart = new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: [{% for product in current_stock %}'{{ product.nombre }} ({{ product.nro_cajas }} / {{ product.stock }}) ',{% endfor %}],
+    datasets: [{
+      label: 'Cajas Importadas',
+      data: [{% for product in current_stock %}{{ product.nro_cajas }},{% endfor %}],
+      backgroundColor: "rgba(93, 144, 44, 0.9)"
+    }, {
+      label: 'Saldo Cajas',
+      data: [{% for product in current_stock %}{{ product.stock }},{% endfor %}],
+      backgroundColor: "rgba(247, 165, 37, 0.9)"
+    }]
+  }
+});
+</script>

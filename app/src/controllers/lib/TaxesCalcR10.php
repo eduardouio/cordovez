@@ -1,4 +1,5 @@
 <?php
+defined('BASEPATH') or exit('No direct script access allowed');
 /**
  * Clase encargada de generar los impuestos totales y por
  * unidades los valores son devueltos en forma de array, el calculo

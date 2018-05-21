@@ -16,8 +16,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Modelpaiddetail extends \CI_Model
 {
     private $table = 'detalle_documento_pago';
-    private $modelExpenses;
     private $modelBase;
+    private $modelExpenses;
     private $modelLog;
     private $myModel;
 
@@ -41,9 +41,9 @@ class Modelpaiddetail extends \CI_Model
         $this->load->model('mymodel');
         $this->load->model('modellog');
         $this->modelExpenses = new Modelexpenses();
-        $this->modelBase = new ModelBase();
         $this->myModel = new Mymodel();
         $this->modelLog = new Modellog();
+        $this->modelBase = new ModelBase();
     }
     
     /**
@@ -250,4 +250,36 @@ class Modelpaiddetail extends \CI_Model
         
         return false;
     }
+    
+    
+    
+    /**
+     * Obtiene los pagos de una provisio desde los pagos
+     * @param int $id_init_expense id de gasto inicial
+     * @return array | bool
+     */
+    public function getPaidsDetailsFromInitExpense(int $id_init_expense)
+    {
+        $details = $this->modelBase->get_table([
+            'table' => $this->table,
+            'where' => [
+                'id_gastos_nacionalizacion' => $id_init_expense,
+            ],
+            'order_by' => [
+                'id_gastos_nacionalizacion' => 'DESC',
+            ],
+        ]);
+        
+        if ($details == False){
+            $this->modelLog->warningLog(
+                'El gasto inicial no tiene facturas',
+                $this->db->last_query()
+                );
+            return False;
+        }
+        
+        return $details;
+        
+    }
+    
 }

@@ -1,4 +1,5 @@
 <?php
+defined('BASEPATH') or exit('No direct script access allowed');
 /**
  * Calcula los prorrateos de para cada uno de los parciales
  * 

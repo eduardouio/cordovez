@@ -9,6 +9,7 @@
          </tr>
       </thead>
       <tbody>
+      	{% if have_initial_warenhouse == False %}
          <tr>
             <td>0</td>
             <td>PROVISION ALMACENAJE INICIAL</td>
@@ -19,6 +20,7 @@
    </a>
             </td>
          </tr>
+         {% endif %}
          <form action="{{rute_url}}gstinicial/putInitialExpenses/" method="post">
    <input type="hidden" name="nro_pedido" value="{{order.nro_pedido}}">
          {% for rateExpense in unusedExpenses %}

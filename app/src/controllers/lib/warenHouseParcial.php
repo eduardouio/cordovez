@@ -1,4 +1,5 @@
 <?php
+defined('BASEPATH') or exit('No direct script access allowed');
 /**
  * Clase de validacion de almacenra publica
  * 

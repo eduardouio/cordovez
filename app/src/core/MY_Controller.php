@@ -42,11 +42,11 @@ class MY_Controller extends CI_Controller
      */
     public function _checkSession()
     {
-        if (!($this->session->userdata('id_user'))) {
-            $this->session->sess_destroy();
+        if (array_key_exists('id_user', $_SESSION) == False) {
             if (current_url() != base_url() . 'index.php') {
-                $this->redirectPage('loginForm');
+                return $this->redirectPage('loginForm');
             }
+            
         } else {
             return true;
         }
@@ -100,8 +100,7 @@ class MY_Controller extends CI_Controller
      * @return void | bool
      */
     public function redirectPage(string $page, $id = false, $id2 = false)
-    {
-      
+    {      
         $target = [
             'loginForm' =>  'index.php/login/',
             'home' =>  'index.php/home',
@@ -111,7 +110,6 @@ class MY_Controller extends CI_Controller
             'infoInvoiceNew' => 'index.php/facinformativa/nuevo',
             'newProductInfoInvoice' => 'index.php/facinfdetalle/nuevo',
             'nationalizationNew' => 'index.php/nacionalizacion/nuevo',
-            'impuestosparcial' => 'index.php/impuestosparcial/v',
             'presentOrder' =>  'index.php/pedido/presentar',
             'paidsList' => 'index.php/facturapagos/listar/',
             'paidPresent' => 'index.php/facturapagos/presentar',
@@ -154,7 +152,11 @@ class MY_Controller extends CI_Controller
                             $id
                         ));
         }
-        return ( header('Location: ' . base_url() . $target[$page]));
+        
+        print '<h3 style="color:#565420"> Error sesion no iniciada :( </h3>';
+        print '<br />';
+        print '<a href="' . base_url(). '"><button><h3>Formulario Login</h3></button></a>';
+        return ( header('Location: ' . base_url() . $target[$page]));        
     }
     
     /**
@@ -167,7 +169,22 @@ class MY_Controller extends CI_Controller
      * @return int
      */
     protected function getWarenHouseDaysInitial(array $order): int
-    {
+    {     
+        if(
+            $order['fecha_arribo'] == Null ||
+            $order['fecha_arribo'] == '' ||
+            $order['fecha_arribo'] == null
+           )
+        {
+            $this->modelLog->errorLog(
+                'La fecha de arribo del pedido es nula o vacia',
+                $order['fecha_arribo']
+                );
+            
+            return 0;
+            
+        }
+        
         if (gettype($order['fecha_salida_bodega_puerto']) == 'NULL') {
             return (
                     dateDiffInDays(
@@ -176,6 +193,7 @@ class MY_Controller extends CI_Controller
                     );
         }
         
+     
         return (
                 dateDiffInDays(
                     $order['fecha_arribo'], 

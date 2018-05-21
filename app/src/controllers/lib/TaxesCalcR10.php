@@ -1,4 +1,6 @@
 <?php
+defined('BASEPATH') or exit('No direct script access allowed');
+
 /**
  * Clase encargada de generar los impuestos totales y por
  * unidades los valores son devueltos en forma de array, el calculo
@@ -402,7 +404,7 @@ class productTaxesR10 {
                 $product['nro_cajas']
                 ),
             'nro_cajas' => $product['nro_cajas'],
-            'costo_caja' => $product_box_value,
+            'costo_caja' => ($product_box_value * $this->type_change),
             'producto' => $product_base['nombre'],
             'capacidad_ml' => $product_base['capacidad_ml'] ,
             'grado_alcoholico' =>$product['grado_alcoholico'],
@@ -427,6 +429,7 @@ class productTaxesR10 {
             $sum_invoices += $invoice['valor'];
         }
         
+        
         return([
             'flete_aduana' => (
                 $init_data['order']['flete_aduana']
@@ -448,6 +451,8 @@ class productTaxesR10 {
                 $this->type_change
                 ),
         ]);
+        
+        
     }
     
     

@@ -82,7 +82,29 @@ class Modelorder extends CI_Model
         }
         return false;
     }
+    
+    /**
+     * Obtiene un regsistro completo de la orden de una tabla
+     * @param (string) $id_order iddentificador de la order
+     * @return array | false
+     */
+    public function getById(int $id_order)
+    {
+        $order = $this->modelBase->get_table([
+            'table' => 'pedido',
+            'where' => [
+                'id_pedido' => $id_order
+            ],
+        ]);
+        
+        if((gettype($order) == 'array') && (count($order) > 0)){
+            return $order[0];
+        }
+        return false;
+    }
        
+    
+    
 
     /**
      * Obtiene el detalle de las facturas y lo cruza contra el valor total de

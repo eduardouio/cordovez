@@ -40,12 +40,10 @@ class warenHouseParcial
      */
     function __construct(array $order, array $parcial){
         
-        print('Este es el warenhouse de Parcial');
         $this->order = $order;
         $this->parcial = $parcial;
     }
-    
-    
+       
         
     /**
      * Retorna el rango de fechas del ultimo almacenamiento en los parciales

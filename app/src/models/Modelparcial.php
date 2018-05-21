@@ -54,6 +54,10 @@ class Modelparcial extends CI_Model
         
         if( (is_array($parcial)) && (!empty($parcial)) )
         {
+            $this->modelLog->generalLog(
+                'parcial recuperado'
+                );
+            
             return $parcial[0];
         }
         
@@ -319,6 +323,7 @@ class Modelparcial extends CI_Model
         $this->db->where('id_parcial', $parcial['id_parcial']);
         
         if($this->db->update($this->table, $parcial)){
+            $this->modelLog->susessLog('Parcial Actualizado');
             $this->modelLog->queryUpdateLog($this->db->last_query());
             return true;
         }

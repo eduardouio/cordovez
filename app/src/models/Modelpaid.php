@@ -125,7 +125,7 @@ class Modelpaid extends CI_Model{
         ]);
         
         if ($documents == False){
-            $this->model
+            #$this->model
             return False;
         }
         

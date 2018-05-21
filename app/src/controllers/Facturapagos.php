@@ -187,8 +187,12 @@ class Facturapagos extends MY_Controller
             return true;
         }
         $document = $this->input->post();
+        $document['fecha_emision'] = str_replace('/', '-', $document['fecha_emision']);
         $document['fecha_emision'] = date('Y-m-d', strtotime(
-                                                $document['fecha_emision']));
+                                                $document['fecha_emision'])
+            );
+        
+        print($document['fecha_emision']);
         $document['id_user'] = $this->session->userdata('id_user');
         $status = $this->validData($document);
         if($status['status']){

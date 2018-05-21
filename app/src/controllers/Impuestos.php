@@ -249,7 +249,7 @@ class Impuestos extends MY_Controller
                     )
                 );
         }
-        
+               
         return ($this->responseHttp([
             'titleContent' => 'Resumen de impuestos Pedido ' .
                                               $init_data['order']['nro_pedido'],
@@ -424,8 +424,7 @@ class Impuestos extends MY_Controller
         }else{
             $_POST['bg_have_tasa_control'] = 0;
         }
-        
-        
+                
         if ($this->modelOrder->update($_POST)){
             $this->modelLog->susessLog(
                 'Se ha actualizado correctamente los parameros de impuestos'
@@ -438,8 +437,29 @@ class Impuestos extends MY_Controller
                 'No se pueden actualizar los parametros de impuestos'
                 );
         }
-        
     }
+    
+    
+    /**
+     * marca un pedido o un parcial como cerrado
+     * 
+     * @param bool $order es una orden
+     * @param int $id ide de parcial o del pedido
+     * @return bool
+     */
+    private function liquidarIva(bool $is_order, int $id ): bool
+    {
+        if ($is_order){
+            $order = $this->modelOrder->getById($id_order);
+            $order['bg_isliquidated'] = 1;
+            return($this->modelOrder->update($order));
+        }
+        
+        $parcial = $this->modelParcial->get($id_parcial);
+        $parcial['bg_isliquidated'] = 1;
+        return($this->modelParcial->update($parcial));
+           
+     }
 
 
     /**
@@ -528,6 +548,7 @@ class Impuestos extends MY_Controller
         
         $prorrateo['id_user'] = $this->session->userdata['id_user'];
         $prorrateoDetail = $prorrateo['details'];
+        
         unset($prorrateo['details']);
         
         $prorrateoParcial = $this->modelProrrateo->getProrrateoByParcial(
@@ -566,6 +587,16 @@ class Impuestos extends MY_Controller
         ): array
     {
              
+        $parcial = $this->modelParcial->get($prorrateo['id_parcial']);
+        
+        if($parcial['bg_isliquidated']){
+            $this->modelLog->generalLog('El el se evita actualizar el parcial');
+            return ([
+                'prorrateo' => $prorrateo,
+                'prorrateo_detail' => $prorrateoDetailTemp,
+            ]);
+        }
+        
         $prorrateoParcial = $prorrateoParcial[0];
         
         $prorrateo['last_update'] = date('Y-m-d H:m:s');
@@ -708,6 +739,7 @@ class Impuestos extends MY_Controller
         }
     }
     
+   
     
     /*
      * Redenderiza la informacion y la envia al navegador

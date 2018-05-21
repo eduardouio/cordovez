@@ -1,4 +1,4 @@
-      <form action="{{ rute_url }}impuestos/actualizar" method="post">
+      <form action="{{ rute_url }}impuestos/actualizar" method="post" id="parcial_form">
          <input type="hidden" name="id_parcial" value="{{ init_data.parcial.id_parcial }}">
          <div class="col-md-6" style="background-color: #f9f9f9; padding:22px">
             <div class="row">
@@ -8,6 +8,7 @@
                         Etiquetas Fiscales
                         <input 
                         type="checkbox" 
+                        id = "update_etiquetas"
                         name="bg_have_etiquetas_fiscales" 
                         {% if init_data.parcial.bg_have_etiquetas_fiscales == 1 %}
                         checked="true"
@@ -72,6 +73,7 @@
                         Tasa de Control
                         <input 
                         type="checkbox" 
+                        id = "update_tasa"
                         name="bg_have_tasa_control"
                         {% if init_data.parcial.bg_have_tasa_control == 1 %}
                         checked="true"
@@ -111,6 +113,7 @@
                         value="{{ init_data.parcial.exoneracion_arancel }}" 
                         step="0.01"
                         style="width:30%" 
+                        disabled
                         >
                         <label for=""> 
                         <span class="text-primari" id='total_base_av'>

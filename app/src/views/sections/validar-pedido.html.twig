@@ -5,7 +5,7 @@
          <strong>Valor FOB Total:</strong> 
          <span class="fa fa-usd">/</span>
          <strong class="text-primary">
-         {{fob | number_format(2, '.', ',') }}      
+         {{ invoices_order['fob_total'] | number_format(2, '.', ',') }}      
          </strong>  
       </div>
       <div class="col-sm-3">
@@ -28,13 +28,16 @@
          <strong>
          Fecha Registro:</strong> 
          <span class="text-primary">
-         {{ order.date_create }}            
+         {{ order.date_create }}          
          </span>
       </div>
    </div>
    <div class="row">
       <div class="col-sm-3">
-         <strong>Tiempo Bodega:</strong> 
+         <strong>Tiempo Bodega:</strong>
+          {{ dates_order.mounths }} meses
+          {{ dates_order.days }} días /
+          <small class="text-info"> {{ dates_order.all_days }} días </small>       
       </div>
       <div class="col-sm-2">
          <strong>P. Origen:</strong> 
@@ -81,39 +84,39 @@
             </tr>
             <tr>
                <td>Facturas Producto  <strong>{{order.nro_pedido}}</strong> Proveedor Internacional</td>
-               {% if invoicesOrder == false %}
+               {% if invoices_order == false %}
                <td>No Registrado</td>
-               <td class="danger">
+               <td class="danger"><span class="fa fa-ban text-danger"></span>
                   <a href="{{rute_url}}pedidofactura/nuevo/{{order.nro_pedido}}/">
                   Registrar 
                   </a>
                </td>
                {% else %}
-               {% if minimal.valuesOrder.statusInvoices == false %}
-               <td>Inconsistencias</td>
-               <td class="danger">
-                  <a href="{{rute_url}}pedido/presentar/{{order.nro_pedido}}">
-                  Validar                     
-                  </a>
-               </td>
-               {% else %}
-               <td>{{ minimal.valuesOrder.totalInvoices | number_format(2,',','.') }}</td>
-               <td class="success">OK</td>
-               {% endif %}
+                   {% if invoices_order.values_isok == false %}
+                   <td>Inconsistencias</td>
+                   <td class="danger"><span class="fa fa-ban text-danger"></span>
+                      <a href="{{rute_url}}pedido/presentar/{{order.nro_pedido}}">
+                      Validar                     
+                      </a>
+                   </td>
+                   {% else %}
+                   <td>{{ invoices_order.fob_total | number_format(2,',','.') }}</td>
+                   <td class="success"><span class="fa fa-check text-success"></span></td>
+                   {% endif %}
                {% endif %}
             </tr>
             <tr>
                <td>Fecha Llegada Puerto</td>
                {% if order.fecha_arribo == NULL %}
                <td>No Registrado</td>
-               <td class="danger">
+               <td class="danger"><span class="fa fa-ban text-danger"></span>
                   <a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}">
                   Registrar
                   </a>
                </td>
                {% else %}
                <td>{{ order.fecha_arribo | date('d/m/Y') }} </td>
-               <td class="success">OK
+               <td class="success"><span class="fa fa-check text-success"></span>
                   <a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}"><span class="fa fa-pencil"></span>Editar</a>
                </td>
                {% endif %}
@@ -123,39 +126,44 @@
                {% if order.dias_libres == 0 %}
                <td>No Registrado</td>
                <td class="danger">
+               <span class="fa fa-ban text-danger"></span>
                   <a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}">
                   Registrar
                   </a>
                </td>
                {% else %}
                <td>{{ order.dias_libres }} </td>
-               <td class="success">OK
+               <td class="success"><span class="fa fa-check text-success"></span>
                   <a href="{{rute_url}}pedido/editar/{{ order.nro_pedido }}"><span class="fa fa-pencil"></span>Editar</a>
                </td>
                {% endif %}
             </tr>
-            {% for expense in minimal.initExpenses %}
+            {% for expense in init_expeses.expenses_order %}
             {% set sumExpenses = sumExpenses + expense.valor_provisionado %}
             <tr>
                <td>
-               {% if expense.bg_closed == 0 %}
-               <small class="label label-danger"> &nbsp;Provisión&nbsp;</small>
+               {% if expense.paids == False %}
+               		<small class="label label-danger"> &nbsp;Provisión&nbsp;</small>
                {%  else %}
-               <small class="label label-success">Justificado</small>
-               				
-                          <pre>
-                          {{ dump(expense) }}
-                          </pre>
+               		{% if expense.bg_closed == 0 %}
+               			<small class="label label-warning">Just. Parcial</small>
+               		{% else %}
+    					<small class="label label-success">Justificado</small>           		
+	               {% endif %}
+	               {% for invoice in expense.invoices %}
+	               		<a href="{{ rute_url }}facturapagos/presentar/{{ invoice }}">
+							<span class="fa fa-eye"></span> 
+	               		</a>
+	               {% endfor %}
                {% endif %}
-               {{ expense.concepto }}               
+               {{ expense.concepto }}
                </td>
-               {% if expense.concepto == 'GASTO ORIGEN' %}
-               {% if minimal.statusOrder.have_gasto_origen != false %}
-               <td>
+                 <td>
                   {{expense.valor_provisionado}}
                </td>
                {% if expense.valor_provisionado > 0 %}
-               <td class="success">OK
+               <td class="success">
+               	<span class="fa fa-check text-success"></span>
                   <a href="{{rute_url}}gstinicial/editar/{{expense.id_gastos_nacionalizacion}}">
                   <span class="fa fa-pencil"></span> Editar
                   </a>
@@ -163,8 +171,9 @@
                   <span class="fa fa-trash"></span> Eliminar
                   </a>
                </td>
-               {%else %}       
-               <td class="danger">                 
+               {% else %}
+             	 <td class="danger">     
+             	 <span class="fa fa-ban text-danger"></span>            
                   <a href="{{rute_url}}gstinicial/editar/{{expense.id_gastos_nacionalizacion}}">
                   Registrar                   
                   </a>
@@ -172,32 +181,7 @@
                   <span class="fa fa-trash"></span> Eliminar
                   </a>
                </td>
-               {% endif %}                  
-               {% else %}
-               <td>No Requerido</td>
-               <td class="success">OK</td>
-               {% endif %}
-               {% else %}
-               <td>{{expense.valor_provisionado}}</td>
-               {% if expense.valor_provisionado > 0 %}
-               <td class="success" style=" width: 1px; white-space: nowrap;">
-                  OK <a href="{{rute_url}}gstinicial/editar/{{expense.id_gastos_nacionalizacion}}">
-                  <span class="fa fa-pencil"></span> Editar
-                  </a>
-                  <a href="{{rute_url}}gstinicial/eliminar/{{expense.id_gastos_nacionalizacion}}" class="text-danger">
-                  <span class="fa fa-trash"></span> Eliminar
-                  </a>
-               </td>
-               {% else %}
-               <td class="danger" style=" width: 1px; white-space: nowrap;">
-                  <a href="{{rute_url}}gstinicial/editar/{{expense.id_gastos_nacionalizacion}}">
-                  Registrar                           
-                  </a>
-                  <a href="{{rute_url}}gstinicial/eliminar/{{expense.id_gastos_nacionalizacion}}" class="text-danger">
-                  <span class="fa fa-trash"></span> Eliminar
-                  </a>
-               </td>
-               {% endif %}
+             	
                {% endif %}
             </tr>
             {% endfor %}
@@ -215,25 +199,38 @@
          </tbody>
       </table>
       {% include 'sections/subsections/table-order-info.html.twig' %}   
-      <br><br><br><br>
+      <br>
       <p>
          <a href="{{rute_url}}pedido/presentar/{{order.nro_pedido}}" class="btn btn-default btn-sm">
          <span class="fa fa-arrow-left fa-fw"></span>
          Volver Al Pedido [{{order.nro_pedido}}]
-         </a>  
-         {% if isOk == true %}
-         {% if order.regimen == '70' %}
-         <button data-toggle="modal" data-target="#myModal" class="btn btn-default btn-sm pull-right">
-         <span class="fa fa-file fa-fw"></span>
-         Generar Factura Informativa [{{order.nro_pedido}}]
-         </button>
-         {% else %}
-         <a class="btn btn-success btn-sm pull-right" href="{{rute_url}}impuestos/pd/{{order.nro_pedido}}">
-         <span class="fa fa-money"></span>
-         Ver Impuestos de Liquidación
          </a>
-         {% endif %}
-         {% endif %}
+         
+         {% if  invoices_order.values_isok == true %}
+         	{%  if init_expeses.all_ok == true %}
+         		{% if order.regimen == '70' %}
+                 <button data-toggle="modal" data-target="#myModal" class="btn btn-default btn-sm pull-right">
+                 <span class="fa fa-file fa-fw"></span>
+                 Generar Factura Informativa [{{order.nro_pedido}}]
+             </button>
+             {% else %}
+                 <a class="btn btn-success btn-sm pull-right" href="{{rute_url}}impuestos/pd/{{order.nro_pedido}}">
+                 <span class="fa fa-money"></span>
+                 Ver Impuestos de Liquidación
+             	</a>
+             {% endif %}
+         	{% else %}
+         		<strong class="text-danger pull-right btn btn-sm">
+        		<span class="fa fa-ban"></span>
+        		Existen Provisiones Sin Valor
+        	</strong>
+         	{% endif %}
+        {% else %}
+        	<strong class="text-danger pull-right btn btn-sm">
+        	<span class="fa fa-ban"></span>
+        	Facturas de Proveedor Incompletas o Inexistentes
+        	</strong>
+        {% endif %}
       </p>
    </div>
    <div class="col-sm-5 div-bordered">

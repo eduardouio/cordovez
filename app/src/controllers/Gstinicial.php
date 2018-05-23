@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+require_once 'lib/checkerOrder.php';
+
 /**
  * Controller encargado de manejar los gastos iniciales
  *
@@ -32,6 +34,7 @@ class Gstinicial extends MY_Controller
     private $modelUser;
     private $modelLog;
     private $modelPaidDetail;
+    private $modelPaid;
 
     /**
      * Constructor de la funcion
@@ -58,8 +61,10 @@ class Gstinicial extends MY_Controller
         $this->load->model('modellog');
         $this->load->model('Modelorderinvoice');
         $this->load->model('Modelorderinvoicedetail');
+        $this->load->model('Modelpaid');
         $this->load->model('Modelpaiddetail');
         $this->modelOrderInvoice= new Modelorderinvoice();
+        $this->modelPaid = new Modelpaid();
         $this->modelOrder = new Modelorder();
         $this->modelSupplier = new Modelsupplier();
         $this->modelBase = new ModelBase();
@@ -88,7 +93,7 @@ class Gstinicial extends MY_Controller
 
     
     /**
-     * Pesenta la informacion completa del rgistro de gasto inicial
+     * Muestra la informacion basica de un gasto inicial
      *
      * @param (int) $idInitExpense
      * @return array
@@ -106,7 +111,6 @@ class Gstinicial extends MY_Controller
             $this->redirectPage('ordersList');
             return false;
         }
-        ;
         
         $order = $this->modelOrder->get($initExpense['nro_pedido']);
         
@@ -120,35 +124,7 @@ class Gstinicial extends MY_Controller
         ]);
     }
 
-    /**
-     * Muestra el formulario para regostrar un nuevo gasto inicial
-     *
-     * @param (string) $nroOrder
-     * @return (array)
-     */
-    public function nuevo($nroOrder)
-    {
-        if (! isset($nroOrder)) {
-            $this->redirectPage('ordersList');
-        }
-        $order = $this->modelOrder->get($nroOrder);
-        $suppliers = $this->modelSupplier->getAll();
-        $rateExpenses = $this->modelExpenses->getAllRates($order['regimen']);
-        $usedExpenses = $this->modelExpenses->get($order['nro_pedido']);
-        $unusedExpenses = $this->calcExpensesDiff($rateExpenses, $usedExpenses);
-        
-        $this->responseHttp([
-            'used_expenses' => json_encode($rateExpenses),
-            'create' => true,
-            'order' => $order,
-            'suppliers' => $suppliers,
-            'rateExpenses' => $rateExpenses,
-            'usedExpenses' => $usedExpenses,
-            'unusedExpenses' => $unusedExpenses,
-            'titleContent' => 'Registro De Gasto Inicial Provisionado ' . '[ Pedido ' . $nroOrder . ']'
-        ]);
-    }
-
+    
     /**
      * Presenta el formulario con los datos del gasto inicial
      *
@@ -160,11 +136,7 @@ class Gstinicial extends MY_Controller
         $initExpense = $this->modelExpenses->getExpense($idInitExpense);
         
         if ($initExpense == false) {
-            $this->modelLog->redirectLog(
-                'Se intenta acceder directamente a editar desde url sin id', 
-                current_url()
-                );
-            return ($this->index());
+            return $this->index();
         }
         
         $order = $this->modelOrder->get($initExpense['nro_pedido']);
@@ -192,9 +164,8 @@ class Gstinicial extends MY_Controller
     public function validar()
     {
         if (! $_POST) {
-            $this->redirectPage('ordersList');
+            return $this->index();
         }
-        
         
         $initExpense = $this->input->post();
         $initExpense['id_user'] = $this->session->userdata('id_user');
@@ -216,14 +187,6 @@ class Gstinicial extends MY_Controller
                 );
         }else{
             $initExpense['fecha_fin'] = NULL;
-        }
-        
-       
-        
-        if (isset($initExpense['fecha_fin'])) {
-            $initExpense['fecha_fin'] = date(
-                'Y-m-d', strtotime($initExpense['fecha_fin'])
-                );
         }
         
         if (! isset($initExpense['id_gastos_nacionalizacion'])) {
@@ -284,7 +247,7 @@ class Gstinicial extends MY_Controller
                 'Intendo de Eliminar un gasto inicial directamente', 
                 $this->db->last_query()
                 );
-            return ($this->redirectPage('ordersList'));
+            return $this->index();
         }
         
         if ($this->modelExpenses->delete($idInitExpense)) {
@@ -300,6 +263,7 @@ class Gstinicial extends MY_Controller
         return ($this->redirectPage('validargi', $initialExpense['nro_pedido']));
     }
     
+    
 
     /**
      * Verifica Los gastos iniciales de una Order, indica al isuario
@@ -312,136 +276,50 @@ class Gstinicial extends MY_Controller
     public function validarGI(string $nroOrder)
     {
         $order = $this->modelOrder->get($nroOrder);
+        
         if ($order == false) {
             $this->redirectPage('ordersList');
             return true;
         }
-        $rateExpenses = $this->modelExpenses->getAllRates($order['regimen']);
-        $invoicesOrder = $this->modelOrder->getInvoices($nroOrder);
-        $initExpenses = $this->modelExpenses->getInitialExpenses($nroOrder);
-        $minimal = $this->getMinimalParams($order, $initExpenses);
-        $minimal['valuesOrder'] = $this->calcValuesOrderItems(
-                                                        $order, 
-                                                        $invoicesOrder, 
-                                                        $initExpenses
+        
+        $rate_expenses = $this->modelExpenses->getAllRates($order['regimen']);
+        $order_invoices = $this->modelOrder->getInvoices($order['nro_pedido']);
+        $init_expenses = $this->modelExpenses->getInitialExpenses(
+                                                            $order['nro_pedido']
             );
-        $have_initial_warenhouse = False;
-        $temp_Expenses = [];
         
-        foreach( $initExpenses as $item => $expense){
-            if($expense['concepto'] == 'ALMACENAJE INICIAL'){
-                $have_initial_warenhouse = True;
-            }
-            
-            $expense['paids'] = $this->modelPaidDetail->
-                                         getPaidsDetailsFromInitExpense(
-                                    $expense['id_gastos_nacionalizacion']
-                                    );
-            array_push($temp_Expenses, $expense);
-            
-        }
+        $paids_init_expenses = $this->getPaidsFromOrder($init_expenses);
+        $unused_expenses = $this->calcExpensesDiff(
+            $rate_expenses,
+            $init_expenses
+            );
         
+        $checked_order = new checkerOrder(
+                                            $order,
+                                            $order_invoices,
+                                            $paids_init_expenses,
+                                            $rate_expenses,
+                                            $unused_expenses
+            );
+                
         return ($this->responseHttp([
-            'validateExpenses' => true,
+            'validateExpenses' => True,
             'titleContent' => 'Generar Gastos Iniciales Pedido: [' . 
                                 $nroOrder . '] ' . 
                                 ' <small>Validar Información</small>',
-            'rateExpenses' => $rateExpenses,
-            'unusedExpenses' => $this->calcExpensesDiff(
-                                                        $rateExpenses, 
-                                                        $initExpenses
-                ),
-            'warenHouseDays' => $this->getWarenHouseDaysInitial($order),
-            'invoicesOrder' => $invoicesOrder,
-            'initExpenses' => $temp_Expenses,
-            'have_initial_warenhouse' => $have_initial_warenhouse,
+            'dates_order' => $checked_order->checkOrder(),
             'order' => $order,
-            'minimal' => $minimal,
+            'have_euros' => $this->modelOrderInvoice->haveEuros($nroOrder),
+            'invoices_order' => $checked_order->checkOrderInvoices(),
+            'initial_tributes' => $checked_order->getInitialTributes(),
+            'init_expeses' => $checked_order->checkInitExpenses(),
+            'unused_expenses' => $checked_order->getInitialTributes(),
+            'warenhouse_days' => $this->getWarenHouseDaysInitial($order),
             'user' => $this->modeluser->get($order['id_user']),
-            'isOk' => searchOrderCeroValues($minimal),
-            'haveEuros' => $this->modelOrderInvoice->haveEuros($nroOrder),
         ]));
     }
 
-    /**
-     * Establece los gastos iniciales de acuedo a los parametros establecidos
-     *
-     * @param (string) $nroOrder
-     * @return array | boolean
-     */
-    public function putIncoterms($nroOrder)
-    {
-        if (! isset($nroOrder)) {
-            $this->redirectPage('ordersList');
-            return false;
-        }
-        $order = $this->modelOrder->get($nroOrder);
-        
-        if ($order == false) {
-            $this->redirectPage('ordersList');
-            return false;
-        }
-        $incoterms = $this->modelExpenses->getIncotermsParams($order);
-        if ($incoterms == false) {
-            $this->modelLog->warningLog(
-                $this->controller . ' No se encuentra incoterms ' . 
-                current_url()
-                );
-            $this->redirectPage('presentOrder', $nroOrder);
-        }
-        
-        $id_user = $this->session->userdata('id_user');
-        
-        foreach ($incoterms as $key => $value) {
-            $initExpense = [
-                'nro_pedido' => $nroOrder,
-                'id_parcial' => 0,
-                'identificacion_proveedor' => 0,
-                'concepto' => $value['tipo'],
-                'valor_provisionado' => $value['tarifa'],
-                'comentarios' => 'CREADO AUTOMATICAMENTE',
-                'id_user' => $id_user,
-                'fecha' => date("Y-m-d")
-            ];
-            $this->db->insert($this->controller, $initExpense);
-        }
-        return ($this->redirectPage('presentOrder', $nroOrder));
-    }
-
-    /**
-     * Reemplaza los incoterms cuando un pedido se edita
-     * por el momento siempre los cambia
-     *
-     * @param string $nroOrder
-     * @return void
-     */
-    public function replaceIncoterms($nroOrder)
-    {
-        if (! isset($nroOrder)) {
-            $this->redirectPage('ordersList');
-            return false;
-        }
-        
-        $order = $this->modelOrder->get($nroOrder);
-        $initExpenses = $this->modelExpenses->get($nroOrder);
-        
-        foreach ($initExpenses as $key => $expense) {
-            
-            if (($expense['concepto'] == 'GASTO ORIGEN') || 
-                ($expense['concepto'] == 'FLETE')) 
-            {
-                $this->db->where(
-                    'id_gastos_nacionalizacion', 
-                    $expense['id_gastos_nacionalizacion']
-                    );
-                $this->db->delete($this->controller);
-            }
-        }
-        $this->putIncoterms($nroOrder);
-    }
-
-    
-    
+   
     /**
      * Inicia el asistente para establecer las provisiones de bodega inicial
      * y las provisiones de demoraje
@@ -591,265 +469,62 @@ class Gstinicial extends MY_Controller
             ];
             if ($value['concepto'] == 'ISD') {
                 $insertExpense['valor_provisionado'] = $valuesOrder['isd'];
+                $insertExpense['bg_is_visible_gi'] = 0;
             } elseif ($value['concepto'] == 'POLIZA SEGURO') {
                 $insertExpense['valor_provisionado'] = $valuesOrder['seguro'];
-            } elseif ($value['concepto'] == 'ETIQUETAS FISCALES') {
-                $insertExpense['valor_provisionado'] = $valuesOrder['etiquetas_fiscales'];
-            } elseif ($value['concepto'] == 'TASA DE SERVICIO ADUANERO') {
-                $insertExpense['valor_provisionado'] = $valuesOrder['tasa_de_servicio_aduanero'];
             }
             
             if ($this->db->insert($this->controller, $insertExpense)) {
                 
                 $this->modelLog->susessLog('Gasto Inicial Insertado, ' . current_url());
             } else {
-                $this->modelLog->errorLog('No se puede Aplicar Gasto Inicial', $this->db->last_query());
+                $this->modelLog->errorLog('No se puede Aplicar Gasto Inicial', 
+                    $this->db->last_query()
+                    );
             }
         }
         $this->redirectPage('validargi', $initExpensesInput['nro_pedido']);
     }
-
-    /**
-     * Calcula los Valores FOB; FLETE; CIF ; ISD ; SEGURO de un pedido, y ademas
-     * comprueba que el detalle de las facturas sea igual al que se encuentra
-     * registrado en el pedido
-     *
-     * @param array $order
-     * @param array $invoicesOrder
-     * @param array $initExpenses
-     *
-     * @return array
-     */
-    private function calcValuesOrderItems($order, $invoicesOrder, $initExpenses)
-    {
-        $paramsIncoterm = [
-            'EXW' => '1',
-            'FCA' => '1',
-            'FOB' => '0',
-            'CFR' => '-1'
-        ];
-        
-        $valuesOrder = [
-            'invoicesSum' => 0.0,
-            'totalInvoices' => 0.0,
-            'statusInvoices' => false,
-            'gastos_origen' => 0.0,
-            'incoterm' => $order['incoterm'],
-            'flete' => 0.0,
-            'fob' => 0.0,
-            'seguro' => 0.0,
-            'isd' => 0.0,
-            'tasa_de_servicio_aduanero' => 0.0
-        ];
-        
-        if ($invoicesOrder) {
-            foreach ($invoicesOrder as $key => $invoice) {
-                $valuesOrder['totalInvoices'] += (
-                        floatval($invoice['valor'] * 
-                        floatval($invoice['tipo_cambio']))
-                    );
-                
-                $valuesOrder['invoicesSum'] += (
-                    floatval($invoice['detailInvoice']['sums']['valueItems']) * 
-                    floatval($invoice['tipo_cambio'])
-                    );
-            }
-            if ($valuesOrder['totalInvoices'] == $valuesOrder['invoicesSum']) {
-                $valuesOrder['statusInvoices'] = true;
-            }
-        }
-        
-        if (gettype($initExpenses) == 'array') {
-            foreach ($initExpenses as $key => $value) {
-                if ($value['concepto'] == 'GASTO ORIGEN') {
-                    $valuesOrder['gastos_origen'] = floatval(
-                        $value['valor_provisionado']
-                        );
-                    
-                } elseif ($value['concepto'] == 'FLETE') {
-                    $valuesOrder['flete'] = floatval($value['valor_provisionado']);
-                }
-            }
-        }
-        
-        if ($valuesOrder['statusInvoices']) {
-            $valuesOrder['fob'] = (
-                   (
-                    $paramsIncoterm[$valuesOrder['incoterm']] * 
-                    $valuesOrder['gastos_origen']
-                   ) 
-                    + $valuesOrder['totalInvoices']
-                );
-            
-            
-            if ($order['incoterm'] == 'CFR') {
-                $valuesOrder['isd'] = (
-                    ($valuesOrder['totalInvoices'] + $valuesOrder['flete']) * 
-                    $this->isdPer
-                    );
-            } else {
-                $valuesOrder['isd'] = (
-                    $valuesOrder['totalInvoices'] * $this->isdPer
-                    );
-            }
-            
-            $base_seguro = (
-                (
-                    ($valuesOrder['fob'] + $valuesOrder['flete']) * 2.2) * 
-                    $this->securePercent
-                );
-            
-            $valuesOrder['seguro'] = ($base_seguro + 
-                                    ($base_seguro * 0.035) + 
-                                    ($base_seguro * 0.005) +
-                                    0.45);
-            
-        }
-        
-        
-        
-        
-        if (($order['incoterm'] == 'CFR') || ($order['incoterm'] == 'FOB')) {
-            unset($valuesOrder['gastos_origen']);
-        }
-        
-        $valLabels = 0.0;
-        $initialStockProducts = $this->ModelOrderInvoiceDetail->
-                            getActiveStokProductsByOrder($order['nro_pedido']);
-        if ($initialStockProducts != false) {
-            foreach ($initialStockProducts as $item => $product) {
-                
-                $valLabels += (
-                    ($this->labelCost) * 
-                    ($product['nro_cajas'] * 
-                    $product['cantidad_x_caja'])
-                    );
-                
-                $tasaServicio = (
-                    (
-                        (intval($product['capacidad_ml']) / 2000) * 0.10) * 
-                        ($product['nro_cajas'] * $product['cantidad_x_caja'])
-                    );
-                if ($tasaServicio < 700) {
-                    $valuesOrder['tasa_de_servicio_aduanero'] += $tasaServicio;
-                } else {
-                    $valuesOrder['tasa_de_servicio_aduanero'] += 700;
-                }
-            }
-        }
-        
-        $valuesOrder['etiquetas_fiscales'] = $valLabels;
-        $this->addDefaultExpenses($valuesOrder, $order);
-        
-        return $valuesOrder;
-    }
-    
     
     
     /**
-     * Agrega automanticamete al pedido los gastos iniciales autocalculados,
-     * en caso de que ya esten registrados no hace nada 
+     * Obtiene la lista de facturas con sus detalles de los pagos 
+     * Realizados en el pedido
      * 
-     * @param array $valuesOrder
-     * @param array $order
-     * @return bool
+     * @param array $init_expenses
+     * @return array | Bool
      */
-    private function addDefaultExpenses(array  $valuesOrder, array $order): bool
+    private function getPaidsFromOrder($init_expenses)
     {
-        $data = [
-                    0 => [
-                            'nro_pedido' => $order['nro_pedido'],
-                            'identificacion_proveedor' => 0,
-                            'concepto' => 'ISD',
-                            'valor_provisionado' => $valuesOrder['isd'],
-                            'comentarios' => 'REGISTRO AGREGADO POR EL ASISTENTE',
-                            'fecha' => date('Y-m-d H:m:s'),
-                            'id_user' => $this->session->userdata('id_user'),
-                        ],
-                    1 => [
-                            'nro_pedido' => $order['nro_pedido'],
-                            'identificacion_proveedor' => 0,
-                            'concepto' => 'ETIQUETAS FISCALES',
-                            'valor_provisionado' => $valuesOrder['etiquetas_fiscales'],
-                            'comentarios' => 'REGISTRO AGREGADO POR EL ASISTENTE',
-                            'fecha' => date('Y-m-d H:m:s'),
-                            'id_user' => $this->session->userdata('id_user'),
-                          ]
-                ];
         
+        if($init_expenses == False){
+            $this->modelLog->warningLog(
+                'El pedido no tiene gastos iniciales'
+                );
+            return False;
+        }
         
-        $init_expenses = $this->modelExpenses->getInitialExpenses(
-            $order['nro_pedido']
-            );
+        $init_expenses_with_paid = [];
         
-        foreach ( $init_expenses as $item => $expense ){
-            if($expense['concepto'] == 'ISD'){
-                unset($data[0]);
-            }
+        foreach ($init_expenses as $item => $expense){
             
-            if($expense['concepto'] == 'ETIQUETAS FISCALES'){
-                unset($data[1]);
-            }
-            
-            if(count($data) == 0){
-                $this->modelLog->warningLog(
-                    'Etiquetas fiscales e ISD ya estan registrados'
-                    );
-                return False;
-            }
-        }
-                
-        foreach ( $data as $item => $expense){
-            if ( $this->modelExpenses->create($expense) == False ){
-                $this->modelLog->errorLog(
-                    'No fue posible agregar de forma automatica los gastos iniciales'
-                    );
-                return  false;
-            }
+          $paids_details = $this->modelPaidDetail->
+                                                getPaidsDetailsFromInitExpense(
+                                          $expense['id_gastos_nacionalizacion']
+                );
+          
+          if ($paids_details == False){
+              $expense['paids'] = False;
+          }else{
+              $expense['paids'] = $paids_details;
+          }
+          array_push($init_expenses_with_paid, $expense);
         }
         
-        $this->modelLog->susessLog(
-            'los gastos iniciales ISD y Etiquetas fueron agregados correctamente'
-            );
-     
-        return true;   
+        return $init_expenses_with_paid;
+         
     }
-
     
-    
-    /**
-     * Obtiene el numero minimo de parametros que debe tener una oren de compra
-     *
-     * @param
-     *            $nroOrder
-     *            
-     * @return array
-     */
-    private function getMinimalParams($order, $initExpenses)
-    {
-        $minimal = [
-            'statusOrder' => [
-                'have_gasto_origen' => true,
-                'fecha_arribo' => false,
-                'dias_libres' => false
-            ],
-            'initExpenses' => $initExpenses
-        ];
-        
-        $minimal['statusOrder']['fecha_arribo'] = ($order['fecha_arribo']) ? 
-                                                    $order['fecha_arribo'] : 
-                                                                      false;
-        
-        $minimal['statusOrder']['dias_libres'] = ($order['dias_libres'] > 0) ? 
-                                                     $order['dias_libres'] : 
-                                                                      false;
-        
-        if (($order['incoterm'] == 'FOB') || $order['incoterm'] == 'CFR') {
-            $minimal['statusOrder']['have_gasto_origen'] = false;
-        }
-        return $minimal;
-    }
-
     
     /**
      * Calcula la diferencia entre los gastos iniciales
@@ -876,8 +551,9 @@ class Gstinicial extends MY_Controller
         }
         return $unusedExpenses;
     }
-
-    /**
+    
+    
+         /**
      * Se validan las columnas que debe tener la consulta para que no falle
      *
      * @return [array] | [bolean]

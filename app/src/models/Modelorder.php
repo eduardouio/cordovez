@@ -120,9 +120,14 @@ class Modelorder extends CI_Model
                 'nro_pedido' => $nroOrder
             ]
         ]);
+        
         if (empty($invoices)) {
+            $this->modelLog->warningLog(
+                'El pedido Solicitado no tiene Facturas registradas'
+                );
             return false;
         }
+        
         $result = [];
         foreach ($invoices as $key => $value) {
             $value['supplier'] = $this->modelsupplier->get(
@@ -131,6 +136,10 @@ class Modelorder extends CI_Model
             $value['valor'] =  floatval($value['valor']);
             $result[$key] = $value;
         }
+        
+        $this->modelLog->susessLog(
+            'Se recuperan todas las facturas del pedido'
+            );
         return $result;
     }
 
@@ -154,15 +163,17 @@ class Modelorder extends CI_Model
         $result = [];
         (float)$valueItem = 0.00;
         $countBoxesProduct = 0.00;
+        $unities = 0;
 
         foreach ($detailInvoice as $key => $value) {
             $valueItem += floatval($value['costo_caja']) *
                 floatval($value['nro_cajas']);
 
-            $countBoxesProduct += floatval($value['nro_cajas']);
-
             $product = $this->modelProduct->get($value['cod_contable']);
-
+            
+            $countBoxesProduct += floatval($value['nro_cajas']);
+            $unities += ($value['nro_cajas'] * $product['cantidad_x_caja']);
+            
             $value['nombre'] = $product['nombre'];
             $value['cantidad_x_caja'] = $product['cantidad_x_caja'];
             $value['unidades'] = (intval($value['cantidad_x_caja']) *
@@ -180,6 +191,7 @@ class Modelorder extends CI_Model
             'money' => $invoice['moneda'],
             'tasa_change' => $invoice['tipo_cambio'],
             'countBoxesProduct' => $countBoxesProduct,
+            'unities' => $unities,
         ];
         return $result;
     }

@@ -120,8 +120,6 @@ class MY_Controller extends CI_Controller
             'productsList' => 'index.php/producto/listar',
             'productPresent' => 'index.php/producto/presentar',
             'validargi' =>  'index.php/gstinicial/validargi',
-            'replaceIncoterms' =>   'index.php/gstinicial/replaceIncoterms',
-            'putIncoterms' => 'index.php/gstinicial/putIncoterms',
             'presentInvoiceOrder' =>  'index.php/pedidofactura/presentar',
             'validar70' =>  'index.php/gstnacionalizacion/validar70',
             'newParcial' => 'index.php/parcial/nuevo',

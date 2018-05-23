@@ -63,8 +63,11 @@ class Facinfdetalle extends MY_Controller
      * Redireccioa a la lista de pedidos, por no tener un identificador
      */
     public function index(){
-        $this->redirectPage('ordersList');
-        return false;
+        $this->modelLog->redirectLog(
+            'Redireccionamiento desde FininfDetalle',
+            current_url()
+            );
+        return $this->redirectPage('ordersList');
     }
     
     
@@ -84,6 +87,7 @@ class Facinfdetalle extends MY_Controller
         $orderInvoiceDetail = $this->modelOrderInvoiceDetail->get($infoInvoiceDetail['detalle_pedido_factura']);
         $parcial = $this->modelParcial->get($infoInvoice['id_parcial']);
         $order = $this->modelOrder->get($parcial['nro_pedido']);
+        
         return ($this->responseHttp([
             'titleContent' => 'Detalle Factura Informativa [' . $infoInvoice['nro_factura_informativa']  . '] ' . 
                             'Pedido [' . $order['nro_pedido'] .']' . ' Parcial [' . $parcial['id_parcial'] . ']' ,

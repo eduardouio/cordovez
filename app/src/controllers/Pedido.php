@@ -394,13 +394,15 @@ class Pedido extends MY_Controller
                 $this->modelOrder->create($pedido);
                 return (
                     $this->redirectPage(
-                        'putIncoterms', 
+                        'presentOrder', 
                         $pedido['nro_pedido'])
                     );
             } else {
                 $pedido['last_update'] = date('Y-m-d H:i:s');
                 $this->modelOrder->update($pedido);
-                $this->redirectPage('replaceIncoterms', $pedido['nro_pedido']);
+                $this->redirectPage(
+                    'presentOrder', $pedido['nro_pedido']
+                    );
                 return true;
             }
         } else {

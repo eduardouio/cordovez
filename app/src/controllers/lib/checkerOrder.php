@@ -217,12 +217,21 @@ class checkerOrder
         
         $unidades = 0;
         $boxes = 0;
-        $labeled_value_unity = $this->searchTaxesPercent('MANO DE OBRA ETIQUETADO');
+        
+        $labeled_value_unity = $this->searchTaxesPercent(
+            'MANO DE OBRA ETIQUETADO'
+            );
+        
+        $label_unity = $this->searchTaxesPercent(
+            'ETIQUETAS FISCALES'
+            );
         
         foreach ($this->order_invoices as $idx => $invoice) {
             unset($invoice['detailInvoice']['sums']);
             foreach ($invoice['detailInvoice'] as $item => $detail) {
-                $unidades += ($detail['nro_cajas'] * $detail['cantidad_x_caja']);
+                $unidades += (
+                        $detail['nro_cajas'] * $detail['cantidad_x_caja']
+                    );
                 $boxes += $detail['nro_cajas'];
             }
         }
@@ -230,9 +239,13 @@ class checkerOrder
         $rates = [
             'ISD' => ($isd_percent * $base_isd),
             'POLIZA SEGURO' => ($seguro + $sb + $tax2 + $emision),
-            'MANO DE OBRA ETIQUETADO' => ($unidades * $labeled_value_unity['valor'])
+            'MANO DE OBRA ETIQUETADO' => (
+                $unidades * $labeled_value_unity['valor']
+                ),
+            'TASA DE SERVICIO ADUANERO' => $this->getTSA(),
+            'ETIQUETAS FISCALES' => $label_unity['valor'] * $unidades ,
         ];
-        
+                
         $unused_expenses = [];
         
         foreach ($this->unused_expenses as $idx => $expense) {            
@@ -240,7 +253,14 @@ class checkerOrder
                 $expense['valor'] = $rates[$expense['concepto']];
             }
             
-            array_push($unused_expenses, $expense);
+            if(
+                $this->order['regimen'] == '70' &&
+                $expense['concepto'] == 'ETIQUETAS FISCALES'
+                ){
+                null;
+            }else{
+                array_push($unused_expenses, $expense);
+            }
         }
         
         return ([
@@ -249,7 +269,46 @@ class checkerOrder
             'boxes' => $boxes
         ]);
     }
-
+     
+    
+    /**
+     * Calcula el valor de la tasa Aduanera
+     * @return float
+     */
+    private function getTSA():float
+    {
+        
+        if($this->order_invoices == False){
+            return 0;
+        }
+            
+        $tsa_base = $this->searchTaxesPercent(
+            'TASA DE SERVICIO ADUANERO'
+            );
+        
+        $tsa = 0.0;
+        
+        foreach ($this->order_invoices as $idx => $invoice){
+            unset($invoice['detailInvoice']['sums']);
+            foreach ($invoice['detailInvoice'] as $itm => $product){
+                
+                $tasa = (
+                    ((floatval($product['peso'])/1000) * floatval($tsa_base['valor'])) 
+                    * $product['unidades']
+                    );
+                
+                if ($tasa < 700 ){
+                    $tsa += $tasa;
+                }else{
+                    $tsa += 7000;
+                }
+            }            
+        }
+        
+        return $tsa;
+    }
+    
+    
     /**
      * Retorna el parametro de un impuesto de la lista de impuestos,
      * Se puede solicitar solo el porcentaje o todo el tax
@@ -281,6 +340,11 @@ class checkerOrder
      */
     private function seacthInitExpense(string $name, bool $value = False)
     {
+        
+        if($this->paids_init_expenses == False){
+            return 0;
+        }
+        
         foreach ($this->paids_init_expenses as $idx => $expense) {
             if ($expense['concepto'] == $name) {
                 if ($value) {

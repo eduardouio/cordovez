@@ -49,6 +49,10 @@
             <td> {{ product.costo_caja}} </td>
           </tr>
           <tr>
+            <td class="text-right"> <b>Peso:</b></td>
+            <td> {{ product.peso}} <span class="label label-info">Gramos</span></td>
+          </tr>
+          <tr>
             <td class="text-right"> <b>Estado:</b></td>
             {% if product.estado == 1 %}
               <td> <span class="label label-success">Activo</span> </td>

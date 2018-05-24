@@ -143,7 +143,11 @@
             <tr>
                <td>
                {% if expense.paids == False %}
-               		<small class="label label-danger"> &nbsp;Provisión&nbsp;</small>
+               		{% if expense.concepto == 'ISD' %}
+               				<small class="label label-success">Justificado</small>
+               		{% else %}
+                       		<small class="label label-danger"> &nbsp;Provisión&nbsp;</small>
+               		{% endif %}
                {%  else %}
                		{% if expense.bg_closed == 0 %}
                			<small class="label label-warning">Just. Parcial</small>
@@ -205,14 +209,21 @@
          <span class="fa fa-arrow-left fa-fw"></span>
          Volver Al Pedido [{{order.nro_pedido}}]
          </a>
-         
          {% if  invoices_order.values_isok == true %}
          	{%  if init_expeses.all_ok == true %}
-         		{% if order.regimen == '70' %}
-                 <button data-toggle="modal" data-target="#myModal" class="btn btn-default btn-sm pull-right">
-                 <span class="fa fa-file fa-fw"></span>
-                 Generar Factura Informativa [{{order.nro_pedido}}]
-             </button>
+         		{% if order.regimen == '70'%}
+         			{% if have_parcial == False %}
+                         <button data-toggle="modal" data-target="#myModal" class="btn btn-success btn-sm pull-right">
+                         <span class="fa fa-file fa-fw"></span>
+                         Generar Nuevo Parcial [{{order.nro_pedido}}]
+                     	</button>
+                    {% else %}
+                    	<a class="btn btn-success btn-sm pull-right" href="{{rute_url}}pedido/presentar/{{order.nro_pedido}}">
+                 <span class="fa fa-list-ol"></span>
+                 Ver Parciales Del Pedido
+             	</a>
+                 	{% endif %}
+             
              {% else %}
                  <a class="btn btn-success btn-sm pull-right" href="{{rute_url}}impuestos/pd/{{order.nro_pedido}}">
                  <span class="fa fa-money"></span>
@@ -239,7 +250,6 @@
 </div>
 <!-- Button trigger modal -->
 <!-- Modal -->
-{% if ( isOk == true and order.regimen == 70) %}
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 <div class="modal-dialog" role="document">
    <div class="modal-content">
@@ -285,4 +295,3 @@
       </div>
    </div>
 </div>
-{% endif %}

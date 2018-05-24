@@ -35,6 +35,7 @@ class Gstinicial extends MY_Controller
     private $modelLog;
     private $modelPaidDetail;
     private $modelPaid;
+    private $modelParcial;
 
     /**
      * Constructor de la funcion
@@ -63,6 +64,8 @@ class Gstinicial extends MY_Controller
         $this->load->model('Modelorderinvoicedetail');
         $this->load->model('Modelpaid');
         $this->load->model('Modelpaiddetail');
+        $this->load->model('Modelparcial');
+        $this->modelParcial = new Modelparcial();
         $this->modelOrderInvoice= new Modelorderinvoice();
         $this->modelPaid = new Modelpaid();
         $this->modelOrder = new Modelorder();
@@ -315,6 +318,7 @@ class Gstinicial extends MY_Controller
             'init_expeses' => $checked_order->checkInitExpenses(),
             'unused_expenses' => $checked_order->getInitialTributes(),
             'warenhouse_days' => $this->getWarenHouseDaysInitial($order),
+            'have_parcial' => $this->checkParcials($order),
             'user' => $this->modeluser->get($order['id_user']),
         ]));
     }
@@ -435,57 +439,59 @@ class Gstinicial extends MY_Controller
             return ($this->redirectPage('ordersList'));
         }
         
-        $initExpensesInput = $this->input->post();
+        $init_expenses_post = $this->input->post();        
+        $nro_order = $init_expenses_post['nro_pedido'];
+        unset($init_expenses_post['nro_pedido']);
+        $expense_added = [];
         
-        $initExpensesRates = [];
-        
-        foreach ($initExpensesInput as $key => $value) {
-            if ($key != 'nro_pedido') {
-                $rates = $this->modelBase->get_table([
-                    'table' => 'tarifa_gastos',
-                    'where' => [
-                        'id_tarifa_gastos' => $value
-                    ]
-                ]);
-                array_push($initExpensesRates, $rates[0]);
-            }
-        }
-        $order = $this->modelOrder->get($initExpensesInput['nro_pedido']);
-        $invoicesOrder = $this->modelOrder->getInvoices($initExpensesInput['nro_pedido']);
-        $initExpenses = $this->modelExpenses->get($initExpensesInput['nro_pedido']);
-        
-        $valuesOrder = $this->calcValuesOrderItems($order, $invoicesOrder, $initExpenses);
-        
-        foreach ($initExpensesRates as $key => $value) {
-            $insertExpense = [
-                'nro_pedido' => $initExpensesInput['nro_pedido'],
-                'id_parcial' => 0,
-                'identificacion_proveedor' => 0,
-                'concepto' => $value['concepto'],
-                'valor_provisionado' => $value['valor'],
-                'comentarios' => 'CREADO AUTOMATICAMENTE',
-                'fecha' => date('Y-m-d'),
-                'id_user' => $this->session->userdata('id_user')
-            ];
-            if ($value['concepto'] == 'ISD') {
-                $insertExpense['valor_provisionado'] = $valuesOrder['isd'];
-                $insertExpense['bg_is_visible_gi'] = 0;
-            } elseif ($value['concepto'] == 'POLIZA SEGURO') {
-                $insertExpense['valor_provisionado'] = $valuesOrder['seguro'];
+        foreach ($init_expenses_post as $idx => $input){
+            $patron = '/_VALUE/';
+            if(! preg_match($patron, $idx)){
+                array_push($expense_added, $idx);
             }
             
-            if ($this->db->insert($this->controller, $insertExpense)) {
-                
-                $this->modelLog->susessLog('Gasto Inicial Insertado, ' . current_url());
-            } else {
-                $this->modelLog->errorLog('No se puede Aplicar Gasto Inicial', 
-                    $this->db->last_query()
-                    );
-            }
         }
-        $this->redirectPage('validargi', $initExpensesInput['nro_pedido']);
+        
+        foreach ($expense_added as $idx => $input){
+            $name = $input . '_VALUE';
+            $expense = [
+                'nro_pedido' => $nro_order,
+                'id_parcial' => 0,
+                'identificacion_proveedor' => '0',
+                'tipo' => 'INICIAL',
+                'concepto' => str_replace('_', ' ', $input),
+                'valor_provisionado' => $init_expenses_post[$name],
+                'fecha' => date('Y-m-d'),
+                'id_user' => $this->session->userdata('id_user'),
+            ];
+            
+            if ($expense['concepto'] == 'ISD'){
+                $expense['bg_closed'] = 1;
+            }
+            
+            
+            $this->modelExpenses->create($expense);
+        }
+                
+       return($this->redirectPage('validargi', $nro_order));
     }
     
+    
+    /**
+     * Comprueba si un pedido tiene algun parcial
+     * 
+     * @param array $order
+     * @return bool
+     */
+    private function checkParcials(array $order):bool{
+        if($order['regimen'] == 10){
+            return False;
+        }
+        
+        $parcial = $this->modelParcial->getByOrder($order['nro_pedido']);
+        
+        return boolval($parcial);
+    }
     
     /**
      * Obtiene la lista de facturas con sus detalles de los pagos 

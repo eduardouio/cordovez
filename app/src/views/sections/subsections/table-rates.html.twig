@@ -21,72 +21,36 @@
             </td>
          </tr>
          {% endif %}
+         
          <form action="{{rute_url}}gstinicial/putInitialExpenses/" method="post">
-   <input type="hidden" name="nro_pedido" value="{{order.nro_pedido}}">
+   			<input type="hidden" name="nro_pedido" value="{{order.nro_pedido}}">
          {% for rateExpense in unused_expenses.unused_expenses %}
          <tr>
             <td>{{loop.index}}</td>
             <td>{{rateExpense.concepto}}</td>
-            {% if minimal.valuesOrder.statusInvoices == true %}
-
-            {% if rateExpense.concepto == 'POLIZA SEGURO' %}
-            <td class="text-success">
-               <strong>
-               {{minimal.valuesOrder.seguro |number_format(2, '.', ',') }}
-               </strong>  
-            </td>
-            {% endif %}   
-
-            {% if rateExpense.concepto == 'ISD' %}
-            <td class="text-success">
-               <strong>
-               {{minimal.valuesOrder.isd |number_format(2, '.', ',') }}
-               </strong>  
-            </td>
-            {% endif %}
-
-            {% if rateExpense.concepto  == 'TASA DE SERVICIO ADUANERO' %}
-            	<td class="text-success">
-               <strong>
-               {{minimal.valuesOrder.tasa_de_servicio_aduanero |number_format(2, '.', ',') }}
-               </strong>  
-            </td>
-            {% endif %}
-            
-              {% if rateExpense.concepto  == 'ETIQUETAS FISCALES' %}
-               <td class="text-success">
-               <strong>
-               {{minimal.valuesOrder.etiquetas_fiscales |number_format(2, '.', ',') }}
-               </strong>  
-            </td>
-            {% endif %}
-
-
-            {% if rateExpense.concepto != 'POLIZA SEGURO' %}
-            {% if rateExpense.concepto != 'ISD' %}
-            {% if rateExpense.concepto != 'ETIQUETAS FISCALES' %}
-            {% if rateExpense.concepto != 'TASA DE SERVICIO ADUANERO' %}
-            <td>{{rateExpense.valor |number_format(2, '.', ',') }}</td>
-            {% endif %}
-            {% endif %}
-            {% endif %}
-            {% endif %}
-            {% else %}
-            <td>{{rateExpense.valor |number_format(2, '.', ',') }}</td>
-            {% endif %}
+			<td class="text-primary text-right"> <strong>
+			<input 
+				type="number" 
+				value="{{ rateExpense.valor | number_format(2,'.','')}}"
+				style="width: 80px; text-align: right; font-size: 10px;"
+				name="{{ rateExpense.concepto | replace({' ':'_'})}}_VALUE" 
+			/>
+		</strong>
+			</td>
             <td class="pull-right">
                <label class="control control-checkbox">
                <input
                   type="checkbox" 
-                  name="{{ rateExpense.concepto | replace({' ':''})}}" 
+                  name="{{ rateExpense.concepto | replace({' ':'_'})}}" 
                   value="{{rateExpense.id_tarifa_gastos}}"
                   id= "{{rateExpense.id_tarifa_gastos}}"
                   onclick="check({{rateExpense.id_tarifa_gastos}})">
                    <div class="control_indicator"></div>
-</label>
+				</label>
             </td>
          </tr>
          {% endfor %}
+         
       </tbody>
    </table>
    <button

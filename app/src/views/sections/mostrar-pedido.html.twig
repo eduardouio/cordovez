@@ -148,8 +148,8 @@
       	<a href="#facturas" role="tab" data-toggle="tab" aria-controls="facturas">
       	<span class="fa fa-file"></span> Facturas Productos</a>
       </li>
-      <li>
-      {% if order.regimen == 'R70' %}
+      <li class="active">
+      {% if order.regimen == '70' %}
       	<a href="#facturas-informativas" role="tab" data-toggle="tab" aria-controls="facturas-informativas">
       		<span class="fa fa-list-ol"></span> Parciales del Pedido
       	</a>
@@ -157,7 +157,7 @@
       {%  endif %}
             <li role="presentation">
          <a href="#saldos" role="tab" data-toggle="tab" aria-controls="saldos">
-            <span class="fa fa-bar-chart-o"></span> Saldos Pedidos
+            <span class="fa fa-bar-chart-o"></span> Saldo Pedido
          </a>
       </li>
    </ul>

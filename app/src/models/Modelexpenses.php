@@ -243,7 +243,7 @@ class Modelexpenses extends CI_Model
         return false;
     }
         
-  
+    
     /**
      * Obtiene todos los gastos iniciales activos, sin justificar
      * De un pedido

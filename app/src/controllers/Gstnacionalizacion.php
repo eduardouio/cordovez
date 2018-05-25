@@ -2,6 +2,7 @@
 
 require_once 'lib/warenHouseParcial.php';
 require_once 'lib/checkerPartial.php';
+require_once 'lib/resumeOrder.php';
 /**
  * Modulo encargado de Gestionar los gastos de nacionaliacion para
  * regimn 70 (parciales) y 10
@@ -32,6 +33,7 @@ class Gstnacionalizacion extends MY_Controller
     private $modelParcial;
     private $modelSupplier;
     private $modelPaidDetail;
+    private $modelOrderInfo;
 
     
     /**
@@ -76,6 +78,8 @@ class Gstnacionalizacion extends MY_Controller
         $this->load->model('modelparcial');
         $this->load->model('modelsupplier');
         $this->load->model('Modelpaiddetail');
+        $this->load->model('ModelOrderInfo');
+        $this->modelOrderInfo = new ModelOrderInfo();
         $this->modelPaidDetail = new Modelpaiddetail();
         $this->modelOrder = new Modelorder();
         $this->modelExpenses = new Modelexpenses();
@@ -120,6 +124,7 @@ class Gstnacionalizacion extends MY_Controller
         
         foreach ($expense_added as $idx => $input){
             $name = $input . '_VALUE';
+            print $name;
             $expense = [
                 'nro_pedido' => '000-00',
                 'id_parcial' => $id_parcial,
@@ -139,7 +144,59 @@ class Gstnacionalizacion extends MY_Controller
             $this->modelExpenses->create($expense);
         }
                 
-       return($this->redirectPage('validargi', $id_parcial));
+       return($this->redirectPage('parcial', $id_parcial));
+    }
+    
+    
+    /**
+     * Registra los costos de alamcenaje para el parcial de un pedido
+     * @param array $_POST arreglo por post
+     * @return string plantillas
+     */
+    public function putWarenhouseExpense()
+    {
+        if (! $_POST) {
+            return ($this->index());
+        }
+        
+        $warenhouse_post = $_POST;
+        
+        $idParcial = $warenhouse_post['id_parcial'];
+        $dateExitWarenhouseParcial = $warenhouse_post['fecha_salida_almacenera'];
+        $valor_provisionado = $warenhouse_post['valor_provisionado'];
+        
+        unset($warenhouse_post['id_parcial']);
+        unset($warenhouse_post['fecha_salida_almacenera']);
+        unset($warenhouse_post['valor_provisionado']);
+        
+        $index = count($warenhouse_post['periodo']) -1 ;
+        
+        $dataParcial = [
+            'id_parcial' => $idParcial,
+            'fecha_salida_almacenera' => $dateExitWarenhouseParcial,
+            'proximo_almacenaje_desde' => (
+                $warenhouse_post['periodo'][$index]['fecha_fin']
+                ),
+        ];
+        
+        foreach ($warenhouse_post['periodo'] as $item => $warenHouse) {
+            $warenHouse['id_parcial'] = $idParcial;
+            $warenHouse['valor_provisionado'] = $valor_provisionado;
+            $warenHouse['id_user'] = $this->session->userdata('id_user');
+            
+            if ($this->modelExpenses->create($warenHouse)) {
+                
+                $this->modelLog->susessLog(
+                    'Periodo Almacenera Registrado Correctamete'
+                    );
+                
+            } else {
+                $this->modelLog->errorLog(
+                    'Error al Registrar periodo bodega',
+                    current_url()
+                    );
+            }
+        }       
     }
     
     
@@ -164,8 +221,14 @@ class Gstnacionalizacion extends MY_Controller
         $order = $this->modelOrder->get($parcial['nro_pedido']);
         $info_invoices = $this->modelParcial->getInvoices($id_parcial);
         $rate_expenses = $this->modelRateExpenses->getPartialRates();
-        $partial_expenses = $this->modelExpenses->getPartialExpenses($id_parcial);
-        $unused_expenses = $this->calcExpensesDiff($rate_expenses, $partial_expenses);
+        $partial_expenses = $this->modelExpenses->getPartialExpenses(
+            $id_parcial
+            );
+        
+        $unused_expenses = $this->calcExpensesDiff(
+                    $rate_expenses, $partial_expenses
+            );
+        
         $paids_partial_expenses = $this->getPaidsFromOrder($partial_expenses);
         
         $checkPartial = new checkerPartial(
@@ -285,7 +348,7 @@ class Gstnacionalizacion extends MY_Controller
         
         if ($expense) {
             $this->modelExpenses->delete($idNationalizationExpense);
-            return ($this->redirectPage('validar70', $expense['id_parcial']));
+            return ($this->redirectPage('parcial', $expense['id_parcial']));
         }
         
         $this->modelLog->errorLog('Intenta Elimnar gasto no existente', $this->db->last_query());
@@ -325,7 +388,7 @@ class Gstnacionalizacion extends MY_Controller
         $expense['last_update'] = date('Y-m-d H:m:s');
         
         if ($this->modelExpenses->update($expense)) {
-            return ($this->redirectPage('validar70', $expense['id_parcial']));
+            return ($this->redirectPage('parcial', $expense['id_parcial']));
         }
         
         $this->modelLog->errorLog(
@@ -349,25 +412,30 @@ class Gstnacionalizacion extends MY_Controller
         if ($parcial == false) {
             return ($this->index());
         }
-        
-        $parcial['expenses'] = $this->modelExpenses->getPartialExpenses($idParcial);
-        
-        $infoInvoicesOrder = $this->modelInfoInvoice->getByParcial($idParcial);
+        $parcial['expenses'] = $this->modelExpenses->getPartialExpenses(
+            $idParcial
+            );
         $order = $this->modelOrder->get($parcial['nro_pedido']);
         
-        $parcialWarenhouse = new warenHouseParcial($order, $parcial);
         
+        $resumeOrder = new resumeOrder(
+            $this->modelOrderInfo->getInfoOrder(
+                $parcial['nro_pedido'])
+            );
+        
+        $parcialWarenhouse = new warenHouseParcial($order, $parcial);
         $lastWarenHouseParcial = $parcialWarenhouse->getLastWarenhouseParcial();
+        
 
         return ($this->responseHttp([
+            'validWarenHouse' => True,
             'titleContent' => 'Generar Provisiones Por Bodega Del Parcial Pedido [' 
                                 . $order['nro_pedido'] . 
                                 '] Parcial [' . $parcial['id_parcial'] . ']',
-            'validWarenHouse' => 'true',
+            'parcial' => $parcial,
             'lastWarenHouseParcial' => $lastWarenHouseParcial,
             'order' => $order,
-            'parcial' => $parcial,
-            'fobSaldo' => $this->getWarenhousePartialValue($idParcial),
+            'values' => $resumeOrder->getValuesOrder(),
         ]));
     }
       

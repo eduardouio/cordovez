@@ -36,7 +36,7 @@
                <label class="control control-checkbox">
                <input
                   type="checkbox" 
-                  name="{{ rateExpense.concepto | replace({' ':''})}}" 
+                  name="{{ rateExpense.concepto | replace({' ':'_'})}}" 
                   value="{{rateExpense.id_tarifa_gastos}}"
                   id= '{{rateExpense.id_tarifa_gastos}}'
                   onclick="check({{rateExpense.id_tarifa_gastos}})"

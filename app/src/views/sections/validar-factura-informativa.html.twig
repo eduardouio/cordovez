@@ -170,55 +170,32 @@
          <p>
             <a href="{{rute_url}}parcial/presentar/{{parcial.id_parcial}}" class="btn btn-default btn-sm">
             <span class="fa fa-arrow-left fa-fw"></span>
-            Volver Al Parcial [{{parcial.id_parcial}}]
+            Volver Al Parcial
             </a>
             &nbsp;&nbsp;&nbsp;&nbsp;
-            {% if isOk == true %}
-            <a  href="{{rute_url}}impuestos/pc/{{parcial.id_parcial}}" class="btn btn-success btn-sm pull-right">
-              <span class="fa fa-money"></span>
-            Vizualizar Impuestos Parcial [{{parcial.id_parcial}}]
-            {% endif %}
-          </a>
+            
+            {% if  info_invoices.values_isok == true %}
+             	{%  if partial_expenses.all_ok == true %}
+             		<a  href="{{rute_url}}impuestos/pc/{{parcial.id_parcial}}" class="btn btn-success btn-sm pull-right">
+                 		 <span class="fa fa-money"></span>
+              		  Vizualizar Impuestos Parcial 
+              			</a>
+         	{% else %}
+         		<strong class="text-danger pull-right btn btn-sm">
+        		<span class="fa fa-ban"></span>
+        		Existen Provisiones Sin Valor
+        	</strong>
+         	{% endif %}
+        {% else %}
+        	<strong class="text-danger pull-right btn btn-sm">
+        	<span class="fa fa-ban"></span>
+        	Facturas Informativas Incompletas o Inexistentes
+        	</strong>
+        {% endif %}            
          </p>
       </div>
       <div class="col-sm-5 div-bordered">
          {% include 'sections/subsections/table-rates-partial.html.twig' %}            
-      </div>
-   </div>
-</div>
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-<div class="modal-dialog" role="document">
-<div class="modal-content">
-   <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      <h4 class="modal-title" id="myModalLabel"><span class="fa fa-warning"></span> Advertencia... ¿Desea Continuar?</h4>
-   </div>
-   <div class="modal-body">
-      <div style="font-size: 14px; text-align: justify;">
-         <p>
-            Esta acción cerrará los gastos iniciales, 
-            <strong>No va a ser posible generar más provisiones iniciales </strong>,
-            solo se prodrá justificarlas. 
-         <hr>
-         Lista de Gastos Del Parcial no provisionados:
-         <div class="table-responsive" style="height: 250px;">
-            {% include 'sections/subsections/table-rates-partial.html.twig' %}            
-         </div>
-         </p>
-         <div class="row">
-            <div class="col-md-8">
-               <a class="btn btn-sm btn-default" href="{{rute_url}}impuestosparcial/v/{{parcial.id_parcial}}">
-               <span class="fa fa-save"></span> 
-               Registrar y Continuar
-               </a>
-            </div>
-         </div>
-         <div class="modal-footer">
-            <a href="#" data-dismiss="modal" class="btn btn-sm btn-default">
-            <span class="fa fa-ban"></span>
-            Cancelar & Cerrar
-            </a>
-         </div>
       </div>
    </div>
 </div>

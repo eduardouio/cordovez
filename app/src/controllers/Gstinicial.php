@@ -317,7 +317,6 @@ class Gstinicial extends MY_Controller
             'initial_tributes' => $checked_order->getInitialTributes(),
             'init_expeses' => $checked_order->checkInitExpenses(),
             'unused_expenses' => $checked_order->getInitialTributes(),
-            'warenhouse_days' => $this->getWarenHouseDaysInitial($order),
             'have_parcial' => $this->checkParcials($order),
             'user' => $this->modeluser->get($order['id_user']),
         ]));

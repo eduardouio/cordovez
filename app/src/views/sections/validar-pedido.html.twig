@@ -1,12 +1,23 @@
+{% if have_euros == true %}
+	{% set simbol = '&euro;' %}
+	{% set money = 'EUROS' %}
+{% else %}
+	{% set simbol = '$' %}
+	{% set money = 'DOLARES' %}
+{% endif %}
+
 {% set sumExpenses = 0 %}
 <div class="well well-sm">
    <div class="row">
       <div class="col-sm-3">
          <strong>Valor FOB Total:</strong> 
-         <span class="fa fa-usd">/</span>
+         {{ simbol | raw }}
          <strong class="text-primary">
-         {{ invoices_order['fob_total'] | number_format(2, '.', ',') }}      
+         {{ invoices_order['fob_total'] | number_format(2, '.', ',') }}       
          </strong>  
+         {% if have_euros == true %}
+         <small class="label label-warning">{{info_invoices.tipo_cambio | number_format(4)  }}</small>
+         {% endif %}      
       </div>
       <div class="col-sm-3">
          <strong>

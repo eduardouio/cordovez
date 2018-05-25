@@ -1,38 +1,45 @@
-{% set fobParcial = 0.0 %}
-{% set fleteParcial = 0.0 %}
-{% set seguroParcial = 0.0 %}
-{% for infoInvoice in infoInvoices %}
-{% set fobParcial = fobParcial +  infoInvoice.valor  %}
-{% set fleteParcial = fleteParcial + infoInvoice.flete_aduana  %}
-{% set seguroParcial = seguroParcial + infoInvoice.seguro_aduana  %}   
-{% endfor %}
-<div class="well well-sm">
+{% if have_euros == true %}
+	{% set simbol = '&euro;' %}
+	{% set money = 'EUROS' %}
+{% else %}
+	{% set simbol = '$' %}
+	{% set money = 'DOLARES' %}
+{% endif %}
+
+ <div class="well well-sm">
    <div class="row">
       <div class="col-sm-3">
-         <strong>Valor FOB:</strong> 
-         <span class="text-primary">
-         $ {{fobParcial | number_format(2, '.', ',') }}      
-         </span>  
+         <strong>Valor FOB:</strong>
+         {{ simbol | raw }} 
+         <strong class="text-primary">
+         {{ info_invoices.fob_total | number_format(2, '.', ',') }}
+         </strong>  
+         {% if have_euros == true %}
+         <small class="label label-warning">{{info_invoices.tipo_cambio | number_format(4)  }}</small>
+         {% endif %}      
       </div>
       <div class="col-sm-2">
          <strong>
-         Seguro:</strong> 
+         Seguro Aduana:</strong> 
          <span class="text-primary">
-         {{ seguroParcial | number_format(2, '.', ',')}}
+         {{ info_invoices.seguro_aduana | number_format(2, '.', ',')}}
          </span>
       </div>
       <div class="col-sm-2">
          <strong>
-         Felete:</strong> 
+         Felete Aduana:</strong> 
          <span class="text-primary">
          <span>
-         {{ fleteParcial| number_format(2, '.', ',') }}
+         {{ info_invoices.flete_aduana| number_format(2, '.', ',') }}
          </span>
          </span>
       </div>
       <div class="col-sm-2">
          <strong>CIF:</strong>
-         <strong class="text-primary">{{ (fobParcial + fleteParcial + seguroParcial) | number_format(2, '.', ',') }}</strong>
+         <strong class="text-primary">
+         {{ simbol | raw }}
+         {{ info_invoices.cif_parcial }}
+         </strong>
       </div>
       <div class="col-sm-3">
          <strong>
@@ -47,7 +54,9 @@
    <div class="row">
       <div class="col-sm-3">
          <strong>Tiempo en Almacenera:</strong> 
-         <span>{{ warenHouseDays | number_format(0)}}</span>
+         {{ dates_parcial.mounths }} meses
+          {{ dates_parcial.days }} días /
+          <small class="text-info"> {{ dates_parcial.all_days }} días </small>
       </div>
       <div class="col-sm-2">
          <strong>P. Origen:</strong> 
@@ -92,20 +101,26 @@
                   <th class="text-center">VALOR</th>
                   <th class="text-center">ESTADO</th>
                </tr>
-               {% set isOk = true %}
                {% set sumExpenses = 0 %}
-               {% for expense in expenses  %}
+               {% for expense in partial_expenses.partial_expenses  %}
                {% set sumExpenses = sumExpenses + expense.valor_provisionado %}
                <tr>
                   <td>
-                {% if expense.bg_closed == 0 %}
-               <small class="label label-danger"> &nbsp;Justificar&nbsp;</small>
-               {%  else %}
-               <small class="label label-success">Justificado</small>               
+                        {% if expense.paids == False %}
+                       		<small class="label label-danger"> &nbsp;Provisión&nbsp;</small>
+                         {%  else %}
+               		{% if expense.bg_closed == 0 %}
+               			<small class="label label-warning">Just. Parcial</small>
+               		{% else %}
+    					<small class="label label-success">Justificado</small>           		
+	               {% endif %}
+	               {% for invoice in expense.invoices %}
+	               		<a href="{{ rute_url }}facturapagos/presentar/{{ invoice }}">
+							<span class="fa fa-eye"></span> 
+	               		</a>
+	               {% endfor %}
                {% endif %}
-                  
                {{expense.concepto }}
-               
                </td>
                   <td>{{ expense.fecha | date('d/m/Y')}}</td>
                   {% if ((expense.fecha_fin == null) or (expense.fecha_fin == '0000-00-00')) %}
@@ -116,7 +131,8 @@
                   <td class="text-right">{{expense.valor_provisionado}}</td>
                   {% if expense.valor_provisionado > 0 %}
                   <td class="success pull-rigth" style=" width: 1px; white-space: nowrap;">
-                     OK <a href="{{rute_url}}gstnacionalizacion/editar/{{expense.id_gastos_nacionalizacion}}">
+                  	<span class="fa fa-check text-success"></span>
+                     <a href="{{rute_url}}gstnacionalizacion/editar/{{expense.id_gastos_nacionalizacion}}">
                      <span class="fa fa-pencil"></span> editar
                      </a>
                      <a href="{{rute_url}}gstnacionalizacion/eliminar/{{expense.id_gastos_nacionalizacion}}" class="text-danger">
@@ -124,8 +140,8 @@
                      </a>
                   </td>
                   {% else %}
-                  {% set isOk = false %}
                   <td class="danger" style=" width: 1px; white-space: nowrap;">
+                  <span class="fa fa-ban text-danger"></span>
                      <a href="{{rute_url}}gstnacionalizacion/editar/{{expense.id_gastos_nacionalizacion}}">
                      Registrar                           
                      </a>
@@ -150,7 +166,7 @@
             </tbody>
          </table>
          {% include 'sections/subsections/table-infoinvoice-info.html.twig' %}   
-         <br><br><br><br>
+         <br><br>
          <p>
             <a href="{{rute_url}}parcial/presentar/{{parcial.id_parcial}}" class="btn btn-default btn-sm">
             <span class="fa fa-arrow-left fa-fw"></span>

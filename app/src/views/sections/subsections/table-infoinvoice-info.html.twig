@@ -7,60 +7,69 @@ FACTURAS INFORMATIVAS
          <thead>
             <tr>
                <th>#</th>
-               <th>Factura Informativa</th>
-               <th>Almacenera</th>
-               <th>F Emisión</th>
-               <th>Moneda</th>
-               <th>FOB</th>
-               <th>Flete</th>
-               <th>Seguro</th>
+               <th>Emisor</th>
+               <th>Factura</th>
+               <th>Fecha</th>
                <th>Cajas</th>
                <th>Unidades</th>
+               <th>Valor T</th>
+               <th>Estado</th>
             </tr>
          </thead>
          <tbody>
-            {% set sumaFOB = 0 %}
-            {% set sumaFLETE = 0 %}
-            {% set sumaSEGURO = 0 %}
-            {% set sumaCAJAS = 0 %}
-            {% set sumaUNIDADES = 0 %}
-
-            {% for infoInvoice in infoInvoices  %}
-
-            {% set sumaFOB = sumaFOB + infoInvoice.valor %}
-            {% set sumaFLETE = sumaFLETE +  infoInvoice.flete_aduana %}
-            {% set sumaSEGURO = sumaSEGURO + infoInvoice.seguro_aduana %}
-            {% set sumaCAJAS = sumaCAJAS + infoInvoice.boxes %}
-            {% set sumaUNIDADES = sumaUNIDADES + infoInvoice.unities %}
-
+            {% for infoInvoice in info_invoices.invoices  %}
             <tr class="text-right">
                <td>{{ loop.index }}</td>
+               <td>ALMACENERA DEL AGRO S A</td>
                <td><a
                   href="{{ rute_url }}facinformativa/presentar/{{ infoInvoice.id_factura_informativa }}">
                      {{ infoInvoice.nro_factura_informativa }} <span class="fa fa-eye"></span>
                </a></td>
-               <td>{{ infoInvoice.supplier.nombre }}</td>
                <td>
                   {% if infoInvoice.fecha_emision != null %}
                      {{ infoInvoice.fecha_emision | date('d/m/Y') }}
                   {% endif %}
             </td>
-            <td>{{ infoInvoice.moneda }}	</td>
-               <td>{{ infoInvoice.valor }}</td>
-               <td>{{ infoInvoice.flete_aduana }}</td>
-               <td>{{ infoInvoice.seguro_aduana }}</td>
-               <td>{{ infoInvoice.boxes }}</td>
-               <td>{{ infoInvoice.unities }}</td>
+            <td>{{infoInvoice.detailInvoice.sums.countBoxesProduct | number_format(0,',','.') }}</td>
+         		<td class="text-right">{{infoInvoice.detailInvoice.sums.unities | number_format(0,',','.') }}</td>
+               <td class="text-right">{{ simbol | raw}} {{ infoInvoice.valor }}</td>
+
+               {% if infoInvoice.is_complete ==  true %}
+             <td class="success text-right"> 
+                <span class="fa fa-check text-success"></span> Completa
+             </td>
+         {% else %}
+             <td class="danger text-right"> 
+             <span class="fa fa-ban text-danger"></span>
+                <a href="{{rute_url}}facinformativa/presentar/{{infoInvoice.id_factura_informativa}}">
+                Revisar
+                </a>
+             </td>
+         {% endif %}
             </tr>
             {% endfor %}
             <tr style="background-color: #c1c1c1; font-weight: bold;">
-               <td colspan="5" class="text-right" style="background-color: #fff;">SUMAS:
+               <td colspan="4" class="text-right" style="background-color: #fff;">SUMAS:
                   &nbsp;&nbsp;&nbsp;&nbsp;</td>
-               <td class="text-right">{{ sumaFOB | number_format(2,',','.') }}</td>
-               <td class="text-right">{{ sumaFLETE | number_format(2,',','.') }}</td>
-               <td class="text-right">{{ sumaSEGURO  | number_format(2,',','.') }}</td>
-               <td class="text-right">{{ sumaCAJAS | number_format(0,',','.') }}</td>
-               <td class="text-right">{{ sumaUNIDADES | number_format(0,',','.') }}</td>
+                   <td>
+            <strong>
+            {{ partial_tributes.boxes | number_format(0,',','.')}}
+            </strong>
+         </td>
+         <td class="text-right">
+            <strong>
+            {{ partial_tributes.unidades | number_format(0,',','.')}}
+            </strong>
+         </td>
+         <td  class="text-right">
+            <strong>  
+            {{ simbol | raw}}
+            {{ info_invoices.fob_total | number_format(2, '.', ',') }}
+            </strong>
+         </td>
+         <td colspan="2">
+            &nbsp;
+         </td>
             </tr>
          </tbody>
       </table>

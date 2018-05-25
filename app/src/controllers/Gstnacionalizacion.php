@@ -1,6 +1,7 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
 
 require_once 'lib/warenHouseParcial.php';
+require_once 'lib/checkerPartial.php';
 /**
  * Modulo encargado de Gestionar los gastos de nacionaliacion para
  * regimn 70 (parciales) y 10
@@ -25,12 +26,12 @@ class Gstnacionalizacion extends MY_Controller
     private $modelOrderInvoiceDetail;
     private $modelInfoInvoiceDetail;
     private $modelInfoInvoice;
-    private $modelBase;
     private $modelLog;
     private $modelUser;
-    private $modelSupplier;
     private $modelRateExpenses;
     private $modelParcial;
+    private $modelSupplier;
+    private $modelPaidDetail;
 
     
     /**
@@ -49,7 +50,10 @@ class Gstnacionalizacion extends MY_Controller
      */
     public function index()
     {
-        $this->modelLog->redirectLog('Acceso directo a URL ' . current_url());
+        $this->modelLog->redirectLog(
+            'Redireccionamiento por error', 
+            current_url()
+            );
         return ($this->redirectPage('ordersList'));
     }
 
@@ -68,10 +72,11 @@ class Gstnacionalizacion extends MY_Controller
         $this->load->model('modelinfoinvoicedetail');
         $this->load->model('modellog');
         $this->load->model('modeluser');
-        $this->load->model('modelbase');
-        $this->load->model('modelsupplier');
         $this->load->model('modelrateexpenses');
         $this->load->model('modelparcial');
+        $this->load->model('modelsupplier');
+        $this->load->model('Modelpaiddetail');
+        $this->modelPaidDetail = new Modelpaiddetail();
         $this->modelOrder = new Modelorder();
         $this->modelExpenses = new Modelexpenses();
         $this->modelProduct = new Modelproduct();
@@ -83,183 +88,60 @@ class Gstnacionalizacion extends MY_Controller
         $this->modelUser = new Modeluser();
         $this->modelSupplier = new Modelsupplier();
         $this->modelRateExpenses = new Modelrateexpenses();
-        $this->modelBase = new ModelBase();
         $this->modelParcial = new Modelparcial();
     }
 
     
-    /**
-     * *
-     * Establece los gastos de nacionalizacion para una factura informativa
+     /**
+     * Elimina y Crea gastos iniciales, sin tomar en cuenta FLETE y GASTOS ORIGEN
      *
-     * @param string $nroOrder
-     * @return string template
+     * @param array $_POST
+     * @return void | boolean
      */
     public function putExpenses()
     {
         if (! $_POST) {
-            return ($this->index());
+            return ($this->redirectPage('ordersList'));
         }
         
-        $expensesInput = $this->input->post();
-        $idParcial = $expensesInput['id_parcial'];
-        unset($expensesInput['id_factura_informativa']);
-        unset($expensesInput['id_parcial']);
-        $expenses = [];
+        $expenses_post = $this->input->post();
         
-        $this->checkFormsCost($idParcial);
+        $id_parcial = $expenses_post['id_parcial'];
+        unset($expenses_post['id_parcial']);
+        $expense_added = [];
         
-        foreach ($expensesInput as $input => $val) {
-            $expenseRate = $this->modelRateExpenses->get($val);
-            if ($expenseRate['concepto'] != 'FORMULARIOS'){
-                $this->modelExpenses->create([
-                    'nro_pedido' => '000-00',
-                    'id_parcial' => $idParcial,
-                    'identificacion_proveedor' => $expenseRate['identificacion_proveedor'],
-                    'concepto' => $expenseRate['concepto'],
-                    'tipo' => 'NACIONALIZACION',
-                    'valor_provisionado' => $expenseRate['valor'],
-                    'fecha' => date('Y-m-d'),
-                    'date_create' => date('Y-m-d H:m:s'),
-                    'id_user' => $this->session->userdata('id_user'),
-                ]);
+        foreach ($expenses_post as $idx => $input){
+            $patron = '/_VALUE/';
+            if(! preg_match($patron, $idx)){
+                array_push($expense_added, $idx);
             }
-        }
-        
-        return ($this->redirectPage('validar70', $idParcial));
-    }
-    
-    
-    
-    /**
-     * Comprueba si en los gastos iniciales se encuentran los formularios 
-     * si no esta lo pone, solo funciona con los fomrularios 
-     * 
-     * @param int $idParcias
-     */
-    public function checkFormsCost(int $idParcial){
-        
-        $expenseRate = $this->getFormRateExpense();
-        
-        
-        if (boolval($expenseRate['estado']) == False){
-            $this->modelLog->warningLog(
-                'La tarifa de formularios se encuentra deshabilitada',
-                $this->db->last_query()
-                );
-            return True;
-        }
-        
-        $parcial = $this->modelParcial->get($idParcial);
-              
-        $last_id = $this->modelExpenses->create([
-                'nro_pedido' => $parcial['nro_pedido'],
-                'id_parcial' => $idParcial,
-                'identificacion_proveedor' => $expenseRate['identificacion_proveedor'],
-                'concepto' => $expenseRate['concepto'],
-                'tipo' => 'NACIONALIZACION',
-                'valor_provisionado' => $expenseRate['valor'],
-                'fecha' => date('Y-m-d'),
-                'date_create' => date('Y-m-d H:m:s'),
-                'id_user' => $this->session->userdata('id_user'),
-            ]);
-
-            $this->modelLog->warningLog(
-                'Intento Fallido al insertar provision de formularios',
-                $this->db->last_query()
-                );
             
-            return True;
-        
-        $this->modelLog->errorLog(
-            'No se puede encontrar la tarifa gastos para Formularios',
-            $this->db->last-query()
-            );
-        
-        return False;
-    }
-    
-    
-    /**
-     * Retorna el id del la tarifa para Gasto de nacionalizacion para
-     * el gasto de nacionalizacion de formularios en el regimen 70
-     * Si no existe el parametro e la provisionm retorna cero
-     * @return int
-     */
-    private function getFormRateExpense()  
-    {
-        $rate = $this->modelBase->get_table([
-            'table' => 'tarifa_gastos',
-            'where' => [
-                'concepto' => 'FORMULARIOS',
-                'tipo_gasto' => 'GASTO NACIONALIZACION',
-                'regimen' => 'R70'
-            ]
-        ]);
-        
-        if( is_array($rate) && count($rate) > 0){
-            $rate = $rate[0];
-            return $rate;
         }
         
-        $this->modelLog->errorLog(
-            'No exiete la tarifa de formularios en el sistema',
-            $this->db->last_query()
-            );
-        return ([
-            'identificacion_proveedor' => 0,
-            'regimen' => R70,
-            'tipo_gasto' => 'GASTO NACIONALIZACION',
-            'concepto' => 'FORMULARIOS',
-            'valor' => 0,
-            'estado' => 1,
-        ]);
-        
-    }
-    
-    
-    /**
-     * Retorna el stock en la aduana del FOB, FLETE, y SEGURO aplica para todos
-     * los régimenes
-     *
-     * @param string $nroOrder
-     * @return array valore relacionados
-     */
-    private function initialCIFOrderVal(string $nroOrder): array
-    {
-        $order = $this->modelOrder->get($nroOrder);
-        
-        if ($order == false) {
-            $this->modelLog->errorLog('El pedido no existe ' . current_url());
-            return ($this->index());
+        foreach ($expense_added as $idx => $input){
+            $name = $input . '_VALUE';
+            $expense = [
+                'nro_pedido' => '000-00',
+                'id_parcial' => $id_parcial,
+                'identificacion_proveedor' => '0',
+                'tipo' => 'NACIONALIZACION',
+                'concepto' => str_replace('_', ' ', $input),
+                'valor_provisionado' => $expenses_post[$name],
+                'fecha' => date('Y-m-d='),
+                'id_user' => $this->session->userdata('id_user'),
+            ];
+            
+            if ($expense['concepto'] == 'ISD'){
+                $expense['bg_closed'] = 1;
+            }
+            
+            
+            $this->modelExpenses->create($expense);
         }
-        
-        return ([
-            'fob' => $this->modelOrderInvoice->getFOBValue($nroOrder),
-            'seguro' => $this->modelExpenses->getValueByName($nroOrder, 'SEGURO'),
-            'flete' => $this->modelExpenses->getValueByName($nroOrder, 'FLETE')
-        ]);
+                
+       return($this->redirectPage('validargi', $id_parcial));
     }
-
-    /**
-     * Rertorna el stock actual en CIF para un pedido solo aplica para R70
-     * El stock inicial es restado de los parciales solo en las facturas
-     * informativas que se encuentren cerradas
-     *
-     * @param string $nroOrder
-     * @return array
-     */
-    private function currentCIFOrderVal(string $nroOrder): array
-    {
-        $initialCIF = $this->initialCIFOrderVal($nroOrder);
-        
-        return ([
-            'fob' => 0,
-            'seguro' => 0,
-            'flete' => 0
-        ]);
-    }
-
+    
     
     /**
      * redirecciona a la pagina de lista de pedidos
@@ -267,181 +149,49 @@ class Gstnacionalizacion extends MY_Controller
      *
      * @param int $idParcial
      */
-    public function validar70(int $idParcial)
+    public function parcial(int $id_parcial)
     {
-        $parcial = $this->modelParcial->get($idParcial);
+        $parcial = $this->modelParcial->get($id_parcial);
+        
         if ($parcial == false) {
+            $this->modelLog->warningLog(
+                'No existe el parcial',
+                current_url()
+                );
             return ($this->index());
         }
         
-        $parcial = $this->modelParcial->get($idParcial);
         $order = $this->modelOrder->get($parcial['nro_pedido']);
-        $expenses = $this->modelExpenses->getPartialExpenses($idParcial);
+        $info_invoices = $this->modelParcial->getInvoices($id_parcial);
+        $rate_expenses = $this->modelRateExpenses->getPartialRates();
+        $partial_expenses = $this->modelExpenses->getPartialExpenses($id_parcial);
+        $unused_expenses = $this->calcExpensesDiff($rate_expenses, $partial_expenses);
+        $paids_partial_expenses = $this->getPaidsFromOrder($partial_expenses);
         
-        $order = $this->modelOrder->get($parcial['nro_pedido']);
+        $checkPartial = new checkerPartial(
+                                    $order,
+                                    $parcial, 
+                                    $info_invoices, 
+                                    $paids_partial_expenses, 
+                                    $unused_expenses
+            );      
         
-        $infoInvoices = $this->modelInfoInvoice->getByParcial($idParcial);
-        
-        if(is_array($infoInvoices)){
-            foreach ($infoInvoices as $item => $invoice){
-                $invoice['user'] = $this->modelUser->get($invoice['id_user']);
-                
-                $invoice['details'] = $this->modelInfoInvoiceDetail->
-                        getByFacInformative($invoice['id_factura_informativa']);
-                
-                $invoice['supplier'] = $this->modelSupplier->get(
-                                           $invoice['identificacion_proveedor']
-                                                                 );
-                
-                $count = $this->modelInfoInvoiceDetail->countBoxesAnd(
-                                             $invoice['id_factura_informativa']
-                                                                      );
-                $invoice['boxes'] = $count['boxes'];
-                $invoice['unities'] = $count['unities'];
-                $infoInvoices[$item] = $invoice;
-            }
-        }
-       
         return ($this->responseHTTP([
-            'titleContent' => 'generar gastos nacionalizacion Parcial[' . 
-                               $parcial['id_parcial'] . '] Pedido: [' . 
-                               $parcial['nro_pedido'] . '] ',
+            'showExpenses' => True,
+            'titleContent' => 'generar gastos nacionalizacion Parcial Pedido: [' . 
+                               $parcial['nro_pedido'] . '] Régimen 70',
+            'dates_parcial' => $checkPartial->checkPartial(),
             'order' => $order,
-            'expenses' => $expenses,
-            'rateExpenses' => $this->filterRateExpenses($idParcial),
             'parcial' => $parcial,
-            'infoInvoices' => $infoInvoices,
-            'showExpenses' => true,
+            'have_euros' => $this->modelInfoInvoice->haveEuros($id_parcial),
+            'info_invoices' => $checkPartial->checkInfoInvoices(),
+            'partial_tributes' => $checkPartial->getPartialTributes(),
+            'partial_expenses' => $checkPartial->checkPartialExpenses(),
+            'unused_expenses' => $checkPartial->getPartialTributes(),
             'user' => $this->modelUser->get($parcial['id_user']),
-            'warenHouseDays' => $this->getWarenHouseDays($order),
         ]));
     }
-
-    
-    /**
-     * Registra los costos de alamcenaje para el parcial de un pedido
-     * @param array $_POST arreglo por post
-     * @return string plantillas
-     */
-    public function putWarenhouseExpense()
-    {
-        if (! $_POST) {
-            return ($this->index());
-        }
         
-        $partialPost = $_POST;
-        $idParcial = $partialPost['id_parcial'];
-        $dateExitWarenhouseParcial = $partialPost['fecha_salida_almacenera'];
-        unset($partialPost['id_parcial']);
-        unset($partialPost['fecha_salida_almacenera']);
-        
-        $index = count($partialPost['periodo']) -1 ;
-        
-        $dataParcial = [
-            'id_parcial' => $idParcial,
-            'fecha_salida_almacenera' => $dateExitWarenhouseParcial,
-            'proximo_almacenaje_desde' => (
-                                $partialPost['periodo'][$index]['fecha_fin']
-                                            ),
-                        ];
-        
-        foreach ($partialPost['periodo'] as $item => $warenHouse) {
-            $warenHouse['id_parcial'] = $idParcial;
-            $warenHouse['valor_provisionado'] = $this->getWarenhousePartialValue($idParcial);
-            $warenHouse['id_user'] = $this->session->userdata('id_user');
-            
-            if ($this->modelExpenses->create($warenHouse)) {
-                
-                $this->modelLog->susessLog(
-                    'Periodo Almacenera Registrado Correctamete'
-                    );
-                
-            } else {
-                $this->modelLog->errorLog(
-                    'Error al Registrar periodo bodega',
-                    current_url()
-                    );
-            }
-        }
-    }
-
-    
-    
-    /**
-     * retorna el costo de la bodega para el parcial, aplicando una formula
-     * 
-     * @param int $idParcial
-     * @return float
-     */
-    private function getWarenhousePartialValue(int $idParcial): float
-    {   
-        
-        $parcial = $this->modelParcial->get($idParcial);
-        $order = $this->modelOrder->get($parcial['nro_pedido']);
-        
-        $cifInitial = $this->modelOrderInvoice->getInitCIFOrder(
-                                                        $parcial['nro_pedido']
-                                                                );
-        
-        $cifNationalized = $this->modelParcial->getNationalicedCIF(
-                                                        $parcial['nro_pedido']
-                                                                    );
-        $cifInitTotal = 0.0;
-        $cifNationalizedTotal = 0.0;
-        
-        foreach ($cifInitial as $item => $value){
-            $cifInitTotal += $value;
-        }
-        
-        foreach ($cifNationalized as $item => $value){
-            $cifNationalizedTotal += $value;
-        }
-        
-        $warenHouseValue = ((($cifInitTotal - $cifNationalizedTotal)*4)/1000);
-        
-        $this->modelLog->susessLog('Valor de Alamacenaje calculado ' . 
-                                    $warenHouseValue . ' Pedido ' . 
-                                    $order['nro_pedido']
-                                  );
-        
-        if($warenHouseValue < 165){
-            return 165;
-        }
-        return $warenHouseValue;
-        
-    }
-
-    
-    /**
-     * Retorna los parametros de tarifas para gastos de nacionalizacion
-     * si no existen retorna false
-     *
-     * @param int $idParcial
-     * @return array | bool
-     */
-    private function filterRateExpenses(int $idParcial)
-    {
-        $rateExpenses = $this->modelRateExpenses->getPartialRates();
-        $expeses = $this->modelExpenses->getPartialExpenses($idParcial);
-        if ($rateExpenses == false) {
-            return false;
-        }
-        
-        if ($expeses == false) {
-            return $rateExpenses;
-        }
-        
-        foreach ($rateExpenses as $item => $rateExepense) {
-            foreach ($expeses as $index => $expese) {
-                if ($expese['concepto'] == $rateExepense['concepto']) {
-                    unset($rateExpenses[$item]);
-                }
-            }
-        }
-        
-        return $rateExpenses;
-    }
-
     
     /**
      * Pesenta la informacion completa del rgistro de gasto inicial
@@ -620,35 +370,77 @@ class Gstnacionalizacion extends MY_Controller
             'fobSaldo' => $this->getWarenhousePartialValue($idParcial),
         ]));
     }
+      
     
-
     /**
-     * Obtiene el tiempo en dias de un pedido en la almacenera publica
-     * desde la fecha_ingreso_almacenera, si el pedido se encuentra cerrado
-     * se calcula hasta fecha_salida_Almacenera
+     * Calcula la diferencia entre los gastos iniciales
      *
-     * @param array $order pedido a evaluar
-     * @return int
+     * @param $rateExpenses =>
+     *            Gastos iniciales parametrisados
+     * @param $usesExpenses =>
+     *            Gastos iniciales registrados
+     * @return array unusedExpenses => gastos inciales libres
      */
-    private function getWarenHouseDays(array $order): int
+    private function calcExpensesDiff($rateExpenses, $usedExpenses)
     {
-        if (gettype($order['fecha_salida_almacenera']) == 'NULL') {
-            return (
-                    dateDiffInDays(
-                                $order['fecha_ingreso_almacenera'], 
-                                date('Y-m-d')
-                                )
-                    );
+        
+        
+        if ($usedExpenses == false) {
+            return $rateExpenses;
         }
         
-        return ( 
-                dateDiffInDays(
-                                $order['fecha_ingreso_almacenera'], 
-                                $order['fecha_salida_almacenera']
-                               ) 
-                );
+        $unusedExpenses = $rateExpenses;
+        
+        foreach ($rateExpenses as $key => $value) {
+            foreach ($usedExpenses as $index => $val) {
+                if ($value['concepto'] == $val['concepto']) {
+                    unset($unusedExpenses[$key]);
+                }
+            }
+        }
+        
+        return $unusedExpenses;
     }
-
+    
+    /**
+     * Obtiene la lista de facturas con sus detalles de los pagos
+     * Realizados en el pedido
+     *
+     * @param array $init_expenses
+     * @return array | Bool
+     */
+    private function getPaidsFromOrder($init_expenses)
+    {
+        
+        if($init_expenses == False){
+            $this->modelLog->warningLog(
+                'El pedido no tiene gastos iniciales'
+                );
+            return False;
+        }
+        
+        $init_expenses_with_paid = [];
+        
+        foreach ($init_expenses as $item => $expense){
+            
+            $paids_details = $this->modelPaidDetail->
+            getPaidsDetailsFromInitExpense(
+                $expense['id_gastos_nacionalizacion']
+                );
+            
+            if ($paids_details == False){
+                $expense['paids'] = False;
+            }else{
+                $expense['paids'] = $paids_details;
+            }
+            array_push($init_expenses_with_paid, $expense);
+        }
+        
+        return $init_expenses_with_paid;
+        
+    }
+    
+     
     
     /*
      * Envia la respuestas html al navegador
@@ -661,7 +453,7 @@ class Gstnacionalizacion extends MY_Controller
         $config['title'] = 'Gastos Nacionalización';
         $config['rute_url'] = base_url() . 'index.php/';
         $config['controller'] = $this->controller;
-        $config['iconTitle'] = 'fa-file';
+        $config['iconTitle'] = 'fa-cubes';
         $config['content'] = 'home';
         return $this->twig->display($this->template, $config);
     }

@@ -214,6 +214,28 @@ class Modelinfoinvoice extends CI_Model
         return 0;
     }
     
+    /**
+     * Verifica si en las facturas de un parcial
+     * @param string $nroOrder
+     * @return bool
+     */
+    public function haveEuros(string $id_parcial):bool
+    {
+        $orderInvoices = $this->getByParcial($id_parcial);
+        
+        if (is_array($orderInvoices)){
+            foreach ($orderInvoices as $item => $invoice){
+                if($invoice['moneda'] == 'EUROS'){
+                    return true;
+                }
+            }
+        }
+        $this->modelLog->generalLog(
+            'Pedido sin Facturas en modeda extrangera',
+            $id_parcial
+            );
+        return false;
+    }
     
     
     /**

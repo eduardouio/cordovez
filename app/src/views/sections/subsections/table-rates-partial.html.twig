@@ -12,18 +12,26 @@
          <tr>
             <td>0</td>
             <td>ALMACENAJE PARCIAL</td>
-            <td>0</td>
+            <td>--</td>
             <td class="text-right"><a href="{{rute_url}}gstnacionalizacion/validarbodegaparcial/{{ parcial.id_parcial }}" >
    <button class="text-primary">Provisionar</button>
    </a></td>
          </tr>
          <form action="{{rute_url}}gstnacionalizacion/putExpenses/" method="post">
-   <input type="hidden" name="id_parcial" value="{{parcial.id_parcial}}">
-      {% for rateExpense in rateExpenses %}
+   		<input type="hidden" name="id_parcial" value="{{parcial.id_parcial}}">
+      {% for rateExpense in unused_expenses.unused_expenses %}
          <tr>
             <td>{{loop.index}}</td>
             <td>{{rateExpense.concepto | raw }}</td>
-            <td>{{rateExpense.valor |number_format(2, '.', ',') }}</td>
+            <td class="text-primary text-right"> <strong>
+            <input 
+				type="number" 
+				value="{{ rateExpense.valor | number_format(2,'.','')}}"
+				style="width: 80px; text-align: right; font-size: 10px;"
+				name="{{ rateExpense.concepto | replace({' ':'_'})}}_VALUE" 
+			/>
+			</strong>
+            </td>
             <td class="pull-right">
                <label class="control control-checkbox">
                <input

@@ -2,7 +2,7 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
- * Define los parametros minimos de un pedido
+ * Realiza un analisis completo de los parciales
  *
  * @author Eduardo Villota <eduardouio7@gmail.com>
  * @version 1.0
@@ -10,39 +10,38 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @license Representaciones Cordovez
  * @package Controllers
  */
-class checkerOrder
+
+class checkerPartial
 {
-
     private $order;
-    private $order_invoices;
-    private $paids_init_expenses;
-    private $rate_expenses;
+    private $parcial;
+    private $info_invoices;
+    private $paids_partial_expenses;
     private $unused_expenses;
-
+    
     /**
-     * Constructo de clase
-     *
-     * @param array $order
-     *            => Detalle del pedido
-     * @param array $order_invoices
-     *            => Facturas del pedido
-     * @param array $paids_init_expenses
-     *            => Gastos iniciales con sus pagos
+     * Inicia la clase 
+     * 
+     * @param array $parcial
+     * @param array| bool $info_invoices
+     * @param array| bool  $paids_partial_expenses
+     * @param array| bool  $unused_expenses
      */
     function __construct(
-                        array $order, 
-                        $order_invoices, 
-                        $paids_init_expenses, 
-                        array $rate_expenses, 
-        array $unused_expenses
-        ){
+                        array $order,
+                        array $parcial,
+                        $info_invoices,
+                        $paids_partial_expenses,
+                        $unused_expenses
+        )
+    {
         $this->order = $order;
-        $this->order_invoices = $order_invoices;
-        $this->paids_init_expenses = $paids_init_expenses;
-        $this->rate_expenses = $rate_expenses;
-        $this->unused_expenses = $unused_expenses;
+        $this->parcial = $parcial;
+        $this->info_invoices = $info_invoices;
+        $this->paids_partial_expenses = $paids_partial_expenses;
+        $this->unused_expenses= $unused_expenses;
     }
-
+    
     /**
      * Revisa la informacion de una order
      * Fob Total,
@@ -51,49 +50,47 @@ class checkerOrder
      * @param array $order
      * @return array
      */
-    public function checkOrder(): array
+    public function checkPartial(): array
     {
         if (
-            $this->order['fecha_arribo'] == Null 
-            || 
-            $this->order['fecha_arribo'] == '') {
-            return [];
-        }
-        
-        $datetime1 = new DateTime("now");
-        $datetime2 = new DateTime($this->order['fecha_arribo']);
-        
-        $interval = $datetime1->diff($datetime2);
-        
-        return ([
-            'mounths' => $interval->m,
-            'days' => $interval->d,
-            'all_days' => $interval->days
-        ]);
+            $this->order['fecha_ingreso_almacenera'] == Null
+            ||
+            $this->order['fecha_ingreso_almacenera'] == '') {
+                return [];
+            }
+            
+            $datetime1 = new DateTime("now");
+            $datetime2 = new DateTime($this->order['fecha_ingreso_almacenera']);
+            
+            $interval = $datetime1->diff($datetime2);
+            
+            return ([
+                'mounths' => $interval->m,
+                'days' => $interval->d,
+                'all_days' => $interval->days
+            ]);
     }
-
+    
     /**
-     * Comprueba los gastos iniciales del pedido, los gastos inciales
-     * tienen los pagos registrados
+     * Comprueba los pagos registrados de los gastos del parcial
      *
-     * @param array $init_expenses
      * @return array
      */
-    public function checkInitExpenses()
+    public function checkPartialExpenses()
     {
-        if ($this->paids_init_expenses == False) {
+        if ($this->paids_partial_expenses == False) {
             return False;
         }
-        $all_ok = True;
-        $have_initial_warenhouse = False;
         
-        $expenses_order = [];
-        foreach ($this->paids_init_expenses as $item => $expense) {
+        $all_ok = True;
+        $expenses_parcial = [];
+        
+        foreach ($this->paids_partial_expenses as $item => $expense) {
             $expense['invoices'] = [];
             if ($expense['paids']) {
                 foreach ($expense['paids'] as $idx => $paid) {
                     array_push(
-                        $expense['invoices'], 
+                        $expense['invoices'],
                         $paid['id_documento_pago']
                         );
                 }
@@ -103,19 +100,16 @@ class checkerOrder
                 $all_ok = False;
             }
             
-            if ($expense['concepto'] == 'ALMACENAJE INICIAL') {
-                $have_initial_warenhouse = True;
-            }
-            
-            array_push($expenses_order, $expense);
+            array_push($expenses_parcial, $expense);
         }
+        
         return ([
-            'expenses_order' => $expenses_order,
-            'have_initial_warenhouse' => $have_initial_warenhouse,
-            'all_ok' => $all_ok
+            'partial_expenses' => $expenses_parcial,
+            'all_ok' => $all_ok,
         ]);
     }
-
+    
+    
     /**
      * Comprueba las facturas de productos de un pedido
      * Condiciones comprobadas
@@ -125,66 +119,71 @@ class checkerOrder
      * @param array $orderInvoices
      * @return array
      */
-    public function checkOrderInvoices()
+    public function checkInfoInvoices()
     {
-        if ($this->order_invoices == False) {
+        if ($this->info_invoices == False) {
             return False;
         }
         
         $invoices = [];
         $fob_total = 0.0;
-        $origen_expenses = 0.0;
         $values_isok = True;
         $tipy_change = 0.0;
+        $seguro_parcial = 0.0;
+        $flete_parcial = 0.0;
         
-        foreach ($this->order_invoices as $item => $invoice) {
+        foreach ($this->info_invoices as $item => $invoice) {
             $fob_total += $invoice['valor'];
-            $origen_expenses += floatval($invoice['gasto_origen']);
+            $seguro_parcial += $invoice['seguro_aduana'];
+            $flete_parcial += $invoice['flete_aduana'];
+            
             $invoice['is_complete'] = False;
             $invoice['check_money'] = True;
             $tipy_change = $invoice['tipo_cambio'];
-            if ($invoice['valor'] == $invoice['detailInvoice']['sums']['valueItems']) 
+            if ($invoice['valor'] == $invoice['detailInvoice']['sums']['valueItems'])
             {
                 $invoice['is_complete'] = True;
             }
             
             if (
-                $invoice['tipo_cambio'] == 1.0 
-                && 
+                $invoice['tipo_cambio'] == 1.0
+                &&
                 $invoice['moneda'] != 'DOLARES'
                 ) {
-                $invoice['check_money'] = False;
-            }
-            
-            if ($invoice['is_complete'] == False) {
-                $values_isok = False;
-            }
-            
-            array_push($invoices, $invoice);
+                    $invoice['check_money'] = False;
+                }
+                
+                if ($invoice['is_complete'] == False) {
+                    $values_isok = False;
+                }
+                
+                array_push($invoices, $invoice);
         }
         
         return ([
             'invoices' => $invoices,
             'fob_total' => $fob_total,
+            'flete_aduana' => $flete_parcial,
+            'seguro_aduana' => $seguro_parcial,
+            'cif_parcial' =>($flete_parcial + $seguro_parcial + $fob_total),
             'tipo_cambio' => $tipy_change,
             'values_isok' => $values_isok,
-            'origin_expenses' => $origen_expenses
         ]);
     }
-
+    
     /**
      * Obtiene el valor de la tasa aduanera
      *
      * @param array $order_invoices
      * @return float
      */
-    public function getInitialTributes()
+    public function getPartialTributes()
     {
-        if ($this->order_invoices == False) {
+        if ($this->info_invoices == False) {
             return False;
         }
         
-        $order_invoices = $this->checkOrderInvoices();
+        $order_invoices = $this->checkInfoInvoices();
         
         if ($order_invoices['fob_total'] == 0) {
             return ([
@@ -193,31 +192,9 @@ class checkerOrder
             ]);
         }
         
-        $base_isd = (
-            ($order_invoices['fob_total'] * $order_invoices['tipo_cambio']) 
-            + 
-            $order_invoices['origin_expenses']
-            );
-        
-        $isd_percent = $this->searchTaxesPercent('ISD', True);
-        $poliza_percent = $this->searchTaxesPercent('POLIZA SEGURO', True);
-        $flete_value = $this->seacthInitExpense('FLETE', True);
-        
-        $base_poliza_seguro = (
-            (
-                $flete_value + 
-                ($order_invoices['fob_total'] * $order_invoices['tipo_cambio'])
-             ) * 2.2
-            );
-        
-        $seguro = ($poliza_percent * $base_poliza_seguro);
-        $sb = $seguro * 0.035;
-        $tax2 = $seguro * 0.005;
-        $emision = 0.45;
-        
         $unidades = 0;
         $boxes = 0;
-        
+                
         $labeled_value_unity = $this->searchTaxesPercent(
             'MANO DE OBRA ETIQUETADO'
             );
@@ -226,45 +203,31 @@ class checkerOrder
             'ETIQUETAS FISCALES'
             );
         
-        foreach ($this->order_invoices as $idx => $invoice) {
+        foreach ($this->info_invoices as $idx => $invoice) {
             unset($invoice['detailInvoice']['sums']);
             foreach ($invoice['detailInvoice'] as $item => $detail) {
                 $unidades += (
-                        $detail['nro_cajas'] * $detail['cantidad_x_caja']
+                    $detail['nro_cajas'] * $detail['cantidad_x_caja']
                     );
                 $boxes += $detail['nro_cajas'];
             }
         }
         
         $rates = [
-            'ISD' => ($isd_percent * $base_isd),
-            'POLIZA SEGURO' => ($seguro + $sb + $tax2 + $emision),
             'MANO DE OBRA ETIQUETADO' => (
                 $unidades * $labeled_value_unity['valor']
                 ),
             'TASA DE SERVICIO ADUANERO' => $this->getTSA(),
             'ETIQUETAS FISCALES' => $label_unity['valor'] * $unidades ,
         ];
-                
+        
         $unused_expenses = [];
         
-        foreach ($this->unused_expenses as $idx => $expense) {            
+        foreach ($this->unused_expenses as $idx => $expense) {
             if (array_key_exists($expense['concepto'], $rates)) {
                 $expense['valor'] = $rates[$expense['concepto']];
             }
-            
-            if(
-                ($this->order['regimen'] == '70' &&
-                $expense['concepto'] == 'ETIQUETAS FISCALES')
-                
-                ||
-                ($this->order['regimen'] == '70' &&
-                    $expense['concepto'] == 'TASA DE SERVICIO ADUANERO')
-                ){
-                null;
-            }else{
                 array_push($unused_expenses, $expense);
-            }
         }
         
         return ([
@@ -273,7 +236,7 @@ class checkerOrder
             'boxes' => $boxes
         ]);
     }
-     
+    
     
     /**
      * Calcula el valor de la tasa Aduanera
@@ -282,22 +245,22 @@ class checkerOrder
     private function getTSA():float
     {
         
-        if($this->order_invoices == False){
+        if($this->info_invoices == False){
             return 0;
         }
-            
+        
         $tsa_base = $this->searchTaxesPercent(
             'TASA DE SERVICIO ADUANERO'
             );
         
         $tsa = 0.0;
         
-        foreach ($this->order_invoices as $idx => $invoice){
+        foreach ($this->info_invoices as $idx => $invoice){
             unset($invoice['detailInvoice']['sums']);
             foreach ($invoice['detailInvoice'] as $itm => $product){
                 
                 $tasa = (
-                    ((floatval($product['peso'])/1000) * floatval($tsa_base['valor'])) 
+                    ((floatval($product['peso'])/1000) * floatval($tsa_base['valor']))
                     * $product['unidades']
                     );
                 
@@ -306,7 +269,7 @@ class checkerOrder
                 }else{
                     $tsa += 7000;
                 }
-            }            
+            }
         }
         
         return $tsa;
@@ -323,7 +286,7 @@ class checkerOrder
      */
     private function searchTaxesPercent(string $name, bool $percent = False)
     {
-        foreach ($this->rate_expenses as $idx => $tax) {
+        foreach ($this->unused_expenses as $idx => $tax) {
             if ($tax['concepto'] == $name) {
                 if ($percent) {
                     return $tax['porcentaje'];
@@ -334,7 +297,7 @@ class checkerOrder
         
         return 0;
     }
-
+    
     
     /**
      *
@@ -362,5 +325,3 @@ class checkerOrder
         return 0;
     }
 }
-
-

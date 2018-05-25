@@ -23,6 +23,7 @@ class Modelparcial extends CI_Model
     private $modelLog;
     private $modelOrderInvoice;
     private $modelInfoInvoice;
+    private $modelProduct;
     
     public function __construct()
     {
@@ -31,6 +32,8 @@ class Modelparcial extends CI_Model
         $this->load->model('modellog');
         $this->load->model('Modelinfoinvoice');
         $this->load->model('Modelorderinvoice');
+        $this->load->model('Modelproduct');
+        $this->modelProduct = new Modelproduct();
         $this->modelBase = new ModelBase();
         $this->modelLog = new Modellog();
         $this->modelInfoInvoice = new Modelinfoinvoice();
@@ -175,6 +178,105 @@ class Modelparcial extends CI_Model
     }
     
     
+    
+    /**
+     * Obtiene el detalle de las facturas y lo cruza contra el valor total de
+     * la factura
+     * @param (string) $idInvoiceOrder
+     * @return array | false
+     */
+    public function getInvoices($id_parcial)
+    {
+        $invoices = $this->modelBase->get_table([
+            'table' => 'factura_informativa',
+            'where' => [
+                'id_parcial' => $id_parcial
+            ]
+        ]);
+        
+        if (empty($invoices)) {
+            $this->modelLog->warningLog(
+                'El el parcial Solicitado no tiene Facturas registradas'
+                );
+            return false;
+        }
+        
+        $result = [];
+        foreach ($invoices as $key => $value) {
+            $value['detailInvoice'] = $this->getInvoiceDetail($value);
+            $value['valor'] =  floatval($value['valor']);
+            $result[$key] = $value;
+        }
+        
+        $this->modelLog->susessLog(
+            'Se recuperan todas las facturas del pedido'
+            );
+        return $result;
+    }
+    
+    /**
+     * Busca los detalles de la factura y la suma de las mimsas
+     * @param array $invoice objeto factura completo
+     * @return array | bool
+     */
+    public function getInvoiceDetail($invoice)
+    {
+        $detailInvoice = $this->modelBase->get_table([
+            'table' => 'factura_informativa_detalle',
+            'where' => [
+                'id_factura_informativa' => $invoice['id_factura_informativa'],
+            ],
+        ]);
+        
+        if (empty($detailInvoice)) {
+            return false;
+        }
+        
+        $result = [];
+        (float)$valueItem = 0.00;
+        $countBoxesProduct = 0.00;
+        $unities = 0;
+        
+        foreach ($detailInvoice as $key => $value) {
+            $detail_order_invoice =  $this->modelBase->get_table([
+                'table' => 'detalle_pedido_factura',
+                'where' => [
+                    'detalle_pedido_factura' => $value['detalle_pedido_factura'],
+                ],                
+            ]);
+            
+            $detail_order_invoice = $detail_order_invoice[0];            
+            $valueItem += floatval($detail_order_invoice['costo_caja']) *
+            floatval($value['nro_cajas']);
+            
+            $product = $this->modelProduct->get($detail_order_invoice['cod_contable']);
+            
+            $countBoxesProduct += floatval($value['nro_cajas']);
+            $unities += ($value['nro_cajas'] * $product['cantidad_x_caja']);
+            $value['nombre'] = $product['nombre'];
+            $value['cantidad_x_caja'] = $product['cantidad_x_caja'];
+            $value['unidades'] = (intval($value['cantidad_x_caja']) *
+                intval($value['nro_cajas']));
+            $value['costo_unidad'] = (floatval($detail_order_invoice['costo_caja']) /
+                floatval($value['cantidad_x_caja']));
+            $value['total_item'] = (floatval($detail_order_invoice['costo_caja']) *
+                floatval($value['nro_cajas']));
+            $value['peso'] = $product['peso'];
+            $result[$key] = $value;
+        }
+        
+        $result['sums'] = [
+            'valueItems' =>  floatval(str_replace(',','',number_format($valueItem,2))),
+            'money' => $invoice['moneda'],
+            'tasa_change' => $invoice['tipo_cambio'],
+            'countBoxesProduct' => $countBoxesProduct,
+            'unities' => $unities,
+        ];
+        return $result;
+    }
+    
+    
+    
     /**
      * Onbtiene
      *
@@ -205,8 +307,8 @@ class Modelparcial extends CI_Model
                     $decena = floor($parcial/10);
                     $unity = ($ordinal - $decena);
                     
-                    $parcial['ordinalNumber'] = $ordinalTens[$decena] . 
-                                                $ordinalsInities[$unity]; 
+                    $parcial['ordinalNumber'] = $ordinalTens[$decena] .
+                    $ordinalsInities[$unity];
                 }
                 
                 $ordinal++;
@@ -219,13 +321,10 @@ class Modelparcial extends CI_Model
         
     }
     
-    
-    
-    
     /**
-     * Retorna todos los parciales de un pedido, no toma en cuenta 
+     * Retorna todos los parciales de un pedido, no toma en cuenta
      * el bg_isclosed
-     * 
+     *
      * @param string $nroOrder
      * @return array | boolean
      */
@@ -246,48 +345,6 @@ class Modelparcial extends CI_Model
         return false;
     }
     
-    
-    
-    /**
-     * Retorna el valor que suman las facturas, el fob actual se calcula
-     * FOBinical = suma valor de Facturas * tipo de cambio factura pedido
-     * CurrentFOB = suma valor de parciales * tipo de cambio factura pedido
-     * Con esto se mantiene la relacion de lo nacionalizado y lo declarado
-     * inicialemente, el tipo de cambio de la factura informativa solo
-     * se usa para la declaracion de impuestos
-     * 
-     * @param string $nroPedido
-     * @return float
-     */
-    public function getNationalicedCIF(string $nroOrder): array
-    {
-        $fobNationalized = [
-            'fob' => 0.0,
-            'seguro' => 0.0,
-            'felete' => 0.0,
-        ];
-        
-        $parcials = $this->getClosedParcials($nroOrder, true);
-        $typeChange = $this->modelOrderInvoice->getTypeChange($nroOrder);
-        
-        if( is_array($parcials) ){
-            foreach ($parcials as $item => $parcial){
-                $infoinvoices = $this->modelInfoInvoice->getByParcial(
-                                                        $parcial['id_parcial']
-                                                                    );
-                foreach ($infoinvoices as $index => $invoice){
-                    $fobNationalized['fob'] += (
-                                        $invoice['valor'] * $typeChange 
-                                        );
-                    $fobNationalized['seguro'] += $invoice['seguro'];
-                    $fobNationalized['flete'] += $invoice['flete'];
-                }
-            }
-        }
-        
-        $this->modelLog->susessLog('FOB Nacionalizado 0 pedido: ' . $nroOrder);
-        return $fobNationalized;        
-    }
     
     
     /**
@@ -312,68 +369,5 @@ class Modelparcial extends CI_Model
     
     
     
-    /**
-     * Actualiza un parcial, se usa para cambiar las fechas de salida 
-     * de la almacenera y fecha de fin de facturacion del ultimo parcial
-     * @param array $parcial
-     * @return bool
-     */
-    public function update(array $parcial): bool {
-        
-        $this->db->where('id_parcial', $parcial['id_parcial']);
-        
-        if($this->db->update($this->table, $parcial)){
-            $this->modelLog->susessLog('Parcial Actualizado');
-            $this->modelLog->queryUpdateLog($this->db->last_query());
-            return true;
-        }
-        
-        $this->modelLog->errorLog(
-            'No se puede actualizar el parcial',
-            $this->db->last_query()
-            );
-        
-        return false;
-    }
-    
-    /**
-     * Actualiza el status de las etiquetas en el parcial
-     * @param array $parcial
-     * @return bool
-     */
-    public function updateLabelsParcial(array $parcial):bool
-    {
-        $this->db->where('id_parcial', $parcial['id_parcial']);
-        if ($this->db->update($this->table, $parcial)){
-            $this->modelLog->queryUpdateLog($this->db->last_query());
-            return true;
-        }
-        
-        $this->modelLog->errorLog(
-            'problema al actualizar registro', 
-            $this->db->last_query()
-            );
-        return false;
-    }
-    
-    
-    /**
-     * Elimina un parcial siempre y cuando este vacio
-     * @param int $idParcial
-     * @return bool
-     */
-    public function delete(int $idParcial):bool
-    {
-        $this->db->where('id_parcial', $idParcial);
-        if($this->db->delete($this->table)){
-            return true;
-        }
-        $this->modelLog->warningLog(
-            'No se puede eliminar el parcial', 
-            $this->db->last_query()
-            );
-        return false;
-    }
-            
     
 }

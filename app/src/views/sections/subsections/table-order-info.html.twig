@@ -1,11 +1,3 @@
-{% if have_euros == true %}
-	{% set simbol = '&euro;' %}
-	{% set money = 'EUROS' %}
-{% else %}
-	{% set simbol = '$' %}
-	{% set money = 'DOLARES' %}
-{% endif %}
-
 <div class="text-tittle">Detalle de Facturas del Pedido</div>
 <small class="text-primary">
 FACTURAS DE PRODUCTOS <strong>{{ money }}</strong>
@@ -35,8 +27,6 @@ FACTURAS DE PRODUCTOS <strong>{{ money }}</strong>
          <td>{{invoice.detailInvoice.sums.countBoxesProduct | number_format(0,',','.') }}</td>
          <td class="text-right">{{invoice.detailInvoice.sums.unities | number_format(0,',','.') }}</td>
          <td class="text-right" >{{ simbol | raw}} {{invoice.valor  | number_format(2,',','.') }}</td>
-         <td>
-         </td>
          {% if invoice.is_complete ==  true %}
              <td class="success text-right"> 
                 <span class="fa fa-check text-success"></span> Completa
@@ -73,7 +63,7 @@ FACTURAS DE PRODUCTOS <strong>{{ money }}</strong>
             {{ invoices_order.fob_total | number_format(2, '.', ',') }}
             </strong>
          </td>
-         <td>
+         <td colspan="2">
             &nbsp;
          </td>
       </tr>

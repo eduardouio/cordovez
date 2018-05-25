@@ -121,7 +121,7 @@ class MY_Controller extends CI_Controller
             'productPresent' => 'index.php/producto/presentar',
             'validargi' =>  'index.php/gstinicial/validargi',
             'presentInvoiceOrder' =>  'index.php/pedidofactura/presentar',
-            'validar70' =>  'index.php/gstnacionalizacion/validar70',
+            'parcial' =>  'index.php/gstnacionalizacion/validar70',
             'newParcial' => 'index.php/parcial/nuevo',
             'showTaxesParcial' => 'index.php/impuestos/pc',            
             'showTaxesOrder' => 'index.php/impuestos/pd',            

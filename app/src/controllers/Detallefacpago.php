@@ -39,6 +39,11 @@ class Detallefacpago extends MY_Controller
      * Inicia los modelos de la clase
      */
     private function init(){
+        
+        if(! isset($this->session->userdata['id_user'])){
+            exit(0);
+        }
+        
         $this->load->model('modelorder');
         $this->load->model('modelpaid');
         $this->load->model('modeluser');

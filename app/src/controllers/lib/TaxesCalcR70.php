@@ -1,5 +1,6 @@
 <?php 
 defined('BASEPATH') or exit('No direct script access allowed');
+
 /**
  * Clase encargada de generar los impuestos totales y por
  * unidades los valores son devueltos en forma de array, el calculo
@@ -13,9 +14,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
  */
 
 class productTaxes {
-    
     private $fob_product_percent = 0.0;
-    private $type_change = 0.0;
+    private $type_change_invoice = 0.0;
+    private $type_change_parcial = 0.0;
     private $have_labes = True;
     private $have_control_tasa = True;
     private $current_prorrateo = [];
@@ -50,6 +51,7 @@ class productTaxes {
     {       
     
         $this->current_prorrateo = $prorrateo;
+        $this->getTypesChange($init_data);
         
         $this->have_labes = boolval(
             $init_data['parcial']['bg_have_etiquetas_fiscales']
@@ -84,10 +86,10 @@ class productTaxes {
                                             $product_expenses,
                                             $init_data
             );
-                
+        
         return([
             'percent_product' => $this->fob_product_percent,
-            'tipo_cambio' => $this->type_change,
+            'tipo_cambio' => $this->type_change_invoice,
             'product' => $product,
             'product_expenses' => $product_expenses,
             'taxes_product' => $taxes_product,
@@ -328,7 +330,6 @@ class productTaxes {
         
         )
     {
-        
         $product_value = 0.0;
         $order_detail = $init_data['order_invoice_detail'];
         
@@ -347,11 +348,22 @@ class productTaxes {
             /
             $prorrateo['fob_parcial']
             );   
-        
-        if ( floatval($init_data['parcial']['tipo_cambio']) == 0 ){
-                $this->type_change = 1;               
-        }else{
-            $this->type_change =  $init_data['parcial']['tipo_cambio'];
+    }
+    
+    
+    private function getTypesChange( array $init_data){
+        foreach ($init_data['order_invoices'] as $idx => $invoice){
+            
+            if ($idx == 0) {
+                $this->type_change_invoice = $invoice['tipo_cambio'];
+            };
+            
+            if ( floatval($init_data['parcial']['tipo_cambio']) == 0 ){
+                $this->type_change_parcial = 1;
+            }else{
+                $this->type_change_parcial =  $init_data['parcial']['tipo_cambio'];
+            }
+            
         }
     }
     
@@ -402,7 +414,7 @@ class productTaxes {
                             $product['nro_cajas']
                ),
            'nro_cajas' => $product['nro_cajas'],
-           'costo_caja' => $product_box_value * $this->type_change,
+           'costo_caja' => $product_box_value * $this->type_change_invoice,
            'producto' => $product_base['nombre'],
            'capacidad_ml' => $product_base['capacidad_ml'] ,
            'grado_alcoholico' =>$product['grado_alcoholico'],
@@ -435,7 +447,7 @@ class productTaxes {
                                 *
                                 $this->fob_product_percent
                                 *
-                                $this->type_change
+                                $this->type_change_invoice
                 ),
         ]);
     }

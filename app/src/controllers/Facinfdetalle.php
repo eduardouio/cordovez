@@ -37,6 +37,10 @@ class Facinfdetalle extends MY_Controller
     * Metodo encargado de iniciar las variables de entorno y modelos
     */
     private function init(){
+        if(! isset($this->session->userdata['id_user'])){
+            exit(0);
+        }
+        
         $this->load->model('Modelorder');
         $this->load->model('Modelinfoinvoice');
         $this->load->model('modelsupplier');

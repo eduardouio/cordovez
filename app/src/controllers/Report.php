@@ -33,8 +33,11 @@ class Report extends MY_Controller{
      * Inicia los modelos de la clase
      */
     public function init(){
+        if(! isset($this->session->userdata['id_user'])){
+            exit(0);
+        }
+        
         $this->load->library('Pdf');
-
         $this->load->model('Modelorder');
         $this->load->model('Modelproduct');
         $this->load->model('Modelsupplier');
@@ -45,8 +48,6 @@ class Report extends MY_Controller{
         $this->load->model('Modelpaid');
         $this->load->model('Modelpaiddetail');
         $this->load->model('Modellog');
-        
-
         $this->modelOrder = new Modelorder();
         $this->modelProduct = new Modelproduct();
         $this->modelSupplier = new Modelsupplier();

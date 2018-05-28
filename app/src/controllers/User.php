@@ -32,6 +32,11 @@ class User extends MY_Controller
      */
     public function init()
     {
+        
+        if(! isset($this->session->userdata['id_user'])){
+            exit(0);
+        }
+        
         $this->modelUser = new Modeluser();
     }
     

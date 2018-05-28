@@ -23,6 +23,10 @@ class Facpgpedido extends MY_Controller {
 	 */
 	public function __construct(){
 		parent::__construct();
+		
+		if(! isset($this->session->userdata['id_user'])){
+		    exit(0);
+		}
 	}
 
 	/**	

@@ -30,6 +30,10 @@ class Liquidaciones extends \MY_Controller
      * inicia las librerias de la clase
      */
     private function init(){
+        if(! isset($this->session->userdata['id_user'])){
+            exit(0);
+        }
+        
         $this->load->model('Modelprorrateo');
         $this->load->model('Modelprorrateodetail');
         $this->load->model('Modellog');

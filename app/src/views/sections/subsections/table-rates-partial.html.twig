@@ -26,6 +26,8 @@
             <td class="text-primary text-right"> <strong>
             <input 
 				type="number" 
+				id = "input"
+				step="0.01"
 				value="{{ rateExpense.valor | number_format(2,'.','')}}"
 				style="width: 80px; text-align: right; font-size: 10px;"
 				name="{{ rateExpense.concepto | replace({' ':'_'})}}_VALUE" 
@@ -58,6 +60,14 @@
    <br>
    <br>
 </form>
+
+<script type="text/javascript">
+	$('#input').click(function(){
+		$('#input').removeAttr('value');
+	});
+
+</script>
+
 <script type="text/javascript">
    var rates  = {{ unusedExpenses | json_encode() | raw }};  
    

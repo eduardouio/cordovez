@@ -34,7 +34,7 @@ class Login extends CI_Controller
      * Inicia los modelos a usar en la clase
      */
     private function init()
-    {
+    {        
         $this->load->model('modellog');
         $this->load->model('modelbase');
         $this->modelBase = new ModelBase();

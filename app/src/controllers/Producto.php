@@ -31,6 +31,10 @@ class Producto extends MY_Controller {
 	 * Inicializa los modelos de la clase de producto
 	 */
 	private function init(){
+	    if(! isset($this->session->userdata['id_user'])){
+	        exit(0);
+	    }
+	    
 	    $this->load->model('Modelproduct');
 	    $this->load->model('Modelsupplier');
 	    $this->load->model('Modeluser');

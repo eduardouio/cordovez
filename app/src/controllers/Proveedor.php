@@ -16,15 +16,10 @@ class Proveedor extends MY_Controller
 {
 
     private $listPerPage = 20;
-
     private $controller = "proveedor";
-
     private $template = '/pages/pageProveedor.html';
-
     private $modelUser;
-
     private $modelSupplier;
-
     private $modelProduct;
 
     /**
@@ -41,6 +36,10 @@ class Proveedor extends MY_Controller
      */
     public function init()
     {
+        if(! isset($this->session->userdata['id_user'])){
+            exit(0);
+        }
+        
         $this->load->model('Modelsupplier');
         $this->load->model('Modeluser');
         $this->load->model('Modelproduct');
@@ -70,7 +69,9 @@ class Proveedor extends MY_Controller
            $this->index();
            return true;
        }   
-       $suppliers = $this->modelSupplier->search($this->input->post('searchCriteria'));
+       $suppliers = $this->modelSupplier->search(
+           $this->input->post('searchCriteria')
+           );
        $this->responseHttp([
            'titleContent' => 'Lista de Proveedores Encontrados Para: <strong>' . 
                             $this->input->post('searchCriteria') . '</strong>',
@@ -98,7 +99,9 @@ class Proveedor extends MY_Controller
             'supplier' => $supplier,
             'show' => true,
             'user' => $this->modelUser->get($supplier['id_user']),
-            'products' => $this->modelProduct->getBySupplier($supplier['identificacion_proveedor'])
+            'products' => $this->modelProduct->getBySupplier(
+                $supplier['identificacion_proveedor']
+                ),
         ]);
     }
 
@@ -187,11 +190,18 @@ class Proveedor extends MY_Controller
         if ($status['status']) {
             if (isset($supplier['id_proveedor'])) {;
                 $supplier['last_update'] = date('Y-m-d H:i:s');
-                $this->modelSupplier->update($supplier['id_proveedor'], $supplier);
-                $this->redirectPage('supplierPresent', $supplier['id_proveedor']);
+                $this->modelSupplier->update(
+                    $supplier['id_proveedor'], $supplier
+                    );
+                $this->redirectPage(
+                                    'supplierPresent', 
+                                    $supplier['id_proveedor']
+                    );
                 return true;
             } else {
-                $supplierDB = $this->modelSupplier->get($supplier['identificacion_proveedor']);
+                $supplierDB = $this->modelSupplier->get(
+                    $supplier['identificacion_proveedor']
+                    );
                 if ($supplierDB){
                     $this->responseHttp([
                         'supplier' => $supplierDB,
@@ -206,7 +216,10 @@ class Proveedor extends MY_Controller
                     $this->errorDbNotify();
                     return false;
                 }
-                $this->redirectPage('supplierPresent' , $supplier['identificacion_proveedor']);
+                $this->redirectPage(
+                    'supplierPresent' , 
+                    $supplier['identificacion_proveedor']
+                    );
                 return true;
             }
         } else {
@@ -238,7 +251,7 @@ class Proveedor extends MY_Controller
                 'id_supplier' => $idSupplier,
                 'viewMessage' => true,
                 'message' => 'El Proveedor No Puede Ser Eliminado, 
-										                      Tiene Dependencias!',
+									                      Tiene Dependencias!',
 						          ]);
         }
     }

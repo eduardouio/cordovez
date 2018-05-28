@@ -31,6 +31,10 @@ class Home extends MY_Controller {
 	 */
 	private function init()
 	{
+	    if(! isset($this->session->userdata['id_user'])){
+	        exit(0);
+	    }
+	    
 	    $this->load->model('modellog');
 	    $this->modelLog = new Modellog();
 	    $this->modelLog->generalLog('Acceso al Home');

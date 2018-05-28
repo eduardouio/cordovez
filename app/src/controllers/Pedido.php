@@ -55,6 +55,10 @@ class Pedido extends MY_Controller
      */
     private function init()
     {
+        if(! isset($this->session->userdata['id_user'])){
+            exit(0);
+        }
+        
         $this->load->model('modelorder');
         $this->load->model('modelsupplier');
         $this->load->model('modelproduct');

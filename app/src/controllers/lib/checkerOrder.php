@@ -196,21 +196,26 @@ class checkerOrder
         $base_isd = (
             ($order_invoices['fob_total'] * $order_invoices['tipo_cambio']) 
             + 
-            $order_invoices['origin_expenses']
+            ($order_invoices['origin_expenses'] * $order_invoices['tipo_cambio'])
             );
         
         $isd_percent = $this->searchTaxesPercent('ISD', True);
-        $poliza_percent = $this->searchTaxesPercent('POLIZA SEGURO', True);
+        $poliza_percent =$this->searchTaxesPercent('POLIZA SEGURO', True);
         $flete_value = $this->seacthInitExpense('FLETE', True);
-        
+                
         $base_poliza_seguro = (
             (
-                $flete_value + 
+                $flete_value +
+                (
                 ($order_invoices['fob_total'] * $order_invoices['tipo_cambio'])
-             ) * 2.2
+                +
+                ($order_invoices['origin_expenses'] * $order_invoices['tipo_cambio'])
+                )
+                
+             ) * 2.20
             );
-        
         $seguro = ($poliza_percent * $base_poliza_seguro);
+        
         $sb = $seguro * 0.035;
         $tax2 = $seguro * 0.005;
         $emision = 0.45;

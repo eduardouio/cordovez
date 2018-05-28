@@ -37,6 +37,10 @@ class Detallepedido extends MY_Controller
 	 * Carga los modelos inciales para la clase
 	 */
 	private function init(){
+	    if(! isset($this->session->userdata['id_user'])){
+	        exit(0);
+	    }
+	    
 	    $this->load->model('modelsupplier');
 	    $this->load->model('modeluser');
 	    $this->load->model('modelproduct');

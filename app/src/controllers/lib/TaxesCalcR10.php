@@ -84,6 +84,7 @@ class productTaxesR10 {
                 $init_data
                 );
             
+            print $this->type_change;
             return([
                 'percent_product' => $this->fob_product_percent,
                 'tipo_cambio' => $this->type_change,
@@ -350,10 +351,10 @@ class productTaxesR10 {
             / $sum_fob
             );       
         
-        if ( floatval($init_data['order']['tipo_cambio_impuestosR10']) == 0 ){
-            $this->type_change = 1;
-        }else{
-            $this->type_change =  $init_data['order']['tipo_cambio_impuestosR10'];
+        foreach ($init_data['order_invoices'] as $idx => $invoice){
+            if ($idx == 0) {
+                $this->type_change = $invoice['tipo_cambio'];
+            };
         }
     }
     

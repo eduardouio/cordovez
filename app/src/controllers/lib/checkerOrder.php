@@ -262,9 +262,6 @@ class checkerOrder
                 ($this->order['regimen'] == '70' &&
                 $expense['concepto'] == 'ETIQUETAS FISCALES')
                 
-                ||
-                ($this->order['regimen'] == '70' &&
-                    $expense['concepto'] == 'TASA DE SERVICIO ADUANERO')
                 ){
                 null;
             }else{

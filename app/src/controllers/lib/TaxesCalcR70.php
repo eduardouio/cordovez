@@ -13,167 +13,331 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @package Controllers
  */
 
-class productTaxes {
-    private $fob_product_percent = 0.0;
+class parcialTaxes {
+    private $init_data;
+    private $prorrateo;
+    private $param_taxes;
+    private $parcial;
     private $type_change_invoice = 0.0;
     private $type_change_parcial = 0.0;
     private $have_labes = True;
-    private $have_control_tasa = True;
-    private $current_prorrateo = [];
-    private $taxes_rates = [
-        'FODINFA' => 0.0,
-        'BASE ADVALOREM' => 0.0,
-        'ICE ESPECIFICO' => 0.0,
-        'ICE ADVALOREM' => 0.0,
-        'IVA' => 0.0,
-        'OTROS' => 0.0,
-    ];
-    
-    
+    private $have_control_tasa = True;    
+    private $taxes = [];    
+        
     /**
-     * Retorna un arreglo con el detalle de los impuestos
-     *
-     * @param array $init_data datos iniciales del Pedido
-     *          order[
-     *                  init_expenses,
-     *                  order_invoices,
-     *                  info_invices,
-     *
-     * @param array $prorrateo
-     * @return array
+     * Datos iniciales del parcial
+     * @param array $init_data => Facturas, productos, parcial
+     * @param array $prorrateo => 
+     * @param array $product
+     * @param array $param_taxes
      */
-    public function getTaxesProduct(
-                                    array $init_data, 
-                                    array $prorrateo, 
-                                    array $producto,
-                                    array $param_taxes
-        ): array
-    {       
+    function __construct(
+                            array $init_data,
+                            array $prorrateo,
+                            array $param_taxes,
+                            array $parcial
+        )
+    {
+        $this->init_data = $init_data;
+        $this->prorrateo = $prorrateo;
+        $this->param_taxes =  $param_taxes;
+        $this->parcial = $parcial;
+    }
     
-        $this->current_prorrateo = $prorrateo;
-        $this->getTypesChange($init_data);
+       
+    /**
+     * Retorna los impuestos del parcial
+     * 
+     * return = [
+     *  'product_taxes' => [(getTaxesProduct)],
+     *  'totals' => [],
+     * ] 
+     * 
+     */
+    public function getTaxes():array 
+    {
+       
+       $this->setConfiguration();
+       $taxes = [];
+       
+       foreach ($this->init_data['products'] as $item => $product){
+           array_push($taxes, $this->getTaxesProduct($product));
+       }
+    }
+    
+
+    /**
+     * Setea las consiguraciones iniciales para el calculo de los impuestos
+     * Coloca los parametros para el calculo de impuestos
+     */
+    private function setConfiguration(){
+        
+        foreach ($this->init_data['order_invoices'] as $idx => $invoice){
+            if ($idx == 0) {
+                $this->type_change_invoice = $invoice['tipo_cambio'];
+            };
+
+            if ( floatval($this->init_data['parcial']['tipo_cambio']) == 0 ){
+                $this->type_change_parcial = 1;
+            }else{
+                $this->type_change_parcial =  
+                                    $this->init_data['parcial']['tipo_cambio'];
+            }
+        }
         
         $this->have_labes = boolval(
-            $init_data['parcial']['bg_have_etiquetas_fiscales']
+            $this->init_data['parcial']['bg_have_etiquetas_fiscales']
             );
         
         $this->have_control_tasa = boolval(
-            $init_data['parcial']['bg_have_tasa_control']
+            $this->parcial['bg_have_tasa_control']
             );
-        
-        $this->getPercentProduct(
-                                $producto, 
-                                $init_data,
-                                $prorrateo['prorrateo']
-            
-            );
-        $cif = $this->getCIF($prorrateo['prorrateo']);
-        $product = $this->getProductData(
-                                        $producto, 
-                                        $init_data,
-                                        $cif['fob']
-            );
-        
-        $product_expenses = $this->calInitExpensesForItem(
-                                             $prorrateo['prorrateo_detail'] 
-            );
-        
-        
-        $taxes_product = $this->getDetailTaxesProduct(
-                                            $product,
-                                            $cif,
-                                            $param_taxes,
-                                            $product_expenses,
-                                            $init_data
-            );
-        
-        return([
-            'percent_product' => $this->fob_product_percent,
-            'tipo_cambio' => $this->type_change_invoice,
-            'product' => $product,
-            'product_expenses' => $product_expenses,
-            'taxes_product' => $taxes_product,
-            'cif_item' => $cif,
-            'params_taxes' => $this->taxes_rates,
-        ]);
         
     }
     
     
-  
+    /**
+     * Retorna los impuestos para un producto
+     * 
+     * @return  array $taxes 
+     * 
+     */
+    private function getTaxesProduct(array $detail_info_invoice): array
+    {              
+        
+        $product = $this->getProductData($detail_info_invoice);
+        $prorrateo_item = $this->getProrrateoItem(
+                                                    $detail_info_invoice,
+                                                    $product
+                                                    );
+        $taxes_product = $this->getDetailTaxesProduct($product, $prorrateo_item);
+         
+        return([
+                'product' => $product['nombre'],
+                'cod_contable' => $product['cod_contable'],
+                'cantidad_x_caja' => $product['cantidad_x_caja'],
+                'cajas_importadas' => $product['cajas_importadas'],
+                'uindades_importadas' => $product['unidades_importadas'],
+                'cajas' => $product['cajas'],
+                'uindades' => $product['unidades'],
+                'costo_caja' => $product['costo_x_caja'],
+                'costo_unidad' => $product['costo_unidad'],
+                'peso' => $product['peso'], 
+                'capacidad_ml'=> $product['capacidad_ml'],
+                'grado_alcoholico'=> $product['grado_alcoholico'],
+                'fob' => $product['fob'],
+                'fob_percent' => $prorrateo_item['fob_percent'],
+                'seguro_aduana' => $prorrateo_item['seguro_aduana'],
+                'flete_aduana' =>$prorrateo_item['flete_aduana'],
+                'cif' => $prorrateo_item ['cif'], 
+                'otros' =>  $prorrateo_item['otros'],            
+                'prorrateo_parcial' => $prorrateo['prorrateo_parcial'],
+                'prorrateo_pedido' => $prorrateo['prorrateo_pedido'],
+                'prorrateos_total' => $prorrateo['prorrateos_total'],
+                'tasa_control' => $prorrateo['tasa_control'],
+                'tasa_control' => $taxes_product['tasa_control'],
+                'fodinfa' => $taxes_product['fodinfa'],
+                'iva' => $taxes_product['iva'],
+                'ex_aduana' => $taxes_product['ex_aduana'],
+                'arancel_especifico_unitario' => 
+                                    $taxes_product['arancel_especifico_unitario'],
+                'arancel_advalorem_unitario' => 
+                                    $taxes_product['arancel_advalorem_unitario'],
+                'reliquidacion_ice_advalorem' => 
+                                    $taxes_product['reliquidacion_ice_advalorem'],
+                'etiquetas_fiscales'=> $taxes_product['etiquetas_fiscales'],
+                'ice_unitario'=> $taxes_product['ice_unitario'],
+                'total_ice' => $taxes_product['total_ice'],
+                'costo_total' => $taxes_product['costo_total'],
+                'costo_caja'=> $taxes_product['costo_caja'],
+                'costo_botella'=> $taxes_product['costo_botella'],
+                  ]);
+    }  
+    
+    
+    /**
+     * Retorna la Informacion del producto al que se le esta calculando el
+     * los aranceles
+     *
+     * @param array $product
+     * @param array $init_data
+     * @return array
+     */
+    private function getProductData(array $detail_info_invoice):array
+    {
+        
+        $product_base = [];
+        $detail_order_invoice = [];
+        
+        foreach ($this->init_data['products_base'] as $item => $product){
+            if(
+                $product['detalle_pedido_factura']
+                ==
+                $detail_info_invoice['detalle_pedido_factura'])
+            {
+                $product_base = $product;
+                break;
+                
+            }
+        }
+        
+        foreach ($this->init_data['order_invoice_detail'] as $item => $dt){
+            if(
+                $dt['detalle_pedido_factura']
+                ==
+                $detail_info_invoice['detalle_pedido_factura']
+                ){
+                    $detail_order_invoice = $dt;
+                    break;
+            }
+        }
+        
+        return ([
+            'nombre'=> $product_base['nombre'],
+            'cod_contable' => $product['cod_contable'],
+            'cajas_importadas' => $detail_order_invoice['nro_cajas'],
+            'cantidad_x_caja' => $product_base['cantidad_x_caja'],
+            'unidades_importadas' => (
+                                        $detail_order_invoice['nro_cajas'] 
+                                        * $product_base['cantidad_x_caja']
+                ),
+            'cajas' => $detail_info_invoice['nro_cajas'],
+            'unidades' => (
+                                        $detail_info_invoice['nro_cajas']
+                                        * $product_base['cantidad_x_caja']
+                ),
+            'costo_x_caja' => $detail_order_invoice['costo_caja'],
+            'costo_unidad' => (
+                            $detail_order_invoice['costo_caja']
+                            / $product_base['cantidad_x_caja']
+                ),
+            'capacidad_ml' =>  $product_base['capacidad_ml'] ,
+            'peso' => $product_base['peso'] ,
+            'grado_alcoholico' => $product_base['grado_alcoholico'],
+            'fob' => (
+                $detail_info_invoice['nro_cajas']
+                * $detail_order_invoice['costo_caja']
+                * $this->type_change_invoice
+                ),
+        ]);
+    }
+    
+    
+    /**
+     * Retorna el valor del prorrateo de los gastos iniciales y del parcial
+     * para el fob de item
+     */
+    private function getProrrateoItem(
+                                    array $detail_info_invoice,
+                                    array $product
+                                    ): array
+    {   
+        $prorrateo = $this->prorrateo['prorrateo'];
+        $prorrateo_detail = $this->prorrateo['prorrateo_detail'];
+        $fob_info_invoice = 0.0;
+        $prorrateos_pedido = 0.0;
+        
+        # se quita el valor de la bodega del prorrateo del parcial
+        # y se suma el valor que le corresponde 
+        $prorrateos_parcial = (-1 * $prorrateo['bodegaje_parcial'])
+                                 + $prorrateo['bodegaje_prorrateado'];
+        
+        foreach($this->prorrateo['prorrateo_detail'] as $idx => $gst_prorrateo){
+            if ($gst_prorrateo['tipo'] == 'prorrateo'){
+                $prorrateos_parcial += $gst_prorrateo['valor_prorrateado'];
+            }else{
+                $prorrateos_pedido += $gst_prorrateo['valor_prorrateado'];
+            }
+        }
+        
+        
+        
+        foreach ($this->init_data['info_invoices'] as $idx => $invoice){
+            if(
+                $invoice['id_factura_informativa'] 
+                == $detail_info_invoice['id_factura_informativa']
+                ){
+                $fob_info_invoice = (
+                    $invoice['valor']
+                    * $this->type_change_invoice
+                    );
+            }
+        }
+        
+        $fob_percent = ( $product['fob'] / $fob_info_invoice );
+        $tasa_control = 0.0;
+        foreach ($prorrateo_detail as $key => $value) {
+            if($value['concepto'] == 'TASA DE CONTROL ADUANERO'){
+                $tasa_control = (
+                    $value['valor_prorrateado']
+                    * $fob_percent
+                );
+            }
+        }   
+        
+        $prorrateo_item = [
+            'fob_percent' => $fob_percent,
+            'seguro_aduana' => ($prorrateo['prorrateo_seguro_aduana']
+                                * $fob_percent),
+            'flete_aduana' => (
+                                $prorrateo['prorrateo_flete_aduana']
+                                * $fob_percent
+                                ),
+            'otros' =>  $this->parcial['otros'] * $fob_percent,
+            'tasa_control' => $tasa_control,
+            'prorrateo_parcial' => $prorrateos_parcial * $fob_percent,
+            'prorrateo_pedido' => $prorrateos_pedido * $fob_percent,
+            'prorrateos_total' => (
+                                    ($prorrateos_parcial + $prorrateos_pedido) 
+                                    * $fob_percent
+                ),
+        ];
+        $prorrateo_item ['cif'] = (
+                            ($product['fob'] 
+                            + $prorrateo_item['seguro_aduana'] 
+                            + $prorrateo_item['flete_aduana'])
+                            * $fob_percent
+            );
+        return  $prorrateo_item;
+    }
+    
     
     /**
      * Retorna los impuestos que se aplica al producto
      * 
      * @param array $product
-     * @param array $cif
-     * @param array $param_taxes
+     * @param array $prorateos
      * @return array
      */    
     private function getDetailTaxesProduct(
-                                        array $product, 
-                                        array $cif, 
-                                        array $param_taxes,
-                                        array $product_expenses,
-                                        array $init_data
+                                            array $product, 
+                                            array $prorrateos
         ): array
-    {
-        
-        foreach ($param_taxes as $item => $tax){
-            
-            $this->taxes_rates[$tax['concepto']] = $tax['valor']; 
-        }
-        
-        $cif_item =  (
-                    $cif['seguro_aduana'] 
-                    +
-                    $cif['flete_aduana'] 
-                    +
-                    ($cif['fob'])
-            );
-        
-  
-        $tasa_servicio_aduanero = 0.0;
-        $etiquetas_fiscales = 0.0;
-        
-        foreach ($product_expenses as $item => $expense){
-            
-            if (
-                ($expense['concepto'] == 'TASA DE SERVICIO ADUANERO')
-                &&
-                ($this->have_control_tasa == True)
-                ){
-                $tasa_servicio_aduanero = floatval(
-                                                   $expense['valor_prorrateado']
-                    );
-            }
-            
-            if (
-                ($expense['concepto'] == 'ETIQUETAS FISCALES')
-                &&
-                ($this->have_labes == True)
-                ){
-                $etiquetas_fiscales = floatval(
-                    $expense['valor_prorrateado']
-                    );
-            }
-            
-        }
-        
-        $exaduana = (
-            floatval($cif_item * $this->taxes_rates['FODINFA']) +
-            $cif_item + 
-            $etiquetas_fiscales +
-            $tasa_servicio_aduanero +
-            floatval($init_data['parcial']['otros']) +
-            floatval($init_data['parcial']['exoneracion_arancel'])
-            );
-        
-        $ice_advalorem = $this->getIceAdvalorem($exaduana, $product);
-        
+    {   
+        $fodinfa = ($prorrateos['cif'] * $this->getTaxParam('FODINFA'));
+        $etiquetas_fiscales =  $product['unidades'] * 0.13;
+
+        print('<pre>') ;
+        print_r($product);
+        print_r($prorrateos);
+        print_r($this->param_taxes);
+
+        return ([
+            'fodinfa' => $fodinfa,
+            'iva' => '',
+            'ex_aduana' => '',
+            'arancel_especifico_unitario' => '',
+            'arancel_advalorem_unitario' => '',
+            'reliquidacion_ice_advalorem' => '',
+            'etiquetas_fiscales'=> '',
+            'ice_unitario'=> '',
+            'total_ice' => '',
+            'costo_total' => '',
+            'costo_caja'=> '',
+            'costo_botella'=> '',
+        ]);
         
         return([
-        'fodinfa' => ($cif_item * $this->taxes_rates['FODINFA']),
         'etiquetas_fiscales' => $etiquetas_fiscales,
         'tasa_servicio_aduanero' => $tasa_servicio_aduanero,
         'ice_especifico' => $this->getICEEspecifico($product),
@@ -188,56 +352,6 @@ class productTaxes {
         'prorrateos_item' => $this->getProrrateoItem($product_expenses),
        ]);
     }
-    
-    
-    /**
-     * Retorna el valor del prorrateo de los gastos iniciales y del parcial
-     * para el fob de item
-     */
-    private function getProrrateoItem(array $product_expenses): float
-    {   
-        
-        $prorrateo_item = 0.0;
-        foreach($product_expenses as $item => $expense)
-        {
-            
-            if($this->have_control_tasa == False){
-                if($expense['concepto'] == 'ETIQUETAS FISCALES'){
-                    $expense['valor_prorrateado'] = 0;
-                }
-            }
-            
-            if($this->have_labes == False){
-                if($expense['concepto'] == 'TASA DE SERVICIO ADUANERO'){
-                    $expense['valor_prorrateado'] = 0;
-                }
-            }
-            
-            $prorrateo_item += (
-                $expense['valor_prorrateado'] * $this->fob_product_percent
-                );
-         
-            
-        }        
-        
-        $percent_warenhouse = (
-            $this->current_prorrateo['prorrateo']['bodegaje_prorrateado'] * 
-            $this->fob_product_percent
-            );
-        return ($prorrateo_item + $percent_warenhouse);
-    }
-    
-    /**
-     * Retorna el iva para un item de la liquidacion
-     * 
-     * @param array $vals
-     * @return float
-     */
-    private function getIvaItem($cif_item): float 
-    {
-      return 0;
-    }
-    
     
     
     /**
@@ -285,172 +399,17 @@ class productTaxes {
             ) * $product['unidades']);
     }
     
-    
-    
-    
+
     /**
-     * Obtiene la distribucion de gastos iniciales del parcial para
-     * cada uno de los items
-     * 
-     * @param array $prorrateo_detail el prorrtaeo del prcial
-     * @return array
-     */   
-    private function calInitExpensesForItem(
-                                                array $prorrateo_detail
-                                            ):array
-    {
-        $expenses_item = [];
-        
-        foreach ($prorrateo_detail as $item => $expense){
-            $expense['valor_prorrateado'] = (
-                floatval($expense['valor_prorrateado']) 
-                *
-                $this->fob_product_percent
-                );
-            array_push($expenses_item, $expense);
-        }
-        
-        return $expenses_item;
-    }
-    
-    
-    
-    /**
-     * Obtiene la relacion entre un producto y su factura
-     * 
-     * @param array $product
-     * @param array $init_data
-     * @param array $init_prorrateo
-     * @return float
+     * Retorna el porcentaje para un impuesto o el valor
      */
-    private function getPercentProduct( 
-                                        array $product, 
-                                        array $init_data,
-                                        array $prorrateo
-        
-        )
+    private function getTaxParam(string $tax_name ):float
     {
-        $product_value = 0.0;
-        $order_detail = $init_data['order_invoice_detail'];
-        
-        foreach ($order_detail as $idx => $prd){
-            if(
-                $prd['detalle_pedido_factura'] == 
-                $product['detalle_pedido_factura']
-                ){
-                    $product_value = $prd['costo_caja'];
-                    break;
+        foreach ($this->param_taxes as $key => $tax) {
+            if($tax['concepto'] == $tax_name){
+                return $tax['valor'];
             }
+            return False;
         }
-        
-        $this->fob_product_percent = floatval(
-            ($product_value * $product['nro_cajas'])
-            /
-            $prorrateo['fob_parcial']
-            );   
-    }
-    
-    
-    private function getTypesChange( array $init_data){
-        foreach ($init_data['order_invoices'] as $idx => $invoice){
-            
-            if ($idx == 0) {
-                $this->type_change_invoice = $invoice['tipo_cambio'];
-            };
-            
-            if ( floatval($init_data['parcial']['tipo_cambio']) == 0 ){
-                $this->type_change_parcial = 1;
-            }else{
-                $this->type_change_parcial =  $init_data['parcial']['tipo_cambio'];
-            }
-            
-        }
-    }
-    
-    
-    
-    /**
-     * Retorna la Informacion del producto al que se le esta calculando el 
-     * los aranceles
-     * 
-     * @param array $product
-     * @param array $init_data
-     * @return array
-     */
-    private function getProductData(array $product, array $init_data):array
-    {
-       
-       $product_base = [];
-       $product_box_value = 0.0;
-       
-       
-       foreach ( $init_data['products_base'] as $item => $prd){
-           if( 
-               $prd['detalle_pedido_factura'] 
-               == 
-               $product['detalle_pedido_factura'])
-           {
-               $product_base = $prd;
-               break;
-              
-           }
-       }
-       
-       foreach ($init_data['order_invoice_detail'] as $item => $dt){
-           if( 
-               $product['detalle_pedido_factura']
-               == 
-               $dt['detalle_pedido_factura']
-               ){
-               $product_box_value = $dt['costo_caja'];
-               break;
-           }
-       }
-       
-       return ([
-           'unidades' => (
-                            $product_base['cantidad_x_caja'] 
-                            *  
-                            $product['nro_cajas']
-               ),
-           'nro_cajas' => $product['nro_cajas'],
-           'costo_caja' => $product_box_value * $this->type_change_invoice,
-           'producto' => $product_base['nombre'],
-           'capacidad_ml' => $product_base['capacidad_ml'] ,
-           'grado_alcoholico' =>$product['grado_alcoholico'],
-           ]);
-    }
-    
-    
-    
-    /**
-    * Retorna el valor del CIF
-    * @param $prorrateo
-    * @return float $cifValue
-    */
-    private function getCIF( array $prorrateo ) : array
-    {
-        
-        return([
-            'flete_aduana' => ( 
-                                $prorrateo['prorrateo_flete_aduana'] 
-                                * 
-                                $this->fob_product_percent
-                ),
-            'seguro_aduana' => (
-                                $prorrateo['prorrateo_seguro_aduana'] 
-                                * 
-                                $this->fob_product_percent
-                ),
-            'fob' => (
-                                $prorrateo['fob_parcial'] 
-                                *
-                                $this->fob_product_percent
-                                *
-                                $this->type_change_invoice
-                ),
-        ]);
-    }
-    
-    
+    }    
 }

@@ -217,7 +217,6 @@ class checkerPartial
             'MANO DE OBRA ETIQUETADO' => (
                 $unidades * $labeled_value_unity['valor']
                 ),
-            'TASA DE SERVICIO ADUANERO' => $this->getTSA(),
             'ETIQUETAS FISCALES' => $label_unity['valor'] * $unidades ,
         ];
         
@@ -236,45 +235,6 @@ class checkerPartial
             'boxes' => $boxes
         ]);
     }
-    
-    
-    /**
-     * Calcula el valor de la tasa Aduanera
-     * @return float
-     */
-    private function getTSA():float
-    {
-        
-        if($this->info_invoices == False){
-            return 0;
-        }
-        
-        $tsa_base = $this->searchTaxesPercent(
-            'TASA DE SERVICIO ADUANERO'
-            );
-        
-        $tsa = 0.0;
-        
-        foreach ($this->info_invoices as $idx => $invoice){
-            unset($invoice['detailInvoice']['sums']);
-            foreach ($invoice['detailInvoice'] as $itm => $product){
-                
-                $tasa = (
-                    ((floatval($product['peso'])/1000) * floatval($tsa_base['valor']))
-                    * $product['unidades']
-                    );
-                
-                if ($tasa < 700 ){
-                    $tsa += $tasa;
-                }else{
-                    $tsa += 7000;
-                }
-            }
-        }
-        
-        return $tsa;
-    }
-    
     
     /**
      * Retorna el parametro de un impuesto de la lista de impuestos,

@@ -89,24 +89,17 @@ class Prorrateo {
         
         foreach ($parcialExpenses as $item => $expenses)
         {
-            if(
-                ! preg_match('/[a-zA-Z]-[0-9]/' , $expenses['concepto'] )
-                &&
-                $expenses['concepto'] != 'FORMULARIOS'
-                )
-            {
-                array_push(
-                    $parcialExpensesWithoutWarenhouse,
-                    [
-                        'id_gastos_nacionalizacion' => 
-                                        $expenses['id_gastos_nacionalizacion'],
-                        
-                        'valor_prorrateado' => $expenses['valor_provisionado'],
-                        'concepto' => $expenses['concepto'],
-                        'tipo' => 'prorrateo',
-                    ]
-                    );
-            }
+            array_push(
+                $parcialExpensesWithoutWarenhouse,
+                [
+                    'id_gastos_nacionalizacion' => 
+                                    $expenses['id_gastos_nacionalizacion'],
+                    
+                    'valor_prorrateado' => $expenses['valor_provisionado'],
+                    'concepto' => $expenses['concepto'],
+                    'tipo' => 'prorrateo',
+                ]
+                );
         }
         
         foreach ($initExpenses as $item => $expenses)

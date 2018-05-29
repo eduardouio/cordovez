@@ -113,25 +113,24 @@ class Impuestos extends MY_Controller
      */
     public function pc(int $id_parcial)
     {        
+        $parcial = $this->modelParcial->get($id_parcial);
+        
+        if ($parcial == False){            
+            return $this->index();
+        }
+        
         $init_data = $this->getOrderDataR70($id_parcial);
         $prorrateos = $this->getProrrateoParcial($init_data);
         $param_taxes = $this->modelRatesExpenses->getTaxesParams();
+        $parcialTaxes =  new parcialTaxes(
+                                        $init_data, 
+                                        $prorrateos,  
+                                        $param_taxes, 
+                                        $parcial
+            );        
         
-        $parcialtaxes = [];
+        $taxes = $parcialTaxes->getTaxes();
         
-        foreach ($init_data['products'] as $item => $product){
-            $taxes = new productTaxes();
-            array_push(
-                        $parcialtaxes, 
-                        $taxes->getTaxesProduct(
-                                                $init_data, 
-                                                $prorrateos,
-                                                $product,
-                                                $param_taxes
-                            )
-                );
-        }
-                
         return ($this->responseHttp([
             'titleContent' => 'Resumen de impuestos Pedido ' . 
                                         $init_data['order']['nro_pedido'],

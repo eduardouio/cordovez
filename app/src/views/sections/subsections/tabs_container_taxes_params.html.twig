@@ -8,12 +8,7 @@
       </li>
       <li role="presentation">
       	<a href="#prorrateos" role="tab" data-toggle="tab" aria-controls="prorrateos">
-      		<span class="fa fa-list"></span> Prorrateos Parcial
-      	</a>
-      </li>
-            <li role="presentation">
-      	<a href="#parcial" role="tab" data-toggle="tab" aria-controls="prorrateo_item">
-      		<span class="fa fa-archive"></span> Detalle Parcial
+      		<span class="fa fa-list"></span> Prorrateos Pedido
       	</a>
       </li>
    </ul>
@@ -132,88 +127,6 @@
             </table>
           {% endif %} 
             </div>
-      </div>
-      
-      <div role="tabpanel" class="tab-pane" id="parcial">
-         <div class="col-md-12">
-            <table class="table table-condensed table-striped table-hover" style="font-size:10px">
-            <thead>
-            <tr>
-            <th>Item</th>
-            <th>Concepto</th>
-            <th>Valor</th>
-            </tr>
-            </thead>
-            <tbody>
-            </tr>
-            <td>1</td>
-            <td>Id Parcial/F Registro</td>            
-            <td class = "text-right">
-            {{ init_data.parcial.id_parcial }}
-            /
-            <span class="label label-primary">{{ init_data.parcial.date_create }}</span>
-            </td>
-            </tr>
-            <tr>
-            <td>2</td>
-            <td>Pedido</td>
-			<td class = "text-right">{{ init_data.parcial.nro_pedido }}</td>
-            </tr>
-            <tr>
-            <td>3</td>
-            <td>Fecha Nacionalización</td>
-			<td class = "text-right">{{ init_data.parcial.fecha_nacionalizacion }}</td>
-            </tr>
-            <tr>
-            <td>4</td>
-            <td>Fecha Salida Almacenera</td>
-			<td class = "text-right">{{ init_data.parcial.fecha_salida_almacenera }}</td>
-            </tr>
-            <tr>
-            <td>5</td>
-            <td>Tipo de Cambio Impuestos</td>
-			<td class = "text-right">{{ init_data.parcial.tipo_cambio }}</td>
-            </tr>
-            <tr>
-            <td>6</td>
-            <td>Toma en cuenta Etiquetas Fiscales</td>
-			{% if init_data.parcial.bg_have_etiquetas_fiscales == 1 %}
-				<td class = "text-right">
-				<span class="label label-success">SI</span>
-				</td>
-			{% else %}
-				<td class = "text-right">
-				<span class="label label-danger">NO</span>
-				</td>
-			{% endif %}
-            </tr>
-            <tr>
-            <td>7</td>
-            <td>Exoneracion Arancel Exaduana</td>
-			<td class = "text-right">
-			    {{ init_data.parcial.exoneracion_arancel }}
-			</td>
-            </tr>
-            <tr>
-            <td>8</td>
-            <td>Otros Impuestos</td>
-			<td class = "text-right">
-			    {{ init_data.parcial.otros }}
-			</td>
-            </tr>
-            <tr>
-            <td>9</td>
-            <td>Creado Por:</td>
-			<td class = "text-right">{{ user.username }}</td>
-            </tr>
-            <tr>
-            <td>10</td>
-            <td>Observaciobes:</td>
-			<td class = "text-right">{{ init_data.parcial.observaciones }}</td>
-            </tr>
-            </tbody>
-            </table>
-            </div>            
       </div>
    </div>
 </div>

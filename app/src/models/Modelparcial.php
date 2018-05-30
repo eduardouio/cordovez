@@ -115,6 +115,25 @@ class Modelparcial extends CI_Model
     
     
     /**
+     * Actualiza la informacion de un parcial
+     * 
+     * @param array $parcial
+     * @return bool
+     */
+    public function update(array $parcial):bool
+    {
+        $this->db->where('id_parcial', $parcial['id_parcial']);
+        if($this->db->update($this->table, $parcial)){
+            return True;
+        }
+        $this->modelLog->errorLog(
+            'Ni fue posible actualizar el parcial',
+            $this->db->last_query()
+            );
+        return False;
+    }
+    
+    /**
      * Retorna el ultimo parcial de un pedido, 
      * se usa para saber la fecha de salida del ultimo parical,
      * si no existe un parcial se toma la fecha de entrada a la almacenera
@@ -176,7 +195,6 @@ class Modelparcial extends CI_Model
         
         return false;
     }
-    
     
     
     /**

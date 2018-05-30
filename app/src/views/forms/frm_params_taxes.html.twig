@@ -37,20 +37,6 @@
             <div class="row">
                <div class="col-md-12">
                   <div class="form-group">
-                     <label>Otros Gastos</label>
-                     <input 
-                        type="number" 
-                        name="otros" 
-                        value="{{ init_data.parcial.otros }}" 
-                        step="0.01"
-                        style="width:100%" 
-                        >
-                  </div>
-               </div>
-            </div>
-            <div class="row">
-               <div class="col-md-12">
-                  <div class="form-group">
                      <label>Observaciones</label>
                      <textarea 
                         style="width:100%;" 
@@ -92,36 +78,14 @@
                         type="number" 
                         name="tipo_cambio"
                         step="0.0000000000001"
-                        required="" 
-                        value="{{ init_data.parcial.tipo_cambio }}" 
+                        required=""  
                         style="width:100%" 
-                        {% if init_data.parcial.moneda == 'DOLARES' %}
-                        readonly=""
+                        value = "{{ parcial_taxes.data_general.tipo_cambio_parcial }}"
+                        {% if init_data.order_invoices.0.moneda == 'DOLARES' %}
+                        	disabled=""
+                        	value = "1.000000000"	
                         {% endif %}
                         >
-                  </div>
-               </div>
-            </div>
-            <div class="row">
-               <div class="col-md-12">
-                  <div class="form-group">
-                     <label>Exoneración Arancel (% Base Avalorem)</label>
-                     <input 
-                        type="number" 
-                        name="exoneracion_arancel"
-                        id="exoneracion_arancel" 
-                        value="{{ init_data.parcial.exoneracion_arancel }}" 
-                        step="0.01"
-                        style="width:30%" 
-                        disabled
-                        >
-                        <label for=""> 
-                        <span class="text-primari" id='total_base_av'>
-                        ({{ base_advalorem }})</span> 
-                        </label>
-                        <label for="">
-                        <span class="text-info" id="descuento"></span>
-                        </label>
                   </div>
                </div>
             </div>

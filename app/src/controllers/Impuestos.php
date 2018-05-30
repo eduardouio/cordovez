@@ -128,15 +128,14 @@ class Impuestos extends MY_Controller
                                         $param_taxes, 
                                         $parcial
             );        
-        
-        $taxes = $parcialTaxes->getTaxes();
-        
+               
         return ($this->responseHttp([
-            'titleContent' => 'Resumen de impuestos Pedido ' . 
+            'titleContent' => 'Resumen de Impuestos Liquidación Aduana del Pedido ' . 
                                         $init_data['order']['nro_pedido'],
             'init_data' => $init_data,
-            'parcial_taxes' => $parcialtaxes,
+            'parcial_taxes' => $parcialTaxes->getTaxes(),
             'prorrateos' => $prorrateos,
+            'parcial' => $parcial,
             'regimen' => 'R70',
             'user' => $this->modelUser->get($init_data['parcial']['id_user']),
         ]));
@@ -235,30 +234,31 @@ class Impuestos extends MY_Controller
      */
     public function pd(string $nroOrder)
     {
+        $order = $this->modelOrder->get($nroOrder);
+        
+        if($order == False){
+            $this->modelLog->warningLog(
+                'El pedido solicitado no existe'
+                );
+            return $this->index();
+        }
+        
         $init_data = $this->getOrderDataR10($nroOrder);
         $param_taxes = $this->modelRatesExpenses->getTaxesParams();
         
-        $orderTaxes = [];
-        
-        foreach ($init_data['order_invoice_detail'] as $item => $product){
-            $taxes = new productTaxesR10();
-            
-            array_push(
-                $orderTaxes,
-                $taxes->getTaxesProduct(
-                    $init_data,
-                    $product,
-                    $param_taxes
-                    )
-                );
-        }
+        $orderTaxes =  new orderTaxes(
+            $init_data,
+            $param_taxes,
+            $order
+            ); 
                
         return ($this->responseHttp([
-            'titleContent' => 'Resumen de impuestos Pedido ' .
+            'titleContent' => 'Resumen de Impuestos Liquidación Aduana del Pedido ' .
                                               $init_data['order']['nro_pedido'],
             'init_data' => $init_data,
-            'parcial_taxes' => $orderTaxes,
+            'order_taxes' => $orderTaxes->getTaxes(),
             'regimen' => 'R10',
+            'order' => $order,
             'user' => $this->modelUser->get($init_data['order']['id_user']),
         ]));
     }
@@ -370,14 +370,13 @@ class Impuestos extends MY_Controller
      */
     public function actualizar()
     {
+        
         $paramsParcial = [
             'id_parcial' => $_POST['id_parcial'],
             'bg_have_tasa_control' => 0,
             'bg_have_etiquetas_fiscales' => 0,
             'observaciones' => $_POST['observaciones'],
             'tipo_cambio' => $_POST['tipo_cambio'],
-            'otros' => $_POST['otros'],
-            'exoneracion_arancel' => $_POST['exoneracion_arancel'],
         ];
         
         if (isset($_POST['bg_have_etiquetas_fiscales']) && 
@@ -392,16 +391,8 @@ class Impuestos extends MY_Controller
             $paramsParcial['bg_have_tasa_control'] = 1;
         }
         
-        if ($this->modelParcial->updateLabelsParcial($paramsParcial)) {
-            $this->modelLog->susessLog(
-                'Parametros moneda, etiquetas y otros impuestos modificadas'
-                );
-        } else {
-            $this->modelLog->errorLog(
-                'No se realizaron los cambios en el parcial',
-                $this->db->last_query()
-                );
-        }
+       $this->modelParcial->update($paramsParcial);
+       
         
         return ($this->redirectPage('showTaxesParcial', $_POST['id_parcial']));
     }
@@ -444,25 +435,38 @@ class Impuestos extends MY_Controller
     
     
     /**
-     * marca un pedido o un parcial como cerrado
-     * 
-     * @param bool $order es una orden
-     * @param int $id ide de parcial o del pedido
-     * @return bool
+     * Marca un pedido como cerrado
      */
-    private function liquidarIva(bool $is_order, int $id ): bool
-    {
-        if ($is_order){
-            $order = $this->modelOrder->getById($id_order);
-            $order['bg_isliquidated'] = 1;
-            return($this->modelOrder->update($order));
+    public function liquidarIvaOrder(){
+        if(!$_POST){
+            return $this->index();
+        }
+        $order = $this->input->post();
+        $order['bg_isliquidated'] = 1;
+        $order['have_etiquetas_fiscales'] = 1 ;
+        $order['bg_have_tasa_control'] = 1;
+        
+        $this->modelOrder->update($order);
+        return $this->redirectPage('showTaxesOrder', $order['nro_pedido']);
+     }
+     
+     /**
+      * Marca un parcial como cerrado
+      */
+    public function liquidarIvaParcial(){
+        if(!$_POST){
+            return $this->index();
         }
         
-        $parcial = $this->modelParcial->get($id_parcial);
+        $parcial = $this->input->post();
         $parcial['bg_isliquidated'] = 1;
-        return($this->modelParcial->update($parcial));
-           
+        $parcial['bg_have_etiquetas_fiscales'] = 1 ;
+        $parcial['bg_have_tasa_control'] = 1;               
+        $this->modelParcial->update($parcial);
+        return $this->redirectPage('showTaxesParcial', $parcial['id_parcial']);
      }
+     
+     
 
 
     /**

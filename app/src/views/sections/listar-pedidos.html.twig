@@ -1,10 +1,9 @@
-
 <div class="pedido">
    <div class="row">
       <div class="col-sm-5">
          <a href="{{ rute_url }}pedido/nuevo/">
-         <button class="btn btn-sm btn-default">
-         <span class="fa fa-plus fa-fw"></span> Nuevo Pedido
+         <button class="btn btn-sm btn-primary">
+         <span class="fa fa-cubes fa-fw"></span> Nuevo Pedido
          </button>
          </a>
       </div>
@@ -123,59 +122,14 @@
                   {{ order.observaciones }}
                </td>
                <td>
-                  {% if order.bg_isclosed == '0' %}
-                  <div class="dropdown">
-                     <button id="dLabel" type="button" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false"
-                        class="btn btn-sm btn-default">
-                     <span class="fa fa-chevron-down"></span> Seleccione
-                     </button>
-                     <ul class="dropdown-menu" aria-labelledby="dLabel">
-                        <li><a
-                           href="{{ rute_url }}pedido/presentar/{{ order.nro_pedido }}">
-                           <span class="fa fa-eye"></span> Ver Pedido
+               <small>
+               	<a href="{{ rute_url }}pedido/presentar/{{ order.nro_pedido }}" class="text-primary">
+                           <span class="fa fa-eye"></span> Ver
+               </a>
+                <a href="{{ rute_url }}gstinicial/validargi/{{ order.nro_pedido }}" class="text-primary">
+                           <span class="fa fa-gear"></span> Gastos
                            </a>
-                        </li>
-                        <li><a
-                           href="{{ rute_url }}pedido/editar/{{ order.nro_pedido }}">
-                           <span class="fa fa-pencil"></span> Editar Pedido
-                           </a>
-                        </li>
-                        <li><a
-                           href="{{ rute_url }}gstinicial/validargi/{{ order.nro_pedido }}">
-                           <span class="fa fa-gear"></span> Gen. Gst Iniciales
-                           </a>
-                        </li>
-                        <li>{% if order.bg_isclosed != '1' %} <a
-                           href="{{ rute_url }}pedidofactura/nuevo/{{ order.nro_pedido }}">
-                           <span class="fa fa-cube"></span> Agregar Productos
-                           </a>
-                        </li>
-                        {% if fob == 0 %}
-                        <li><a
-                           href="{{ rute_url }}pedido/eliminar/{{ order.nro_pedido }}"
-                           <span class="fa fa-trash"></span> Eliminar Pedido</a>
-                        </li>
-                        {% endif %}
-                        {% endif %}
-                     </ul>
-                  </div>
-                  {% else %}
-                  <div class="dropdown">
-                     <button id="dLabel" type="button" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false"
-                        class="btn btn-sm btn-default">
-                     <span class="fa fa-chevron-down"></span> Seleccione
-                     </button>
-                     <ul class="dropdown-menu" aria-labelledby="dLabel">
-                        <li><a
-                           href="{{ rute_url }}pedido/presentar/{{ order.nro_pedido }}">
-                           <span class="fa fa-eye"></span> Ver Pedido
-                           </a>
-                        </li>
-                     </ul>
-                  </div>
-                  {% endif %}
+                </small>
                </td>
             </tr>
             {% set item = item + 1 %}

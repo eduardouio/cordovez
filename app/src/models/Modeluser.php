@@ -22,13 +22,13 @@ class Modeluser extends CI_Model {
         $this->load->model('Modelbase');
         $this->modelBase = new ModelBase();
     }
-
+    
     /**
      * Retorna la informacion de un usuario, si no existe retorna false
      * @param int $idUser
      * @return array | boolean
      */
-    public function get($idUser) 
+    public function get($idUser)
     {
         $user = $this->modelBase->get_table([
             'table' => $this->table,
@@ -49,14 +49,14 @@ class Modeluser extends CI_Model {
      * @return bool | int last insert id
      */
     public function create(array $user):bool
-    {   
+    {
         $this->load->model('modellog');
         $this->modelLog = new Modellog();
         
         if($this->db->insert($this->table, $user)){
             $this->modelLog->queryInsrertLog($this->db->last_query());
             return $this->db->insert_id();
-        }   
+        }
         return false;
     }
     
@@ -95,7 +95,4 @@ class Modeluser extends CI_Model {
         }
         return false;
     }
-    
-    
-    
 }

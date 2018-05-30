@@ -388,4 +388,26 @@ class Modelparcial extends CI_Model
     
     
     
+    /**
+     * Elimina un parcial vacio de la base de datos
+     * @param array $parcial
+     * @return bool 
+     */
+    public function delete(array $parcial):bool
+    {
+        $this->db->where('id_pacial', $parcial['id_parcial']);
+        
+        if ($this->db->delete($this->table)){
+            $this->modelLog->susessLog('Parcial Eliminado correctamente');
+            return True;
+        }
+        
+        $this->modelLog->errorLog(
+            'No se pudo eliminar un parcial',
+            $this->db->last_query()
+            );
+        return False;
+    }
+    
+    
 }

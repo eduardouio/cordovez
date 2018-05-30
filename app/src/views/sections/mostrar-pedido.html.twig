@@ -90,26 +90,26 @@
 </ol>
 </div>
 <div class="col-md-7 text-right">
-	{% if order.bg_isclosed == '0' %}
-	<a
-			href="{{rute_url}}gstinicial/validargi/{{order.nro_pedido}}">
-			<button type="button" class="btn btn-default btn-sm">
+		<a href="{{rute_url}}gstinicial/validargi/{{order.nro_pedido}}" class="btn btn-default btn-sm">
 				<span class="fa fa-gear"></span> Gastos Iniciales
-			</button>
 		</a>
-		
-		<a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}"
-			class="text-primary">
-			<button class="btn btn-default btn-sm">
+		{%  if order.bg_isliquidated == 0 and order.regimen == 10 %}
+		<a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}" class="btn btn-default btn-sm">
 				<span class="fa fa-pencil fa-fw"></span>Editar
-			</button>
 		</a>  
-		<a
-			href="{{rute_url}}pedidofactura/nuevo/{{ order.nro_pedido }}">
-			<button class="btn btn-default btn-sm">
+		<a href="{{rute_url}}pedidofactura/nuevo/{{ order.nro_pedido }}" class="btn btn-default btn-sm">
 				<span class="fa fa-plus"></span> Agregar Productos
-			</button>
+		</a>	
+		{% elseif order.bg_haveExpenses == 0 and order.regimen == 70 %}
+			<a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}" class="text-primary">
+				<span class="fa fa-pencil fa-fw"></span>Editar
+		</a>  
+		<a href="{{rute_url}}pedidofactura/nuevo/{{ order.nro_pedido }}" class="text-primary">
+				<span class="fa fa-plus"></span> Agregar Productos
 		</a>
+		{% endif %}
+		
+		
 		
 		<a
 			href="{{rute_url}}facturapagos/nuevo/{{order.nro_pedido}}">
@@ -117,16 +117,8 @@
 				<span class="fa fa-file-o"></span> Justificar Gasto
 			</button>
 		</a>
-		{% endif %}
-		{% if order.bg_isclosed == '0' %}
-		<a
-			href="{{rute_url}}pedido/eliminar/{{order.nro_pedido}}">
-			<button class="btn btn-sm btn-danger">
-				<span class="fa fa-trash fa-fw"></span>Elimnar
-			</button>
-		</a>
-		{% endif %}
-		</div>
+		
+</div>
 	</div>
 <!-- Tabs -->
 <div>

@@ -72,22 +72,27 @@
 			{%  for detail in infoInvoice.details %}		
 				{% set nroCajas = nroCajas +  detail.nro_cajas %}
 			<td>{{loop.index}}</td>
-				<td> <span class="fa fa-eye"></span> <a href="{{rute_url}}facinfdetalle/presentar/{{detail.id_factura_informativa_detalle}}">
+				<td><a href="{{rute_url}}facinfdetalle/presentar/{{detail.id_factura_informativa_detalle}}">
+					<span class="fa fa-eye"></span>
 					{{ detail.product.nombre  }}
 					</a>
 				</td>
 			</td>
 			<td class="text-right"> {{ detail.product.capacidad_ml }} ml</td>
 			<td class="text-right"> {{ detail.grado_alcoholico | number_format(2,',','.')}} %
+			{% if parcial.bg_isliquidated == 0 %}
 				<a href="{{rute_url}}facinfdetalle/editar/{{detail.id_factura_informativa_detalle}}">
                     <span class="fa fa-pencil fa-fw"></span>
                     </a> 
+            {% endif %}
 			</td>
 			<td class="text-right">
 				{{ detail.nro_cajas }}
+				{% if parcial.bg_isliquidated == 0 %}
 				<a href="{{rute_url}}facinfdetalle/editar/{{detail.id_factura_informativa_detalle}}">
                     <span class="fa fa-pencil fa-fw"></span>
                     </a> 
+                 {% endif %}
 			</td>
 			<td class="text-right">{{ (detail.product.cantidad_x_caja * detail.nro_cajas) | number_format(0,',','.') }}</td>
 			{% set unidades = unidades +  (detail.product.cantidad_x_caja * detail.nro_cajas) %}
@@ -104,21 +109,23 @@
                 Seleccione
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dLabel">
-                  <li><a href="{{rute_url}}facinfdetalle/presentar/{{detail.id_factura_informativa_detalle}}">
-                    <span class="fa fa-eye fa-fw"></span>Ver Detalle Factura</a> 
-                  </li>
-                  <li> <a href="{{rute_url}}facinfdetalle/editar/{{detail.id_factura_informativa_detalle}}">
+                  {% if parcial.bg_isliquidated == 0 %}
+                  <li>
+                  <a href="{{rute_url}}facinfdetalle/editar/{{detail.id_factura_informativa_detalle}}">
                     <span class="fa fa-pencil fa-fw"></span>
                     Editar Detalle Factura</a> 
                   </li>
+                  {% endif %}
                   <li> <a href="{{rute_url}}producto/presentar/{{detail.product.cod_contable}}" target="_blank">
 					<span class="fa fa-eye"></span> Ver Producto
 					</a>
                   </li>
+                  {% if parcial.bg_isliquidated == 0 %}
                   <li> <a href="{{rute_url}}facinfdetalle/eliminar/{{detail.id_factura_informativa_detalle}}" class="text-danger">
                     <span class="fa fa-trash fa-fw"></span>
                     Eliminar Detalle Factura</a> 
                   </li>
+                  {% endif %}
                 </ul>
               </div>
 			</td>
@@ -140,6 +147,7 @@
 		</table>
 	</div>
 </div>
+{% if parcial.bg_isliquidated == 0 %}
 <div class="row">
 	<div class="col-md-offset-9">
 	<a href="{{rute_url}}facinformativa/editar/{{infoInvoice.id_factura_informativa}}" class="btn btn-info btn-sm"> 
@@ -150,5 +158,6 @@
 		<span class="fa fa-trash"></span> Eliminar</a>
 	</div>
 </div>
+{% endif %}
 
 

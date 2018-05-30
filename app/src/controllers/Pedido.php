@@ -1,6 +1,7 @@
 <?php
 
 require 'lib/StockOrder.php';
+require 'lib/ReportCompleteOrder.php';
 
 defined('BASEPATH') or exit('No direct script access allowed');
 /**
@@ -39,7 +40,7 @@ class Pedido extends MY_Controller
     private $modelOrderInvoiceDetail;
     private $modelPaidDetail;
     private $modelParcial;    
-    
+    private $modelOrderReport;
     /**
      * constructor de la clase
      */
@@ -72,6 +73,8 @@ class Pedido extends MY_Controller
         $this->load->model('modelorderinvoicedetail');
         $this->load->model('modelpaiddetail');
         $this->load->model('modelparcial');
+        $this->load->model('ModelOrderReport');
+        $this->modelOrderReport = new ModelOrderReport();
         $this->modelOrder = new Modelorder();
         $this->modelSupplier = new Modelsupplier();
         $this->modelProduct = new Modelproduct();
@@ -218,10 +221,16 @@ class Pedido extends MY_Controller
             }
             $paidsDetails = $paidsDetailsTemp;
         }
+        
+        $order_report = new ReportCompleteOrder(
+                                $this->modelOrderReport->getOrderData($order)
+                );
+        
                 
         return($this->responseHttp([
             'show_order' => true,
             'current_stock' => $this->getStock($order),
+            'order_info' => $order_report->getStatusData(),
             'order' => $order,
             'ubicacion' => $this->whereIsOrder($order),
             'warenHouseDays' => $this->getWarenHouseDaysInitial($order),

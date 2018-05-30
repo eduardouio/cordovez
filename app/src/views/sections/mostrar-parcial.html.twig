@@ -1,21 +1,3 @@
-	<div class="row">
-		<div class="col-md-3">
-			<strong>FOB Parcial:</strong> <span>{{ parcial.numero }}</span>
-		</div>
-		<div class="col-md-2">
-			<strong>Flete Parcial:</strong> <span>{{ supplier.identificacion_proveedor }}</span>
-		</div>
-		<div class="col-md-2">
-			<strong>Seguro Parcial:</strong> <span>{{ infoInvoice.seguro_aduana  }}</span>
-		</div>
-		<div class="col-md-2">
-			<strong>Cajas Parcial:</strong> {{infoInvoice.seguro_aduana }}
-		</div>
-		<div class="col-md-3">
-			<strong>Unidades:</strong> <span>{{ infoInvoice.comentarios }}</span>
-		</div>
-	</div>
-<br>
    <div class="row">
 <div class="col-md-5">
 <ol class="breadcrumb" style="color: #999;">
@@ -25,33 +7,18 @@
 </ol>
 </div>
 <div class="col-md-7 text-right">
-	{% if parcial.bg_isclosed == '0' %}
-	<a
-			href="{{rute_url}}gstnacionalizacion/parcial/{{parcial.id_parcial}}">
-			<button type="button" class="btn btn-default btn-sm">
+	{% if parcial.bg_isliquidated == '0' %}
+	<a href="{{rute_url}}gstnacionalizacion/parcial/{{parcial.id_parcial}}" class="btn btn-default btn-sm" >
 				<span class="fa fa-gear"></span> Gastos Parcial
-			</button>
 		</a>
 		
-		<a
-			href="{{rute_url}}facturapagos/nuevo/{{order.nro_pedido}}">
-			<button class="btn btn-default btn-sm">
+		<a href="{{rute_url}}facturapagos/nuevo/{{order.nro_pedido}}" class="btn btn-default btn-sm">
 				<span class="fa fa-file-o"></span> Justificar Gasto
-			</button>
 		</a>
-		<a
-			href="{{rute_url}}parcial/eliminar/{{parcial.id_parcial}}">
-			<button class="btn btn-sm btn-danger">
+		<a href="{{rute_url}}parcial/eliminar/{{parcial.id_parcial}}" class="btn btn-sm btn-danger">
 				<span class="fa fa-trash fa-fw"></span>Eliminar Parcial
-			</button>
 		</a>
 		{% endif %}
-		<a
-			href="#{{order.nro_pedido}}">
-			<button class="btn btn-sm btn-default">
-				<span class="fa fa-file-pdf-o"></span> Informe del Parcial
-			</button>
-		</a>		
 		</div>
 	</div>
 <!-- Tabs -->
@@ -67,16 +34,6 @@
          {% endif %}
       </a>
       </li>
-      <li role="presentation">
-      	<a href="#gastos" role="tab" data-toggle="tab" aria-controls="gastos">
-      		<span class="fa fa-list"></span> Gastos Nacionalizacion Parcial
-      	</a>
-      </li>    
-      <li role="presentation">
-      	<a href="#servicios" role="tab" data-toggle="tab" aria-controls="servicios">
-      		<span class="fa fa-file-text-o"></span> Provisiones Justificadas Parcial
-      	</a>
-      </li>
    </ul>
    <br>
    <div class="tab-content">
@@ -85,16 +42,6 @@
          {% include 'sections/subsections/tab-lista-facturas-informativas-parcial.html.twig' %}
       </div>
       <!-- /Tab Facturas-->
-      <!-- Gastos nacionalizacion factura informativa -->
-      <div role="tabpanel" class="tab-pane" id="gastos">
-      	 {% include 'sections/subsections/tab-gastos-nacionalizacion-parcial.html.twig' %}
-      </div>
-      <!-- /Gastos nacionalizacion factura informativa -->
-      <!-- Tab Facturas Servicios factura informativa --> 	
-      <div role="tabpanel" class="tab-pane" id="servicios">
-         {% include 'sections/subsections/tab-facturas-servicios-parcial.html.twig' %}
-      </div>
-      <!-- /Tab Facturas Servicios -->
    </div>
 </div>
 <!--/tabs-->

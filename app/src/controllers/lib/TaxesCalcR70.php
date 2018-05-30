@@ -75,11 +75,11 @@ class parcialTaxes {
            if($x == 1){
                 $taxes['sums'] = $tax;
            }else{
-               foreach ($array_sum as $tax_name => $val){
+               foreach ($taxes['sums']as $tax_name => $val){
                    if (gettype($val) != 'string'){
-                       $taxes['sums'] += $val;
+                       $taxes['sums'][$tax_name] += $val;
                    }else{
-                       $taxes['sums'] = 'String';
+                       $taxes['sums'][$tax_name] = 'String';
                        }
                }
            }

@@ -69,7 +69,7 @@ class Modelorder extends CI_Model
      * @param (string) $nroOrder identidicador de la tabla 000-00
      * @return array | false
      */
-    public function get($nroOrder)
+    public function get(string $nroOrder)
     {
         $order = $this->modelBase->get_table([
             'table' => 'pedido',

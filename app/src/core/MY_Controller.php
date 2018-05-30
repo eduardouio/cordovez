@@ -114,17 +114,18 @@ class MY_Controller extends CI_Controller
             'paidsList' => 'index.php/facturapagos/listar/',
             'paidPresent' => 'index.php/facturapagos/presentar',
             'paidDetailNew' => 'index.php/detallefacpago/nuevo',
-            'supplierPresent' => 'index.php/proveedor/presentar',
-            'supplierNew' => 'index.php/proveedor/nuevo',
-            'suppliersList' => 'index.php/proveedor/listar',
             'productsList' => 'index.php/producto/listar',
             'productPresent' => 'index.php/producto/presentar',
             'validargi' =>  'index.php/gstinicial/validargi',
             'presentInvoiceOrder' =>  'index.php/pedidofactura/presentar',
             'parcial' =>  'index.php/gstnacionalizacion/parcial',
             'newParcial' => 'index.php/parcial/nuevo',
+            'supplierPresent' => 'index.php/proveedor/presentar',
+            'supplierNew' => 'index.php/proveedor/nuevo',
+            'suppliersList' => 'index.php/proveedor/listar',
             'showTaxesParcial' => 'index.php/impuestos/pc',            
-            'showTaxesOrder' => 'index.php/impuestos/pd',            
+            'showTaxesOrder' => 'index.php/impuestos/pd',   
+            'showParcial' => 'index.php/parcial/presentar'
         ];
 
 

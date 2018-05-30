@@ -3,10 +3,13 @@
 		<h4 class="text-tittle">Listado de Facturas Informativas</h4>
 	</div>
 	<div class="col-md-3 text-right">
+	{% if parcial.bg_isliquidated == 0 %}
 		<a href="{{rute_url}}facinformativa/nuevo/{{parcial.id_parcial}}"
-			class="btn btn-sm btn-default"> <span class="fa fa-plus"></span>
+			class="btn btn-sm btn-default"> 
+			<span class="fa fa-plus"></span>
 			<span class="text-primary"> Agregar Factura Informativa </span>
 		</a>
+	{% endif %}
 	</div>
 </div>
 <div class="row">

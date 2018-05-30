@@ -12,7 +12,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
  */
 class checkerOrder
 {
-
     private $order;
     private $order_invoices;
     private $paids_init_expenses;

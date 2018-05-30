@@ -184,10 +184,16 @@ class Parcial extends MY_Controller
     {
         $parcial = $this->modelParcial->get($idParcial);
         
-        if($parcial){           
-            $this->modelParcial->delete($idParcial);
+        if($parcial == False){
+            $this->modelLog->warningLog('El parcial no existe');
+            return $this->index();
         }
-        return ($this->redirectPage('presentOrder', $parcial['nro_pedido']));
+        
+        if($this->modelParcial->delete($parcial)){
+            return ($this->redirectPage('presentOrder', $parcial['nro_pedido']));
+        }
+        
+        return ($this->redirectPage('showParcial', $parcial['id_parcial']));
     }
     
     

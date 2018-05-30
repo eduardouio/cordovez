@@ -12,7 +12,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @package Controllers
  */
 
-
 class orderTaxes {
     
     private $init_data;
@@ -44,7 +43,6 @@ class orderTaxes {
         $this->order = $order;
     }
     
-    
     /**
      * Retorna los impuestos del pedido
      *
@@ -75,9 +73,9 @@ class orderTaxes {
             }else{
                 foreach ($taxes['sums'] as $tax_name => $val){
                     if (gettype($val) != 'string'){
-                        $taxes['sums'] += $val;
+                        $taxes['sums'][$tax_name] += $val;
                     }else{
-                        $taxes['sums'] = 'String';
+                        $taxes['sums'][$tax_name] = 'String';
                     }
                 }
             }

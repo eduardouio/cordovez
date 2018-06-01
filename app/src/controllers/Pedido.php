@@ -225,13 +225,13 @@ class Pedido extends MY_Controller
         $order_report = new ReportCompleteOrder(
                                 $this->modelOrderReport->getOrderData($order)
                 );
-        
-                
+               
         return($this->responseHttp([
             'show_order' => true,
             'current_stock' => $this->getStock($order),
             'order_info' => $order_report->getStatusData(),
             'order' => $order,
+            'order_report' => $order_report->getStatusData(),
             'ubicacion' => $this->whereIsOrder($order),
             'warenHouseDays' => $this->getWarenHouseDaysInitial($order),
             'orderInvoices' => $invoicesOrder,

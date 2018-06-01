@@ -86,16 +86,21 @@ class Detallefacpago extends MY_Controller
             $this->modelLog->warningLog('Acceso no autorizado a metodo');
             return $this->index();
         }
+        $id_parcial = 0;
+        $nro_pedido = '000-00';
         
-        if($_POST['id_parcial'] != '0'){
-            $_POST['nro_pedido'] = '000-00';
+        
+        if (isset($_POST['id_parcial'])){
+            $id_parcial = $_POST['id_parcial'];            
+        }else{
+            $nro_pedido = $_POST['nro_pedido'];
         }
 
         $document = $this->modelPaid->getDocument($_POST['id_documento_pago']);
         
         $idExpense = $this->modelExpenses->create([
-            'nro_pedido' => $_POST['nro_pedido'],
-            'id_parcial' => $_POST['id_parcial'],
+            'nro_pedido' => $nro_pedido,
+            'id_parcial' => $id_parcial,
             'identificacion_proveedor' => $document['identificacion_proveedor'],
             'concepto' => $_POST['concepto'],
             'tipo' => 'NO PROVISIONADO',

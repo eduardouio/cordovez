@@ -112,7 +112,11 @@
                		{% if expense.bg_closed == 0 %}
                			<small class="label label-warning">Just. Parcial</small>
                		{% else %}
-    					<small class="label label-success">Justificado</small>           		
+               		{% if expense.tipo == 'NO PROVISIONADO' %}
+               				<small class="label label-inverse"><span class="text-danger">No Provisionado</span></small>
+               			{% else %}           			
+    						<small class="label label-success">Justificado</small>           		
+		               {% endif %}           		
 	               {% endif %}
 	               {% for invoice in expense.invoices %}
 	               		<a href="{{ rute_url }}facturapagos/presentar/{{ invoice }}">

@@ -7,7 +7,6 @@
 </ol>
 </div>
 <div class="col-md-7 text-right">
-	{% if parcial.bg_isliquidated == '0' %}
 	<a href="{{rute_url}}gstnacionalizacion/parcial/{{parcial.id_parcial}}" class="btn btn-default btn-sm" >
 				<span class="fa fa-gear"></span> Gastos Parcial
 		</a>
@@ -15,6 +14,7 @@
 		<a href="{{rute_url}}facturapagos/nuevo/{{order.nro_pedido}}" class="btn btn-default btn-sm">
 				<span class="fa fa-file-o"></span> Justificar Gasto
 		</a>
+	{% if parcial.bg_isliquidated == '0' %}
 		<a href="{{rute_url}}parcial/eliminar/{{parcial.id_parcial}}" class="btn btn-sm btn-danger">
 				<span class="fa fa-trash fa-fw"></span>Eliminar Parcial
 		</a>
@@ -27,10 +27,10 @@
       <li role="presentation" class="active">
       	<a href="#facturas" role="tab" data-toggle="tab" aria-controls="facturas">
       	<span class="fa fa-file"></span> Facturas Informativas Parcial
-      	{% if parcial.bg_isclosed == '0' %}
+      	{% if parcial.bg_isliquidated == '0' %}
          <span class="label label-success">Abierto</span>
          {% else %}
-         <span class="label label-died">Cerrado</span>
+         <span class="label label-died">Liquidado</span>
          {% endif %}
       </a>
       </li>

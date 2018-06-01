@@ -186,7 +186,8 @@ class Modelexpenses extends CI_Model
             'table' => $this->table,
             'where' => [
                 'nro_pedido' => $nroOrder,
-                'tipo' => 'INICIAL'
+                #para que aparezcan los no provisionados
+                #'tipo' => 'INICIAL',
             ],
             'orderby' => [
                 'tipo' => 'DESC',

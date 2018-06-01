@@ -1,5 +1,7 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
 
+require 'lib/ReportCompleteOrder.php';
+
 /**
  * Controller encargado de manejar los parciales de los pedidos
  *
@@ -13,7 +15,6 @@
  */
 class Parcial extends MY_Controller
 {
-
     private $template = '/pages/pageParcial.html';
     private $controller = 'parcial';
     private $modelParcial;
@@ -26,6 +27,7 @@ class Parcial extends MY_Controller
     private $modelExpenses;
     private $modelSupplier;
     private $modelPaidDetail;
+    private $modelOrderReport;
 
     /**
      * constructor de clase
@@ -56,7 +58,9 @@ class Parcial extends MY_Controller
         $this->load->model('Modeluser');        
         $this->load->model('Modelexpenses');        
         $this->load->model('Modelsupplier');        
-        $this->load->model('Modelpaiddetail');        
+        $this->load->model('Modelpaiddetail');
+        $this->load->model('ModelOrderReport');
+        $this->modelOrderReport = new ModelOrderReport();
         $this->modelParcial = new Modelparcial();
         $this->modelOrder = new Modelorder();
         $this->modelInfoInvoice = new Modelinfoinvoice();
@@ -141,8 +145,6 @@ class Parcial extends MY_Controller
     public function nuevo(string $nroOrder)
     {
         $order = $this->modelOrder->get($nroOrder);
-        $hasActiveParcial = false;
-        
         if($order == false){
             $this->modelLog->errorLog(
                 'No se puede crear un parcial para un pedido inexistente'
@@ -150,28 +152,26 @@ class Parcial extends MY_Controller
             return $this->index();
         }
         
-        $olderParcials = $this->modelParcial->getByOrder($nroOrder);
+        $order_report = new ReportCompleteOrder(
+            $this->modelOrderReport->getOrderData($order)
+            );
         
         $parcial = [
             'id_user' => $this->session->userdata('id_user'),
             'nro_pedido' => $nroOrder,
         ];
-                
-        if(is_array($olderParcials)){
-            foreach($olderParcials as $idex => $parcial){
-                if($parcial['bg_isclosed'] == 1)
-                {
-                    $hasActiveParcial = true;
-                }
-            }
-        }
         
-        if($hasActiveParcial == false && $order['regimen'] == 70){
+        $status_order = $order_report->getStatusData();
+        
+        if ($status_order['have_open_parcial'] == False){
             $id_parcial = $this->modelParcial->create($parcial);
             return($this->redirectPage('infoInvoiceNew', $id_parcial));
         }
         
-        $this->modelLog->warningLog('No se puede crear un parcial mientras uno esté activo' . current_url() );
+        $this->modelLog->warningLog(
+            'No se puede crear un parcial mientras otro esté activo', 
+            current_url() 
+            );
         return ($this->redirectPage('presentOrder', $nroOrder));        
     }
         

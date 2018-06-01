@@ -19,7 +19,11 @@ class Modelpaid extends CI_Model{
     private $modelExpenses;
     private $modelPaidDetail;
     private $modelLog;
+    private $modelParcial;
     
+    /**
+     * Constructo de clase
+     */
     function __construct(){
         parent::__construct();
         $this->init();
@@ -34,6 +38,8 @@ class Modelpaid extends CI_Model{
         $this->load->model('modelexpenses');
         $this->load->model('modelpaiddetail');
         $this->load->model('modellog');
+        $this->load->model('Modelparcial');
+        $this->modelParcial = new Modelparcial();
         $this->modelBase = new Modelbase();
         $this->modelSupplier = new Modelsupplier();
         $this->modelExpenses = new Modelexpenses();
@@ -118,15 +124,58 @@ class Modelpaid extends CI_Model{
      */
     public function getAllPaidsFromOrder(string $nro_order){
         
-        $documents = $this->modelBase->get_table([
-            'nro_pedido'
-        ]);
+        $expenses = [];
+        $invoices_paids = [];
         
-        if ($documents == False){
-            return False;
+        $order_expenses  = $this->modelExpenses->get($nro_order);
+        $paricals = $this->modelParcial->getAllParcials($nro_order);
+        
+        
+        if ($order_expenses){
+            foreach ($order_expenses as $idx => $exp){
+                array_push($expenses, $exp);        
+            }
+        }
+               
+        if ($paricals) {
+            foreach ($paricals as $idx => $parcial){
+                $parcial_expenses = $this->modelExpenses->getPartialExpenses(
+                    $parcial['id_parcial']
+                    );
+                
+                if ($parcial_expenses) {
+                    foreach ($parcial_expenses as $idx => $exp){
+                        array_push($expenses, $exp);
+                    }
+                }                
+            }
         }
         
-        
-    }
-        
+        if ($expenses) {
+            $paids_detail = [];
+            $invoices = [];
+            
+            foreach ($expenses as $idx => $exp) {
+                $detail = $this->modelPaidDetail->getByExpense(
+                    $exp['id_gastos_nacionalizacion']
+                    );
+                if ($detail) {
+                    array_push($paids_detail, $detail);
+                }
+            }
+            
+            if ($paids_detail) {
+                foreach ( $paids_detail as $idx => $det){
+                    $document = $this->get($det[0]['id_documento_pago']);
+                    if ($document) {
+                        array_push($invoices, $document);
+                    }
+                }
+
+                return $invoices;
+            }
+        }
+            
+        return False;
+    }        
 }

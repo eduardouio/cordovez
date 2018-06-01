@@ -28,23 +28,24 @@ class ReportCompleteOrder{
         array $params
         )
     {
-        
         $this->order =  $params['order'];
         $this->order_invoices =  $params['order_invoices'];
         $this->products =  $params['products'];
         $this->init_expenses =  $params['init_expenses'];
         $this->paids_order =  $params['paids_order'];
-        $this->parcials =  $params['partials'];
+        if ($this->order['regimen'] != 10){
+            $this->parcials =  $params['partials'];            
+        }
     }
+    
     
     /**
      * Rertorna el estado del pedido
      */
     public function getStatusData(){
-        $have_parcials = True;
         
         return([
-            'have_open_parcial' => False,
+            'have_open_parcial' => $this->checkPartials(),
         ]);
     }
     
@@ -53,8 +54,21 @@ class ReportCompleteOrder{
      * @return bool
      */
     private function checkPartials():bool
-    {
-            
+    {   
+        
+        if ($this->order['regimen'] == 10){
+            return False;
+        }
+        
+        foreach ($this->parcials as $idx => $parcial){
+            if (
+                $parcial['bg_isliquidated'] == 0
+                )
+            {
+                return True;       
+            }
+        }
+        return False;
     }
-    }
+}
     

@@ -80,7 +80,6 @@ class ModelOrderReport extends CI_Model
     }
     
     
-    
     /**
      * Retorna toda la uinformacion de un pedido R70
      * 
@@ -89,11 +88,10 @@ class ModelOrderReport extends CI_Model
      */
     private function getOrderDataR70( array $order):array 
     {           
-        
         $common_data = $this->getCommonDataFromOrder($order);
         
-        $init_expenses = $this->modelExpenses->get($nro_order);        
-        $paricials_temp = $this->modelParcial->getByOrder($nro_order);
+        $init_expenses = $this->modelExpenses->get($order['nro_pedido']);        
+        $paricials_temp = $this->modelParcial->getByOrder($order['nro_pedido']);
         $parcials = [];
         
         foreach ($paricials_temp as $idx => $parcial){
@@ -102,13 +100,15 @@ class ModelOrderReport extends CI_Model
                 );
             
             $parical['info_invoices'] = [];
-            
-            foreach ($info_invoices_temp as $idx => $invoice){
-                $invoice['detalle_factura'] = 
-                        $this->modelInfoInvoiceDetail->getByFacInformative(
-                            $invoice['id_factura_informativa']
-                            );
-                array_push($invoice, $parical['info_invoices']);
+            if($info_invoices_temp){
+                foreach ($info_invoices_temp as $idx => $invoice){
+                    $invoice['detalle_factura'] = 
+                            $this->modelInfoInvoiceDetail->getByFacInformative(
+                                $invoice['id_factura_informativa']
+                                );
+                    array_push($invoice, $parical['info_invoices']);
+                }
+                
             }
             
             $parcial['parcial_expenses'] = 
@@ -160,11 +160,7 @@ class ModelOrderReport extends CI_Model
      * @return array
      */
     private function getCommonDataFromOrder(array $order):array
-    {
-        
-        print '<pre>';
-        print_r($order);
-        
+    {        
         $order_invoices_temp = $this->modelOrderInvoices->getbyOrder(
             $order['nro_pedido']
             );
@@ -190,8 +186,10 @@ class ModelOrderReport extends CI_Model
         
         $init_expenses =  $this->modelExpenses->get($order['nro_pedido']);
         $paids_order =[];
-        $paids_order_temp = $this->modelPaid->getAllPaidsFromOrder($nro_order);
-        
+        $paids_order_temp = $this->modelPaid->getAllPaidsFromOrder($order['nro_pedido']);
+        if ($paids_order_temp){
+            
+        }
         foreach ($paids_order_temp  as $idx => $paid){
             $paid['detalle_pago'] = $this->modelPaidDetail->getDetail($paid['id_documento_pago']);
             array_push($paids_order, $paid);

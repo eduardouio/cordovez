@@ -149,6 +149,14 @@ class parcialTaxes {
         
         $taxes_product = $this->getDetailTaxesProduct($product, $prorrateo_item);
         
+        $indirectos = (
+            $taxes_product['ice_advalorem']
+            + $taxes_product['ice_especifico']
+            + $taxes_product['fodinfa']
+            + $prorrateo_item['prorrateos_total']
+            + $taxes_product['etiquetas_fiscales']
+            );
+        
         return([
                 'product' => $product['nombre'],
                 'cod_contable' => $product['cod_contable'],
@@ -171,6 +179,7 @@ class parcialTaxes {
                 'prorrateo_parcial' => $prorrateo_item['prorrateo_parcial'],
                 'prorrateo_pedido' => $prorrateo_item['prorrateo_pedido'],
                 'prorrateos_total' => $prorrateo_item['prorrateos_total'],
+                'indirectos' => $indirectos,
                 'tasa_control' => $prorrateo_item['tasa_control'],
                 'fodinfa' => $taxes_product['fodinfa'],
                 'iva' => $taxes_product['iva'],
@@ -185,6 +194,8 @@ class parcialTaxes {
                 'ice_advalorem' => $taxes_product['ice_advalorem'],
                 'ice_advalorem_unitario' => 
                                     $taxes_product['ice_advalorem_unitario'],
+                'arancel_especifico' => $taxes_product['arancel_especifico'],
+                'arancel_advalorem' => $taxes_product['arancel_advalorem'],
                 'etiquetas_fiscales'=> $taxes_product['etiquetas_fiscales'],
                 'ice_unitario'=> $taxes_product['ice_unitario'],
                 'total_ice' => $taxes_product['total_ice'],
@@ -256,7 +267,7 @@ class parcialTaxes {
                 ),
             'capacidad_ml' =>  $product_base['capacidad_ml'] ,
             'peso' => $product_base['peso'] ,
-            'grado_alcoholico' => $product_base['grado_alcoholico'],
+            'grado_alcoholico' => $detail_order_invoice['grado_alcoholico'],
             'fob' => (
                 $detail_info_invoice['nro_cajas']
                 * $detail_order_invoice['costo_caja']
@@ -268,6 +279,7 @@ class parcialTaxes {
     
     /**
      * Retorna el valor del prorrateo de los gastos iniciales y del parcial
+     * 
      * para el fob de item
      */
     private function getProrrateoItem(
@@ -277,22 +289,19 @@ class parcialTaxes {
     {   
         $prorrateo = $this->prorrateo['prorrateo'];
         $prorrateo_detail = $this->prorrateo['prorrateo_detail'];
+        $fobs_parcial = $this->init_data['fobs_parcial'];
         $fob_info_invoice = 0.0;
         $prorrateos_pedido = 0.0;
-        
-        # se quita el valor de la bodega del prorrateo del parcial
-        # y se suma el valor que le corresponde 
-        $prorrateos_parcial = (-1 * $prorrateo['bodegaje_parcial'])
-                                 + $prorrateo['bodegaje_prorrateado'];
-        
-        foreach($this->prorrateo['prorrateo_detail'] as $idx => $gst_prorrateo){
-            if ($gst_prorrateo['tipo'] == 'prorrateo'){
-                $prorrateos_parcial += $gst_prorrateo['valor_prorrateado'];
-            }else{
+        $prorrateos_parcial = $this->init_data['warenhouses']['almacenaje_aplicado'];
+
+        foreach($prorrateo_detail as $idx => $gst_prorrateo){
+            
+            if ($gst_prorrateo['tipo'] == 'gasto_inicial'){
                 $prorrateos_pedido += $gst_prorrateo['valor_prorrateado'];
+            }else{
+                $prorrateos_parcial += $gst_prorrateo['valor_provisionado'];
             }
         }
-        
         
         
         foreach ($this->init_data['info_invoices'] as $idx => $invoice){
@@ -323,10 +332,10 @@ class parcialTaxes {
         
         $prorrateo_item = [
             'fob_percent' => $fob_percent,
-            'seguro_aduana' => ($prorrateo['prorrateo_seguro_aduana']
+            'seguro_aduana' => ($fobs_parcial['prorrateo_seguro_aduana']
                                 * $fob_percent),
             'flete_aduana' => (
-                                $prorrateo['prorrateo_flete_aduana']
+                                $fobs_parcial['prorrateo_flete_aduana']
                                 * $fob_percent
                                 ),
             'otros' =>  $this->parcial['otros'] * $fob_percent,
@@ -410,17 +419,28 @@ class parcialTaxes {
             * $product['unidades'];
        }
 
-       $ice_advalorem_unitario =  $ice_advalorem / $product['unidades']; 
-
+       $ice_advalorem_unitario =  $ice_advalorem / $product['unidades'];
+       
+       $arancel_advalorem = (
+           $prorrateos['cif'] *
+           $this->getTaxParam('ARANCEL ADVALOREM')
+           );
+       $arancel_especifico = 0;
+       
        $iva = (
            $prorrateos['cif']
            + $fodinfa
            + $ice_advalorem
            + $ice_especifico
+           + $etiquetas_fiscales
+           + $prorrateos['tasa_control']
        ) * $this->iva_base;
+       
        
         return ([
             'fodinfa' => $fodinfa,
+            'arancel_advalorem' => $arancel_advalorem,
+            'arancel_especifico' => $arancel_especifico,
             'base_ice_especifico' => $base_ice_especifico,
             'ice_especifico' => $ice_especifico,
             'ice_especifico_unitario' => ($ice_especifico/$product['unidades']),

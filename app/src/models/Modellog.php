@@ -14,14 +14,26 @@ class Modellog extends CI_Model{
     
     # los paths son diferentes para facilitar la lectura e inspeccion
     #Development Env
+
     private $path = '/var/www/html/cordovezapp/app/src/logs/app.log';
     private $pathInsert = '/var/www/html/cordovezapp/app/src/logs/insert.log';
     private $pathUpdate = '/var/www/html/cordovezapp/app/src/logs/update.log';
     
-    #Prouccion
-    #private $path = '/var/www/html/src/logs/app.log';
-    #private $pathInsert = '/var/www/src/logs/insert.log';
-    #private $pathUpdate = '/var/www/src/logs/update.log';
+    #Produccion Cordovez
+    #private $path = '/var/www/html/cordovez/src/logs/app.log';
+    #private $pathInsert = '/var/www/html/cordovez/src/logs/insert.log';
+    #private $pathUpdate = '/var/www/html/cordovez/src/logs/update.log';
+
+    #Produccion Imnac
+    #private $path = '/var/www/html/imnac/src/logs/app.log';
+    #private $pathInsert = '/var/www/html/imnac/src/logs/insert.log';
+    #private $pathUpdate = '/var/www/html/imnac/src/logs/update.log';
+
+
+    #Produccion Vid
+    #private $path = '/var/www/html/vid/src/logs/app.log';
+    #private $pathInsert = '/var/www/html/vid/src/logs/insert.log';
+    #private $pathUpdate = '/var/www/html/vid/src/logs/update.log';
     
     
     /** Loggin app Options

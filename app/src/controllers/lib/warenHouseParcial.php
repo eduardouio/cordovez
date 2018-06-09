@@ -110,7 +110,6 @@ class warenHouseParcial
                  return $item;
              }
          }
-         print 'El parcial no existe';
          
          return 0;
      }

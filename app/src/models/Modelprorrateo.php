@@ -52,7 +52,7 @@ class Modelprorrateo extends CI_Model
     
     
     
-    /**
+    /** 
      * obtiene el el prorrateo para un parcial
      * 
      * @param (int) id_parcial
@@ -78,7 +78,7 @@ class Modelprorrateo extends CI_Model
                                    );
         return false;
     }
-    
+
     
     /**
      * Retorna una lista de prorrateos para un parcial 
@@ -118,39 +118,37 @@ class Modelprorrateo extends CI_Model
      * @param int $idParcial si ultimo prorrateo no coincide id_parcial es el primero
      * @return array | empy array
      */
-    public function getLastProrrateo(string $nroOrder, int $id_parcial)
+    public function getLastProrrateo(int $id_parcial)
     {
-        $parcials = $this->modelParcial->getAllParcials($nroOrder);
+        $current_parcial = $this->modelParcial->get($id_parcial);
         
-        if($parcials){
-            
-            $lastParcial = end($parcials);
-            $prorrateo = $this->getProrrateoByParcial(
-                                                    $lastParcial['id_parcial']
-                                                       );
-            if (is_array($prorrateo) && !empty($prorrateo)){
-                
-                $prorrateo = $prorrateo[0];
-                if( $prorrateo['id_parcial'] == $id_parcial  ){
-                    return false;
-                }
-                
-                return $prorrateo;
-                
-            }else{
-                    $this->modelLog->warningLog(
-                        'Este es el primero prorratep del parcial para la orden' 
-                        . $nroOrder
-                        );
-                    
-                    return [];
-                }
+        if($current_parcial == False){
+            return False;
         }
-        $this->modelLog->warningLog(
-                    'El pedido aun no tiene parciales, este es el primero '
+        
+        
+        $all_parcials = $this->modelParcial->getAllParcials(
+            $current_parcial['nro_pedido']
             );
         
-        return [];        
+        $last_prorrateo = Null;
+        $lasts_parcials = [];
+        
+        foreach ($all_parcials as $idx => $parcial){
+            if($current_parcial['id_parcial'] > $parcial['id_parcial']){
+                array_push($lasts_parcials, $parcial);
+            }
+        }
+        
+        if($lasts_parcials){
+            $last_parcial = end($lasts_parcials);
+            return $this->getProrrateoByParcial($last_parcial['id_parcial']);
+        }else{
+            $this->modelLog->warningLog(
+                'La lista de parciales esta vacia'
+                );
+            return False;
+        }
     }
     
     
@@ -162,6 +160,7 @@ class Modelprorrateo extends CI_Model
      */ 
     public function createProrrateo(array $prorrateo)
     {
+    
         if($this->db->insert($this->table, $prorrateo)){
             $this->modelLog->queryInsrertLog($this->db->last_query());
             return $this->db->insert_id();
@@ -177,26 +176,59 @@ class Modelprorrateo extends CI_Model
     
     
     /**
-     * Elmian un registro de prorrateo de la base 
+     * Elmian un registro de prorrateo de la base y sus detalles de la tabla 
      * 
      * @param int $idProrrateo
      * @return bool
      */
     public function deleteProrrateo(int $idProrrateo) : bool
     {
-        $this->db->where('id_prorrateo', $idProrrateo);
+        $this->load->model('Modelprorrateodetail');
+        $prorateoDetail = new Modelprorrateodetail();
         
-        if($this->db->delete($this->table)){
-            return true;
+        if($prorateoDetail->deleteByProrrateo($idProrrateo)){
+            
+            $this->db->where('id_prorrateo', $idProrrateo);
+            
+            if($this->db->delete($this->table)){
+                return true;
+            }
         }
         
         $this->modelLog->errorLog(
-                'No fue posible eliminar el registro de prorrateo',
+                'Error de eliminacion de maestro detalle en prorrateos',
                 $this->db->last_query()
             );
         
         return false;
 
+    }
+    
+    
+    /**
+     * Elimina un prorrateo y sus detalles para un parcial, si e prorrateo
+     * no existe retorna false
+     * 
+     * @param int $id_parcial
+     * @return bool
+     */
+    public function deleteProrrateoByParcial(int $id_parcial):bool{
+        $prorrateo = $this->getProrrateoByParcial($id_parcial);
+        
+        if($prorrateo){
+            $prorrateo = $prorrateo[0];
+            if($this->deleteProrrateo($prorrateo['id_prorrateo'])){
+                return True;
+            }
+            
+            $this->modelLog->errorLog(
+                'No se puede eliminar el prorrateo',
+                $this->db->last_query()
+                );
+            return False;
+        }
+        
+        return True;
     }
     
     

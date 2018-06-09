@@ -141,6 +141,14 @@ class orderTaxes {
         
         $taxes_product = $this->getDetailTaxesProduct($product, $prorrateo_item);
         
+        $indirectos = (
+            $taxes_product['ice_advalorem']
+            + $taxes_product['ice_especifico']
+            + $taxes_product['fodinfa']
+            + $taxes_product['etiquetas_fiscales']
+            + $prorrateo_item['prorrateo_pedido']
+            );
+        
         return([
             'product' => $product['nombre'],
             'cod_contable' => $product['cod_contable'],
@@ -161,6 +169,7 @@ class orderTaxes {
             'cif' => $prorrateo_item ['cif'],
             'otros' =>  $prorrateo_item['otros'],
             'prorrateo_pedido' => $prorrateo_item['prorrateo_pedido'],
+            'indirectos' => $indirectos,
             'tasa_control' => $prorrateo_item['tasa_control'],
             'fodinfa' => $taxes_product['fodinfa'],
             'iva' => $taxes_product['iva'],
@@ -175,10 +184,13 @@ class orderTaxes {
             'ice_advalorem' => $taxes_product['ice_advalorem'],
             'ice_advalorem_unitario' =>
             $taxes_product['ice_advalorem_unitario'],
+            'arancel_especifico' => $taxes_product['arancel_especifico'],
+            'arancel_advalorem' => $taxes_product['arancel_advalorem'],
             'etiquetas_fiscales'=> $taxes_product['etiquetas_fiscales'],
             'ice_unitario'=> $taxes_product['ice_unitario'],
             'total_ice' => $taxes_product['total_ice'],
             'costo_caja_final' => $taxes_product['costo_total'] / $product['cajas'],
+            'costo_total' => $taxes_product['costo_total'],
             'costo_botella'=> (
                 $taxes_product['costo_total']
                 / $product['unidades']),
@@ -245,7 +257,7 @@ class orderTaxes {
                 ),
             'capacidad_ml' =>  $product_base['capacidad_ml'] ,
             'peso' => $product_base['peso'] ,
-            'grado_alcoholico' => $product_base['grado_alcoholico'],
+            'grado_alcoholico' => $detail_order_invoice['grado_alcoholico'],
             'fob' => (
                 $detail_invoice['nro_cajas']
                 * $detail_order_invoice['costo_caja']
@@ -380,11 +392,20 @@ class orderTaxes {
             
             $ice_advalorem_unitario =  $ice_advalorem / $product['unidades'];
             
+            $arancel_advalorem = (
+                $prorrateos['cif'] *
+                $this->getTaxParam('ARANCEL ADVALOREM')
+                );
+            
+            $arancel_especifico = 0;
+            
             $iva = (
                 $prorrateos['cif']
                 + $fodinfa
                 + $ice_advalorem
                 + $ice_especifico
+                + $etiquetas_fiscales
+                + $prorrateos['tasa_control']
                 ) * $this->iva_base;
                 
                 return ([
@@ -399,6 +420,8 @@ class orderTaxes {
                     'ice_advalorem' => $ice_advalorem,
                     'ice_advalorem_unitario' => $ice_advalorem_unitario,
                     'ice_unitario'=> $ice_advalorem_unitario,
+                    'arancel_especifico' => $arancel_especifico,
+                    'arancel_advalorem' => $arancel_advalorem,
                     'total_ice' => $ice_advalorem +  $ice_especifico,
                     'iva' => $iva,
                     'iva_unidad' => $iva / $product['unidades'],

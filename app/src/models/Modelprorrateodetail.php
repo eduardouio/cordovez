@@ -158,4 +158,27 @@ class Modelprorrateodetail extends CI_Model
     }
     
     
+    /**
+     * Elimina los detalles de un prorrateo completo
+     * 
+     * @param int $id_prorrateo
+     * @return bool
+     */
+    public function deleteByProrrateo(int $id_prorrateo): bool
+    {
+        $this->db->where('id_prorrateo',$id_prorrateo);
+        if($this->db->delete($this->table))
+        {
+            return true;
+        }
+        
+        $this->modelLog->errorLog(
+            'No se peude elimiminar el detalle completo del prorrateo',
+            $this->db->last_query()
+            );
+        
+        return false;
+    }
+    
+    
 }

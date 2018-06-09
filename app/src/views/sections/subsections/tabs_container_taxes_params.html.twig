@@ -24,7 +24,6 @@
       <div role="tabpanel" class="tab-pane" id="prorrateos">
             <div class="col-md-12"; padding:22px">
            {%  if init_data.order.regimen == '10'  %}
-           
 			{% set gastos_iniciales = 0.0 %}
             <table class="table table-condensed table-striped table-hover" style="font-size:10px">
             <thead>
@@ -71,18 +70,18 @@
             <tbody>
             {% set gastos_parcial = 0  %}
             {% set gastos_iniciales = 0  %}
-            {% set gastos_parcial = gastos_parcial +  prorrateos.prorrateo.bodegaje_prorrateado %}
+            {% set gastos_parcial = gastos_parcial +  warenhouses.almacenaje_aplicado %}
             <tr>
             <td>1</td>
             <td>BODEGAJE PARCIAL</td>
             <td>GASTO PARCIAL</td>
             <td class = "text-right">
-            {{ prorrateos.prorrateo.bodegaje_prorrateado | number_format('2',',','.') }}
+            {{ warenhouses.almacenaje_aplicado | number_format('2',',','.') }}
             </td>
             </tr>
             {% for prorrateo in prorrateos.prorrateo_detail  %}
             </tr>
-            {% if prorrateo.tipo == 'prorrateo' %}
+            {% if prorrateo.tipo == 'parcial' %}
                 {% set gastos_parcial = gastos_parcial +  prorrateo.valor_prorrateado %}
                 <td>{{ loop.index + 1 }}</td>
                 <td>{{ prorrateo.concepto }}</td>

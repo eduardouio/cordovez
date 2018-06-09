@@ -24,10 +24,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 
 $config['base_url'] = 'http://localhost/cordovezapp/app';
-#$config['base_url'] = 'http://179.49.60.158:8881'; #PRODUCCION
-#$config['base_url'] = 'http://192.168.0.17/app'; #OFICINA
-#$config['base_url'] = 'http://192.168.100.194/app'; #CASA
-#$config['base_url'] = 'http://192.168.0.62/cordovezapp/app'; #LOCAL VINESA
+#$config['base_url'] = 'http://179.49.60.158:8888/cordovez'; #CORDOVEZ
+#$config['base_url'] = 'http://179.49.60.158:8888/imnac'; #CORDOVEZ
+#$config['base_url'] = 'http://179.49.60.158:8888/vid'; #CORDOVEZ
 
 /*
 |--------------------------------------------------------------------------

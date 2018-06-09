@@ -70,9 +70,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | The $query_builder variables lets you determine whether or not to load
 | the query builder class.
 */
+
 $active_group = 'pruebas';
-#$active_group = 'korora';
-#$active_group = 'produccion';
+#$active_group = 'cordovez';
+#$active_group = 'imnac';
+#$active_group = 'vid';
+
 $query_builder = TRUE;
 $db['pruebas'] = array(
 	'dsn'	=> '',
@@ -96,7 +99,7 @@ $db['pruebas'] = array(
 	'save_queries' => TRUE
 );
 
-$db['produccion'] = array(
+$db['cordovez'] = array(
         'dsn'   => '',
         'hostname' => 'localhost',
         'username' => 'appCordovez',
@@ -118,24 +121,46 @@ $db['produccion'] = array(
         'save_queries' => TRUE
 );
 
-$db['korora'] = array(
-    'dsn'	=> '',
-    'hostname' => 'localhost',
-    'username' => 'root',
-    'password' => 'elian.2011',
-    'database' => 'cordovezApp',
-    'dbdriver' => 'mysqli',
-    'dbprefix' => '',
-    'pconnect' => FALSE,
-    'db_debug' => FALSE,
-    'cache_on' => FALSE,
-    'cachedir' => '',
-    'char_set' => 'utf8',
-    'dbcollat' => 'utf8_general_ci',
-    'swap_pre' => '',
-    'encrypt' => FALSE,
-    'compress' => FALSE,
-    'stricton' => FALSE,
-    'failover' => array(),
-    'save_queries' => TRUE
+$db['imnac'] = array(
+        'dsn'   => '',
+        'hostname' => 'localhost',
+        'username' => 'appCordovez',
+        'password' => '\DBGfW<7;vBa5(LB',
+        'database' => 'imnacApp',
+        'dbdriver' => 'mysqli',
+        'dbprefix' => '',
+        'pconnect' => FALSE,
+        'db_debug' => FALSE,
+        'cache_on' => FALSE,
+        'cachedir' => '',
+        'char_set' => 'utf8',
+        'dbcollat' => 'utf8_general_ci',
+        'swap_pre' => '',
+        'encrypt' => FALSE,
+        'compress' => FALSE,
+        'stricton' => FALSE,
+        'failover' => array(),
+        'save_queries' => TRUE
+);
+
+$db['vid'] = array(
+        'dsn'   => '',
+        'hostname' => 'localhost',
+        'username' => 'appCordovez',
+        'password' => '\DBGfW<7;vBa5(LB',
+        'database' => 'vidApp',
+        'dbdriver' => 'mysqli',
+        'dbprefix' => '',
+        'pconnect' => FALSE,
+        'db_debug' => FALSE,
+        'cache_on' => FALSE,
+        'cachedir' => '',
+        'char_set' => 'utf8',
+        'dbcollat' => 'utf8_general_ci',
+        'swap_pre' => '',
+        'encrypt' => FALSE,
+        'compress' => FALSE,
+        'stricton' => FALSE,
+        'failover' => array(),
+        'save_queries' => TRUE
 );

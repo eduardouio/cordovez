@@ -2,236 +2,212 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 /**
  * Calcula los prorrateos de para cada uno de los parciales
- * 
+ *
  * @author Eduardo Villota <eduardouio7@gmail.com>
  * @version 1.0
  * @copyright 2018 Representaciones Cordovez
  * @license Representaciones Cordovez
  * @package Controllers
  */
-class Prorrateo {    
-      
-    private $parcialParams;
+class Prorrateo {
+    
+    private $init_data;
+    private $type_change_invoice;
+    
     /**
-     * Funcion costructora de la case 
-     *  
+     * Funcion costructora de la case
+     *
      */
-    public function __construct($parcialParams){
-       $this->parcialParams = $parcialParams;
+    public function __construct($init_data){
+        $this->init_data = $init_data;
+        $this->setConfiguration();
+        
     }
     
     
     /**
      * Obtiene los valores de prorrateo para el calculo de impuestos
-     * 
+     *
      * @return array
      */
     public function getValues() : array
-    {   
+    {
+        $fobsParcial = $this->getFobParcialAndFobOrder();
+        $warenhoses = $this->getWarenhouses($fobsParcial);
+        $prorrateos = $this->getProrrateoDetail($fobsParcial, $warenhoses);
         
-        $fobsParcial = $this->getFobParcialAndFobOrder(
-            $this->parcialParams['orderInvoices'],
-            $this->parcialParams['infoInvoices']
-            );
-        
-        $insuranceFreight = $this->getInsuranceAndFreight( 
-                $this->parcialParams['order'],
-                $fobsParcial['porcentaje_parcial']
-            );
-                
-        $warenhoses = $this->getWarenhouses(
-            $this->parcialParams['lastProrrateo'],
-            $this->parcialParams['parcialExpenses'],
-            $fobsParcial['porcentaje_parcial']
-            );
-                
         return([
-            'id_parcial' => $this->parcialParams['parcial']['id_parcial'],
-            'fob_parcial' => $fobsParcial['fob_parcial'],
-            'porcentaje_parcial' => $fobsParcial['porcentaje_parcial'],
-            
-            'prorrateo_flete_aduana' => 
-                                    $insuranceFreight['prorrateo_flete_aduana'],
-            'prorrateo_seguro_aduana' => 
-                                   $insuranceFreight['prorrateo_seguro_aduana'],
-            
-            'bodegaje_parcial' => $warenhoses['bodegaje_parcial'],
-            'porcentaje_sumado' => $warenhoses['porcentaje_sumado'],
-            'bodegaje_prorrateado' => $warenhoses['bodegaje_prorrateo'],
-            
-            'saldo_bodega_proximo_parcial' => 
-                                    $warenhoses['saldo_bodega_proximo_parcial'],
-            
-            'details' => $this->getProrrateoDetail( 
-                                    $this->parcialParams['initExpenses'],
-                                    $this->parcialParams['parcialExpenses'],
-                                    $fobsParcial['porcentaje_parcial']
-                                                  ), 
+            'fobs_parcial' => $fobsParcial,
+            'warenhouses' => $warenhoses,
+            'prorrateos' => $prorrateos,
         ]);
     }
     
     
     /**
-     * Calcula los valores de 
+     * Calcula los prorrateos para el pedido, tanto iniciales como parciales 
      * 
-     * @param array $initExpenses
-     * @param array $parcialExpenses
-     * @param float $parcialPercent
+     * @param array $fobs
+     * @param array $warenhouses
      * @return array
      */
-    private function getProrrateoDetail(
-                                        array $initExpenses,
-                                        array $parcialExpenses,
-                                        float $parcialPercent
-        ): array
-    {
-        $parcialExpensesWithoutWarenhouse = [];
-        
-        foreach ($parcialExpenses as $item => $expenses)
+    private function getProrrateoDetail(array $fobs, array $warenhouses): array
         {
-            array_push(
-                $parcialExpensesWithoutWarenhouse,
-                [
-                    'id_gastos_nacionalizacion' => 
-                                    $expenses['id_gastos_nacionalizacion'],
-                    
-                    'valor_prorrateado' => $expenses['valor_provisionado'],
-                    'concepto' => $expenses['concepto'],
-                    'tipo' => 'prorrateo',
-                ]
-                );
-        }
-        
-        foreach ($initExpenses as $item => $expenses)
-        {
-            array_push(
-                $parcialExpensesWithoutWarenhouse,
-                [
-                    'id_gastos_nacionalizacion' => 
-                                         $expenses['id_gastos_nacionalizacion'],
-                    'valor_prorrateado' => (
-                                             $expenses['valor_provisionado'] *
-                                             $parcialPercent
-                                            ),
-                    'concepto' => $expenses['concepto'],
-                    'tipo' => 'gasto_inicial',
-                ]
-                );
-        }
-        
-        return $parcialExpensesWithoutWarenhouse;
-    }
-    
-    
-    
-    /**
-     * Retorna el costo por bodegaje del parcial, y el saldo para el proximo 
-     * parcial
-     * 
-     * @param array $lastProrrateo
-     * @param array $parcialExpenses
-     * @param float $parcialPercent
-     * @return array
-     */
-    private function getWarenhouses(
-                                    $lastProrrateo, 
-                                    array $parcialExpenses, 
-                                    float $parcialPercent
-        ): array
-    {
-        
-        $warenhoseParcial = 0.0;
-        
-        foreach ($parcialExpenses as $item => $expense)
-        {
-            if( preg_match('/[a-zA-Z]-[0-9]/' , $expense['concepto'] ) )
-            {
-             $warenhoseParcial += $expense['valor_provisionado'];   
+            $prorrateos = [
+                'prorrateo_parcial' => [],
+                'prorrateo_pedido' => [],
+            ];
+            
+            foreach ($this->init_data['parcial_expenses'] as $idx => $expense){
+                if(! preg_match('/[a-zA-Z]-[0-9]/' , $expense['concepto'] ) )
+                {
+                    array_push($prorrateos['prorrateo_parcial'], $expense);
+                }
             }
-        }
-        
-        $last_warenhouse = 0.0;
-        $sum_percent = $parcialPercent;
-        
-        if($lastProrrateo){
-            $last_warenhouse = $lastProrrateo['saldo_bodega_proximo_parcial'];
-            $sum_percent = (
-                             $lastProrrateo['porcentaje_sumado'] 
-                             + 
-                             $parcialPercent
-                            );
-        }
-        
-        $curren_warenhouse = (
-                                ($last_warenhouse + $warenhoseParcial) 
-                                * $sum_percent
-                               );
-        
-        $next_warenhose =   (
-                                ($last_warenhouse + $warenhoseParcial)
-                                - $curren_warenhouse
-                             );
-        
-        return([
-            'bodegaje_parcial' => $warenhoseParcial,
-            'bodegaje_prorrateo' => $curren_warenhouse,
-            'porcentaje_sumado' => $sum_percent,
-            'saldo_bodega_proximo_parcial' => $next_warenhose,
-        ]);
+            
+            foreach ($this->init_data['init_expeses'] as $idx => $expense){
+                $expense['valor_prorrateado'] = (
+                    $expense['valor_provisionado']
+                    * $fobs['fob_parcial_razon_inicial']
+                    );
+                array_push( $prorrateos['prorrateo_pedido'], $expense);
+            }
+            return $prorrateos;
     }
-    
     
     
     /**
-     * Retorna lo os prorrateos del seguro y del flee
+     * Retorna el costo por bodegaje del parcial, y el saldo para el proximo
+     * parcial
      *
-     * @param array $order
-     * @param array $lastParcial
+     *@params array 
+     *
+     * @return array
      */
-    private function getInsuranceAndFreight(
-                                            array $order, 
-                                            float $percentParcial
-        ) : array
-    {
-        return [
-            'prorrateo_seguro_aduana' => 
-                                      $order['seguro_aduana'] * $percentParcial,
+    private function getWarenhouses( $fobs ): array
+        {
+            $warenhouse = [
+                'almacenaje_parcial' => 0.0,
+                'almacenaje_anterior' => 0.0,
+                'almacenaje_total_parcial' => 0.0,
+                'almacenaje_aplicado' => 0.0,
+                'almacenaje_proximo_parcial' => 0.0,
+                'detail' => [],
+            ];            
             
-            'prorrateo_flete_aduana' => 
-                                       $order['flete_aduana'] * $percentParcial,
-        ];
+            if ($this->init_data['parcial_expenses']){
+                foreach ($this->init_data['parcial_expenses'] as $item => $expense)
+                {
+                    if( preg_match('/[a-zA-Z]-[0-9]/' , $expense['concepto'] ) )
+                    {
+                        $warenhouse['almacenaje_parcial'] += 
+                                                $expense['valor_provisionado'];
+                        array_push($warenhouse['detail'], $expense);
+                    }
+                }
+            }
+            
+            if($this->init_data['last_prorrateo']){
+                $last_prorrateo = end($this->init_data['last_prorrateo']);
+                $warenhouse['almacenaje_anterior'] = 
+                                $last_prorrateo['almacenaje_proximo_parcial'];    
+            }
+            
+            $warenhouse['almacenaje_total_parcial'] = (
+                    $warenhouse['almacenaje_parcial']
+                    + $warenhouse['almacenaje_anterior']
+                ); 
+            
+            $warenhouse['almacenaje_aplicado'] = (
+                $fobs['fob_parcial_razon_saldo']
+                * $warenhouse['almacenaje_total_parcial']
+                );
+            
+            $warenhouse['almacenaje_proximo_parcial'] = (
+                $warenhouse['almacenaje_total_parcial']
+                - $warenhouse['almacenaje_aplicado']
+                );
+            
+            return $warenhouse;
     }
+    
     
     
     /**
      * Obtiene el valor del parcial, del pedido y de la relacion que
      * eciste entre el parcial y el Fob total
-     * 
+     *
      * @param array $orderInvoices
      * @param array $infoInvoices
      */
-    private function getFobParcialAndFobOrder( 
-        array $orderInvoices,
-        array $infoInvoices
-            )
+    private function getFobParcialAndFobOrder()
     {
-        $fobParcial = 0.0;
-        $fobInitial = 0.0;
-        
-        foreach($orderInvoices as $item => $invoice)
-        {
-            $fobInitial += $invoice['valor'];
-        }
-        
-        foreach ($infoInvoices as $item => $invoice)
-        {
-            $fobParcial += $invoice['valor'];
-        }
-        
-        return [
-            'porcentaje_parcial' => ( $fobParcial / $fobInitial ),
-            'fob_parcial' => $fobParcial,
-            
+        $fobs = [
+            'fob_inicial' => 0.0,
+            'fob_saldo' => 0.0,
+            'fob_parcial' => 0.0,
+            'fob_parcial_razon_inicial' => 0.0,
+            'fob_parcial_razon_saldo' => 0.0,
+            'fob_proximo_parcial' => 0.0,
+            'prorrateo_seguro_aduana' => 0.0,
+            'prorrateo_flete_aduana' => 0.0,
         ];
+        
+        if (
+            $this->init_data['order_invoices'] == False
+            ){
+            return $fobs;
+        }
+        
+        
+        foreach ($this->init_data['order_invoices'] as $idx => $invoice){
+            $fobs['fob_inicial'] += $invoice['valor'];
+        }
+        
+        
+        if ($this->init_data['last_prorrateo']){
+            $last_prorrateo = end($this->init_data['last_prorrateo']); 
+            $fobs['fob_saldo'] =  $last_prorrateo['fob_proximo_parcial']; 
+        }else{
+            $fobs['fob_saldo'] = $fobs['fob_inicial'];
+            }
+            
+        foreach ($this->init_data['info_invoices'] as $idx => $invoice){
+            $fobs['fob_parcial'] +=  $invoice['valor'];
+            $fobs['prorrateo_flete_aduana'] += $invoice['flete_aduana'];
+            $fobs['prorrateo_seguro_aduana'] += $invoice['seguro_aduana'];
+        }
+       
+        $fobs['fob_proximo_parcial'] = (
+            $fobs['fob_saldo'] - $fobs['fob_parcial']
+            );
+        
+        $fobs['fob_parcial_razon_inicial'] = ( 
+            $fobs['fob_parcial']  / $fobs['fob_inicial']
+            );
+        
+        $fobs['fob_parcial_razon_saldo'] = (
+               $fobs['fob_parcial']           
+               /$fobs['fob_saldo'] 
+            );
+        
+        return $fobs;
+    }
+    
+    
+    /**
+     * Coloca el tipo de cambio que le corresponde al pedido
+     */
+    private function setConfiguration(){
+        $order_invoices = $this->init_data['order_invoices'];
+
+        if($order_invoices){
+            foreach ($order_invoices as $idx => $invoice){
+                $this->type_change_invoice = $invoice['tipo_cambio'];
+                break;
+            }
+        }
+        
+        return False;
     }
 }

@@ -115,13 +115,26 @@ class Impuestos extends MY_Controller
     {        
         $parcial = $this->modelParcial->get($id_parcial);
         
-        if ($parcial == False){            
+        if ($parcial == False){   
+            $this->modelLog->warningLog(
+                'No se puedo continuar si el parcial no existe'
+                );
             return $this->index();
         }
         
         $init_data = $this->getOrderDataR70($id_parcial);
-        $prorrateos = $this->getProrrateoParcial($init_data);
+        $prorrateoParams = new Prorrateo($init_data);
+        $prorrateo_values = $prorrateoParams->getValues();
+        $init_data['fobs_parcial'] = $prorrateo_values['fobs_parcial'];
+        $init_data['warenhouses'] = $prorrateo_values['warenhouses'];
+
+        $prorrateos = $this->updateProrrateoParcial(
+                                                $prorrateo_values,
+                                                $parcial
+            );
+                
         $param_taxes = $this->modelRatesExpenses->getTaxesParams();
+        
         $parcialTaxes =  new parcialTaxes(
                                         $init_data, 
                                         $prorrateos,  
@@ -136,6 +149,7 @@ class Impuestos extends MY_Controller
             'parcial_taxes' => $parcialTaxes->getTaxes(),
             'prorrateos' => $prorrateos,
             'parcial' => $parcial,
+            'warenhouses' => $init_data['warenhouses'],
             'regimen' => 'R70',
             'user' => $this->modelUser->get($init_data['parcial']['id_user']),
         ]));
@@ -213,15 +227,17 @@ class Impuestos extends MY_Controller
             'products_base' => $products_base,
             'init_expeses' => $this->modelInitExpenses->getAll($order),
             'parcial' => $parcial,
+            'all_parcials' => $this->modelParcial->getAllParcials(
+                                                        $parcial['nro_pedido']
+                ), 
             'parcial_expenses' => $this->modelExpenses->getPartialExpenses(
                                                           $parcial['id_parcial']
-                                                                        ),
+                ),
             'info_invoices' => $info_invoices,
             'products' => $infoInfoiceDetail,
             'last_prorrateo' => $this->modelProrrateo->getLastProrrateo(
-                                                          $parcial['nro_pedido'],
                                                           $id_parcial
-                                                                        ), 
+                ), 
         ]);       
         
     }
@@ -442,6 +458,7 @@ class Impuestos extends MY_Controller
             return $this->index();
         }
         $order = $this->input->post();
+        
         $order['bg_isliquidated'] = 1;
         $order['have_etiquetas_fiscales'] = 1 ;
         $order['bg_have_tasa_control'] = 1;
@@ -449,6 +466,7 @@ class Impuestos extends MY_Controller
         $this->modelOrder->update($order);
         return $this->redirectPage('showTaxesOrder', $order['nro_pedido']);
      }
+     
      
      /**
       * Marca un parcial como cerrado
@@ -459,6 +477,7 @@ class Impuestos extends MY_Controller
         }
         
         $parcial = $this->input->post();
+        
         $parcial['bg_isliquidated'] = 1;
         $parcial['bg_have_etiquetas_fiscales'] = 1 ;
         $parcial['bg_have_tasa_control'] = 1;               
@@ -466,37 +485,7 @@ class Impuestos extends MY_Controller
         return $this->redirectPage('showTaxesParcial', $parcial['id_parcial']);
      }
      
-     
-
-
-    /**
-     * Retorna el valor de la tasa de control para un producto en la lista
-     *
-     * @param array $producto
-     * @return float
-     */
-    private function getTasaControl(
-                                    array $product, 
-                                    array $parcial
-        ): float
-    {
-        if ($parcial['bg_have_tasa_control'] == 0) {
-            return 0;
-        }
         
-        $tasaServicio = (
-            ((intval($product['capacidad_ml']) / 2000) * 0.10) 
-            * 
-            ($product['nro_cajas'] * $product['cantidad_x_caja']));
-        
-        if ($tasaServicio < 700) {
-            return $tasaServicio;
-        }
-        
-        return 700;
-    }
-
-    
     /**
      * Retorna el valor del impuesto basado en el nombre
      *
@@ -517,237 +506,119 @@ class Impuestos extends MY_Controller
         return false;
     }
     
-
-    /**
-     * * Obitene el valor del prorrateo para el costo de prorrateo
-     *
-     * @param array $init_data datos iniciales del parcial
-     * @return array
-     */
-    private function getProrrateoParcial( array $init_data ) : array
-    {
-        $this->checkTypeChange($init_data['info_invoices'], $init_data['order']);
-        
-        $prorrateoParams = new Prorrateo([
-            'infoInvoices' => $init_data['info_invoices'],
-            'order' => $init_data['order'],
-            'orderInvoices' => $init_data['order_invoices'],
-            'parcial' => $init_data['parcial'],
-            'initExpenses' => $init_data['init_expeses'],
-            'parcialExpenses' => $init_data['parcial_expenses'],
-            'lastProrrateo' => $init_data['last_prorrateo'],
-        ]);
-        
-        $prorrateoValues = $prorrateoParams->getValues();
-        
-        return $this->putDeleteUpdateProrrateoParcial($prorrateoValues);
-    }
-    
-
     /**
      * Registra y/o actualiza los valores prorrateados del parcial
      *
-     * @param array $id_parcial
-     * @return bool
+     * @param $prorrateo_values array detalle de los prorrateos
+     * @param $parcial array informacion del parcial
      */
-    private function putDeleteUpdateProrrateoParcial(array $prorrateo): array
-    {
-        
-        $prorrateo['id_user'] = $this->session->userdata['id_user'];
-        $prorrateoDetail = $prorrateo['details'];
-        
-        unset($prorrateo['details']);
-        
-        $prorrateoParcial = $this->modelProrrateo->getProrrateoByParcial(
-                                                        $prorrateo['id_parcial']
-            );
-        
-        
-        if ($prorrateoParcial) {
-            return $this->updateProrrateo(
-                                            $prorrateo, 
-                                            $prorrateoDetail,
-                                            $prorrateoParcial
-                );
-            
-        } else {            
-            return $this->createProrrateo(
-                                            $prorrateo,
-                                            $prorrateoDetail
-                );
-        }
-    }
-
-    
-    /**
-     * Actualiza el registro de prorrateos de un parcial
-     * 
-     * @param array $prorrateo prorrateo Calculado para el parcial
-     * @param array $prorrateoDetail DEtalle del prorrateo calculado
-     * @param array $prorrateoParcial Prorrateo Existente regitrado  
-     * @return bool
-     */
-    private function updateProrrateo(
-                                     array $prorrateo, 
-                                     array $prorrateoDetailTemp,
-                                     array $prorrateoParcial
-        ): array
-    {
-             
-        $parcial = $this->modelParcial->get($prorrateo['id_parcial']);
-        
-        if($parcial['bg_isliquidated']){
-            $this->modelLog->generalLog('El el se evita actualizar el parcial');
-            return ([
-                'prorrateo' => $prorrateo,
-                'prorrateo_detail' => $prorrateoDetailTemp,
-            ]);
-        }
-        
-        $prorrateoParcial = $prorrateoParcial[0];
-        
-        $prorrateo['last_update'] = date('Y-m-d H:m:s');
-        $prorrateoDetail = [];
-        
-        foreach ($prorrateoDetailTemp as $item => $exp_prorrateo) {
-            $exp_prorrateo['last_update'] = date('Y-m-d H:m:s');
-            array_push($prorrateoDetail, $exp_prorrateo);
-        }
-        
-        if($this->deleteProrrateo($prorrateoParcial['id_prorrateo'])){
-            return (
-                $this->createProrrateo(
-                        $prorrateo, 
-                        $prorrateoDetail
-                    )
-                );
-        }
-        
-        $this->modelLog->errorLog(
-            'Error al actualizar el prorrateo en la base de datos',
-            $this->db->last_query()
-            );
-        
-        return [];
-    }
-    
-
-    /**
-     * Regustra un nuevo prorrateo en la base de datos
-     *
-     * @param array $prorrateo cabeceras del prorrateo
-     * @param array $prorrateoDetail detalle del nuevo prorrateo
-     * @return bool
-     */
-    private function createProrrateo(
-                                    array $prorrateo,
-                                    array $prorrateoDetail
+    private function updateProrrateoParcial(
+                                        array $prorrateo_values, 
+                                        array $parcial
         )
     {
         
-        $id_prorrateo_insert_db = $this->modelProrrateo->createProrrateo(
-            $prorrateo
-            );
-
-        
-        $prorrateo['id_prorrateo'] = $id_prorrateo_insert_db;
-        $prorrateoDetailTemp = [];
-        $allInsert = True;
-        
-        foreach ($prorrateoDetail as $item => $exp_prorrateo)
-        {
-            $exp_prorrateo['id_prorrateo'] = $id_prorrateo_insert_db;
-            $exp_prorrateo['id_user'] =  $this->session->userdata['id_user'];
-            $insert_id = $this->modelProrrateoDetail->createProrrateoDetail(
-                                                     $exp_prorrateo);
-            if($insert_id){
-                $exp_prorrateo['id_prorrateo_detalle'] = $insert_id;
-                array_push($prorrateoDetailTemp, $exp_prorrateo);
-            }else{
-                $this->modelLog->errorLog(
-                    'No se puede ingresar el detalle de prorrateo parcial',
-                    $this->db->last_query()
-                    );
-                
-                return False;
-                }
-          }
-
-            return ([
-                'prorrateo' => $prorrateo,
-                'prorrateo_detail' => $prorrateoDetailTemp,
-            ]) ;
-    }
-    
-    
-
-    /**
-     * Elimina un prorrateo y los detalles del mismo de la base
-     *
-     * @param array $id_prorrateo
-     * @return bool
-     */
-    private function deleteProrrateo(int $id_prorrateo): bool
-    {
-        $detailForDelete = $this->modelProrrateoDetail->getAllDetailProrrateo(
-                                                                $id_prorrateo
-            ); 
-        
-        if (!$detailForDelete){
-            return true;
-        }
-        
-        $allDelete = true;
-        
-        foreach($detailForDelete as $item => $expense){
-            if($this->modelProrrateoDetail->deleteProrrateoDetail(
-                                        $expense['id_prorrateo_detalle'])){
-                
-            }else{
-                $allDelete = false;
-                $this->modelLog->errorLog(
-                    'No se puede eliminar un prorrateo',
-                    $this->db->last_query()
-                    );
-            }
-        }
-        
-        if ($allDelete){
-            if($this->modelProrrateo->deleteProrrateo($id_prorrateo)){
-                $this->modelLog->generalLog(
-                    'Se ha usado pa opcion de actualizar prorrateo'
-                    );
-                return true;
-            }
-            $this->modelLog->errorLog(
-                                    'Problema al borrar prorrateo padre'
+        if($parcial['bg_isliquidated']){
+            $this->modelLog->generalLog(
+                'El parcial se encuentra cerrado no se puede continuar'
                 );
-            return false;
+            return $this->getProrrateosParcial($parcial['id_parcial']);
         }
         
-        return false;
+        $fobs = $prorrateo_values['fobs_parcial'];
+        $warenhouses = $prorrateo_values['warenhouses'];
+        $prorrateos_parcial = $prorrateo_values['prorrateos']['prorrateo_parcial'];
+        $prorrateo_pedido = $prorrateo_values['prorrateos']['prorrateo_pedido'];
+        
+        $this->modelProrrateo->deleteProrrateoByParcial($parcial['id_parcial']);
+        
+        $prorrateoHeader = [
+            'id_parcial' => $parcial['id_parcial'],
+            'porcentaje_parcial' => $fobs['fob_parcial_razon_inicial'],
+            'fob_parcial_razon_inicial' => $fobs['fob_parcial_razon_inicial'],
+            'fob_parcial_razon_saldo' => $fobs['fob_parcial_razon_saldo'],
+            'fob_proximo_parcial' => $fobs['fob_proximo_parcial'],
+            'fob_inicial' => $fobs['fob_inicial'],
+            'fob_saldo' => $fobs['fob_saldo'],
+            'fob_parcial' => $fobs['fob_parcial'],
+            'almacenaje_parcial' => $warenhouses['almacenaje_parcial'],
+            'almacenaje_anterior' => $warenhouses['almacenaje_anterior'],
+            'almacenaje_aplicado' => $warenhouses['almacenaje_aplicado'],
+            'almacenaje_proximo_parcial' => $warenhouses['almacenaje_proximo_parcial'],
+            'prorrateo_flete_aduana' => $fobs['prorrateo_flete_aduana'],
+            'prorrateo_seguro_aduana' => $fobs['prorrateo_seguro_aduana'],
+            'id_user' => $this->session->userdata('id_user'),
+        ];
+        
+        $id_prorrateo = $this->modelProrrateo->createProrrateo($prorrateoHeader);
+        $prorrateo_detail = [];
+        
+        if($id_prorrateo){
+            $prorrateos = array_merge($prorrateo_pedido, $prorrateos_parcial);
+            foreach ($prorrateos as $idx => $prorrateo){
+                $valor_prorrateado = 0;
+                $tipo = '';
+                
+                if($prorrateo['tipo'] == 'INICIAL'){
+                    $valor_prorrateado = $prorrateo['valor_prorrateado'];
+                    $tipo = 'gasto_inicial';
+                }else{
+                    $valor_prorrateado = $prorrateo['valor_provisionado'];
+                    $tipo = 'parcial';
+                }
+                
+                $detail = [
+                    'id_prorrateo' => $id_prorrateo,
+                    'id_gastos_nacionalizacion' => $prorrateo['id_gastos_nacionalizacion'],
+                    'tipo' => $tipo,
+                    'concepto' => $prorrateo['concepto'],
+                    'valor_prorrateado' => $valor_prorrateado,
+                    'valor_provisionado' => $prorrateo['valor_provisionado'],
+                    'id_user' => $this->session->userdata('id_user'),
+                ];
+                
+                $this->modelProrrateoDetail->createProrrateoDetail($detail);
+                array_push($prorrateo_detail, $detail);
+                
+            }
+            
+            return [
+                'prorrateo' => $prorrateoHeader,
+                'prorrateo_detail' => $prorrateo_detail,
+            ];
+        }
+        
+        $this->modelLog->errorLog(
+            'No se puede actualizar el parcial Error en prorrateos', 
+            $this->db->last_query()
+            );
+        
+        return False;        
     }
     
     
     /**
-     * Obtiene el tipo de cambio fijado en un pedido, se aplica el primer
-     * tipo de cambioa gragado al primer parcial
-     *
-     * @param array $infoInvoices
-     * @param array $order
+     * Obtiene el detalle de los prorrateos del parcial
+     * @param int $id_parcial
      */
-    private function checkTypeChange(array $infoInvoices, array $order)
-    {
-        if ($order['tipo_cambio_almaceneraR70'] == null || $order['tipo_cambio_almaceneraR70'] == 0 || $order['tipo_cambio_almaceneraR70'] == '') {
-            $this->modelOrder->update([
-                'nro_pedido' => $order['nro_pedido'],
-                'tipo_cambio_almaceneraR70' => $infoInvoices[0]['tipo_cambio']
-            ]);
-        }
+    private function getProrrateosParcial($id_parcial){
+        
+        $prorrateo = $this->modelProrrateo->getProrrateoByParcial(
+            $id_parcial
+            );
+        
+        $prorrateo_detail = $this->modelProrrateoDetail->getAllDetailProrrateo(
+            $prorrateo[0]['id_prorrateo']
+            );
+        
+        return [
+            'prorrateo' => $prorrateo,
+            'prorrateo_detail' => $prorrateo_detail,
+        ];
+        
     }
-    
-   
-    
+
+        
     /*
      * Redenderiza la informacion y la envia al navegador
      * @param array $config informacion de la plantilla

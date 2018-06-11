@@ -258,6 +258,13 @@ class Impuestos extends MY_Controller
                 );
             return $this->index();
         }
+
+        if($order['regimen'] == '10'){
+            $this->modelLog->warningLog(
+                'No se puede liquidar un pedidos de regimen Diferente al 70'
+            );
+            return $this->index();
+        }
         
         $init_data = $this->getOrderDataR10($nroOrder);
         $param_taxes = $this->modelRatesExpenses->getTaxesParams();

@@ -88,6 +88,38 @@ class MY_Controller extends CI_Controller
     }
     
     
+    
+    /**
+     * Formatea los arreglos para presentar en los informes 
+     * 
+     * @param array $data
+     * @return array
+     */
+    public function _formatData(array $data): array 
+    {
+        $formatted_data = [];
+        $headder = [];
+        $first = True;
+        
+        foreach ($data as $idx => $value){
+            $row = [];
+            foreach ($value as $k => $v){
+                array_push($headder, $k);                    
+                array_push($row, $v);
+            }
+            
+            if ($first){
+                array_push($formatted_data, $headder);
+                $first = False;
+            }
+            
+            array_push($formatted_data, $row);
+        }
+        
+        return $formatted_data;    
+    }
+    
+    
     /**
      * Redirecciona a cualquier pagina del sitio, se registra en el log 
      * los redireccionamientos

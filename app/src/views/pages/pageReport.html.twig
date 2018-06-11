@@ -1,0 +1,16 @@
+{% include 'base/header.html.twig' %}
+{% include 'base/navbarheader.html.twig' %}
+{% include 'base/navbarleft.html.twig' %}
+{% include 'base/content.html.twig' %}
+
+{%  if dashboard == true %}
+    {% include 'sections/report_dashboard.html.twig'  %}
+
+{% else %}
+	{% include 'forms/frm-reporte-provisiones.html.twig' %}
+	{% include 'sections/subsections/table_report.html.twig' %}
+{% endif %}
+
+{% include 'base/content_close.html.twig' %}
+{% include 'base/signaturefoot.html.twig' %}
+{% include 'base/footer.html.twig' %}

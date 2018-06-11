@@ -170,4 +170,25 @@ class ModelBase extends CI_Model {
         
         return $resultDb = $resultDb->result_array();
     }
+    
+    
+    /**
+     * Ejecuta una consulta en la base de datos
+     * @param string $query
+     */
+    public function runQuery(string $query){
+        $resultDb = $this->db->query($query);
+        
+        if (gettype($resultDb) ==  'boolean'){
+            return false;
+        }
+        
+        if (empty($resultDb)) {
+            return false;
+        }
+        
+        return $resultDb = $resultDb->result_array();
+            
+    }
+    
 }

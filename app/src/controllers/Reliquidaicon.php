@@ -18,7 +18,6 @@ require 'lib/Prorrateo.php';
  */
 class Reliquidaicon extends MY_Controller
 {
-
     private $controller = "reliquidacion";
     private $template = '/pages/pageReliquidacion.html';
     private $modelOrder;

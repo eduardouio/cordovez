@@ -78,6 +78,49 @@
 		</button>
 	</div>
 </div>
+<!--
+<div class="row">
+   <div class="col-md-2">
+      <label class="control control-checkbox">
+                  Por Proveedor
+                  <input 
+                  type="checkbox" 
+                  value="por_pedido" 
+                  id="por_pedido" 
+                  name="por_pedido"
+                  >
+                  <div class="control_indicator"></div>
+               </label>
+   </div>
+   <div class="col-md-2">
+      <label class="control control-checkbox">
+                  Por Ruc Proveedor
+                  <input 
+                  type="checkbox" 
+                  value="por_fechas" 
+                  id="por_fechas" 
+                  name="por_fechas"
+                  >
+                  <div class="control_indicator"></div>
+               </label>
+   </div>
+   <div class="col-md-4">
+            <div class="form-group">
+            <input 
+            type="text" 
+            class="form-control fecha" 
+            id="ruc_proveedor" 
+            required="required" 
+            name="ruc_proveedor"  
+            placeholder="Fecha Hasta"
+            disabled="" 
+            >
+         </div>
+      </div>
+   </div>
+   </div>
+</div>
+-->
 </form>
 
 <script type="text/javascript">
@@ -88,7 +131,6 @@
 			$('#por_pedido').prop('checked', false);
 		}
 	});
-
 
 	$('#por_pedido').click(function(){
 		if($('#por_pedido').is(':checked')){

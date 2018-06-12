@@ -36,22 +36,4 @@ $('#selector-fecha').datepicker({
 $('.fecha').mask('99/99/9999');
 $('.fecha').attr('placeholder', 'dd/mm/yyyy');
 </script>
-
-<script>
-    $('input').blur(function() {
-        var pass = $('input[name=password]').val();
-        var repass = $('input[name=password2]').val();
-        if(($('input[name=password]').val().length == 0) || ($('input[name=password2]').val().length == 0)){
-            $('#password').addClass('has-error');
-        }
-        else if (pass != repass) {
-            $('#password').addClass('danger');
-            $('#password2').addClass('danger');
-        }
-        else {
-            $('#password').removeClass().addClass('success');
-            $('#password2').removeClass().addClass('success');
-        }
-    });
-    </script>
 </html>

@@ -73,6 +73,10 @@ class ModelReportPagos extends CI_Model
         $result = $this->modelBase->runQuery(str_replace(
             '{{nro_order}}', $nro_pedido, $sql)
             );
+
+        print '<pre>';
+        print $this->db->last_query();
+        
         if ($result){
             $paids = $result;
         }
@@ -152,29 +156,22 @@ class ModelReportPagos extends CI_Model
         
         $sql = "
                 SELECT 
-                dp.id_documento_pago,
-                dp.nro_factura,
-                dp.fecha_emision,
-                pro.nombre,
-                pro.identificacion_proveedor,
-                pro.categoria,
-                dp.valor,
-                dp.bg_closed,
-                gn.concepto,
-                gn.tipo,
-                gn.fecha as 'fecha_provision',
-                gn.nro_pedido,
-                gn.id_parcial,
-                gn.valor_provisionado,
-                pr.nro_pedido as 'nro_pedido_parcial',
-                dp.id_user,
-                usr.nombres,
-                dtp.id_gastos_nacionalizacion,
-                dtp.valor,
-                dtp.bg_isnotprovisioned,
-                dtp.bg_closed,
-                gn.bg_closed AS 'provision_cerrada',
-                dp.date_create
+                dp.nro_factura as 'Nro Factura',
+                dp.fecha_emision as 'Fecha Emision',
+                pro.nombre as 'Proveedor',
+                pro.identificacion_proveedor as 'RUC Proveedor',
+                pro.categoria as 'Categoría Proveedor',
+                dp.valor as 'Valor Factura',
+                dp.bg_closed as 'Justifica Priovisión',
+                gn.concepto as 'Concepto',
+                gn.tipo as 'Tipo Provision',
+                gn.fecha as 'Fecha Provisión',
+                gn.nro_pedido as 'Nro Pedido',
+                gn.id_parcial as 'ID Parcial' ,
+                gn.valor_provisionado as 'Valor Provisionado',
+                pr.nro_pedido as 'Nro Pedido Parcial',
+                gn.bg_closed AS 'Provision Cerrada',
+                usr.nombres as 'Usuario'
                 FROM
                 detalle_documento_pago AS dtp
                 LEFT JOIN documento_pago as dp USING(id_documento_pago)
@@ -216,29 +213,22 @@ class ModelReportPagos extends CI_Model
         $paids = [];
         $sql = "
                 SELECT 
-                dp.id_documento_pago,
-                dp.nro_factura,
-                dp.fecha_emision,
-                pro.nombre,
-                pro.identificacion_proveedor,
-                pro.categoria,
-                dp.valor,
-                dp.bg_closed,
-                gn.concepto,
-                gn.tipo,
-                gn.fecha as 'fecha_provision',
-                gn.nro_pedido,
-                gn.id_parcial,
-                gn.valor_provisionado,
-                pr.nro_pedido as 'nro_pedido_parcial',
-                dp.id_user,
-                usr.nombres,
-                dtp.id_gastos_nacionalizacion,
-                dtp.valor,
-                dtp.bg_isnotprovisioned,
-                dtp.bg_closed,
-                gn.bg_closed AS 'provision_cerrada',
-                dp.date_create
+                dp.nro_factura as 'Nro Factura',
+                dp.fecha_emision as 'Fecha Emision',
+                pro.nombre as 'Proveedor',
+                pro.identificacion_proveedor as 'RUC Proveedor',
+                pro.categoria as 'Categoría Proveedor',
+                dp.valor as 'Valor Factura',
+                dp.bg_closed as 'Justifica Priovisión',
+                gn.concepto as 'Concepto',
+                gn.tipo as 'Tipo Provision',
+                gn.fecha as 'Fecha Provisión',
+                gn.nro_pedido as 'Nro Pedido',
+                gn.id_parcial as 'ID Parcial' ,
+                gn.valor_provisionado as 'Valor Provisionado',
+                pr.nro_pedido as 'Nro Pedido Parcial',
+                gn.bg_closed AS 'Provision Cerrada',
+                usr.nombres as 'Usuario'
                 FROM
                 detalle_documento_pago AS dtp
                 LEFT JOIN documento_pago as dp USING(id_documento_pago)

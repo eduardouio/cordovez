@@ -16,12 +16,14 @@ class orderTaxes {
     
     private $init_data;
     private $param_taxes;
+    private $incoterm;
     private $order;
     private $iva_base = 0.12;
     private $ice_advalorem_base = 0.75;
     private $type_change_invoice = 0.0;
     private $type_change_order = 0.0;
     private $have_labes = True;
+    private $gastos_origen;
     private $have_control_tasa = True;
     private $taxes = [];
     
@@ -113,7 +115,13 @@ class orderTaxes {
         }else{
             $this->type_change_order =
             $this->order['tipo_cambio_impuestosR10'];
-        }
+        }       
+        
+        $this->gastos_origen += (
+            $invoice['gasto_origen']
+            ); 
+        
+        $this->incoterm = strtoupper($this->init_data['order']['incoterm']);
         
         $this->have_labes = boolval(
             $this->order['have_etiquetas_fiscales']
@@ -223,7 +231,7 @@ class orderTaxes {
                 
             }
         }
-        
+                
         foreach ($this->init_data['order_invoice_detail'] as $item => $dt){
             if(
                 $dt['detalle_pedido_factura']
@@ -233,7 +241,38 @@ class orderTaxes {
                     $detail_order_invoice = $dt;
                     break;
             }
+        }     
+        
+        $fob = 0.0;
+        
+        if ($this->incoterm == 'FOB'){
+            $total_invoices = 0.0;
+            foreach ($this->init_data['order_invoices'] as $idx => $invoice){
+                $total_invoices += $invoice['valor'];
+            }
+            
+            #si en algun momento hay varias facturas no va a funcionar tienes
+            # se debe calcular en base a las facturas adicionales que existan
+            $percent = (
+                $detail_invoice['nro_cajas']
+                * $detail_order_invoice['costo_caja']
+                ) / $total_invoices;
+            
+            $fob = (
+                (
+                ($detail_invoice['nro_cajas'] * $detail_order_invoice['costo_caja'])
+                + ($this->gastos_origen * $percent)
+                )
+                * $this->type_change_order
+                );
+        }else{
+            $fob = (
+                $detail_invoice['nro_cajas']
+                * $detail_order_invoice['costo_caja']
+                * $this->type_change_order
+                );
         }
+               
         
         
         return ([
@@ -258,11 +297,7 @@ class orderTaxes {
             'capacidad_ml' =>  $product_base['capacidad_ml'] ,
             'peso' => $product_base['peso'] ,
             'grado_alcoholico' => $detail_order_invoice['grado_alcoholico'],
-            'fob' => (
-                $detail_invoice['nro_cajas']
-                * $detail_order_invoice['costo_caja']
-                * $this->type_change_invoice
-                ),
+            'fob' => $fob,
         ]);
     }
     
@@ -288,13 +323,21 @@ class orderTaxes {
                     $invoice['id_pedido_factura']
                     == $detail_invoice['id_pedido_factura']
                     ){
-                        $fob_invoice = (
-                            $invoice['valor']
-                            * $this->type_change_invoice
-                            );
+                        if ($this->incoterm == 'FOB'){
+                            $fob_invoice = (
+                                ($invoice['valor'] + 
+                                $invoice['gasto_origen'])
+                                * $this->type_change_order
+                                );
+                        }else{
+                            $fob_invoice = (
+                                $invoice['valor']
+                                * $this->type_change_order
+                                );
+                        }
                 }
             }
-            
+                        
             $fob_percent = ( $product['fob'] / $fob_invoice );
             $tasa_control = 0.0;
             
@@ -319,12 +362,14 @@ class orderTaxes {
             ];
             
             $prorrateo_item ['cif'] = (
-                (
-                    (($product['fob'] / $this->type_change_invoice) * $this->type_change_order)
+                    (
+                    $product['fob']
                     + $prorrateo_item['seguro_aduana']
-                    + $prorrateo_item['flete_aduana'])
+                    + $prorrateo_item['flete_aduana']
+                ) 
                 * $fob_percent
                 );
+            
             return  $prorrateo_item;
     }
     

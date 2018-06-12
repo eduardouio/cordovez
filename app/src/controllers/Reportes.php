@@ -63,7 +63,7 @@ class Reportes extends MY_Controller
                 $fecha_hasta = str_replace('/', '-', $_POST['fecha_hasta']);
                 $fecha_desde = date('Y-m-d', strtotime($fecha_desde));
                 $fecha_hasta = date('Y-m-d', strtotime($fecha_hasta));
-                $data = $this->modelReportPagos->getByDateRage(
+                $data = $this->modelReportPagos->getByDateRange(
                     $fecha_desde, 
                     $fecha_hasta
                 );

@@ -18,6 +18,8 @@ class parcialTaxes {
     private $prorrateo;
     private $param_taxes;
     private $parcial;
+    private $incoterm;
+    private $gasto_origen = 0.0;
     private $iva_base = 0.12;
     private $ice_advalorem_base = 0.75;
     private $type_change_invoice = 0.0;
@@ -119,7 +121,15 @@ class parcialTaxes {
                 $this->type_change_parcial =  
                                     $this->init_data['parcial']['tipo_cambio'];
             }
+            
+            $this->gastos_origen += (
+                $invoice['gasto_origen']
+                * $this->type_change_invoice
+                ); 
+            
         }
+        
+        $this->incoterm = $this->init_data['order']['incoterm'];
         
         $this->have_labes = boolval(
             $this->init_data['parcial']['bg_have_etiquetas_fiscales']
@@ -218,7 +228,6 @@ class parcialTaxes {
      */
     private function getProductData(array $detail_info_invoice):array
     {
-        
         $product_base = [];
         $detail_order_invoice = [];
         
@@ -244,7 +253,7 @@ class parcialTaxes {
                     break;
             }
         }
-        
+       
         
         return ([
             'nombre'=> $product_base['nombre'],
@@ -370,7 +379,8 @@ class parcialTaxes {
                                             array $prorrateos
         ): array
     {   
-        $fodinfa = ($prorrateos['cif'] * $this->getTaxParam('FODINFA'));
+        $base_fodinfa = $prorrateos['cif'] + $this->gasto_origen;        
+        $fodinfa = ( $base_fodinfa * $this->getTaxParam('FODINFA'));
         
         $etiquetas_fiscales = 0.0;
         

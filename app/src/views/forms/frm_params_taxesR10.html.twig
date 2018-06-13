@@ -102,3 +102,10 @@
             </div>
          </div>
       </form>
+ 
+ 
+ {% if init_data.order.bg_isliquidated == 1 %}     
+ <script>
+  $('#order_params :input').prop("disabled" , true);
+ </script>
+ {% endif %}

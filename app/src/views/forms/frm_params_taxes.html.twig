@@ -101,3 +101,9 @@
             </div>
          </div>
       </form>
+
+{% if init_data.parcial.bg_isliquidated == 1 %}     
+ <script>
+  $('#parcial_form :input').prop("disabled" , true);
+ </script>
+ {% endif %}

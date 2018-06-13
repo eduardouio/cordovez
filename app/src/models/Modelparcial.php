@@ -122,7 +122,9 @@ class Modelparcial extends CI_Model
      */
     public function update(array $parcial):bool
     {
+        
         $this->db->where('id_parcial', $parcial['id_parcial']);
+        unset($parcial['id_parcial']);
         if($this->db->update($this->table, $parcial)){
             return True;
         }

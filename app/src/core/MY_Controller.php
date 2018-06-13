@@ -156,7 +156,9 @@ class MY_Controller extends CI_Controller
             'supplierNew' => 'index.php/proveedor/nuevo',
             'suppliersList' => 'index.php/proveedor/listar',
             'showTaxesParcial' => 'index.php/impuestos/pc',            
-            'showTaxesOrder' => 'index.php/impuestos/pd',   
+            'showTaxesOrder' => 'index.php/impuestos/pd',
+            'showTaxesParcialLiquidate' => 'index.php/reliquidacion/pc',
+            'showTaxesOrderLiquidate' => 'index.php/reliquidacion/pd',
             'showParcial' => 'index.php/parcial/presentar'
         ];
 

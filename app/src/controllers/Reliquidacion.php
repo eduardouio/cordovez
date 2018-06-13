@@ -1,8 +1,8 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-require 'lib/TaxesCalcR70.php';
-require 'lib/TaxesCalcR10.php';
+require 'lib/TaxesCalcR70Reliquidate.php';
+require 'lib/TaxesCalcR10Reliquidate.php';
 require 'lib/Prorrateo.php';
 
 /**
@@ -16,11 +16,10 @@ require 'lib/Prorrateo.php';
  * @since Version 1.0.0
  * @filesource
  */
-class Impuestos extends MY_Controller
+class Reliquidacion extends MY_Controller
 {
-
-    private $controller = "impuestos";
-    private $template = '/pages/pageImpuestos.html';
+    private $controller = "reliquidacion";
+    private $template = '/pages/pageReliquidacion.html';
     private $modelOrder;
     private $modelParcial;
     private $ModelOrderInvoiceDetail;
@@ -37,7 +36,7 @@ class Impuestos extends MY_Controller
     private $ratesValues;
     private $modelProrrateo;
     private $modelProrrateoDetail;
-
+    
     /**
      * Contructor de la clase
      */
@@ -46,7 +45,7 @@ class Impuestos extends MY_Controller
         parent::__construct();
         $this->init();
     }
-
+    
     /**
      * Inicia los modelos de la clase
      */
@@ -88,7 +87,7 @@ class Impuestos extends MY_Controller
         $this->modelProrrateoDetail = new Modelprorrateodetail();
         $this->ratesValues = $this->modelRatesExpenses->getParcialRates();
     }
-
+    
     
     /**
      * funcion por defecto del controller, se usa para redireccionar al home
@@ -96,13 +95,13 @@ class Impuestos extends MY_Controller
     public function index()
     {
         $this->modelLog->warningLog(
-            'Redirecionamiento desde el controller de impuestos'
+            'Redirecionamiento desde el controller de reliuidacion ICE'
             );
         
         return ($this->redirectPage('home'));
     }
     
-
+    
     /**
      * Genera los impuestos para un parcial, el valor del flete y seguro
      * son sumados de cada una de las facturas informativas
@@ -112,13 +111,20 @@ class Impuestos extends MY_Controller
      *            @retunr arrat template
      */
     public function pc(int $id_parcial)
-    {        
+    {
         $parcial = $this->modelParcial->get($id_parcial);
         
-        if ($parcial == False){   
+        if ($parcial == False){
             $this->modelLog->warningLog(
                 'No se puedo continuar si el parcial no existe'
                 );
+            return $this->index();
+        }
+        
+        if (
+            $parcial['bg_isliquidated'] == 0
+            || $parcial['bg_isliquidated'] == False
+            ){
             return $this->index();
         }
         
@@ -127,50 +133,58 @@ class Impuestos extends MY_Controller
         $prorrateo_values = $prorrateoParams->getValues();
         $init_data['fobs_parcial'] = $prorrateo_values['fobs_parcial'];
         $init_data['warenhouses'] = $prorrateo_values['warenhouses'];
-
+        
         $prorrateos = $this->updateProrrateoParcial(
-                                                $prorrateo_values,
-                                                $parcial
+            $prorrateo_values,
+            $parcial
             );
-                
+        
         $param_taxes = $this->modelRatesExpenses->getTaxesParams();
         
-        $parcialTaxes =  new parcialTaxes(
-                                        $init_data, 
-                                        $prorrateos,  
-                                        $param_taxes, 
-                                        $parcial
-            );        
-               
+        $parcialTaxes =  new parcialTaxesReliquidate(
+            $init_data,
+            $prorrateos,
+            $param_taxes,
+            $parcial
+            );
+        
         return ($this->responseHttp([
-            'titleContent' => 'Resumen de Impuestos Liquidación Aduana del Pedido ' . 
-                                        $init_data['order']['nro_pedido'],
+            'titleContent' => 'Resumen de Impuestos Liquidación Aduana del Pedido ' .
+            $init_data['order']['nro_pedido'],
             'init_data' => $init_data,
             'parcial_taxes' => $parcialTaxes->getTaxes(),
             'prorrateos' => $prorrateos,
             'parcial' => $parcial,
             'warenhouses' => $init_data['warenhouses'],
             'regimen' => 'R70',
+            'order' => $init_data['order'],
             'user' => $this->modelUser->get($init_data['parcial']['id_user']),
         ]));
     }
     
-
+    
     
     /**
-    * Retorna la data incial para el calculo de impuestoas en R10 y 70
-    *
-    * @param string $nro_order
-    * @param int $id_parcial
-    * @return array Costos Iniciales
-    */
-    private function getOrderDataR70( int $id_parcial ): array 
+     * Retorna la data incial para el calculo de impuestoas en R10 y 70
+     *
+     * @param string $nro_order
+     * @param int $id_parcial
+     * @return array Costos Iniciales
+     */
+    private function getOrderDataR70( int $id_parcial ): array
     {
         $parcial = $this->modelParcial->get($id_parcial);
         $order = $this->modelOrder->get($parcial['nro_pedido']);
         
         if ($parcial == false) {
             $this->modelLog->errorLog('No Existe El parcial para nacionalizar');
+            return $this->index();
+        }
+        
+        if($parcial['bg_isliquidated'] == 0){
+            $this->modelLog->warningLog(
+                'El parical aun no ha liquidado los impuestos'
+                );
             return $this->index();
         }
         
@@ -184,9 +198,9 @@ class Impuestos extends MY_Controller
         foreach($info_invoices as $item => $invoice){
             $products = $this->modelInfoInvoiceDetail->getByFacInformative(
                 $invoice['id_factura_informativa']
-                );             
+                );
             array_push($infoInfoiceDetail, $products[0]);
-        }     
+        }
         
         
         foreach ($infoInfoiceDetail as $item => $dt){
@@ -212,7 +226,7 @@ class Impuestos extends MY_Controller
         
         foreach ($order_invoices as $item => $invoice){
             $detail = $this->ModelOrderInvoiceDetail->getByOrderInvoice(
-                                                $invoice['id_pedido_factura']
+                $invoice['id_pedido_factura']
                 );
             
             foreach ($detail as $idx => $dt){
@@ -228,17 +242,17 @@ class Impuestos extends MY_Controller
             'init_expeses' => $this->modelInitExpenses->getAll($order),
             'parcial' => $parcial,
             'all_parcials' => $this->modelParcial->getAllParcials(
-                                                        $parcial['nro_pedido']
-                ), 
+                $parcial['nro_pedido']
+                ),
             'parcial_expenses' => $this->modelExpenses->getPartialExpenses(
-                                                          $parcial['id_parcial']
+                $parcial['id_parcial']
                 ),
             'info_invoices' => $info_invoices,
             'products' => $infoInfoiceDetail,
             'last_prorrateo' => $this->modelProrrateo->getLastProrrateo(
-                                                          $id_parcial
-                ), 
-        ]);       
+                $id_parcial
+                ),
+        ]);
         
     }
     
@@ -258,26 +272,34 @@ class Impuestos extends MY_Controller
                 );
             return $this->index();
         }
-
+        
         if($order['regimen'] == '70'){
             $this->modelLog->warningLog(
                 'No se puede liquidar un pedidos de regimen Diferente al 70'
-            );
+                );
             return $this->index();
         }
         
+        if ($order['bg_isliquidated'] == 0){
+            $this->modelLog->warningLog(
+                'El pedido que intenta reliquidar está abierto'
+                );
+            return $this->index();
+        }
+
         $init_data = $this->getOrderDataR10($nroOrder);
         $param_taxes = $this->modelRatesExpenses->getTaxesParams();
         
-        $orderTaxes =  new orderTaxes(
+        $orderTaxes =  new orderTaxesReliquidate(
             $init_data,
             $param_taxes,
             $order
-            ); 
-               
+            );
+        
         return ($this->responseHttp([
-            'titleContent' => 'Resumen de Impuestos Liquidación Aduana del Pedido ' .
-                                              $init_data['order']['nro_pedido'],
+            'titleContent' => 'Resumen de Liquidacion Pedido ' .
+                                $init_data['order']['nro_pedido'] . 
+                                ' Regimen : ' . $order['regimen'],
             'init_data' => $init_data,
             'order_taxes' => $orderTaxes->getTaxes(),
             'regimen' => 'R10',
@@ -298,16 +320,8 @@ class Impuestos extends MY_Controller
     {
         $order = $this->modelOrder->get($nro_pedido);
         
-        if ($order == false) {
-            $this->modelLog->errorLog(
-                'El pedido no Existe'
-                );
-            return $this->index();
-        }
-        
         $order_detail = [];
         $products_base = [];
-       
         
         $order_invoices = $this->modelOrderInvoice->getbyOrder(
             $nro_pedido
@@ -361,149 +375,31 @@ class Impuestos extends MY_Controller
      * @return float valor del concepto
      */
     private function getValueOrder(
-                                    int $unities, 
-                                    int $idOrderInvoiceDetail,
-                                    array $orderInvoice, 
-                                    array $order
+        int $unities,
+        int $idOrderInvoiceDetail,
+        array $orderInvoice,
+        array $order
         ): array
-    {
-        $itemValues = [
-            'fob_item' => 0.0,
-            'seguro_item' => 0.0,
-            'flete_item' => 0.0,
-            'percent_item' => 0.0
-        ];
-        
-        foreach ($orderInvoice['products'] as $item => $detail) {
-            if ($detail['detalle_pedido_factura'] == $idOrderInvoiceDetail) {
-                $itemValues['fob_item'] = floatval($detail['costo_caja'] * $detail['nro_cajas']);
-                $itemValues['percent_item'] = floatval($itemValues['fob_item'] / $orderInvoice['valor']);
-                $itemValues['flete_item'] = floatval($order['flete_aduana'] * $itemValues['percent_item']);
-                $itemValues['seguro_item'] = floatval($order['seguro_aduana'] * $itemValues['percent_item']);
-                return $itemValues;
+        {
+            $itemValues = [
+                'fob_item' => 0.0,
+                'seguro_item' => 0.0,
+                'flete_item' => 0.0,
+                'percent_item' => 0.0
+            ];
+            
+            foreach ($orderInvoice['products'] as $item => $detail) {
+                if ($detail['detalle_pedido_factura'] == $idOrderInvoiceDetail) {
+                    $itemValues['fob_item'] = floatval($detail['costo_caja'] * $detail['nro_cajas']);
+                    $itemValues['percent_item'] = floatval($itemValues['fob_item'] / $orderInvoice['valor']);
+                    $itemValues['flete_item'] = floatval($order['flete_aduana'] * $itemValues['percent_item']);
+                    $itemValues['seguro_item'] = floatval($order['seguro_aduana'] * $itemValues['percent_item']);
+                    return $itemValues;
+                }
             }
-        }
     }
-    /**
-     * Actualiza los parametros de calculo de impuestos para el Parcial
-     *
-     * @param $tipo_cambio float
-     * @param $etiquetas_fiscales boolean
-     * @return string redirect
-     */
-    public function actualizar()
-    {
-        
-        $paramsParcial = [
-            'id_parcial' => $_POST['id_parcial'],
-            'bg_have_tasa_control' => 0,
-            'bg_have_etiquetas_fiscales' => 0,
-            'observaciones' => $_POST['observaciones'],
-            'tipo_cambio' => $_POST['tipo_cambio'],
-        ];
-        
-        if (isset($_POST['bg_have_etiquetas_fiscales']) && 
-            $_POST['bg_have_etiquetas_fiscales'] == 'on') 
-        {
-            $paramsParcial['bg_have_etiquetas_fiscales'] = 1;
-        }
-        
-        if (isset($_POST['bg_have_tasa_control']) && 
-            $_POST['bg_have_tasa_control'] == 'on') 
-        {
-            $paramsParcial['bg_have_tasa_control'] = 1;
-        }
-        
-       $this->modelParcial->update($paramsParcial);
-       
-        
-        return ($this->redirectPage('showTaxesParcial', $_POST['id_parcial']));
-    }
-    
-    
-    /**
-     * Actualiza los parametros de calculo de impuestos para 
-     * Regimen 10
-     * @parms array $params
-     * @return $redirect
-     */
-    public function actualizarR10()
-    {   
-        
-        if($_POST['have_etiquetas_fiscales'] == 'on'){
-            $_POST['have_etiquetas_fiscales'] = 1;
-        }else{
-            $_POST['have_etiquetas_fiscales'] = 0;
-        }
-        
-        if($_POST['bg_have_tasa_control'] == 'on'){
-            $_POST['bg_have_tasa_control'] = 1;
-        }else{
-            $_POST['bg_have_tasa_control'] = 0;
-        }
-                
-        if ($this->modelOrder->update($_POST)){
-            $this->modelLog->susessLog(
-                'Se ha actualizado correctamente los parameros de impuestos'
-                );
-            
-            return $this->redirectPage('showTaxesOrder', $_POST['nro_pedido']); 
-            
-        }else{
-            $this->modelLog->errorLog(
-                'No se pueden actualizar los parametros de impuestos'
-                );
-        }
-    }
-    
-    /**
-     * Marca un pedido como cerrado
-     */
-    public function liquidarIvaOrder(){
-        if(!$_POST){
-            return $this->index();
-        }
-        
-        $order = $this->input->post();
-        
-        $order['bg_isliquidated'] = 1;
-        $order['have_etiquetas_fiscales'] = 1 ;
-        $order['bg_have_tasa_control'] = 1;
-        
-        if($this->modelOrder->update($order)){
-            return $this->redirectPage(
-                'showTaxesOrderLiquidate', 
-                $order['nro_pedido']
-                );
-        }
-        print '<h1>Error de sistema</h1>';
-        return $this->redirectPage('showTaxesOrder', $order['nro_pedido']);
-     }
-     
-     
-     /**
-      * Marca un parcial como cerrado
-      */
-    public function liquidarIvaParcial(){
-        if(!$_POST){
-            return $this->index();
-        }
-        
-        $parcial = $this->input->post();
-        
-        $parcial['bg_isliquidated'] = 1;
-        $parcial['bg_have_etiquetas_fiscales'] = 1 ;
-        $parcial['bg_have_tasa_control'] = 1;               
-        if($this->modelParcial->update($parcial)){
-            return $this->redirectPage(
-                'showTaxesParcialLiquidate', $parcial['id_parcial']
-                );
-        }
-        print '<h1>Error de sistema</h1>';
-        return $this->redirectPage('showTaxesParcial', $parcial['id_parcial']);
-     }
-     
-        
+  
+
     /**
      * Retorna el valor del impuesto basado en el nombre
      *
@@ -531,8 +427,8 @@ class Impuestos extends MY_Controller
      * @param $parcial array informacion del parcial
      */
     private function updateProrrateoParcial(
-                                        array $prorrateo_values, 
-                                        array $parcial
+        array $prorrateo_values,
+        array $parcial
         )
     {
         
@@ -607,11 +503,11 @@ class Impuestos extends MY_Controller
         }
         
         $this->modelLog->errorLog(
-            'No se puede actualizar el parcial Error en prorrateos', 
+            'No se puede actualizar el parcial Error en prorrateos',
             $this->db->last_query()
             );
         
-        return False;        
+        return False;
     }
     
     
@@ -635,8 +531,8 @@ class Impuestos extends MY_Controller
         ];
         
     }
-
-        
+    
+    
     /*
      * Redenderiza la informacion y la envia al navegador
      * @param array $config informacion de la plantilla

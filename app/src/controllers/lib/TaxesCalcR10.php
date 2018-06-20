@@ -68,20 +68,19 @@ class orderTaxes {
             array_push($taxes['taxes'], $this->getTaxesProduct($product));
         }
         
-        $x = 1;
+        #suma los valores de los impuestos en una sola linea
         foreach ($taxes['taxes'] as $dx => $tax){
-            if($x == 1){
+            if($dx == 0){
                 $taxes['sums'] = $tax;
-            }else{
-                foreach ($taxes['sums'] as $tax_name => $val){
-                    if (gettype($val) != 'string'){
-                        $taxes['sums'][$tax_name] += $val;
-                    }else{
-                        $taxes['sums'][$tax_name] = 'String';
-                    }
-                }
             }
-            $x++;
+            
+            foreach ($taxes['sums']as $tax_name => $val){
+                if($dx == 0){
+                    $taxes['sums'][$tax_name] = 0.0;
+                }
+                
+                $taxes['sums'][$tax_name] += floatval($tax[$tax_name]);
+            }
         }
         
         $data_general = [
@@ -367,7 +366,6 @@ class orderTaxes {
                     + $prorrateo_item['seguro_aduana']
                     + $prorrateo_item['flete_aduana']
                 ) 
-                * $fob_percent
                 );
             
             return  $prorrateo_item;

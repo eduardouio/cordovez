@@ -67,27 +67,27 @@ class parcialTaxes {
        'sums' => [],
        'data_general' => [],
        ];
-       
+
        foreach ($this->init_data['products'] as $item => $product){
            array_push($taxes['taxes'], $this->getTaxesProduct($product));
        }
        
-       $x = 1;
+       
+       #suma los valores de los impuestos en una sola linea
        foreach ($taxes['taxes'] as $dx => $tax){
-           if($x == 1){
+           if($dx == 0){
                 $taxes['sums'] = $tax;
-           }else{
-               foreach ($taxes['sums']as $tax_name => $val){
-                   if (gettype($val) != 'string'){
-                       $taxes['sums'][$tax_name] += $val;
-                   }else{
-                       $taxes['sums'][$tax_name] = 'String';
-                       }
-               }
            }
-           $x++;
+           
+           foreach ($taxes['sums']as $tax_name => $val){
+               if($dx == 0){
+                   $taxes['sums'][$tax_name] = 0.0;
+               }
+               
+               $taxes['sums'][$tax_name] += floatval($tax[$tax_name]);
+           }
        }
-        
+              
        $data_general = [
        'tipo_cambio_factura' => $this->type_change_invoice,
        'tipo_cambio_parcial' => $this->type_change_parcial,
@@ -228,6 +228,7 @@ class parcialTaxes {
      */
     private function getProductData(array $detail_info_invoice):array
     {
+        
         $product_base = [];
         $detail_order_invoice = [];
         
@@ -362,7 +363,6 @@ class parcialTaxes {
                             + $prorrateo_item['seguro_aduana'] 
                             + $prorrateo_item['flete_aduana']
                             )
-                            * $fob_percent
             );
         return  $prorrateo_item;
     }
@@ -380,7 +380,7 @@ class parcialTaxes {
                                             array $prorrateos
         ): array
     {   
-        $base_fodinfa = $prorrateos['cif'] + $this->gastos_origen;        
+        $base_fodinfa = $prorrateos['cif'];  
         $fodinfa = ( $base_fodinfa * $this->getTaxParam('FODINFA'));
         
         $etiquetas_fiscales = 0.0;

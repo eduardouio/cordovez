@@ -6,3 +6,4 @@ colores/
 .idea/
 .project
 
+/app/nbproject/private/

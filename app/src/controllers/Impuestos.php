@@ -184,10 +184,11 @@ class Impuestos extends MY_Controller
         foreach($info_invoices as $item => $invoice){
             $products = $this->modelInfoInvoiceDetail->getByFacInformative(
                 $invoice['id_factura_informativa']
-                );             
-            array_push($infoInfoiceDetail, $products[0]);
-        }     
+                );                         
+            array_push($infoInfoiceDetail, $products);
+        }
         
+        $infoInfoiceDetail = $infoInfoiceDetail[0];
         
         foreach ($infoInfoiceDetail as $item => $dt){
             $invoice_detail = $this->ModelOrderInvoiceDetail->get(
@@ -490,7 +491,7 @@ class Impuestos extends MY_Controller
         }
         
         $parcial = $this->input->post();
-        
+        $parcial['fecha_liquidacion'] = date('Y-m-d', strtotime($parcial['fecha_liquidacion']));
         $parcial['bg_isliquidated'] = 1;
         $parcial['bg_have_etiquetas_fiscales'] = 1 ;
         $parcial['bg_have_tasa_control'] = 1;               

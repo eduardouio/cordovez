@@ -144,7 +144,6 @@ class Gstnacionalizacion extends MY_Controller
                 $expense['bg_closed'] = 1;
             }
             
-            
             $this->modelExpenses->create($expense);
         }
                 

@@ -19,6 +19,10 @@
 	color: #fff;
 }
 
+.number{
+ text-align: right;
+}
+
 .title-reliquidacion {
 	background-color: #2874A6 !important;
 	height: 45px;

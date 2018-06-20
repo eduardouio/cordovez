@@ -419,6 +419,43 @@ class Reliquidacion extends MY_Controller
         $this->modelLog->errorLog("El impuesto  $taxeName solicitado no Existe");
         return false;
     }
+
+
+    /**
+    *
+    */
+    public function closeOrder(){
+        $order = $this->modelOrder->get($nro_order);
+
+        if ($order == False){
+            $this->modelLog->error_log(
+                'La orden que intenta cerrar no existe',
+                $this->db->last_query()
+                );
+                return $this->index();
+        }
+
+        
+        $order['bg_isliquidated'] = true;
+        $order['bg_isclosed'] = true;
+
+        if($this->modelOrder->update->order){
+            $this->modelLog->susessLog(
+                'El pedido ' .  $order['nro_pedido'] . 'Se ha cerrado'
+                );
+            return $this->redirectPage('presentOrder', $order['nro_pedido']);
+        }   
+
+        return ('Error no se puede actualizar el pedido');
+    }
+
+
+    /**
+    *
+    */
+    public function closeParcial(int $nro_parcial){
+        
+    }
     
     /**
      * Registra y/o actualiza los valores prorrateados del parcial

@@ -101,10 +101,10 @@
 				<span class="fa fa-plus"></span> Agregar Productos
 		</a>	
 		{% elseif order.bg_haveExpenses == 0 and order.regimen == 70 %}
-			<a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}" class="text-primary">
+			<a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}" class="btn btn-default btn-sm">
 				<span class="fa fa-pencil fa-fw"></span>Editar
 		</a>  
-		<a href="{{rute_url}}pedidofactura/nuevo/{{ order.nro_pedido }}" class="text-primary">
+		<a href="{{rute_url}}pedidofactura/nuevo/{{ order.nro_pedido }}" class="btn btn-default btn-sm">
 				<span class="fa fa-plus"></span> Agregar Productos
 		</a>
 		{% endif %}
@@ -131,12 +131,7 @@
          {% endif %}
          </a>
       </li>
-      <li role="presentation"
-      
-      {% if (order.bg_haveExpenses == 0) %}
-      class="active"
-         {% endif %}       
-      >
+      <li role="presentation">
       	<a href="#facturas" role="tab" data-toggle="tab" aria-controls="facturas">
       	<span class="fa fa-file"></span> Facturas Productos</a>
       </li>

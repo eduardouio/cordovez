@@ -410,7 +410,6 @@ class Gstnacionalizacion extends MY_Controller
      */
     public function validarbodegaparcial(int $idParcial)
     {
-        
         $parcial = $this->modelParcial->get($idParcial);
         if ($parcial == false) {
             return ($this->index());
@@ -420,25 +419,36 @@ class Gstnacionalizacion extends MY_Controller
             );
         $order = $this->modelOrder->get($parcial['nro_pedido']);
         
-        
         $resumeOrder = new resumeOrder(
             $this->modelOrderInfo->getInfoOrder(
                 $parcial['nro_pedido'])
             );
         
         $parcialWarenhouse = new warenHouseParcial($order, $parcial);
-        $lastWarenHouseParcial = $parcialWarenhouse->getLastWarenhouseParcial();
+        $lastWarenHouseParcial = $parcialWarenhouse->getLastWarenhouseParcial();       
         
-
+        $values_order = $resumeOrder->getValuesOrder();
+        
+        $bodegaje = ($values_order['cif_actual']['cif'] * 4/1000);
+        if($bodegaje < 165 ) {
+            $bodegaje = 165.00;
+        }
+        
+        if ($lastWarenHouseParcial == False){
+            $bodegaje += 8;
+        }
+               
+        
         return ($this->responseHttp([
             'validWarenHouse' => True,
             'titleContent' => 'Generar Provisiones Por Bodega Del Parcial Pedido [' 
                                 . $order['nro_pedido'] . 
                                 '] Parcial [' . $parcial['id_parcial'] . ']',
             'parcial' => $parcial,
+            'almacenaje' => $bodegaje,
             'lastWarenHouseParcial' => $lastWarenHouseParcial,
             'order' => $order,
-            'values' => $resumeOrder->getValuesOrder(),
+            'values' => $values_order,
         ]));
     }
       

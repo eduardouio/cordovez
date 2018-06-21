@@ -62,6 +62,7 @@
                      id="fecha_nacionalizacion_parcial" 
                      required="" 
                      name="fecha_nacionalizacion_parcial" 
+                     autofocus=""
                      >
             </div>
          </div>
@@ -83,7 +84,7 @@
                   class="form-control text-right text-primary" 
                   type="number" 
                   id="almacenaje"
-                  value = "{{ (values.cif_actual.cif * 4 / 1000) | number_format(2,'.','')}}"
+                  value = "{{ almacenaje | number_format(2,'.','')}}"
                   >
                  </strong>
             </div>
@@ -109,7 +110,7 @@
       
 
 <script type="text/javascript">
-    var almacenaje = parseFloat({{ (values.cif_actual.cif * 4 / 1000)}});
+    var almacenaje = parseFloat({{ almacenaje| number_format(2,'.','')}});
 
     $('#procentaje').change(function(){
         calcAlmacenaje();
@@ -119,11 +120,13 @@
         calcAlmacenaje();
     });
 
-
 	function calcAlmacenaje(){
         var cif = parseFloat({{ values.cif_actual.cif }});
 	    var porcentaje = parseFloat($('#procentaje').val());
         almacenaje = (cif * porcentaje / 1000);
+        if (almacenaje < 165){
+            almacenaje = 165;
+            }
         $('#almacenaje').val(Math.round(almacenaje * 100)/100);
 	}
 	

@@ -398,7 +398,66 @@ class Reliquidacion extends MY_Controller
                 }
             }
     }
-  
+        
+    
+    /**
+     * Conforma el cioerre de un pedido o un parcial
+     * 
+     * @param string $tipo
+     * @param string $id
+     */
+    public function confirmar(string $tipo, string $id){
+        if(!$_POST){
+            return $this->index();
+        }
+        $record = $this->existRecord($tipo, $id);
+        
+        if ($check == False){
+            $this->modelLog->errorLog(
+                'El pedido o parcial que intenta cerrar no existe',
+                $this->db->last_query()
+                );
+            return $this->index();
+        }        
+
+        $record['bg_isclosed'] = 1;
+        $record['fecha_cierre'] = date('Y-m-d', strtotime($_POST['fecha_cierre']));
+        
+        print '<pre>';
+        print_r($_POST);
+        print '</pre>';
+        exit();
+        
+        if($tipo == 'orden'){
+            $this->modelOrder->update($record);
+            $this->modelLog->susessLog('Pedido ' . $id . 'fue cerrrado');
+            return $this->redirectPage('showTaxesOrderLiquidate'. $id);
+        }
+        
+        $this->modelParcial->update($record);
+        $this->modelLog->susessLog('El parcial ' . $id . ' fue cerrado');
+        return $this->redirectPage('showTaxesParcialLiquidate', $id);
+    }
+    
+    
+    
+    /**
+     * Confirma si el registro existe
+     * 
+     * @param string $tipo
+     * @param string $id
+     */
+    private function existRecord(string $tipo, string $id){
+        $record = false;
+        if ($tipo == 'orden'){
+            $record = $this->modelOrder->get($id);
+        }
+        elseif($tipo == 'parcial'){
+            $record = $this->modelParcial->get(intval($id));
+        }
+        return $record;
+    }
+    
 
     /**
      * Retorna el valor del impuesto basado en el nombre
@@ -418,44 +477,7 @@ class Reliquidacion extends MY_Controller
         
         $this->modelLog->errorLog("El impuesto  $taxeName solicitado no Existe");
         return false;
-    }
-
-
-    /**
-    *
-    */
-    public function closeOrder(){
-        $order = $this->modelOrder->get($nro_order);
-
-        if ($order == False){
-            $this->modelLog->error_log(
-                'La orden que intenta cerrar no existe',
-                $this->db->last_query()
-                );
-                return $this->index();
-        }
-
-        
-        $order['bg_isliquidated'] = true;
-        $order['bg_isclosed'] = true;
-
-        if($this->modelOrder->update->order){
-            $this->modelLog->susessLog(
-                'El pedido ' .  $order['nro_pedido'] . 'Se ha cerrado'
-                );
-            return $this->redirectPage('presentOrder', $order['nro_pedido']);
-        }   
-
-        return ('Error no se puede actualizar el pedido');
-    }
-
-
-    /**
-    *
-    */
-    public function closeParcial(int $nro_parcial){
-        
-    }
+    }    
     
     /**
      * Registra y/o actualiza los valores prorrateados del parcial

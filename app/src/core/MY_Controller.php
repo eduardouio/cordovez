@@ -52,6 +52,7 @@ class MY_Controller extends CI_Controller
         }
     }
     
+    
     /**
      * controla las columnas y la longitud de sus valores
      * @param (array) $paramsdata => Parametros minimos
@@ -138,6 +139,7 @@ class MY_Controller extends CI_Controller
             'home' =>  'index.php/home',
             'ordersList' => 'index.php/pedido/listar',
             'orderInvoicePresent' => 'index.php/pedidofactura/presentar',
+            'orderDetailAdd' => 'index.php/detallepedido/nuevo',
             'infoInvoiceShow' => 'index.php/facinformativa/presentar',
             'infoInvoiceNew' => 'index.php/facinformativa/nuevo',
             'newProductInfoInvoice' => 'index.php/facinfdetalle/nuevo',

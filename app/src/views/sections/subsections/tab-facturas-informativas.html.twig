@@ -56,7 +56,7 @@
                     <a href="{{ rute_url }}parcial/presentar/{{ parcial.id_parcial }}">
                     {{ loop.index }}
                     <span class="fa fa-eye"></span>
-                    {%  if parcial.bg_isliquidated == 0 %}
+                    {%  if parcial.bg_isclosed == 0 %}
                     	<label class="label label-success">Abierto</label>
                     	{% set newParcial = false %}
                     {%  else %}

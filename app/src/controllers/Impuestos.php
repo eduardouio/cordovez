@@ -122,6 +122,14 @@ class Impuestos extends MY_Controller
             return $this->index();
         }
         
+        if ($parcial['bg_isliquidated'] == 1){
+            return $this->redirectPage('showTaxesParcialLiquidate');
+        }
+        
+        if ($parcial['bg_isliquidated']){
+            return $this->redirectPage('showTaxesParcialLiquidate', $id_parcial);
+        }
+        
         $init_data = $this->getOrderDataR70($id_parcial);
         $prorrateoParams = new Prorrateo($init_data);
         $prorrateo_values = $prorrateoParams->getValues();
@@ -265,6 +273,10 @@ class Impuestos extends MY_Controller
                 'No se puede liquidar un pedidos de regimen Diferente al 70'
             );
             return $this->index();
+        }
+        
+        if ($order['bg_isliquidated'] == 1){
+            return $this->redirectPage('showTaxesOrderLiquidate', $nroOrder);
         }
         
         $init_data = $this->getOrderDataR10($nroOrder);
@@ -458,7 +470,7 @@ class Impuestos extends MY_Controller
     }
     
     /**
-     * Marca un pedido como cerrado
+     * Marca un pedido como liquidado
      */
     public function liquidarIvaOrder(){
         if(!$_POST){
@@ -466,10 +478,9 @@ class Impuestos extends MY_Controller
         }
         
         $order = $this->input->post();
-        
-        $order['bg_isliquidated'] = 1;
         $order['have_etiquetas_fiscales'] = 1 ;
         $order['bg_have_tasa_control'] = 1;
+        $order['bg_isliquidated'] = 1;
         
         if($this->modelOrder->update($order)){
             return $this->redirectPage(
@@ -478,12 +489,12 @@ class Impuestos extends MY_Controller
                 );
         }
         print '<h1>Error de sistema</h1>';
-        return $this->redirectPage('showTaxesOrder', $order['nro_pedido']);
+        return $this->redirectPage('validargi', $order['nro_pedido']);
      }
      
      
      /**
-      * Marca un parcial como cerrado
+      * Marca un parcial como liquidado
       */
     public function liquidarIvaParcial(){
         if(!$_POST){
@@ -492,8 +503,8 @@ class Impuestos extends MY_Controller
         
         $parcial = $this->input->post();
         $parcial['fecha_liquidacion'] = date('Y-m-d', strtotime($parcial['fecha_liquidacion']));
-        $parcial['bg_isliquidated'] = 1;
         $parcial['bg_have_etiquetas_fiscales'] = 1 ;
+        $parcial['bg_isliquidated'] = 1;
         $parcial['bg_have_tasa_control'] = 1;               
         if($this->modelParcial->update($parcial)){
             return $this->redirectPage(
@@ -537,7 +548,7 @@ class Impuestos extends MY_Controller
         )
     {
         
-        if($parcial['bg_isliquidated']){
+        if($parcial['bg_isclosed']){
             $this->modelLog->generalLog(
                 'El parcial se encuentra cerrado no se puede continuar'
                 );

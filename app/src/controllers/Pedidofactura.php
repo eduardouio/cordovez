@@ -236,7 +236,7 @@ class Pedidofactura extends MY_Controller
         if ($status['status']) {
             if (! isset($orderInvoice['id_pedido_factura'])) {
                 $resultQuery = $this->modeOrderInvoice->create($orderInvoice);
-                $this->redirectPage('orderInvoicePresent', $resultQuery);
+                $this->redirectPage('orderDetailAdd', $resultQuery);
                 return true;
             } else {
                 $orderInvoice['last_update'] = date('Y-m-d H:i:s');

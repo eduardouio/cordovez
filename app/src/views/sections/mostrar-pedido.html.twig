@@ -131,11 +131,12 @@
          {% endif %}
          </a>
       </li>
-      <li role="presentation">
+      <!-- Para ocultar las tabs se debe hacer desde este punto -->
+      <li role="presentation" class="active">
       	<a href="#facturas" role="tab" data-toggle="tab" aria-controls="facturas">
       	<span class="fa fa-file"></span> Facturas Productos</a>
       </li>
-      <li class="active">
+      <li>
       {% if order.regimen == '70' %}
       	<a href="#facturas-informativas" role="tab" data-toggle="tab" aria-controls="facturas-informativas">
       		<span class="fa fa-list-ol"></span> Parciales del Pedido
@@ -156,11 +157,7 @@
       </div>
       <!-- /tabPedidoDetalle-->
       <!-- tabFacturas-->
-      <div role="tabpanel" class="tab-pane 
-       {% if (order.bg_haveExpenses == 0) %}
-      active
-      {%  endif %}
-      " id="facturas">
+      <div role="tabpanel" class="tab-pane active" id="facturas">
          {% include 'sections/subsections/tab-facturas-productos-pedido.html.twig' %}            
       </div>
       <!-- /Tab Facturas-->      
@@ -172,11 +169,7 @@
       <!-- /factura Nacionalizaciones -->
      {% else %}
      <!-- factura Informativas -->
-      <div role="tabpanel" class="tab-pane
-      {% if (order.bg_haveExpenses == 1) %}
-      active
-      {%  endif %}
-      " id="facturas-informativas">
+      <div role="tabpanel" class="tab-pane" id="facturas-informativas">
          {% include 'sections/subsections/tab-facturas-informativas.html.twig' %}            
       </div>
       <!-- /factura Informativas -->

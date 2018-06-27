@@ -84,7 +84,7 @@ class parcialTaxesReliquidate {
            }
            $x++;
        }
-        
+       
        $data_general = [
        'tipo_cambio_factura' => $this->type_change_invoice,
        'tipo_cambio_parcial' => $this->type_change_parcial,
@@ -163,7 +163,6 @@ class parcialTaxesReliquidate {
             + $taxes_product['arancel_advalorem']
             + $taxes_product['arancel_especifico']
             + $prorrateo_item['prorrateos_total']
-            + $taxes_product['etiquetas_fiscales']
             );
         
         return([

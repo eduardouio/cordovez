@@ -1,7 +1,7 @@
 <?php
-
 require 'lib/StockOrder.php';
 require 'lib/ReportCompleteOrder.php';
+require_once 'lib/checkerOrder.php';
 
 defined('BASEPATH') or exit('No direct script access allowed');
 /**
@@ -22,7 +22,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Pedido extends MY_Controller
 {
     private $controller = 'pedido';
-    private $listPerPage = 50;
+    private $listPerPage = 100;
     private $seguroVal = 2.2;
     private $template = '/pages/pagePedido.html';
     private $modelOrder;
@@ -33,6 +33,7 @@ class Pedido extends MY_Controller
     private $modelBase;
     private $myModel;
     private $modelLog;
+    private $modelBasicOrderInfo;
     private $modelUser;
     private $modelProductInvoice;
     private $modelExpenses;
@@ -41,6 +42,7 @@ class Pedido extends MY_Controller
     private $modelPaidDetail;
     private $modelParcial;    
     private $modelOrderReport;
+    private $modelOrderInfo;
     /**
      * constructor de la clase
      */
@@ -59,7 +61,6 @@ class Pedido extends MY_Controller
         if(! isset($this->session->userdata['id_user'])){
             exit(0);
         }
-        
         $this->load->model('modelorder');
         $this->load->model('modelsupplier');
         $this->load->model('modelproduct');
@@ -74,6 +75,10 @@ class Pedido extends MY_Controller
         $this->load->model('modelpaiddetail');
         $this->load->model('modelparcial');
         $this->load->model('ModelOrderReport');
+        $this->load->model('ModelOrderInfo');
+        $this->load->model('ModelBasicOrderInfo');
+        $this->modelBasicOrderInfo = new ModelBasicOrderInfo();
+        $this->modelOrderInfo =  new ModelOrderInfo();
         $this->modelOrderReport = new ModelOrderReport();
         $this->modelOrder = new Modelorder();
         $this->modelSupplier = new Modelsupplier();
@@ -91,6 +96,7 @@ class Pedido extends MY_Controller
         $this->modelParcial = new Modelparcial();
     }
     
+    
     /**
      * redirecciona a la lista de proveedores
      *
@@ -98,8 +104,11 @@ class Pedido extends MY_Controller
      */
     public function index()
     {
-        $this->redirectPage('ordersList');
-        return true;
+        $this->modelLog->errorLog(
+            'Redireccionamiento de mostrar pedidos',
+            current_url()
+            );
+        return $this->redirectPage('ordersList');
     }
     
     
@@ -112,37 +121,42 @@ class Pedido extends MY_Controller
      * @return string template plantilla de la pagina
      */
     public function listar(int $offset = 0)
-    {
-        $this->db->where('nro_pedido !=', '000-00');
-        $this->db->order_by('nro_pedido', 'DESC');
-        $this->db->limit($this->listPerPage, $offset);
-        $resultDb = $this->db->get($this->controller);
-        $orders = $resultDb->result_array();
-        $pages_links = (($this->db->count_all($this->controller) - 1) / $this->listPerPage);
+    {       
+        $init_data = [];
+        $all_orders = [];
         
-        if (gettype($pages_links) == 'double') {
-            (int) $pages_links = (int) $pages_links + 1;
+        if($_POST){
+            $all_orders = $this->modelOrder->search($_POST['nro_pedido']);
+        }else{
+            $all_orders = $this->modelOrder->getAll();
         }
-        $orderList = [];
-        foreach ($orders as $item => $order) {
-            $order['invoices'] = $this->modelOrder->getInvoices($order['nro_pedido']);
-            $order['warenHouseDays'] = $this->getWarenHouseDaysInitial($order);
-            $orderList[$item] = $order;
-        }
+        
+        
+        $orders_open = 0;
+        $orders_closed = 0;
+        
+        foreach ($all_orders as $idx => $order){
+            $order['info'] = $this->modelBasicOrderInfo->getInfoOrder($order['nro_pedido']);
+            array_push($init_data, $order);
+            if($order['bg_isclosed'] == 1){
+                $orders_closed ++;
+            }else{
+                $orders_open ++;
+            }
+        }       
         
         $this->responseHttp([
             'list_orders' => true,
+            'title' => 'Lista de Pedidos',
             'list_active' => 'class="active"',
-            'orders' => $orderList,
+            'orders' => $init_data,
+            'orders_closed' => $orders_closed,
+            'orders_opened' => $orders_open,
             'titleContent' => 'Lista de Pedidos Cordovez',
             'infoBase' => $this->getStatisticsInfo(),
-            'pagination' => true,
-            'perPage' => $this->listPerPage,
-            'pagination_pages' => $pages_links,
-            'current_page' => (int) (($offset) / 10) + 1,
-            'last_page' => (int) (($pages_links - 1) * 10),
             'pagination_url' => base_url() . 'index.php/pedido/listar/'
         ]);
+        
     }
     
     /**
@@ -225,12 +239,13 @@ class Pedido extends MY_Controller
         $order_report = new ReportCompleteOrder(
                                 $this->modelOrderReport->getOrderData($order)
                 );
-               
+        
         return($this->responseHttp([
             'show_order' => true,
             'current_stock' => $this->getStock($order),
             'order_info' => $order_report->getStatusData(),
             'order' => $order,
+            'title' => 'Pedido [' . $order['nro_pedido'] . ']',
             'order_report' => $order_report->getStatusData(),
             'ubicacion' => $this->whereIsOrder($order),
             'warenHouseDays' => $this->getWarenHouseDaysInitial($order),
@@ -262,7 +277,6 @@ class Pedido extends MY_Controller
     }
     
     
-    
     /**
      * Muestra el formulario de edicion
      */
@@ -275,6 +289,7 @@ class Pedido extends MY_Controller
         return($this->responseHttp([
             'edit_order'    => true,
             'order'         => $order,
+            'title' => 'Editar Pedido ' . $order['nro_pedido'],
             'incoterms'     => json_encode($this->modelBase->get_table([
                                                    'table' => 'tarifa_incoterm'
                                 ])),
@@ -434,44 +449,6 @@ class Pedido extends MY_Controller
     }
     
     
-    
-    /**
-     * retorna las estadisticas de los pedidos para la cabecera de la lista
-     *
-     * @return array [totalOrders,
-     *         consumeOrders,
-     *         partialOrders,
-     *         ativeOrders
-     *         ]
-     */
-    private function getStatisticsInfo()
-    {
-        $orders = $this->modelOrder->getAll();
-        $info = [
-            'totalOrders' => count($orders),
-            'consumeOrders' => 0,
-            'partialsOrders' => 0,
-            'activeOrders' => 0
-        ];
-        foreach ($orders as $key => $order) {
-            if ($order['regimen'] == '70') {
-                $info['partialsOrders'] ++;
-            } elseif (($order['regimen'] == '10')) {
-                $info['consumeOrders'] ++;
-            }
-            if ($order['bg_isclosed'] == '0') {
-                $info['activeOrders'] ++;
-            }
-        }
-        // se resta uno por el pedido cero
-        $info['consumeOrders'] --;
-        $info['totalOrders'] --;
-        $info['activeOrders'] --;
-        return $info;
-    }
-    
-    
-    
     /**
      * Retorna un arreglo indicando el lugar donde se encuentra el pedido
      * barco
@@ -545,6 +522,71 @@ class Pedido extends MY_Controller
     
     
     /**
+     * retorna las estadisticas de los pedidos para la cabecera de la lista
+     *
+     * @return array [totalOrders,
+     *         consumeOrders,
+     *         partialOrders,
+     *         ativeOrders
+     *         ]
+     */
+    private function getStatisticsInfo()
+    {
+        $orders = $this->modelOrder->getAll();
+        $info = [
+            'totalOrders' => count($orders),
+            'consumeOrders' => 0,
+            'partialsOrders' => 0,
+            'activeOrders' => 0
+        ];
+        foreach ($orders as $key => $order) {
+            if ($order['regimen'] == '70') {
+                $info['partialsOrders'] ++;
+            } elseif (($order['regimen'] == '10')) {
+                $info['consumeOrders'] ++;
+            }
+            if ($order['bg_isclosed'] == '0') {
+                $info['activeOrders'] ++;
+            }
+        }
+        // se resta uno por el pedido cero
+        $info['consumeOrders'] --;
+        $info['totalOrders'] --;
+        $info['activeOrders'] --;
+        return $info;
+    }
+    
+    
+    
+    
+    /**
+     * retorna el saldo de productos en un pedido, el pedido no tiene
+     * producto registrado retorna False
+     *
+     * @param array $order
+     * @return array | bool
+     */
+    private function getStock($order)
+    {
+        $stockOrder = new StockOrder();
+        $infoInvoicesDetail = [];
+        $orderInvoicesDetail = [];
+        
+        $order_invoices = $this->modelOrderInvoice->getbyOrder(
+            $order['nro_pedido']
+            );
+        
+        if($order_invoices == False){
+            $this->modelLog->warningLog(
+                'El pedido no tiene facturas de pedido'
+                );
+            #si no hay facturas de pedidos se termina la funcion
+            return False;
+        }
+    }
+    
+    
+    /**
      * se validan los datos que deben estar para que la consulta no falle
      *
      * @return [array] | [bolean]
@@ -570,7 +612,6 @@ class Pedido extends MY_Controller
     {
         return(
             $this->twig->display($this->template, array_merge($config,[
-                'title' => 'Pedidos',
                 'base_url' => base_url(),
                 'rute_url' => base_url() . 'index.php/',
                 'controller' => $this->controller,
@@ -579,85 +620,4 @@ class Pedido extends MY_Controller
             );
     }
     
-    
-    
-    /**
-     * retorna el saldo de productos en un pedido, el pedido no tiene
-     * producto registrado retorna False
-     * 
-     * @param array $order
-     * @return array | bool
-     */
-    private function getStock($order)
-    {
-        $stockOrder = new StockOrder();
-        $infoInvoicesDetail = [];
-        $orderInvoicesDetail = [];
-        
-        $order_invoices = $this->modelOrderInvoice->getbyOrder(
-            $order['nro_pedido']
-            );
-        
-        if($order_invoices == False){
-            $this->modelLog->warningLog(
-                'El pedido no tiene facturas de pedido'
-                );
-            #si no hay facturas de pedidos se termina la funcion
-            return False;
-        }
-        
-        
-        foreach ($order_invoices as $item => $invoice)
-        {
-            $details = $this->modelOrderInvoiceDetail->getByOrderInvoice(
-                $invoice['id_pedido_factura']
-                );
-            
-            if($details != False)
-            {
-                foreach ($details as $idx => $det){
-                    $det['product'] = $this->modelProduct->get(
-                        $det['cod_contable']
-                        );
-                    array_push($orderInvoicesDetail, $det);
-                }
-            }
-        }
-        
-        
-        $parcials = $this->modelParcial->getByOrder($order['nro_pedido']);
-        
-        if ($parcials != False){
-            foreach ($parcials as $item => $parcial){
-                $invoices = $this->modelInfoInvoice->getByParcial(
-                    $parcial['id_parcial']
-                );
-                
-                if ($invoices != False){
-                    foreach ($invoices as $idx => $invoice){
-                        
-                        $details = $this->modelInfoInvoiceDetail->getByFacInformative(
-                            $invoice['id_factura_informativa']
-                            );
-                        if($details != False){
-                            foreach ($details as $i => $det){
-                                array_push($infoInvoicesDetail, $det);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-            
-        
-        return (
-            $stockOrder->getCurrentOrderStock(
-                $order, 
-                $orderInvoicesDetail, 
-                $infoInvoicesDetail
-                )
-            );
-        
-        
-    }
-}
+   }

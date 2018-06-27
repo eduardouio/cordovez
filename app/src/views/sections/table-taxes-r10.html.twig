@@ -121,9 +121,6 @@
                <th>ICE Avalorem</th>
                <th>Total ICE</th>
                <th>Prorrateo Pedido</th>
-               <th>Total Costo</th>
-               <th>Costo Caja</th>
-               <th>Costo Botella</th>
                <th>IVA</th>
                <th>IVA Unitario</th>
             </tr>
@@ -153,9 +150,6 @@
             <td class="text-right">{{ tax.ice_advalorem | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.total_ice | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.prorrateo_pedido | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.costo_total | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.costo_caja_final | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.costo_botella | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.iva | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.iva_unidad | number_format(2,',','.') }}</td>
             </tr>
@@ -183,9 +177,6 @@
                <td class="text-right">{{ order_taxes.sums.ice_especifico | number_format(2,',','.') }}</td>
                <td class="text-right">{{ order_taxes.sums.ice_advalorem | number_format(2,',','.') }}</td>
                <td class="text-right">{{ order_taxes.sums.total_ice | number_format(2,',','.') }}</td>
-               <td class="text-right">{{ order_taxes.sums.prorrateo_pedido | number_format(2,',','.') }}</td>
-               <td class="text-right">{{ order_taxes.sums.costo_total | number_format(2,',','.') }}</td>
-               <td class="text-center">--</td>
                <td class="text-center">--</td>
                <td class="text-right">{{ order_taxes.sums.iva | number_format(2,',','.') }}</td>
                <td class="text-center">--</td>

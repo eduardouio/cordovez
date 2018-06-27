@@ -155,8 +155,14 @@ class Reliquidacion extends MY_Controller
             'parcial_taxes' => $parcialTaxes->getTaxes(),
             'prorrateos' => $prorrateos,
             'parcial' => $parcial,
+            'tipo' => 'parcial',
+            'id' => $parcial['id_parcial'],
             'warenhouses' => $init_data['warenhouses'],
             'regimen' => 'R70',
+            'current_date' => date('d-m-Y') ,
+            'current_user' => $this->modelUser->get(
+                $this->session->userdata('id_user')
+                ),
             'order' => $init_data['order'],
             'user' => $this->modelUser->get($init_data['parcial']['id_user']),
         ]));
@@ -303,7 +309,13 @@ class Reliquidacion extends MY_Controller
             'init_data' => $init_data,
             'order_taxes' => $orderTaxes->getTaxes(),
             'regimen' => 'R10',
+            'tipo' => 'orden',
+            'id' => $nroOrder,
+            'current_date' => date('d-m-Y') ,
             'order' => $order,
+            'current_user' => $this->modelUser->get(
+                            $this->session->userdata('id_user')
+                ),
             'user' => $this->modelUser->get($init_data['order']['id_user']),
         ]));
     }
@@ -406,13 +418,14 @@ class Reliquidacion extends MY_Controller
      * @param string $tipo
      * @param string $id
      */
-    public function confirmar(string $tipo, string $id){
+    public function cierre(){
         if(!$_POST){
             return $this->index();
         }
-        $record = $this->existRecord($tipo, $id);
         
-        if ($check == False){
+        $record = $this->existRecord($_POST['tipo'], $_POST['id']);
+        
+        if ($record == False){
             $this->modelLog->errorLog(
                 'El pedido o parcial que intenta cerrar no existe',
                 $this->db->last_query()
@@ -420,23 +433,20 @@ class Reliquidacion extends MY_Controller
             return $this->index();
         }        
 
+        $_POST['fecha_cierre'] = str_replace('/', '-', $_POST['fecha_cierre']);
         $record['bg_isclosed'] = 1;
         $record['fecha_cierre'] = date('Y-m-d', strtotime($_POST['fecha_cierre']));
+        $record['id_user_cierre'] = $this->session->userdata('id_user');       
         
-        print '<pre>';
-        print_r($_POST);
-        print '</pre>';
-        exit();
-        
-        if($tipo == 'orden'){
+        if($_POST['tipo'] == 'orden'){
             $this->modelOrder->update($record);
-            $this->modelLog->susessLog('Pedido ' . $id . 'fue cerrrado');
-            return $this->redirectPage('showTaxesOrderLiquidate'. $id);
+            $this->modelLog->susessLog('Pedido ' . $_POST['id'] . 'fue cerrrado');
+            return $this->redirectPage('showTaxesOrderLiquidate', $_POST['id']);
         }
         
         $this->modelParcial->update($record);
-        $this->modelLog->susessLog('El parcial ' . $id . ' fue cerrado');
-        return $this->redirectPage('showTaxesParcialLiquidate', $id);
+        $this->modelLog->susessLog('El parcial ' . $_POST['id'] . ' fue cerrado');
+        return $this->redirectPage('showTaxesParcialLiquidate', $_POST['id']);
     }
     
     
@@ -448,14 +458,21 @@ class Reliquidacion extends MY_Controller
      * @param string $id
      */
     private function existRecord(string $tipo, string $id){
-        $record = false;
+        $record = [];
+        
         if ($tipo == 'orden'){
             $record = $this->modelOrder->get($id);
         }
         elseif($tipo == 'parcial'){
             $record = $this->modelParcial->get(intval($id));
+            print_r($record);
         }
-        return $record;
+        
+        if ($record){
+            return $record;
+        }
+        
+        return false;
     }
     
 

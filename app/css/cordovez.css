@@ -441,6 +441,11 @@ th {
 	color: red;
 }
 
+
+.text-gray{
+	color: #555;	
+}
+
 .btn-primary {
 	background-color: #2b5797;
 }

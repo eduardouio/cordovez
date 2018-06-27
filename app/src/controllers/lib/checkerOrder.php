@@ -232,11 +232,13 @@ class checkerOrder
         
         foreach ($this->order_invoices as $idx => $invoice) {
             unset($invoice['detailInvoice']['sums']);
+            if($invoice['detailInvoice']){            
             foreach ($invoice['detailInvoice'] as $item => $detail) {
                 $unidades += (
                         $detail['nro_cajas'] * $detail['cantidad_x_caja']
                     );
                 $boxes += $detail['nro_cajas'];
+            }
             }
         }
         
@@ -295,21 +297,21 @@ class checkerOrder
         
         foreach ($this->order_invoices as $idx => $invoice){
             unset($invoice['detailInvoice']['sums']);
+            if($invoice['detailInvoice']){
             foreach ($invoice['detailInvoice'] as $itm => $product){
                 
                 $tasa = (
                     ((floatval($product['peso'])/1000) * floatval($tsa_base['valor'])) 
                     * $product['unidades']
                     );
-                
                 if ($tasa < 700 ){
                     $tsa += $tasa;
                 }else{
                     $tsa += 7000;
                 }
             }            
+            }            
         }
-        
         return $tsa;
     }
     

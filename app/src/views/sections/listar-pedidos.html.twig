@@ -1,6 +1,5 @@
-<div class="pedido">
    <div class="row">
-      <div class="col-sm-5">
+      <div class="col-sm-2">
          <a href="{{ rute_url }}pedido/nuevo/">
          <button class="btn btn-sm btn-primary">
          <span class="fa fa-cubes fa-fw"></span> Nuevo Pedido
@@ -11,7 +10,7 @@
          <h4 class="text-primary">
             <small>Pedidos Activos:</small> 
             <span id="suma"> 
-                {{ infoBase.activeOrders | number_format(0, '.', ',') }}
+                {{ orders_opened }}
             </span>
          </h4>
       </div>
@@ -19,9 +18,7 @@
          <h4 class="text-primary">
             <small>Pedidos Cerrados:</small> 
             <span id="suma"> 
-                {{ simbolo | raw }}
-                {% set colsedOrders = infoBase.totalOrders - infoBase.activeOrders %}
-                {{ colsedOrders | number_format(0, '.', ',') }}
+                {{ orders_closed | number_format(0, '.', ',') }}
             </span>
          </h4>
       </div>
@@ -44,82 +41,63 @@
             </span>]
          </h4>
       </div>
+            <div class="col-sm-3" style="align: right;">
+      <form class="form-inline" method="post">
+  <div class="form-group">
+    <input type="text" class="form-control" name="nro_pedido" placeholder="Buscar Pedido">
+	 <button type="submit" class="btn btn-sm btn-default"><span class="fa fa-search"></span></button>
+  </div>
+</form>
+      </div>
    </div>
    <div class="row">
+   <div class="col-md-12">
       <table class="table table-hover table-bordered table-striped">
          <thead>
             <tr style="background-color: #c1c1c1;">
-               <th>#</th>
                <th>Pedido</th>
-               <th>Regimen</th>
-               <th>Incoterm</th>
                <th>Origen</th>
+               <th>Proveedor</th>
                <th>Arribo</th>
-               <th>D Libres</th>
                <th>FOB</th>
                <th>Nacionalizado</th>
-               <th>Saldo FOB</th>
+               <th>Saldo</th>
                <th>Observaciones</th>
                <th>Acciones</th>
             </tr>
          </thead>
          <tbody>
-            {% set init = ( (current_page * perPage) - perPage ) %}
-            {% set item = ( init + 1 ) %}
             {% for order in orders %}
             <tr>
                <td>
-               {{ item }}
-               </td>
-               <td><span class="fa fa-eye"></span> &nbsp; <a
-                  href="{{ rute_url }}pedido/presentar/{{ order.nro_pedido }}">{{ order.nro_pedido }}</a>
-                  {% if order.bg_isclosed == '0' %} <span
-                     class="label label-success pull-right"> Activo </span> {% else %}
-                  <span class="label label-died pull-right"> Cerrado </span> {% endif %}
-               </td>
-               <td class="text-right">{{ order.regimen }}</td>
-               <td>{{ order.incoterm }}</td>
-               <td>{{ order.pais_origen }}</td>
-               <td>
-               {% if order.fecha_arribo == NULL %} 
-               		<strong>
-                  	Arribo Pendiente 
-               		</strong> 
-               {% else %} 
-                   {{ order.fecha_arribo | date('d/m/Y')}}
-               {% endif %}
-               </td>
-               <td class="text-right">
-                   {{ order.dias_libres }} días 
-                   
-                   {% if order.dias_libres > order.warenHouseDays %}
-                      {% set class = 'label label-success' %} 
-                   {% else %} 
-                       {% set class = 'label label-danger' %}
-                  {% endif %} 
-                
-                  {% if order.fecha_arribo != NULL %} 
-                  	<label class="{{ class }}"> 
-                  	{{ order.warenHouseDays - order.dias_libres }}
-                  	</label> 
-                  	&nbsp; [{{ order.warenHouseDays }}] 
+                  {% if order.bg_isclosed == '1' %}  
+                  	<span class="fa fa-folder text-default"></span>
+                  {% else %}
+                   	<span class="fa fa-folder-open-o text-success"></span>
                   {% endif %}
+               <a href="{{ rute_url }}gstinicial/validargi/{{ order.nro_pedido }}"><span class="fa fa-eye"></span> {{ order.nro_pedido }} </a>
+                  <small class="text-gray">[R{{ order.regimen }}]</small>
                </td>
-               <td class="text-right">$ 
-                   {% set fob = 0.0 %} 
-                   {% for invoice in order.invoices  %}
-                   {% set fob  = fob +  (invoice.detailInvoice.sums.valueItems * invoice.detailInvoice.sums.tasa_change) %}
-                  {% endfor %} 
-                  {{ fob | number_format(2, '.', ',') }}
+               <td>{{ order.pais_origen }} <small class="text-gray">[{{ order.incoterm }}]</small> </td>
+               <td>
+               		{{ order.info.supplier.nombre }}
                </td>
-               <td class="text-right">
-               		$ {{ order.nationalized | number_format(2, '.', ',')}}
-               </td>
-               <td class="text-right {{ text_class }}">$ 
-                   {{ (fob - order.nationalized) | number_format(2, '.', ',')}}
+               <td>
+                   {{ order.fecha_arribo }}
+                   <small class="text-gray">[21]</small>
                </td>
                <td class="text-right">
-                  {{ order.observaciones }}
+               	  {{ money | raw }}
+                  {{ order.info.fob | number_format(2, '.', ',') }}
+               </td>
+               <td class="text-right {{ text_class }}"> 
+                   {{ order.info.nationalized | number_format(2, '.', ',') }} <small class="text-gray"> [{{ order.info.num_parcials }}]</small>
+               </td>
+               <td class="text-right {{ text_class }}"> 
+                   {{ order.info.stock | number_format(2, '.', ',') }}
+               </td>
+               <td class="text-right">
+                  {{ order.observaciones | upper }}
                </td>
                <td>
                <small>
@@ -131,11 +109,10 @@
                            </a>
                 </small>
                </td>
-            </tr>
-            {% set item = item + 1 %}
+            </tr>            
             {% endfor %}
          </tbody>
       </table>
    </div>
-</div>
-<!--tabPedido-->
+
+ 

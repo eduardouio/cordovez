@@ -48,21 +48,37 @@ class Modelorder extends CI_Model
     }
     
     /**
-     * Obtiene todas las ordenes, solo mas ordenes 
+     * Obtiene todas las ordenes, solo las ordenes 
      * @return array | bool
      */
     public function getAll()
     {
-        return ($this->modelBase->get_table([
-            'table' => 'pedido',
-            'notwhere' => [
-                        'nro_pedido' => '000-00', 
-                        ],
-            'orderby' => ['nro_pedido' => 'DESC']
-        ]));
-        
+        $query = "SELECT *, SUBSTRING(nro_pedido, -2) AS anio 
+                FROM pedido 
+                WHERE nro_pedido != '000-00' 
+                ORDER BY anio DESC, 
+                nro_pedido DESC;";
+        return ($this->modelBase->runQuery($query));            
     }
 
+        
+    /**
+     * Obtiene todas las ordenes, solo las ordenes
+     * @return array | bool
+     */
+    public function search($nro_pedido)
+    {
+        $query = "SELECT *, SUBSTRING(nro_pedido, -2) AS anio 
+                    FROM pedido 
+                    WHERE 
+                    nro_pedido = '" . $nro_pedido  .  "'
+                    OR nro_pedido LIKE '%" . $nro_pedido  .  "'
+                    OR nro_pedido LIKE '" . $nro_pedido  .  "%'
+                    OR nro_pedido LIKE '%" . $nro_pedido  .  "%'
+                    ORDER BY anio DESC, nro_pedido DESC;
+                    ";
+        return ($this->modelBase->runQuery($query));
+    }
 
     /**
      * Obtiene un regsistro completo de la orden de una tabla
@@ -379,6 +395,7 @@ class Modelorder extends CI_Model
             'localPaidsExpenses' => $this->localPaids($order),
         ]);
     }
+    
     
     
     

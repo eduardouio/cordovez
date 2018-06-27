@@ -444,6 +444,7 @@ class Gstinicial extends MY_Controller
         
         $init_expenses_post = $this->input->post();        
         $nro_order = $init_expenses_post['nro_pedido'];
+        $order = $this->modelOrder->get($nro_order);
         unset($init_expenses_post['nro_pedido']);
         $expense_added = [];
         
@@ -470,9 +471,9 @@ class Gstinicial extends MY_Controller
             
             if ($expense['concepto'] == 'ISD'){
                 $expense['bg_closed'] = 1;
+            }elseif($expense['concepto'] == 'FLETE' && $order['incoterm'] == 'CFR'){
+                $expense['bg_closed'] = 1;
             }
-            
-            
             $this->modelExpenses->create($expense);
         }
                 
@@ -481,7 +482,7 @@ class Gstinicial extends MY_Controller
     
     
     /**
-     * Comprueba si un pedido tiene algun parcial
+     * recupera el ultimo parcial del pedido y comprueba que este cerrado
      * 
      * @param array $order
      * @return bool
@@ -490,18 +491,23 @@ class Gstinicial extends MY_Controller
         if($order['regimen'] == 10){
             return False;
         }
+        $parcials = $this->modelParcial->getByOrder($order['nro_pedido']);
         
-        $parcial = $this->modelParcial->getByOrder($order['nro_pedido']);
+        if ($parcials){
+            foreach ($parcials as $idx => $par){
+                if($par['bg_isclosed'] == 0){
+                    return True;
+                }
+            }
+        }
         
-        return boolval($parcial);
+        return False;
     }
+    
     
     /**
      * Obtiene la lista de facturas con sus detalles de los pagos 
      * Realizados en el pedido
-     * 
-     * @param array $init_expenses
-     * @return array | Bool
      */
     private function getPaidsFromOrder($init_expenses)
     {
@@ -536,13 +542,7 @@ class Gstinicial extends MY_Controller
     
     
     /**
-     * Calcula la diferencia entre los gastos iniciales
-     *
-     * @param $rateExpenses =>
-     *            Gastos iniciales parametrisados
-     * @param $usesExpenses =>
-     *            Gastos iniciales registrados
-     * @return array unusedExpenses => gastos inciales libres
+     * Filtra los gastos iniciales que no se estan uasando
      */
     private function calcExpensesDiff($rateExpenses, $usedExpenses)
     {

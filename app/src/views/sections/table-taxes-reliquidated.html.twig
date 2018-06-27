@@ -119,12 +119,12 @@
                <th>Arancel Esp U</th>
                <th>Arancel Adv U</th>
                <th>ICE Especifico</th>
-               <th>ICE Avalorem </th>
+               <th>ICE Avalorem Reliquidado</th>
                <th>ICE Avalorem Pagado </th>
-               <th>ICE Avalorem Saldo</th>
+               <th>ICE Avalorem Diferencia Reliquidado</th>
                <th>Total ICE</th>
                <th>Prorrateo Pedido</th>
-               <th>Costos Indirectos</th>
+               <th>Costos Indirectos Precio Entrega</th>
                <th>Total Costos</th>
                <th>Costo Caja</th>
                <th>Costo Botella</th>
@@ -154,7 +154,7 @@
             <td class="text-right">{{ tax.ice_advalorem_pagado | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.ice_advalorem_diferencia | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.total_ice | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.prorrateo_pedido | number_format(2,',','.') }}</td>
+            <td class="text-right">{{ (tax.prorrateos_total - tax.etiquetas_fiscales - tax.tasa_control) | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.indirectos | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.costo_total | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.costo_caja_final | number_format(2,',','.') }}</td>
@@ -184,7 +184,7 @@
                <td class="text-right">{{ parcial_taxes.sums.ice_advalorem_pagado | number_format(2,',','.') }}</td>
                <td class="text-right">{{ parcial_taxes.sums.ice_advalorem_diferencia | number_format(2,',','.') }}</td>
                <td class="text-right">{{ parcial_taxes.sums.total_ice | number_format(2,',','.') }}</td>
-               <td class="text-right">{{ parcial_taxes.sums.prorrateo_pedido | number_format(2,',','.') }}</td>
+               <td class="text-right">{{ (parcial_taxes.sums.prorrateos_total - parcial_taxes.sums.etiquetas_fiscales - parcial_taxes.sums.tasa_control) | number_format(2,',','.') }}</td>
                <td class="text-right">{{ parcial_taxes.sums.indirectos | number_format(2,',','.') }}</td>
                <td class="text-right">{{ parcial_taxes.sums.costo_total | number_format(2,',','.') }}</td>
                <td class="text-center">--</td>
@@ -208,12 +208,20 @@
       </div>
       </div>
       </div>
-<br>
+      </div>
+<hr />
 <div class="row">
    <div class="col-md-6"></div>
-   <div class="col-md-5 text-right">
-      <a href="{{ rute_url }}pedido/presentar/{{ order.nro_pedido }}" class="btn btn-sm btn-default"> <span class="fa fa-check"></span> Volver al Pedido </a>      
-   </div>
-   <div class="col-md-1"></div>
+   <div class="col-md-6 text-right">
+      <a href="{{ rute_url }}pedido/presentar/{{ order.nro_pedido }}" class="btn btn-sm btn-default"> 
+      <span class="fa fa-check"></span>Volver al Pedido </a>
+      &nbsp;&nbsp;
+      <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#myModal">
+      <span class="fa fa-save"></span> Liquidar Parcial
+      </button>      
+   </div>   
 </div>
 </div>
+
+{% include 'forms/frm-cierre-pedido.html.twig'  %}
+

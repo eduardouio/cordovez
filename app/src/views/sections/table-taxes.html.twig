@@ -123,10 +123,6 @@
                <th>Total ICE</th>
                <th>Prorrateo Pedido</th>
                <th>Prorrateo Parcial</th>
-               <th>Total Prorrateo</th>
-               <th>Total Costo</th>
-               <th>Costo Caja</th>
-               <th>Costo Botella</th>
                <th>IVA</th>
             </tr>
             {% for tax in parcial_taxes['taxes'] %}
@@ -156,10 +152,6 @@
             <td class="text-right">{{ tax.total_ice | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.prorrateo_pedido | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.prorrateo_parcial | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.prorrateos_total | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.costo_total | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.costo_caja_final | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.costo_botella | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.iva | number_format(2,',','.') }}</td>
             </tr>
             {% endfor %}
@@ -188,10 +180,6 @@
                <td class="text-right">{{ parcial_taxes.sums.total_ice | number_format(2,',','.') }}</td>
                <td class="text-right">{{ parcial_taxes.sums.prorrateo_pedido | number_format(2,',','.') }}</td>
                <td class="text-right">{{ parcial_taxes.sums.prorrateo_parcial | number_format(2,',','.') }}</td>
-               <td class="text-right">{{ parcial_taxes.sums.prorrateos_total | number_format(2,',','.') }}</td>
-               <td class="text-right">{{ parcial_taxes.sums.costo_total | number_format(2,',','.') }}</td>
-               <td class="text-center">--</td>
-               <td class="text-center">--</td>
                <td class="text-right">{{ parcial_taxes.sums.iva | number_format(2,',','.') }}</td>
             </tr>
          </table>
@@ -234,7 +222,7 @@
       Aplicar Liquidación
       </button>
       {% else %}
-      <a href="#" class="btn btn-sm btn-default"> <span class="fa fa-check"></span> Ver Reliquidación </a>
+      <a href="{{ rute_url }}reliquidacion/pc/{{init_data.parcial.id_parcial}}" class="btn btn-sm btn-default"> <span class="fa fa-check"></span> Ver Reliquidación </a>
       {% endif %}
       <a href="{{rute_url}}parcial/presentar/{{init_data.parcial.id_parcial}}" class="btn btn-sm btn-default"> <span class="fa fa-arrow-left"></span> Volver A Parcial</a>
    </div>

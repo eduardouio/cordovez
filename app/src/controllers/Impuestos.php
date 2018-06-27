@@ -122,11 +122,7 @@ class Impuestos extends MY_Controller
             return $this->index();
         }
         
-        if ($parcial['bg_isliquidated'] == 1){
-            return $this->redirectPage('showTaxesParcialLiquidate');
-        }
-        
-        if ($parcial['bg_isliquidated']){
+        if ($parcial['bg_isliquidated'] == 1 ){
             return $this->redirectPage('showTaxesParcialLiquidate', $id_parcial);
         }
         
@@ -481,7 +477,13 @@ class Impuestos extends MY_Controller
         $order['have_etiquetas_fiscales'] = 1 ;
         $order['bg_have_tasa_control'] = 1;
         $order['bg_isliquidated'] = 1;
-        
+        $order['fecha_liquidacion'] = str_replace(
+            '/', '-', $order['fecha_liquidacion']
+            );
+        $order['fecha_liquidacion'] = date(
+            'Y-m-d', strtotime($order['fecha_liquidacion'])
+            );
+                
         if($this->modelOrder->update($order)){
             return $this->redirectPage(
                 'showTaxesOrderLiquidate', 
@@ -502,7 +504,12 @@ class Impuestos extends MY_Controller
         }
         
         $parcial = $this->input->post();
-        $parcial['fecha_liquidacion'] = date('Y-m-d', strtotime($parcial['fecha_liquidacion']));
+        $parcial['fecha_liquidacion'] = str_replace(
+                                    '/', '-', $parcial['fecha_liquidacion']
+                                    );
+        $parcial['fecha_liquidacion'] = date(
+                            'Y-m-d', strtotime($parcial['fecha_liquidacion'])
+            );
         $parcial['bg_have_etiquetas_fiscales'] = 1 ;
         $parcial['bg_isliquidated'] = 1;
         $parcial['bg_have_tasa_control'] = 1;               

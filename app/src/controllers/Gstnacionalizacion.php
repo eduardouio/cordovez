@@ -465,7 +465,6 @@ class Gstnacionalizacion extends MY_Controller
     private function calcExpensesDiff($rateExpenses, $usedExpenses)
     {
         
-        
         if ($usedExpenses == false) {
             return $rateExpenses;
         }

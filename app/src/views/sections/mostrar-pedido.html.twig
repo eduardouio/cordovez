@@ -7,9 +7,7 @@
 {% if order.regimen == 70  %}
 	{% set nacionalizado = order.valuesOrder.infoInvoices  %}
 {% endif %}
-
 {% set justificado = 0 %}
-
 {% for paid in paidsDetails %}
    {% set justificado = justificado + paid.valor %}
 {% endfor %}
@@ -90,33 +88,18 @@
 </ol>
 </div>
 <div class="col-md-7 text-right">
-		<a href="{{rute_url}}gstinicial/validargi/{{order.nro_pedido}}" class="btn btn-default btn-sm">
+
+		<a href="{{rute_url}}gstinicial/validargi/{{order.nro_pedido}}" class="btn btn-primary btn-sm">
 				<span class="fa fa-gear"></span> Gastos Iniciales
 		</a>
-		{%  if order.bg_isliquidated == 0 and order.regimen == 10 %}
+		{% if order.bg_isclosed == 0 %}
 		<a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}" class="btn btn-default btn-sm">
-				<span class="fa fa-pencil fa-fw"></span>Editar
-		</a>  
-		<a href="{{rute_url}}pedidofactura/nuevo/{{ order.nro_pedido }}" class="btn btn-default btn-sm">
-				<span class="fa fa-plus"></span> Agregar Productos
-		</a>	
-		{% elseif order.bg_haveExpenses == 0 and order.regimen == 70 %}
-			<a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}" class="btn btn-default btn-sm">
-				<span class="fa fa-pencil fa-fw"></span>Editar
+				<span class="fa fa-pencil fa-fw"></span>Editar Pedido
 		</a>  
 		<a href="{{rute_url}}pedidofactura/nuevo/{{ order.nro_pedido }}" class="btn btn-default btn-sm">
 				<span class="fa fa-plus"></span> Agregar Productos
 		</a>
 		{% endif %}
-		
-		
-		
-		<a
-			href="{{rute_url}}facturapagos/nuevo/{{order.nro_pedido}}">
-			<button class="btn btn-default btn-sm">
-				<span class="fa fa-file-o"></span> Justificar Gasto
-			</button>
-		</a>
 		
 </div>
 	</div>
@@ -125,13 +108,13 @@
    <ul class="nav nav-tabs" role="tablist">
       <li role="presentation"><a href="#pedido" role="tab" data-toggle="tab" aria-controls="pedido">Detalle Pedido &nbsp;
          {% if order.bg_isclosed == '0' %}
-         <span class="label label-success">Abierto</span>
+         <span class="label label-success"><span class="fa fa-folder-open-o"></span> Abierto</span>
          {% else %}
-         <span class="label label-died">Cerrado</span>
+         <span class="label label-died"><span class="fa fa-folder-o"></span> Cerrado</span>
          {% endif %}
          </a>
       </li>
-      <!-- Para ocultar las tabs se debe hacer desde este punto -->
+      
       <li role="presentation" class="active">
       	<a href="#facturas" role="tab" data-toggle="tab" aria-controls="facturas">
       	<span class="fa fa-file"></span> Facturas Productos</a>
@@ -161,22 +144,13 @@
          {% include 'sections/subsections/tab-facturas-productos-pedido.html.twig' %}            
       </div>
       <!-- /Tab Facturas-->      
-       {% if order.regimen == 10 %}
-      <!-- factura Nacionalizaciones -->
-      <div role="tabpanel" class="tab-pane" id="nacionalizaciones">
-         {% include 'sections/subsections/tab-nacionalizaciones.html.twig' %}            
-      </div>
-      <!-- /factura Nacionalizaciones -->
-     {% else %}
+       {% if order.regimen == 70 %}
      <!-- factura Informativas -->
       <div role="tabpanel" class="tab-pane" id="facturas-informativas">
          {% include 'sections/subsections/tab-facturas-informativas.html.twig' %}            
       </div>
       <!-- /factura Informativas -->
      {% endif %}
-      
-      <!-- /Tab Facturas Servicios -->
-
       <!-- Tab Facturas Saldos -->
       <div role="tabpanel" class="tab-pane" id="saldos">
       <div class="row">

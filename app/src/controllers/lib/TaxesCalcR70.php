@@ -277,7 +277,7 @@ class parcialTaxes {
                 ),
             'capacidad_ml' =>  $product_base['capacidad_ml'] ,
             'peso' => $product_base['peso'] ,
-            'grado_alcoholico' => $detail_order_invoice['grado_alcoholico'],
+            'grado_alcoholico' => $detail_info_invoice['grado_alcoholico'],
             'fob' => (
                 $detail_info_invoice['nro_cajas']
                 * $detail_order_invoice['costo_caja']

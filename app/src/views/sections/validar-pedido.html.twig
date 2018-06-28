@@ -125,8 +125,8 @@
                {% endif %}
             </tr>
             <tr>
-               <td>Fecha Llegada Puerto</td>
-               {% if order.fecha_arribo == NULL %}
+               <td>Seguro Aduana</td>
+               {% if order.seguro_aduana == NULL %}
                <td>No Registrado</td>
                <td class="danger"><span class="fa fa-ban text-danger"></span>
                   <a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}">
@@ -134,15 +134,15 @@
                   </a>
                </td>
                {% else %}
-               <td>{{ order.fecha_arribo | date('d/m/Y') }} </td>
+               <td>{{ order.seguro_aduana | number_format(2,',','.') }} </td>
                <td class="success"><span class="fa fa-check text-success"></span>
                   <a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}"><span class="fa fa-pencil"></span>Editar</a>
                </td>
                {% endif %}
             </tr>
             <tr>
-               <td>Días Libres Demoraje </td>
-               {% if order.dias_libres == 0 %}
+               <td>Flete Aduana </td>
+               {% if order.flete_aduana == NULL or  order.flete_aduana == 0%}
                <td>No Registrado</td>
                <td class="danger">
                <span class="fa fa-ban text-danger"></span>
@@ -151,7 +151,7 @@
                   </a>
                </td>
                {% else %}
-               <td>{{ order.dias_libres }} </td>
+               <td>{{ order.flete_aduana }} </td>
                <td class="success"><span class="fa fa-check text-success"></span>
                   <a href="{{rute_url}}pedido/editar/{{ order.nro_pedido }}"><span class="fa fa-pencil"></span>Editar</a>
                </td>

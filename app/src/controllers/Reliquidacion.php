@@ -148,6 +148,7 @@ class Reliquidacion extends MY_Controller
             $parcial
             );
         
+
         return ($this->responseHttp([
             'titleContent' => 'Resumen de Impuestos Liquidación Aduana del Pedido ' .
             $init_data['order']['nro_pedido'],
@@ -205,9 +206,10 @@ class Reliquidacion extends MY_Controller
             $products = $this->modelInfoInvoiceDetail->getByFacInformative(
                 $invoice['id_factura_informativa']
                 );
-            array_push($infoInfoiceDetail, $products[0]);
+            array_push($infoInfoiceDetail, $products);
         }
         
+        $infoInfoiceDetail = $infoInfoiceDetail[0];
         
         foreach ($infoInfoiceDetail as $item => $dt){
             $invoice_detail = $this->ModelOrderInvoiceDetail->get(

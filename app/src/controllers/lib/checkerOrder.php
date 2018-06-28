@@ -192,11 +192,25 @@ class checkerOrder
             ]);
         }
         
-        $base_isd = (
-            ($order_invoices['fob_total'] * $order_invoices['tipo_cambio']) 
-            + 
-            ($order_invoices['origin_expenses'] * $order_invoices['tipo_cambio'])
-            );
+        $base_isd = 0.0;
+        
+        if ($this->order['incoterm'] == 'FOB' || $this->order['incoterm'] == 'CFR')
+        {
+            $base_isd =    (
+                ($order_invoices['fob_total'] * $order_invoices['tipo_cambio'])
+                +
+                ($order_invoices['origin_expenses'] * $order_invoices['tipo_cambio'])
+                );
+            
+        }else{
+            $base_isd =    (
+                ($order_invoices['fob_total'] * $order_invoices['tipo_cambio'])
+                );
+            
+        }
+        
+
+        
         
         $isd_percent = $this->searchTaxesPercent('ISD', True);
         $poliza_percent =$this->searchTaxesPercent('POLIZA SEGURO', True);

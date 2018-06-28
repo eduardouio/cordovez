@@ -64,26 +64,26 @@ class parcialTaxesReliquidate {
        'sums' => [],
        'data_general' => [],
        ];
-       
+              
        foreach ($this->init_data['products'] as $item => $product){
            array_push($taxes['taxes'], $this->getTaxesProduct($product));
        }
        
-       $x = 1;
+       #suma los valores de los impuestos en una sola linea
        foreach ($taxes['taxes'] as $dx => $tax){
-           if($x == 1){
-                $taxes['sums'] = $tax;
-           }else{
-               foreach ($taxes['sums']as $tax_name => $val){
-                   if (gettype($val) != 'string'){
-                       $taxes['sums'][$tax_name] += $val;
-                   }else{
-                       $taxes['sums'][$tax_name] = 'String';
-                       }
-               }
+           if($dx == 0){
+               $taxes['sums'] = $tax;
            }
-           $x++;
+           
+           foreach ($taxes['sums']as $tax_name => $val){
+               if($dx == 0){
+                   $taxes['sums'][$tax_name] = 0.0;
+               }
+               
+               $taxes['sums'][$tax_name] += floatval($tax[$tax_name]);
+           }
        }
+       
        
        $data_general = [
        'tipo_cambio_factura' => $this->type_change_invoice,
@@ -154,7 +154,11 @@ class parcialTaxesReliquidate {
                                                     $product
                                                     );
         
-        $taxes_product = $this->getDetailTaxesProduct($product, $prorrateo_item);
+        $taxes_product = $this->getDetailTaxesProduct(
+                                                        $product, 
+                                                        $prorrateo_item,
+                                                        $detail_info_invoice
+                                                        );
         
         $indirectos = (
             $taxes_product['ice_advalorem']
@@ -277,7 +281,7 @@ class parcialTaxesReliquidate {
                 ),
             'capacidad_ml' =>  $product_base['capacidad_ml'] ,
             'peso' => $product_base['peso'] ,
-            'grado_alcoholico' => $detail_order_invoice['grado_alcoholico'],
+            'grado_alcoholico' => $detail_info_invoice['grado_alcoholico'],
             'fob' => (
                 $detail_info_invoice['nro_cajas']
                 * $detail_order_invoice['costo_caja']
@@ -361,7 +365,6 @@ class parcialTaxesReliquidate {
                             ($product['fob']
                             + $prorrateo_item['seguro_aduana'] 
                             + $prorrateo_item['flete_aduana'])
-                            * $fob_percent
             );
         
         return  $prorrateo_item;
@@ -377,19 +380,37 @@ class parcialTaxesReliquidate {
      */    
     private function getDetailTaxesProduct(
                                             array $product, 
-                                            array $prorrateos
+                                            array $prorrateos,
+                                            array $detail_info_invoice
         ): array
     {   
+        
+        $fob_info_invoice = 0.0;
+        
+        foreach ($this->init_data['info_invoices'] as $idx => $invoice){
+            if(
+                $invoice['id_factura_informativa']
+                == $detail_info_invoice['id_factura_informativa']
+                ){
+                    $fob_info_invoice = (
+                        $invoice['valor']
+                        * $this->type_change_invoice
+                        );
+            }
+        }
+        
+        $fob_percent =   $fob_percent = ( $product['fob'] / $fob_info_invoice );
+        
         $parcial = $this->init_data['parcial'];
-        $fodinfa = $parcial['fodinfa_pagado'];
+        $fodinfa = $parcial['fodinfa_pagado'] * $fob_percent;
         $etiquetas_fiscales  = (
             $product['unidades']
             * $this->getTaxParam('ETIQUETAS FISCALES')
             );        
-        
+               
         $base_ice_especifico = $this->getTaxParam('ICE ESPECIFICO');
         
-        $ice_especifico = $parcial['ice_especifico_pagado'];
+        $ice_especifico = ($parcial['ice_especifico_pagado'] * $fob_percent);
         
         $ice_especifico_unitario =  ($ice_especifico / $product['unidades']);        
 
@@ -414,7 +435,7 @@ class parcialTaxesReliquidate {
             ) * $this->ice_advalorem_base
             * $product['unidades'];
        }
-       $ice_advalorem_pagado = $parcial['ice_advalorem_pagado'];
+       $ice_advalorem_pagado = $parcial['ice_advalorem_pagado'] * $fob_percent;
        $ice_advalorem_unitario =  $ice_advalorem / $product['unidades'];
        
        $diferencia_ice_advalorem = (

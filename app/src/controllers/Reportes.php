@@ -78,7 +78,8 @@ class Reportes extends MY_Controller
                 $order = $this->modelOrder->get($_POST['nro_pedido']);
                 $data = $this->modelReportPagos->getbyOrder(
                     $_POST['nro_pedido']
-                );                
+                );
+                
                 $title_report = (
                     'Reporte por Pedido <strong>' 
                     . $_POST['nro_pedido']
@@ -86,7 +87,7 @@ class Reportes extends MY_Controller
                 );
             }
         }
-
+        
         return $this->responseHttp([
             'titleContent' => 'Reporte de Provisiones',
             'data' => json_encode($this->_formatData($data)),
@@ -141,7 +142,6 @@ class Reportes extends MY_Controller
             'provisiones' => true,
         ]);
     }
-
 
     
     /*

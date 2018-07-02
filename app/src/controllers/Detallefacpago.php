@@ -149,6 +149,7 @@ class Detallefacpago extends MY_Controller
             return false;
         }
         $activeOrders = $this->modelOrder->getActives();
+               
         $orders = [];
  
         if (is_array($activeOrders)) {
@@ -156,13 +157,15 @@ class Detallefacpago extends MY_Controller
                 
                 $expensesTemp = $this->modelExpenses->getActiveExpenses($item['nro_pedido']);
                 $expenses = [];
-                
-                foreach ($expensesTemp as $index => $expense){
-                    $expense['justification'] = $this->modelPaidDetail->getByExpense($expense['id_gastos_nacionalizacion']);
-                    $expense['user'] = $this->modelUser->get($expense['id_user']);
-                    $expenses[$index] = $expense;
+                if($expensesTemp){
+                    foreach ($expensesTemp as $index => $expense){
+                        $expense['justification'] = $this->modelPaidDetail->getByExpense($expense['id_gastos_nacionalizacion']);
+                        $expense['user'] = $this->modelUser->get($expense['id_user']);
+                        $expenses[$index] = $expense;
+                    }
+                    $orders[$item['nro_pedido']] = $expenses;                
+                    
                 }
-                $orders[$item['nro_pedido']] = $expenses;                
             }
         }
         $document = $this->modelPaid->get($nroDocument);

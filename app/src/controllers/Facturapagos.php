@@ -16,14 +16,16 @@ class Facturapagos extends MY_Controller
 {
     private $controller = "documento_pago";
     private $template = "/pages/pageFacturas.html";
-    private $listPerPage = 15;
+    private $listPerPage = 100;
     private $modelOrder;
     private $modelParcial;
     private $modelLog;
     private $modelUser;
     private $modelSupplier;
     private $modelPaid;
+    private $modelPaidDetail;
     private $myModel;
+    
     
     /**
      * constructor de la clase
@@ -33,6 +35,7 @@ class Facturapagos extends MY_Controller
         parent::__construct();
         $this->init();
     }
+    
     
     /**
      * Carga los modelos a usar en la clase
@@ -51,6 +54,8 @@ class Facturapagos extends MY_Controller
         $this->load->model('modellog');
         $this->load->model('modelpaid');
         $this->load->model('mymodel');
+        $this->load->model('Modelpaiddetail');
+        $this->modelPaidDetail = new Modelpaiddetail();
         $this->modelOrder = new Modelorder();
         $this->modelParcial = new Modelparcial();
         $this->modelUser = new Modeluser();
@@ -66,33 +71,35 @@ class Facturapagos extends MY_Controller
      */
     public function index()
     {
-        $this->listar();
+        $this->modelLog->redirectLog(
+            'Se ghace el redireccionamiento a la lista de docuemntos de pago'
+            );
+        return $this->listar();
     }
 
+    
     /**
      * Lista Todas las facturas de pagos disponibles en el sistema
      * @param $offset (int) primer elemento de la lista
      * @return mixed
      */
-    public function listar($offset = 0)
-    {
-        $this->db->order_by('fecha_emision', 'DESC');
-        $this->db->limit($this->listPerPage, $offset);
-        $resultDb = $this->db->get($this->controller);
-        $documents = $resultDb->result_array();
-        $pages_links = ((count($documents) - 1) / $this->listPerPage);
-        if (gettype($pages_links) == 'double') {
-            (int)$pages_links = (int)$pages_links + 1;
-        };
+    public function listar()
+    {   
         $documentList = [];
-        foreach ($documents as $item => $document) {
-            $document['supplier'] = $this->modelSupplier->get(
-                                        $document['identificacion_proveedor']);
-            $document['documentDetail'] = $this->modelPaid->get(
-                                                 $document['id_documento_pago']);
-            $document['user'] = $this->modelUser->get($document['id_user']);
-            $documentList[$item] = $document;
+        
+        if($_POST){
+            $documentList = $this->getInfoDocumentsData(
+                                $this->modelPaid->search($_POST['param'])
+                );
+        }else{
+            $documentList = $this->getInfoDocumentsData(
+                $this->modelPaid->getAll()
+                );            
         }
+        
+        
+        
+        
         
         $this->responseHttp([
             'list' => true,
@@ -100,18 +107,12 @@ class Facturapagos extends MY_Controller
             'list_active' => 'class="active"',
             'titleContent' => 'Lista de Comprobantes de Pago',
             'userData' => $this->session->userdata(),
-            'pagination' => true,
             'documentsPaids' => $documentList,
-            'perPage' => $this->listPerPage,
-            'pagination_pages' => $pages_links,
-            'current_page' => (int)(($offset) / 10) + 1,
-            'last_page' => (int)(($pages_links - 1) * 10),
-            'pagination_url' => base_url() . 'index.php/pedido/listar/',
         ]);
     }
-
-
     
+    
+       
     /**
      * Presenta el formulario para el registro de un nuevo documento de Pago
      * @return mixed
@@ -281,7 +282,53 @@ class Facturapagos extends MY_Controller
             'show' => true,
         ]);
     }
-
+    
+    
+    /**
+     * Recupera la información de los documentos
+     * @param array $documents
+     * @return array
+     */
+    private function getInfoDocumentsData($documents) : array {
+        
+        if ($documents == False){
+           return [];
+        }
+        
+        $documents_list = [];
+        foreach ($documents as $idx => $doc){
+            $details = $this->modelPaidDetail->get($doc['id_documento_pago']);
+            $doc['details'] = $details['details'];
+            $doc['orders'] = [];
+            $doc['saldo'] = $doc['valor'];
+            
+            if($doc['details']){
+                foreach ($doc['details'] as $k => $det){
+                    if($det['expense']['nro_pedido'] == '000-00'){
+                         $parcial = $this->modelParcial->get($det['expense']['id_parcial']);
+                         array_push($doc['orders'], $parcial['nro_pedido']);
+                    }else{
+                        array_push($doc['orders'], $det['expense']['nro_pedido']);
+                    }
+                    
+                    $doc['saldo'] = round($doc['saldo'] -  $det['valor']);
+                }
+                
+                if ($doc['saldo'] < 0.01 && $doc['bg_closed'] == 0){
+                    $document_base = $this->modelPaid->get($doc['id_documento_pago']);
+                    $doc['bg_closed'] = 1;
+                    $document_base['bg_closed'] = 1;
+                    $doc['saldo'] = 0.0;
+                    $this->modelPaid->update($document_base);
+                }
+                
+            }
+            array_push($documents_list, $doc);
+        }
+      return $documents_list;
+    }
+    
+    
 
     /**
      * Se validan las columnas que debe tener la consulta para que no falle

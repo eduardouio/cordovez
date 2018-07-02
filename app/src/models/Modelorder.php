@@ -406,35 +406,54 @@ class Modelorder extends CI_Model
      */
     public function getActives(){
         $orders = $this->modelBase->get_table([
-            'select' => ['nro_pedido',],
+            'select' => ['nro_pedido', 'id_parcial'],
             'table' => 'gastos_nacionalizacion',
             'where' => [
                 'bg_closed' => 0,
             ],
         ]);
         
-       if((gettype($orders) == 'array') && (count($orders))){
-           $tempArray = [];
-           $i = 0;
-           $keyArray = [];
-           foreach ($orders as $val){
-               if(! in_array($val['nro_pedido'], $keyArray) && ($val['nro_pedido'] != '000-00')){
-                   $keyArray[$i] = $val['nro_pedido'];
-                   $tempArray[$i] = $val;
-               }
-               $i++;
-           }
-           
-           $result = [];
-           foreach ($tempArray as $key => $value){
-               $value['expenses'] = 
-               $this->modelExpenses->getActiveExpenses($value['nro_pedido']);
-               $result[$key] = $value;
-           }           
-           return $result;
-       }
-       return false;
+        if((gettype($orders) == 'array') && (count($orders))){
+            $i = 0;
+            $tempArray = [];
+            $keyArray = [];
+            
+            foreach ($orders as $idx => $o) {
+                if ($o['nro_pedido'] == '000-00'){
+                        $query = '
+                                    SELECT nro_pedido 
+                                    FROM parcial 
+                                    WHERE id_parcial = ' . 
+                                    $o['id_parcial'];
+                   $result = $this->modelBase->runQuery($query);
+                   $orders[$idx]['nro_pedido'] = $result[0]['nro_pedido'];                    
+                }
+                
+                unset($orders[$idx]['id_parcial']);
+            }
+            
+            #unifica la lista de pedidos
+            foreach ($orders as $idx => $val){
+                if(! in_array($val['nro_pedido'], $keyArray)){
+                    $keyArray[$i] = $val['nro_pedido'];
+                    $tempArray[$i] = $val;
+                }
+                $i++;
+            }
+            
+            $result = [];            
+            
+            foreach ($tempArray as $key => $value){
+                $value['expenses'] = $this->modelExpenses->getActiveExpenses(
+                    $value['nro_pedido']
+                    );
+                $result[$key] = $value;
+            }
+            return $result;
+        }
+        return false;
     }
+    
     
     /**
      * Verifica si una pedido es un regimen 70 si lo es

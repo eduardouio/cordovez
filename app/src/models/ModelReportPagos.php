@@ -69,15 +69,12 @@ class ModelReportPagos extends CI_Model
             gn.id_parcial ASC,
             gn.concepto ASC
             ;";
-        
+                
         $result = $this->modelBase->runQuery(str_replace(
             '{{nro_order}}', $nro_pedido, $sql)
             );
-
-        print '<pre>';
-        print $this->db->last_query();
         
-        if ($result){
+        if ($result != False){
             $paids = $result;
         }
         

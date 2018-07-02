@@ -66,37 +66,128 @@ class Modelpaid extends CI_Model{
                                         $invoice['identificacion_proveedor']);
             $invoice['invoiceDetails'] = $this->modelPaidDetail->get(
                                                 $invoice['id_documento_pago']);
+            $this->modelLog->susessLog(
+                'Documento de pago listado correctamente'
+                );
             return $invoice;
         }
+        $this->modelLog->errorLog(
+            'El documento que busca no existe'
+            );
         return false;
     }
 
     /**
-     * Obtiene la lista de todas las facturas con sus detalles
+     * Obtiene la lista de las ultimas 1000 facturas
      * @return array | boolean
      */
     public function getAll()
     {
-        $documents = $this->modelBase->get_table([
-            'table' => $this->table,
-            'orderby' => [
-                'fecha_emision' => 'DESC',
-            ],
-        ]);
-        if ((gettype($documents) == 'array') && (count($documents) > 0)){
-            $invoicesData = [];
-            foreach ($documents as $item => $invoice){
-                $invoice['supplier'] = $this->modelSupplier->get(
-                                        $invoice['identificacion_proveedor']);
-                $invoice['invoiceDetails'] = $this->getDetails(
-                                                $invoice['id_documento_pago']);
-                $invoicesData[$item] = $invoice;
-            }
-            return $invoicesData;
+        $query = 'SELECT 
+                    dc.id_documento_pago, 
+                    dc.identificacion_proveedor,
+                    pr.nombre,
+                    dc.nro_factura, 
+                    dc.fecha_emision, 
+                    dc.bg_closed, 
+                    dc.date_create, 
+                    dc.tipo, 
+                    dc.valor
+                    FROM 
+                    documento_pago AS dc
+                    LEFT JOIN proveedor as pr ON (
+                                        dc.identificacion_proveedor = 
+                                        pr.identificacion_proveedor
+                                                    )
+                    ORDER BY 
+                    dc.bg_closed ASC, 
+                    pr.nombre ASC,
+                    dc.fecha_emision DESC
+                    LIMIT 600;';
+        
+        $result = $this->db->query($query);
+        $result = $result->result_array();
+        
+        if ($result){
+            $this->modelLog->susessLog(
+                'Listado de documento pago recuperado correctamente'
+                );
+            return $result;
         }
-        return false;
+        $this->modelLog->errorLog(
+            'La tabla de documentos de pago se encuentra vacia',
+            $this->db->last_query()
+            );
+        
+        return False;
     }
-
+    
+    /**
+     * REaliza un busqueda en la lista de facturas no tiene limite
+     * en los resultados
+     * 
+     * @param string $param => criterio
+     */
+    public function search(string $param){
+        $query = "
+            SELECT 
+            dc.id_documento_pago, 
+            dc.identificacion_proveedor,
+            pr.nombre,
+            dc.nro_factura, 
+            dc.fecha_emision, 
+            dc.bg_closed, 
+            dc.date_create, 
+            dc.tipo, 
+            dc.valor
+            FROM 
+            documento_pago AS dc
+            LEFT JOIN proveedor as pr ON (
+                                dc.identificacion_proveedor = 
+                                pr.identificacion_proveedor
+                                          )
+            WHERE 
+            nro_factura = '{{param}}'
+            OR  dc.nro_factura like '%{{param}}'
+            OR  dc.nro_factura like '{{param}}%'
+            OR  dc.nro_factura like '%{{param}}%'
+            OR  dc.identificacion_proveedor = '{{param}}'
+            OR  dc.identificacion_proveedor LIKE '%{{param}}'
+            OR  dc.identificacion_proveedor LIKE '{{param}}%'
+            OR  dc.identificacion_proveedor LIKE '%{{param}}%'
+            OR  pr.nombre = '{{param}}'
+            OR  pr.nombre like '%{{param}}'
+            OR  pr.nombre like '{{param}}%'
+            OR  pr.nombre like '%{{param}}%'
+            OR  dc.fecha_emision = '{{param}}'
+            OR  dc.fecha_emision LIKE '%{{param}}'
+            OR  dc.fecha_emision LIKE '{{param}}%'
+            OR  dc.fecha_emision LIKE '%{{param}}%'
+            ORDER BY 
+            dc.bg_closed ASC, 
+            pr.nombre ASC,
+            dc.fecha_emision DESC;";
+        
+        $query = str_replace('{{param}}', $param, $query);
+        
+        $result = $this->db->query($query);
+        $result = $result->result_array();
+        
+        if ($result){
+            $this->modelLog->susessLog(
+                'Listado de documento pago recuperado correctamente'
+                );
+            return $result;
+        }
+        $this->modelLog->errorLog(
+            'La consulta no ha retornado ningun resultado',
+            $this->db->last_query()
+            );
+        
+        return False;
+    }
+    
+    
     
     /**
      * Retorna la informacion de tabla de un documento 
@@ -178,4 +269,26 @@ class Modelpaid extends CI_Model{
             
         return False;
     }        
-}
+    
+    
+    /**
+     * Actualiza un comprobante de pago
+     */
+    public function update(array $document):bool{
+       $this->db->where('id_documento_pago', $document['id_documento_pago']);
+       unset($document['id_documento_pago']);
+       unset($document['supplier']);
+       unset($document['invoiceDetails']);
+       if($this->db->update($this->table, $document)){
+           $this->modelLog->susessLog(
+               'Documento pago actualizado correctamente'
+               );
+           return True;
+       }
+       $this->modelLog->errorLog(
+           'No fue posible acualizar el documento de pago',
+           $this->db->last_query()
+           );
+        return False; 
+    }
+};

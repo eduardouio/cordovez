@@ -152,7 +152,7 @@ class Pedido extends MY_Controller
             'orders' => $init_data,
             'orders_closed' => $orders_closed,
             'orders_opened' => $orders_open,
-            'titleContent' => 'Lista de Pedidos Cordovez',
+            'titleContent' => 'Lista de Pedidos Activos',
             'infoBase' => $this->getStatisticsInfo(),
             'pagination_url' => base_url() . 'index.php/pedido/listar/'
         ]);

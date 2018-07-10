@@ -1,3 +1,19 @@
+{% if order.incoterm == 'FOB'  %}
+	<div class="alert alert-warning">
+	<span class="fa fa-warning"></span>
+	Es posible que este pedido tenga
+	<strong>Gastos en Origen</strong> si los tiene, por favor ingrese ese valor se ingresan usando el formulario del 
+	 <a class="btn btn-sm btn-default" href="{{ rute_url }}pedido/editar/{{ order.nro_pedido }}">Ingresar Gasto Origen</a> 
+	</div>
+{% endif %}
+{% if order.incoterm != 'FOB'  %}
+	<div class="alert alert-danger">
+	<span class="fa fa-warning"></span>
+	Los <strong>Gastos en Origen</strong> de este pedido, se ingresan usando el formulario del pedido, por favor solo registre el producto
+	<a class="btn btn-sm btn-default" href="{{ rute_url }}pedido/editar/{{ order.nro_pedido }}">Ingresar Gasto Origen</a> 
+</div>
+{% endif %}
+
 <form method="post" action="{{rute_url}}pedidofactura/validar/">
   <input type="hidden" name="identificacion_proveedor" id="identificacion_proveedor" value="">
   <div class="row">
@@ -145,23 +161,9 @@
         >
       </div>
     </div>
-        <div class="col-md-2">
+        <div class="col-md-3">
       <div class="form-group">
-        <label>Gastos Origen</label>
-        <input 
-        class="form-control" 
-        required="required" 
-        type="number" 
-        name="gasto_origen"
-        id="gasto_origen"
-        step="0.01" 
-        value = 0
-        >
-      </div>
-    </div>
-        <div class="col-md-2">
-      <div class="form-group">
-        <label>Total Factura</label>
+        <label>Total Factura Por Producto</label>
         <input 
         disabled=""   
         class="form-control"   
@@ -171,7 +173,6 @@
         >
       </div>
     </div>
-
   </div>
      <div class="row">
       <div class="col-md-12">
@@ -235,11 +236,8 @@ $('#moneda').change(function(){
 
 $('#valor').keyup(function(){
 	actualizarValores();
-  })
- 
-$('#gasto_origen').keyup(function(){
-	actualizarValores();
-});
+  });
+
 
 /**
  * Actualiza los valores del formulario
@@ -248,12 +246,10 @@ function actualizarValores(){
 
     $('#total').val(
 			(
-			parseFloat($('#gasto_origen').val()) + 
 			parseFloat( $('#valor').val()) 
 			) 
     	    );  
 }
-
 actualizarValores();
 </script>
 

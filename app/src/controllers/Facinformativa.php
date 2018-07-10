@@ -30,6 +30,7 @@ class Facinformativa extends MY_Controller
     private $myModel;
     private $modelParcial;
     
+    
     /**
      * Constructor de la funcion
      */
@@ -143,6 +144,7 @@ class Facinformativa extends MY_Controller
             'user' => $this->modelUser->get($infoInvoice['id_user'])
         ]);
     }
+    
     
     /**
      * Presenta el formulario para registrar una nueva factura informativa
@@ -474,9 +476,7 @@ class Facinformativa extends MY_Controller
             'nro_factura_informativa' => 2,
             'id_parcial' => 1,
             'identificacion_proveedor' => 13,
-            'flete_aduana' => 1,
             'fecha_emision' => 10,
-            'seguro_aduana' => 1,
             'id_user' => 1
         );
         return $this->_checkColumnsData($columnsLen, $data);

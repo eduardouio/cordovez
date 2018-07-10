@@ -2,50 +2,30 @@
     <div class="col-sm-3">
     {% if order_report.have_open_parcial == false %}
             <a href="{{ rute_url }}parcial/nuevo/{{ order.nro_pedido }}">
-                <button type="button" class="btn btn-default btn-sm">
-                    <span class="fa fa-plus"></span>
-                    Nuevo Parcial Pedido
+                <button type="button" class="btn btn-primary btn-sm">
+                    <span class="fa fa-list-ol"></span>
+                    Nuevo Parcial
                 </button>
             </a>
             <br>
             <br>
             {% endif %}
     </div>
-    <div class="col-sm-3">&nbsp;</div>
-    <div class="col-sm-2">
-        <h5 class="text-primary">
-            <small>Parciales:</small>
-            <span id="suma"> {{ count | number_format(0, '.', ',') }} </span></h5>
-    </div>
-    <div class="col-sm-2">
-        <h5 class="text-primary">
-            <small>Sumas:</small>
-            <span id="suma">
-                        $ {{ 0 | number_format(2, '.', ',') }}</span></h5>
-    </div>
-    <div class="col-sm-2">
-        <h5 class="text-danger">
-            <small>Saldo:</small>
-            <span id="suma"> $ {{ saldo | number_format(2, '.', ',') }}
-                  </span></h5>
-    </div>
 </div>
-
 
 <div class="row">
     <div class="col-sm-1">&nbsp;</div>
     <div class="col-sm-10">
-        <table class="table table-hover table-bordered table-striped">
+        <table class="table table-hover table-bordered table-striped text-right">
             <thead>
             <tr style="background-color: #c1c1c1;">
                 <th>Parcial</th>
+                <th>Estado</th>
                 <th>Pedido</th>
-                <th>Responsable</th>
+                <th>FOB</th>
+                <th>Fact Informativa</th>
                 <th>Fecha</th>
-                <th>Fac Inf</th>
-                <th>Cajas</th>
-                <th>Unidades</th>
-                <th>Valor</th>               
+                <th>Cajas</th>                  
                 <th>Acciones</th>
             </tr>
             </thead>
@@ -53,26 +33,44 @@
             {% for parcial in parcials %}
                 <tr>
                     <td>
-                    <a href="{{ rute_url }}parcial/presentar/{{ parcial.id_parcial }}">
+                    <a href="{{ rute_url }}gstnacionalizacion/parcial/{{ parcial.id_parcial }}">
                     {{ loop.index }}
-                    <span class="fa fa-eye"></span>
-                    {%  if parcial.bg_isclosed == 0 %}
-                    	<label class="label label-success">Abierto</label>
-                    	{% set newParcial = false %}
-                    {%  else %}
-                    	<label class="label label-died">Liquidado</label>
-                    {%  endif %}
+                    <span class="fa fa-eye"></span> Ver                    
                     </a>
+                    </td>
+                    <td>
+                      <small>
+                    {%  if parcial.bg_isclosed == 0 and parcial.bg_isliquidated == 0 %}
+                    	<span class="text-success"> Abierto
+                    	<span class="fa fa-folder-open-o"></span> 
+                    	<span class="fa fa-unlock"></span>
+                    	</span>
+                    {%  endif %}
+                    
+                    {%  if parcial.bg_isclosed == 1 %}
+                    	<span class="text-default">
+                    	Liquidado y Cerrado
+                    	<span class="fa fa-folder-close-o"></span>
+                    	<span class="fa fa-lock"></span>
+                    	</span>
+                    {%  endif %}
+                    
+                      {%  if parcial.bg_isclosed == 0 and parcial.bg_isliquidated == 1 %}
+                    	<span class="text-success"> Abierto Liquidacion Aduana Ingresada
+                    	<span class="fa fa-folder-open-o"></span> 
+                    	<span class="fa fa-lock"></span>
+                    		</span>
+                    {%  endif %}
+                    		</small>
+                   
                     </td>
                     <td>
                     {{ parcial.nro_pedido }}
                     </td>
-                    <td> {{ parcial.user.nombres }} </td>
-                    <td> {{ parcial.fecha | date ('d/m/Y') }} </td>
-                    <td> {{ parcial.countInfoInvoices }} </td>
-                    <td> {{ parcial.boxesInParcial }} </td>
-                    <td> {{ parcial.unitiesInParcial }} </td>
-                    <td> {{ parcial.totalParcialValue | number_format('2',',','.') }} </td>
+                    <td> {{ parcial.value | number_format('2',',','.') }} </td>
+                    <td> {{ parcial.factura_informativa }} </td>
+                    <td> {{ parcial.fecha_factura_informativa | date ('d/m/Y') }} </td>
+                    <td> {{ parcial.cajas }} </td>
                     
                     <td>
                         <div class="dropdown">

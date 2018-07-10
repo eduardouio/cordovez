@@ -12,13 +12,30 @@ defined('BASEPATH') or exit('No direct script access allowed');
  */
 class StockOrder
 {          
+    private $order;
+    private $orderInvoicesDetail;
+    private $infoInvoicesDetail;
+    
+    /**
+     * Constructor  de la clase
+     * @param array $order
+     * @param array $orderInvoicesDetail
+     * @param array $infoInvoicesDetail
+     */
+    public function __construct(
+        array $order,
+        array $orderInvoicesDetail,
+        array $infoInvoicesDetail
+        )
+    {        
+        $this->order = $order;
+        $this->orderInvoicesDetail = $orderInvoicesDetail;
+        $this->infoInvoicesDetail = $infoInvoicesDetail;
+        
+    }
     
     /**
      * Retorna el stock que tiene un prducto en la bodega
-     * 
-     * @param array $order
-     * @param array $orderInvoiceDetail
-     * @param array $infoInvoicesDetail
      * @return array => [
      *              'order' => '(string)',
      *              'product => '(string)',
@@ -27,19 +44,15 @@ class StockOrder
      *              'stock' => int(),
      *             ]
      */
-    public function getCurrentOrderStock(
-                                    array $order, 
-                                    array $orderInvoicesDetail,
-                                    array $infoInvoicesDetail
-        ) 
+    public function getCurrentOrderStock() 
     {
         
-        if(empty($orderInvoicesDetail)){
-            Return False;
+        if(empty($this->orderInvoicesDetail)){
+            return [];
         }
         
-        $initial_stock = $this->getInitStockProducts($orderInvoicesDetail);
-        $nationalized_stock = $this->getNationalizedStock($infoInvoicesDetail);
+        $initial_stock = $this->getInitStockProducts();
+        $nationalized_stock = $this->getNationalizedStock();
         $current_stock = $this->getCurrentStock(
                                     $initial_stock, 
                                     $nationalized_stock
@@ -53,19 +66,42 @@ class StockOrder
 
     }
     
+    
+    /**
+     * Obtiene un valor Global por cada uno de los items
+     */
+    public function getGlobalValues(){
+        $stock = $this->getCurrentOrderStock();
+        $initial = 0.0;
+        $current = 0.0;
+        
+        foreach ($stock as $idx => $item){
+            $initial += ($item['costo_caja'] * $item['nro_cajas']);
+        }
+        
+        $initials = $this->getInitStockProducts();
+       
+        foreach($initials as $idx => $init){
+            $current += ($item['costo_caja'] * $item['nro_cajas']);
+        }
+        
+        return [
+            'initial' => $initial, 
+            'current' => $current,
+        ];
+    }
+    
+    
 
     /**
      * Retorna el stock inicial de los productos 
-     * 
-     * @param array $orderInvoices
      * @return array
      */
-    private function getInitStockProducts(array $orderInvoiceDetail): array
+    public function getInitStockProducts(): array
     {
-        
         $init_stock = [];
         
-        foreach ($orderInvoiceDetail as $item => $detail)
+        foreach ($this->orderInvoicesDetail as $item => $detail)
         {
             $product = $detail['product'];
             $product['detalle_pedido_factura'] = $detail['detalle_pedido_factura'];
@@ -83,14 +119,19 @@ class StockOrder
     
     /**
      * REtorna el producto que ha sido nacionalizado
-     * @param array $infoInvoicesDetail
+     * 
      * @return array
      */
-    private function getNationalizedStock(array $infoInvoicesDetail):array
+    public function getNationalizedStock():array
     {
         $nationalized_stock = [];
         
-        foreach ($infoInvoicesDetail as $item => $detail)
+        if($this->order['regimen'] == '10'){
+            return [];
+        }
+        
+        
+        foreach ($this->infoInvoicesDetail as $item => $detail)
         {
             $product = [
                 'detalle_pedido_factura' => $detail['detalle_pedido_factura'],
@@ -102,7 +143,6 @@ class StockOrder
         
         return $nationalized_stock;
     }
-    
     
     
     /**

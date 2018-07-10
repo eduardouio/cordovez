@@ -96,6 +96,12 @@ class Modelorder extends CI_Model
         if((gettype($order) == 'array') && (count($order) > 0)){
             return $order[0];
         }
+        
+        $this->modelLog->errorLog(
+            'El pedido no existe', 
+            $this->db->last_query()
+            );
+        
         return false;
     }
     

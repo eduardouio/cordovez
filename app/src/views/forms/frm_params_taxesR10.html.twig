@@ -36,18 +36,12 @@
             </div>
             <div class="row">
                <div class="col-md-12">
+                  <div class="col-md-6">
                   <div class="form-group">
-                     <label>Observaciones</label>
-                     <textarea 
-                        style="width:100%;" 
-                        rows="1" 
-                        name="observaciones" 
-                        placeholder="Observaciones" 
-                        maxlength="250" 
-                        required="" 
-                        class="form-control pull-right" 
-                        >{{ init_data.order.observaciones }}</textarea>
+                  <label>Liberación Aranceles %</label>
+                  <input type="number" name="exoneracion_arancel" required="required" value="{{ order.exoneracion_arancel | number_format(3,'.','') }}"/>
                   </div>
+               </div>
                </div>
             </div>
          </div>
@@ -90,20 +84,19 @@
                   </div>
                </div>
             </div>
-            <br>
-            <div class="row">
+            <div class="row">               
                <div class="col-md-12">
                   <div class="form-group pull-right">
-                     <button class="btn btn-sm btn-default" type="submit">
-                     <span class="fa fa-refresh"></span> Actualizar
-                     </button> 
+                     <input 
+                     class="btn btn-sm btn-primary form-control" 
+                     type="submit"
+                     value="Actualizar"
+                     /> 
                   </div>
                </div>
             </div>
          </div>
-      </form>
- 
- 
+      </form> 
  {% if init_data.order.bg_isliquidated == 1 %}     
  <script>
   $('#order_params :input').prop("disabled" , true);

@@ -17,6 +17,12 @@ class ReportCompleteOrder{
     private $paids_order;
     private $parcials;
     private $init_expenses;
+    private $localtion_order = [
+                'buque' => false,
+                'puerto' => false,
+                'almacenera' => false,
+                'cordovez' => false,
+            ];
     
     /**
      * Constructor de la clase
@@ -43,11 +49,14 @@ class ReportCompleteOrder{
      * Rertorna el estado del pedido
      */
     public function getStatusData(){
+        $this->whereIsOrder();
         
         return([
             'have_open_parcial' => $this->checkPartials(),
+            'where_is' => $this->localtion_order,
         ]);
     }
+    
     
     /**
      * Comprueba si existe un parcial Abierto
@@ -70,5 +79,103 @@ class ReportCompleteOrder{
         }
         return False;
     }
-}
     
+    
+    /**
+     * Retorna un arreglo indicando el lugar donde se encuentra el pedido
+     * 
+     * @return array
+     */
+    private function whereIsOrder()
+    {        
+        
+        if ($this->order['bg_isclosed']){
+            return $this->localtion_order['cordovez'] = 'active';
+        }
+        
+        if($this->order['fecha_arribo'] == null){
+            return $this->localtion_order['buque'] = 'active';
+        }else{
+            
+            if($this->order['fecha_salida_bodega_puerto'] == null){
+                    return $this->localtion_order['puerto'] = 'active';
+            }
+            
+            if(
+                ($this->order['fecha_ingreso_almacenera'] == null) &&
+                ($this->order['regimen'] == 70)
+                )
+            {
+                return $this->localtion_order['transporte'] = 'active';
+                    
+            }
+            
+            if(
+                ($this->order['fecha_ingreso_almacenera'] != null) &&
+                ($this->order['regimen'] == 70)
+                )
+            {
+                return $this->localtion_order['almacenera'] = 'active';
+                
+            }
+            
+            if(
+                ($this->order['fecha_llegada_cliente'] == null) &&
+                ($this->order['regimen'] == 10)
+                )
+            {
+                return $this->localtion_order['transporte'] = 'active';
+                
+            }
+            
+            if(
+                ($this->order['fecha_llegada_cliente'] != null) &&
+                ($this->order['regimen'] == 10)
+                )
+            {
+                return $this->localtion_order['cordovez'] = 'active';
+                
+            }
+            
+        }
+        }
+        
+        
+        /**
+         * Obtioene la lista de parciales con la informacion 
+         */
+        public function getPartialInfo(){
+            $parcials = [];
+            
+            if($this->order['regimen'] == '10'){
+                return [];
+            }
+            
+            foreach ($this->parcials as $idx => $par){
+                $par['value'] = 0.0;
+                $par['cajas'] = 0.0;
+                $par['factura_informativa'] = '' ;
+                $par['fecha_factura_informativa'] = '';
+                if($par['info_invoices']){
+                    foreach ($par['info_invoices'] as $key => $val){
+                        $par['value'] += ($val['valor'] * $val['tipo_cambio']);
+                        $par['factura_informativa'] = 
+                                                   $par['factura_informativa'] . 
+                                                   $val['nro_factura_informativa'];
+                        $par['fecha_factura_informativa'] = $val['fecha_emision'];
+                        
+                        if($val['detalle_factura']){
+                            foreach ($val['detalle_factura'] as $k => $v){
+                                $par['cajas'] += $v['nro_cajas'];
+                            }
+                        }
+                    }
+                }
+                
+                array_push($parcials, $par);
+            }
+            
+            return $parcials;
+        }
+    
+}    

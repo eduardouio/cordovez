@@ -1,4 +1,4 @@
-{% set saldoFactura  = (document.valor-document.invoiceDetails.sums) %}
+{% set saldoFactura  = document.saldo %}
 <div class="well well-sm">
 	<div class="row">
 		<div class="col-md-3">
@@ -51,8 +51,8 @@
 			Justificar Provision
 		</a>
 		{% endif %}
-		{% if saldoFactura < 0 %}
-		<h4 class="text-danger" ><span class="fa fa-warning"></span> Factura Inválida, VALORES EXCEDIDOS</h4>  
+		{% if saldoFactura > 0 %}
+		<h4 class="text-danger" ><span class="fa fa-warning"></span> Factura Inválida, VALORES EXCEDIDOS {{ saldoFactura }}</h4>  
 		{% endif %}
 		{% if saldoFactura == 0 %}
 		<h4 class="text-succes" ><span class="fa fa-check"></span> Factura Completa</h4>  
@@ -90,7 +90,7 @@
 			class="text-success"
 		{% endif %}
 		{% if saldoFactura < 0 %}
-			class ="text-danger"
+			class ="text-gray"
 		{% endif %}
 		{% if saldoFactura == 0 %}
 		class ="text-success"

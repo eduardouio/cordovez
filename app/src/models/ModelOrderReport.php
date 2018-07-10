@@ -91,27 +91,26 @@ class ModelOrderReport extends CI_Model
         
         $init_expenses = $this->modelExpenses->get($order['nro_pedido']);        
         $paricials_temp = $this->modelParcial->getByOrder($order['nro_pedido']);
-        $parcials = [];
+        $all_parcials = [];
         
         if ($paricials_temp){
             foreach ($paricials_temp as $idx => $parcial){
+                $parcial['info_invoices'] = [];
+                
                 $info_invoices_temp  = $this->modelInfoInvoice->getByParcial(
                     $parcial['id_parcial']
                     );
                 
-                
-                $parical['info_invoices'] = [];
                 if($info_invoices_temp){
                     foreach ($info_invoices_temp as $idx => $invoice){
                         $invoice['detalle_factura'] = 
                             $this->modelInfoInvoiceDetail->getByFacInformative(
                                     $invoice['id_factura_informativa']
                                     );
-                        array_push($invoice, $parical['info_invoices']);
+                        array_push($parcial['info_invoices'], $invoice);
                     }
                     
                 }
-            }                        
             
             $parcial['parcial_expenses'] = 
                         $this->modelExpenses->getPartialExpenses(
@@ -122,7 +121,8 @@ class ModelOrderReport extends CI_Model
                                 $parcial['id_parcial']
                                 );
             
-            array_push($parcials, $parcial);
+            array_push($all_parcials, $parcial);
+            }                        
         }
         
         return([
@@ -131,7 +131,7 @@ class ModelOrderReport extends CI_Model
             'products' => $common_data['products'],
             'init_expenses' => $common_data['init_expenses'],
             'paids_order' => $common_data['paids_order'],
-            'partials' => $parcials,
+            'partials' => $all_parcials,
         ]);
     }
     

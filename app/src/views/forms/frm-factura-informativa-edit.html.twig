@@ -196,9 +196,7 @@
       <input type="hidden" name="moneda" value="DOLARES">
       <input type="hidden" name="tipo_cambio" value="1">
       {% endif %}
-   </div>
-   <div class="row">
-      <div class="col-md-2">
+            <div class="col-md-2">
          <div class="form-group">
             <label>Nro Referendo</label>
             <input 
@@ -212,68 +210,8 @@
                >
          </div>
       </div>
-      <div class="col-md-2">
-         <div class="form-group">
-            <label>Valor FOB</label>
-            <input 
-               class="form-control" 
-               type="number" 
-               name="valor"
-               value="{{infoInvoice.valor}}" 
-               id="valor"
-               step="0.01" 
-               required="required" 
-               >
-         </div>
-      </div>
-            <div class="col-md-2">
-         <div class="form-group">
-            <label>Flete Aduana <small><b>USD</b></small>
-            </label>
-            <input 
-               type="number" 
-               name="flete_aduana"
-               class="form-control" 
-               step="0.01" 
-               required="required" 
-               value="{{infoInvoice.flete_aduana}}" 
-               >
-         </div>
-      </div>
-                  <div class="col-md-2">
-          <div class="form-group">
-            <label>Seguro Aduana <small><b>USD</b></small>
-            </label>
-            <input 
-               type="number" 
-               name="seguro_aduana"
-               class="form-control" 
-               step="0.01" 
-               required="required" 
-               value="{{infoInvoice.seguro_aduana }}" 
-               >
-         </div>
-      </div>
-    
-      <div class="col-md-2">
-         <div class="form-group">
-            <label>Total USD</label>
-            <input 
-               disabled=""   
-               class="form-control"   
-               id="total" 
-               value="0" 
-               style="font-weight: bold; font-size: 14px; color:blue" 
-               >
-         </div>
-      </div>
-      <div class="col-md-6">
-         <div class="form-group">
-            <label>Comentarios</label>
-            <textarea name="comentarios" class="form-control" rows="3" id="comentarios">{{infoInvoice.comentarios}}</textarea>
-         </div>
-      </div>
    </div>
+ 
    <div class="row">
       <div class="col-md-12">
          <hr>

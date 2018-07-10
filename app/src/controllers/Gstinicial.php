@@ -97,40 +97,6 @@ class Gstinicial extends MY_Controller
         
         return ($this->redirectPage('ordersList'));
     }
-
-    
-    /**
-     * Muestra la informacion basica de un gasto inicial
-     *
-     * @param (int) $idInitExpense
-     * @return array
-     */
-    public function presentar($idInitExpense)
-    {
-        if (! isset($idInitExpense)) {
-            $this->redirectPage('ordersList');
-            return false;
-        }
-        
-        $initExpense = $this->modelExpenses->getExpense($idInitExpense);
-        
-        if ($initExpense == false) {
-            $this->redirectPage('ordersList');
-            return false;
-        }
-        
-        $order = $this->modelOrder->get($initExpense['nro_pedido']);
-        
-        $this->responseHttp([
-            'order' => $order,
-            'initExpense' => $initExpense,
-            'supplier' => $this->modelSupplier->get($initExpense['identificacion_proveedor']),
-            'createBy' => $this->session->userdata(),
-            'titleContent' => 'Descripción De Gasto Inicial Pedido:' . $order['nro_pedido'],
-            'show' => true
-        ]);
-    }
-
     
     /**
      * Presenta el formulario con los datos del gasto inicial
@@ -141,6 +107,9 @@ class Gstinicial extends MY_Controller
     public function editar(int $idInitExpense)
     {
         $initExpense = $this->modelExpenses->getExpense($idInitExpense);
+        $have_origin_expense = False;
+        $type_change = 1;
+        
         
         if ($initExpense == false) {
             return $this->index();
@@ -148,9 +117,29 @@ class Gstinicial extends MY_Controller
         
         $order = $this->modelOrder->get($initExpense['nro_pedido']);
         
+        
+        if ($initExpense['concepto'] == 'GASTO ORIGEN'){
+            $have_origin_expense = True;
+        }
+        
+        $order_invoices = $this->modelOrderInvoice->getbyOrder(
+            $initExpense['nro_pedido']
+            );
+        
+        if($order_invoices){
+            foreach ( $order_invoices as $idx => $invoice ){
+                $type_change = $invoice['tipo_cambio'];
+                break;
+            }
+        }
+        
+        $order = $this->modelOrder->get($initExpense['nro_pedido']);
+        
         return ($this->responseHttp([
             'order' => $order,
             'initExpense' => $initExpense,
+            'origin_expense' => $have_origin_expense,
+            'type_change' => $type_change,
             'supplier' => $this->modelSupplier->get($initExpense['identificacion_proveedor']),
             'suppliers' => $this->modelSupplier->getAll(),
             'createBy' => $this->modelUser->get($initExpense['id_user']),
@@ -196,8 +185,21 @@ class Gstinicial extends MY_Controller
             $initExpense['fecha_fin'] = NULL;
         }
         
+        if ($initExpense['concepto'] == 'GASTO ORIGEN'){
+            $order = $this->modelOrder->get($initExpense['nro_pedido']);
+            $order['tipo_cambio_go'] = $initExpense['tipo_cambio_go'];
+            $order['gasto_origen'] = $initExpense['valor_provisionado'];
+            $this->modelOrder->update($order);
+            $initExpense['valor_provisionado'] = (
+                $initExpense['valor_provisionado']
+                * $initExpense['tipo_cambio_go']
+                );
+            unset($initExpense['tipo_cambio_go']);
+        }
+        
+      
         if (! isset($initExpense['id_gastos_nacionalizacion'])) {
-            $this->db->where('nro_pedido', $initExpense['nro_pedido']);
+             $this->db->where('nro_pedido', $initExpense['nro_pedido']);
             $this->db->where('concepto', $initExpense['concepto']);
             $resultDb = $this->db->get($this->controller);
             
@@ -237,7 +239,7 @@ class Gstinicial extends MY_Controller
             ]);
         }
     }
-
+    
     /**
      * Elimina un Gasto inicial de la tabla
      *
@@ -307,6 +309,12 @@ class Gstinicial extends MY_Controller
                                             $paids_init_expenses,
                                             $rate_expenses,
                                             $unused_expenses
+            );
+        
+        $this->validateOriginExpenses(
+            $order,
+            $order_invoices,
+            $paids_init_expenses 
             );
                 
         return ($this->responseHttp([
@@ -562,7 +570,69 @@ class Gstinicial extends MY_Controller
     }
     
     
-         /**
+    
+    /**
+     *  Verifica los gastos inciales y los agrega a la lista de provisionados
+     *  El gasto en origen solo tienen facturas en incoterm FCA y Exwork
+     */
+    private function validateOriginExpenses ( 
+                                                array $order,
+                                                $order_invoices,
+                                                $paids_init_expenses
+    ):bool {
+        
+       # solo aplica en EXW y FCA
+        if(
+            $order['incoterm'] == 'FOB' 
+            || $order['incoterm'] == 'CFR' 
+            || $order['bg_isclosed'] == '1'
+            ){
+           return False;
+       }
+        
+        if($paids_init_expenses){
+            foreach ($paids_init_expenses as $ixd => $go){
+                if ($go['concepto'] == 'GASTO ORIGEN') {
+                    $this->modelLog->warningLog(
+                        'El gasto de Origen ya se encuentra en la lista'
+                        );
+                    return False;
+                }
+            }                
+        }
+        
+        $type_change = 1;
+        $origin_expenses = $order['gasto_origen'];
+        
+        if ($order_invoices){
+            foreach ( $order_invoices  as $idx => $invoice){
+                $type_change = $invoice['tipo_cambio'];
+                break;
+            }            
+        }
+        
+        $go = [
+        'concepto' => 'GASTO ORIGEN',
+        'nro_pedido' => $order['nro_pedido'],
+        'tipo' => 'INICIAL',
+        'id_parcial' => '0',
+        'identificacion_proveedor' => 0,    
+        'fecha' => date('Y-m-d'),
+        'id_user' => $this->session->userdata('id_user'),
+        'bg_closed' => '0',
+        'valor_provisionado' => round(($origin_expenses * $type_change), 2),
+        ];
+        
+        if($this->modelExpenses->create($go)){
+            $this->redirectPage('validargi', $order['nro_pedido']);
+            return True;
+        }
+        $this->modelLog->errorLog('EL gasto en origen no fue creado');
+        return False;
+    }
+    
+    
+     /**
      * Se validan las columnas que debe tener la consulta para que no falle
      *
      * @return [array] | [bolean]
@@ -584,7 +654,6 @@ class Gstinicial extends MY_Controller
      */
     public function responseHttp($config)
     {
-        $config['title'] = 'Facturas Pedidos';
         $config['base_url'] = base_url();
         $config['rute_url'] = base_url() . 'index.php/';
         $config['controller'] = $this->controller;

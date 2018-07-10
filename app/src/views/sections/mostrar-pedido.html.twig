@@ -1,23 +1,10 @@
-{% set fob = (order.valuesOrder.valInvoices) %}
-{% set cif = (fob + order.valuesOrder.valSecureExpense + order.valuesOrder.valSecureExpense + order.valuesOrder.valShipExpnese)  %}
-{% set nacionalizado = 0 %}
-{% if order.bg_isclosed == 1 %}
-	{% set nacionalizado = fob %}
-{% endif %}
-{% if order.regimen == 70  %}
-	{% set nacionalizado = order.valuesOrder.infoInvoices  %}
-{% endif %}
-{% set justificado = 0 %}
-{% for paid in paidsDetails %}
-   {% set justificado = justificado + paid.valor %}
-{% endfor %}
 <div class="well well-sm">
    <div class="row">
       <div class="col-sm-3">
          <strong>Valor FOB Total:</strong> 
          <span class="text-primary">
          <strong>
-         $ {{ fob | number_format(2, '.', ',') }}      
+         $ {{ stock_order.global.initial | number_format(2, '.', ',') }}      
          </strong>
          </span>  
       </div>
@@ -26,7 +13,7 @@
          FOB Nacionalizado:</strong> 
          <span class="text-primary">
          <strong>
-         $ {{ nacionalizado | number_format(2, '.', ',') }}      
+         $ {{ (stock_order.global.initial - stock_order.global.current) | number_format(2, '.', ',') }}      
          </strong>
          </span>
       </div>
@@ -35,39 +22,35 @@
          Valor FOB Saldo:</strong> 
          <span class="text-primary">
          <strong>
-			${{ (fob - nacionalizado) | number_format(2, '.', ',') }}      
+			${{ stock_order.global.current | number_format(2, '.', ',') }}      
          </strong>
          </span>
       </div>
       <div class="col-sm-3">
          <strong>
-         CIF Total:</strong>
+         Intotem/Regimen:</strong>
          <span class="text-primary">   
-         {{ (order.seguro_aduana + order.flete_aduana) |  number_format(2, '.', ',') }}
+         {{ order.incoterm }} / {{ order.regimen }}
          </span>
       </div>
    </div>
    <div class="row">
       <div class="col-sm-3">
-         <strong>Tiempo Bodega:</strong> 
-        <span>{{ warenHouseDays }} d&iacute;as</span>
+         <strong>Tiempo Bodega:</strong>
+          {{ dates_order.mounths }} meses
+          {{ dates_order.days }} días /
+          <small class="text-info"> {{ dates_order.all_days }} días </small>
       </div>
-      <div class="col-sm-2">
-         <strong>Provisiones:</strong> 
+      <div class="col-sm-3">
+         <strong>Gasto Origen:</strong> 
          <span class="text-warning">
-         {{ order.valuesOrder.localExpenses | number_format(0, '.', ',') }}
+         {{ order.gasto_origen | number_format(0, '.', ',') }}
          </span>
       </div>
-      <div class="col-sm-2">
-         <strong>Justificado Fact</strong> 
+      <div class="col-sm-3">
+         <strong>Fecha Cierre:</strong> 
          <span class="text-primary">
-         {{ justificado | number_format(0, '.', ',') }}
-         </span>
-      </div>
-      <div class="col-sm-2">
-         <strong>Saldo:</strong> 
-         <span class="text-danger" style="font-weight: bold;">
-         {{ (order.valuesOrder.localExpenses - justificado ) | number_format(0, '.', ',') }}
+         {{ order.fecha_cierre }}
          </span>
       </div>
       <div class="col-sm-3">
@@ -78,27 +61,26 @@
 <div class="row">
 <div class="col-md-5">
 <ol class="breadcrumb" style="color: #111;">
-  <li class="{{ ubicacion.buque }}"> <span class="fa fa-ship"></span> Buque</a></li>
-  <li class="{{ ubicacion.puerto }}"> <span class="fa fa-simplybuilt"></span> Puerto</li>
+  <li class="{{ order_report.where_is.buque }}"> <span class="fa fa-ship"></span> Buque</a></li>
+  <li class="{{ order_report.where_is.puerto }}"> <span class="fa fa-simplybuilt"></span> Puerto</li>
+  <li class="{{ order_report.where_is.transporte }}"> <span class="fa fa-truck"></span> Transporte</li>
   {% if order.regimen == 70 %}
-  <li class="{{ ubicacion.transporte }}"> <span class="fa fa-truck"></span> Transporte</li>
-  <li class="{{ ubicacion.almacenera }}"> <span class="fa fa-fort-awesome"></span>Almacenera</li>
+  	<li class="{{ order_report.where_is.almacenera }}"> <span class="fa fa-fort-awesome"></span>Almacenera</li>
   {% endif %}
-  <li class="{{ ubicacion.cordovez }}"> <span class="fa fa-home"></span> Cordovez</li>
+  <li class="{{ order_report.where_is.cordovez }}"> <span class="fa fa-home"></span> Cordovez</li>
 </ol>
 </div>
 <div class="col-md-7 text-right">
-
 		<a href="{{rute_url}}gstinicial/validargi/{{order.nro_pedido}}" class="btn btn-primary btn-sm">
 				<span class="fa fa-gear"></span> Gastos Iniciales
 		</a>
-		{% if order.bg_isclosed == 0 %}
-		<a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}" class="btn btn-default btn-sm">
-				<span class="fa fa-pencil fa-fw"></span>Editar Pedido
-		</a>  
-		<a href="{{rute_url}}pedidofactura/nuevo/{{ order.nro_pedido }}" class="btn btn-default btn-sm">
-				<span class="fa fa-plus"></span> Agregar Productos
-		</a>
+		{% if order.bg_isliquidated == 0 and order.bg_haveExpenses == 0 %}
+    		<a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}" class="btn btn-default btn-sm">
+    				<span class="fa fa-pencil fa-fw"></span>Editar Pedido
+    		</a>  
+    		<a href="{{rute_url}}pedidofactura/nuevo/{{ order.nro_pedido }}" class="btn btn-default btn-sm">
+    				<span class="fa fa-plus"></span> Agregar Productos
+    		</a>
 		{% endif %}
 		
 </div>
@@ -108,14 +90,21 @@
    <ul class="nav nav-tabs" role="tablist">
       <li role="presentation"><a href="#pedido" role="tab" data-toggle="tab" aria-controls="pedido">Detalle Pedido &nbsp;
          {% if order.bg_isclosed == '0' %}
-         <span class="label label-success"><span class="fa fa-folder-open-o"></span> Abierto</span>
-         {% else %}
-         <span class="label label-died"><span class="fa fa-folder-o"></span> Cerrado</span>
+        	 <span class="label label-success"><span class="fa fa-folder-open-o"></span> Abierto</span>
          {% endif %}
+          
+         {% if order.bg_isclosed == '1' %}
+        	 <span class="label label-died"><span class="fa fa-folder-o"></span> Cerrado</span>
+         {% endif %}
+         
+         {% if order. bg_haveExpenses == '1' %}
+         	 <span class="label label-died"><span class="fa fa-lock"></span>&nbsp;</span>
+         {% endif %}
+         
          </a>
       </li>
       
-      <li role="presentation" class="active">
+      <li role="presentation" class="active" >
       	<a href="#facturas" role="tab" data-toggle="tab" aria-controls="facturas">
       	<span class="fa fa-file"></span> Facturas Productos</a>
       </li>
@@ -174,7 +163,7 @@
             {% set totalItems = 0 %}
             {% set totalUnds = 0 %}
             
-            {% for product in current_stock %}
+            {% for product in stock_order.current %}
             {% set totalItems = totalItems + product.stock  %}
             {% set totalUnds = totalUnds + (product.stock * product.cantidad_x_caja)  %}
             
@@ -198,7 +187,6 @@
       	</div>
       	
       </div>      
-                     
       </div>
       <!-- /Tab Facturas Servicios -->
 
@@ -212,14 +200,14 @@ var ctx = document.getElementById("chart").getContext('2d');
 var barChart = new Chart(ctx, {
   type: 'bar',
   data: {
-    labels: [{% for product in current_stock %}'{{ product.nombre }} ({{ product.nro_cajas }} / {{ product.stock }}) ',{% endfor %}],
+    labels: [{% for product in stock_order.current %}'{{ product.nombre }} ({{ product.nro_cajas }} / {{ product.stock }}) ',{% endfor %}],
     datasets: [{
       label: 'Cajas Importadas',
-      data: [{% for product in current_stock %}{{ product.nro_cajas }},{% endfor %}],
+      data: [{% for product in stock_order.current %}{{ product.nro_cajas }},{% endfor %}],
       backgroundColor: "rgba(93, 144, 44, 0.9)"
     }, {
       label: 'Saldo Cajas',
-      data: [{% for product in current_stock %}{{ product.stock }},{% endfor %}],
+      data: [{% for product in stock_order.current %}{{ product.stock }},{% endfor %}],
       backgroundColor: "rgba(247, 165, 37, 0.9)"
     }]
   }

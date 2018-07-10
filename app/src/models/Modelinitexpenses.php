@@ -38,8 +38,6 @@ class Modelinitexpenses extends CI_Model
         
         $query = "SELECT * FROM  $this->table 
                  WHERE 
-                        (concepto != 'GASTO ORIGEN') 
-                AND 
                         ( nro_pedido = '$order[nro_pedido]')";
         
         $initExpenses = $this->db->query($query);

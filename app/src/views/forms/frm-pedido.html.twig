@@ -1,184 +1,198 @@
+<div id="alert-message"></div>
 <form method="post" action="{{rute_url}}pedido/validar">
-   <div class="row">
-      <div class="col-md-1">
-         <div class="form-group">
-            <label>Nro</label>
-            <input 
-               class="form-control" 
-               type="number"
-               required="true"
-               name="n_pedido"
-               placeholder="000" 
-               maxlength="3" 
-               minlength="1" 
-               required = "required"
-               autofocus="" 
-               >
-         </div>
-      </div>
-      <div class="col-md-2">
-         <div class="form-group">
-            <label>Año</label>
-            <select
-               class="form-control"
-               name="y_pedido"
-               required = "required"
-               >
-               <option value="18">2018</option>
-               <option value="17">2017</option>
-               <option value="16">2016</option>
-            </select>
-         </div>
-      </div>
-      <div class="col-md-1">
-         <div class="form-group">
-            <label>Régimen</label>
-            <select
-               class="form-control" 
-               required="true" 
-               name="regimen"
-               >
-               <option value="" disabled selected>...</option>
-               <option value="70">70</option>
-               <option value="10">10</option>
-            </select>
-         </div>
-      </div>
-      <div class="col-md-2">
-         <label>País Origen</label>
-         <select
-            id = "pais_origen"
-            name = "pais_origen"
-            class="form-control"
-            required = "required"
-            >
-            <option disabled selected="">Seleccione...</option>
-         </select>
-     </div>
-      <div class="col-md-2">
-         <div class="form-group">
-            <label>Puerto Ebarque</label>
-            <select
-               class="form-control"
-               id="ciudad_origen"
-               name="ciudad_origen"
-               required = "required"
-               >
-               <option disabled selected="">Seleccione...</option>
-            </select>
-         </div>
-      </div>
-      <div class="col-md-2">
-         <label>Incoterm</label>
-         <select
-            class="form-control"
-            name ="incoterm"
-            id ="incoterm"
-            required = "required"
-            >
-            <option disabled selected="">Seleccione...</option>
-         </select>
-      </div>
-      <div class="col-md-2">
-         <div class="form-group">
-            <label>Referendo</label>
-            <input 
-               type="text" 
-               name = "nro_refrendo"
-               id = "nro_refrendo"
-               placeholder="000-0000-00-000000"
-               class="form-control" 
-               maxlength="20" 
-               >
-         </div>
-      </div>
-   </div>
-   <div class="row"> 
-      <div class="col-md-2">
-         <label>Fecha LLeg Puerto</label>
-<div class="input-group">
-            <input 
-               type="text" 
-               class="form-control  fecha" 
-               id="fecha_arribo" 
-               name="fecha_arribo" 
-               >
-                <div class="input-group-addon">
-               <span class="glyphicon glyphicon-th"></span>
+      <div class="row">
+	{% if edit_order == true %}
+		<input type="hidden" name="id_pedido" value = '{{ order.id_pedido }}' />
+			<div class="col-md-3">
+			<label for="">Nro Pedido</label>
+    			<div class="form-group">
+    			<input 
+    			type="text" 
+    			name="nro_pedido" 
+    			value={{ order.nro_pedido }}
+    			class="form-control"
+    			readonly="readonly"
+    			/>
+    		</div>
+			</div>
+	{% else %}
+		<div class="col-md-1">
+                  <div class="form-group">
+                        <label>Nro</label>
+                        <input 
+                        class="form-control" 
+                        type="number" 
+                        required="true" 
+                        name="n_pedido" 
+                        placeholder="000" 
+                        maxlength="3" 
+                        minlength="1" 
+                        required="required"
+                        autofocus="">
+                  </div>
             </div>
-         </div>
-         </div>
-      <div class="col-md-2">
-         <div class="form-group">
-            <label>Días Libres En Puerto</label>
-            <input 
-            class="form-control" 
-            type="number" 
-            step="1" 
-            required = "required"
-            name="dias_libres"
-            >
-         </div>
-      </div>
-      <div class="col-md-2">
-      	<div class="form-group">
-      		<label>Flete Aduana</label>
-      		<input 
-      		type="number" 
-      		name="flete_aduana"
-      		step="0.01" 
-      		required="true" 
-      		value="{{order.seguro_aduana}}" 
-      		class="form-control" 
-      		>
-      	</div>
-      </div>
             <div class="col-md-2">
-         <div class="form-group">
-            <label>Seguro Aduana</label>
-            <input 
-            type="number" 
-            name="seguro_aduana"
-            step="0.01" 
-            required="true" 
-            value="{{order.flete_aduana}}" 
-            class="form-control" 
-            >
-         </div>
+                  <div class="form-group">
+                        <label>Año</label>
+                        <select class="form-control" name="y_pedido" required="required">
+                              <option value="18">2018</option>
+                              <option value="17">2017</option>
+                              <option value="16">2016</option>
+                        </select>
+                  </div>
+            </div>
+	{% endif %}
+	
+            <div class="col-md-1">
+                  <div class="form-group">
+                        <label>Régimen</label>
+                        <select class="form-control" required="true" name="regimen">
+                              <option value="{{ order.regimen }}" selected>{{ order.regimen }}</option>
+                              <option value="70">70</option>
+                              <option value="10">10</option>
+                        </select>
+                  </div>
+            </div>
+            <div class="col-md-2">
+                  <label>País Origen</label>
+                  <select id="pais_origen" name="pais_origen" class="form-control" required="required">
+                        <option value="{{ order.pais_origen }}">{{ order.pais_origen }}</option>
+                  </select>
+            </div>
+            <div class="col-md-2">
+                  <div class="form-group">
+                        <label>Puerto Ebarque</label>
+                        <select class="form-control" id="ciudad_origen" name="ciudad_origen" required="required">
+                              <option value="{{ order.ciudad_origen  }}">{{ order.ciudad_origen }}</option>
+                        </select>
+                  </div>
+            </div>
+            <div class="col-md-2">
+                  <label>Incoterm</label>
+                  <select class="form-control" name="incoterm" id="incoterm" required="required">
+                        <option value="{{ order.incoterm }}">{{ order.incoterm }}</option>
+                  </select>
+            </div>
+            <div class="col-md-2">
+                  <div class="form-group">
+                        <label>Referendo</label>
+                        <input 
+                        	type="text" 
+                        	name="nro_refrendo" 
+                        	id="nro_refrendo" 
+                        	placeholder="000-0000-00-000000" 
+                        	class="form-control" 
+                        	maxlength="20"
+                        	value="{{ order.nro_refrendo }}"
+                        	>
+                  </div>
+            </div>
       </div>
+      <div class="row">
+            <div class="col-md-2">
+                  <label>Fecha LLeg Puerto</label>
+                  <div class="input-group">
+                        <input 
+                        	type="text" 
+                        	class="form-control  fecha" 
+                        	id="fecha_arribo" 
+                        	name="fecha_arribo"
+                        	value="{{ order.fecha_arribo }}"
+                        	>
+                  </div>
+            </div>
+            <div class="col-md-2">
+                  <div class="form-group">
+                        <label>Días Libres En Puerto</label>
+                        <input 
+                        	class="form-control" 
+                        	type="number" 
+                        	step="1" 
+                        	required="required" 
+                        	name="dias_libres"
+                        	value="{{ order.dias_libres }}"
+                        	>
+                  </div>
+            </div>
+            <div class="col-md-2">
+                  <div class="form-group">
+                        <label>Flete Aduana</label>
+                        <input 
+                        	type="number" 
+                        	name="flete_aduana" 
+                        	step="0.01" 
+                        	required="true" 
+                        	value="{{order.seguro_aduana | number_format(2,'.','')}}" 
+                        	class="form-control"
+                        	>
+                  </div>
+            </div>
+            <div class="col-md-2">
+                  <div class="form-group">
+                        <label>Seguro Aduana</label>
+                        <input 
+                        	type="number" 
+                        	name="seguro_aduana" 
+                        	step="0.01" 
+                        	required="true" 
+                        	value="{{ order.flete_aduana | number_format(2,'.','')}}" 
+                        	class="form-control"
+                        	>
+                  </div>
+            </div>
+            <div class="col-md-3">
+                  <div class="form-group">
+                        <label>Gastos en Origen</label>
+                        <input 
+                        	type="number" 
+                        	class="form-control" 
+                        	id="gasto_origen" 
+                        	name="gasto_origen" 
+                        	step="0.001" 
+                        	required="required"
+                        	{% if create_order == true  %} 
+                        	disabled="disabled"
+                        	{% endif %}
+                        	value="{{ order.gasto_origen | number_format(2,'.','')}}"
+                        	>
+                  </div>
+            </div>
+      </div>
+      <div class="row">
       <div class="col-md-4">
-         <div class="form-group">
-            <label>Comentarios</label>
-            <textarea 
-               rows="1" 
-               maxlength="250" 
-               class="form-control"
-               id="comentarios"
-               name="comentarios"
-               ></textarea>
-         </div>
+                  <div class="form-group">
+                        <label>Comentarios</label>
+                        <textarea rows="1" maxlength="250" class="form-control" id="comentarios" name="comentarios"></textarea>
+                  </div>
+            </div>
       </div>
-   </div>
-   <div class="row">
-      <div class="col-md-12">
-         <hr>
-         <button type="submit" class="btn btn-sm btn-default" >
-            <span class="fa fa-save fa-fw"></span>
-            Guardar Registro
-         </button>
-      <a href="{{rute_url}}pedido/listar/" class="btn btn-sm btn-default">
-            <span class="fa fa-arrow-left fa-fw"></span>
-            Regresar Lista
-         </a>
+      <div class="row">
+            <div class="col-md-12">
+                  <hr>
+                  <button type="submit" class="btn btn-sm btn-default">
+                        <span class="fa fa-save fa-fw"></span>
+                        Guardar Registro
+                  </button>
+                  <a href="{{rute_url}}pedido/listar/" class="btn btn-sm btn-default">
+                        <span class="fa fa-arrow-left fa-fw"></span>
+                        Regresar Lista
+                  </a>
+            </div>
       </div>
-   </div>
 </form>
 
-   <script type="text/javascript">
-      var incotermsDb = {{ incoterms | raw }} ;
-      $('#is_arrived').click(function(){
-         console.dir(this);
+<script type="text/javascript">
+      var incotermsDb = {{ incoterms | raw }};
+      $('#is_arrived').click(function () {
+            console.dir(this);
       })
 
-       $('#nro_refrendo').mask('999-9999-99-99999999');
-   </script>
+      $('#nro_refrendo').mask('999-9999-99-99999999');
+
+      var change_go_values = true;
+      
+      {% if edit_order == true %}
+      	var change_go_values = false;
+      {% endif %}
+      
+</script>

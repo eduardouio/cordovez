@@ -79,10 +79,22 @@
 {% endif %}
     </div>
   
-    <div class="col-sm-4">
+    <div class="col-sm-2">
       &nbsp;
     </div>
-
+<div class="col-sm-2">
+      <h5 class="text-primary"> 
+      <small>Gastos Origen: </small>
+       <span>
+       {% if order.tipo_cambio_go == 1 %}
+      	$
+      {% else %}
+      	&euro;
+      {% endif %} 
+       {{ order.gasto_origen | number_format(0, '.', ',') }} 
+       </span>
+      </h5>
+    </div>
     <div class="col-sm-2">
       <h5 class="text-primary"> <small>Nro Cajas: </small> <span id="suma"> {{ unidades | number_format(0, '.', ',') }} </span></h5>
     </div>

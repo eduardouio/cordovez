@@ -72,8 +72,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 
 $active_group = 'pruebas_cordovez';
-#$active_group = 'cordovez';
-#$active_group = 'imnac';
+##$active_group = 'cordovez';
+#$active_group = 'pruebas_imnac';
 #$active_group = 'vid';
 
 $query_builder = TRUE;

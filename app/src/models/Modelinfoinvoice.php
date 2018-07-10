@@ -110,6 +110,7 @@ class Modelinfoinvoice extends CI_Model
      * @return array | boolean
      */
     public function get($idFacInformative){
+        
         $infoInvoice = $this->modelBase->get_table([
             'table' => $this->table,
             'where' => [
@@ -121,6 +122,49 @@ class Modelinfoinvoice extends CI_Model
             return $infoInvoice[0];
         }
         
+        return false;
+    }
+    
+    
+    /**
+     * Retorna las facturas informativas de un pedido
+     * 
+     * @param string $nro_order
+     */
+    public function getByOrder(string $nro_order){
+        $info_invoices = [];
+        
+        $parcials = $this->modelBase->get_table([
+            'table' => 'parcial',
+            'where' => [
+                'nro_pedido' => $nro_order
+            ],
+        ]);
+        
+        if($parcials == False){
+            return False;
+        }
+        
+        foreach ($parcials as $idx => $par){
+            $info_invoice =  $this->modelBase->get_table([
+                'table' => $this->table,
+                'where' => [
+                    'id_parcial' => $par['id_parcial']
+                ],
+            ]);
+            
+            if ($info_invoice){
+                foreach ($info_invoice as $k => $v){
+                    array_push($info_invoices, $v);                
+                }
+            }
+        }
+        
+        if($info_invoices){
+            return $info_invoices;            
+        }
+        
+        $this->modelLog->warningLog('Pedido sin facturas informativas');
         return false;
     }
     

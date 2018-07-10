@@ -159,6 +159,7 @@ class Pedido extends MY_Controller
         
     }
     
+    
     /**
      * show a complete order information
      *
@@ -168,98 +169,75 @@ class Pedido extends MY_Controller
     public function presentar($nroOrder)
     {
         if (! isset($nroOrder)) {
+            $this->modelLog->warningLog(
+                'La url no tiene el numero del pedido'
+                );
             return($this->index());
         }
+        
         $order = $this->modelOrder->get($nroOrder);
+        
         if ($order == false) {
             return($this->index());
         }
-        
-        $order['user'] = $this->modelUser->get($order['id_user']);
-        $order['valuesOrder'] = $this->myModel->getValuesOrder($order);
-        $invoicesOrder = $this->modelOrderInvoice->getbyOrder($nroOrder);
-        $parcials = $this->modelParcial->getByOrder($nroOrder);
-        $initialExpenses = $this->modelExpenses->get($nroOrder);
-        $paidsDetails = $this->modelPaidDetail->getByOrder($nroOrder);
-        
-        if(is_array($parcials)){
-            foreach ($parcials as $item => $parcial){
-                $quantity = [
-                    'boxesInParcial' => 0,
-                    'unitiesInParcial' => 0,
-                    'totalParcialValue' => 0.0,
-                ];
                 
-                $infoInvoices = $this->modelInfoInvoice->getByParcial($parcial['id_parcial']);
-                if (is_array($infoInvoices)){
-                    foreach ($infoInvoices as $index => $infoInvoice)
-                    {
-                        $count = $this->modelInfoInvoiceDetail->countBoxesAnd($infoInvoice['id_factura_informativa']);
-                        $quantity['boxesInParcial'] += $count['boxes'];
-                        $quantity['unitiesInParcial'] += $count['unities'];
-                        $quantity['totalParcialValue'] =+ ($infoInvoice['valor'] * $infoInvoice['tipo_cambio']);
-                    }                    
+        $params = $this->modelOrderReport->getOrderData($order);
+        $order_report = new ReportCompleteOrder($params);
+        $stock = [];
+        $detail_order_invoices = [];
+        $detail_info_invoices = [];
+        
+        if($params['order_invoices']){
+            foreach ($params['order_invoices'] as $idx => $invoice){
+                if($invoice['detail']){
+                    foreach ($invoice['detail'] as $k => $v){
+                        $v['product'] = $this->modelProduct->get($v['cod_contable']);
+                        array_push($detail_order_invoices, $v);
+                    }
                 }
-                $parcial['user'] = $this->modelUser->get($parcial['id_user']);
-                $parcial['countInfoInvoices'] = count($this->modelInfoInvoice->getByParcial($parcial['id_parcial']));
-                $parcial['boxesInParcial'] = $quantity['boxesInParcial'];
-                $parcial['unitiesInParcial'] = $quantity['unitiesInParcial'];
-                $parcial['totalParcialValue'] = $quantity['totalParcialValue'];
-                $parcials[$item] = $parcial;
             }
         }
         
-        if (gettype($invoicesOrder) == 'array' && count($invoicesOrder) > 0) {
-            $invoicesOrderTemp = [];
-            foreach ($invoicesOrder as $item => $value) {
-                $value['supplier'] = $this->modelSupplier->get($value['identificacion_proveedor']);
-                $invoicesOrderTemp[$item] = $value;
+        
+        $info_invoices = $this->modelInfoInvoice->getByOrder($nroOrder);
+        
+        if($info_invoices){
+            foreach ($info_invoices as $idx => $invoice){
+                $details = $this->modelInfoInvoiceDetail->getByFacInformative(
+                    $invoice['id_factura_informativa']
+                    );
+                if ($details){
+                    foreach ($details as $k => $v){
+                        array_push($detail_info_invoices, $v);
+                    }
+                }
             }
-            $invoicesOrder = $invoicesOrderTemp;
         }
         
-        if(gettype($initialExpenses) == 'array' && count($initialExpenses) > 0){
-            $initialExpensesTemp = [];
-            foreach ($initialExpenses as $row => $expense){
-                $expense['supplier'] = $this->modelSupplier->get($expense['identificacion_proveedor']);
-                $initialExpensesTemp[$row] = $expense;
-            }
-            $initialExpenses = $initialExpensesTemp;
-        }
+        $stock_order = new StockOrder(
+                $order, 
+                $detail_order_invoices,
+                $detail_info_invoices
+            );
         
-        if(gettype($paidsDetails) == 'array' && count($paidsDetails) > 0){
-            $paidsDetailsTemp = [];
-            foreach ($paidsDetails as $item => $detail){
-                $detail['supplier'] = $this->modelSupplier->get($detail['identificacion_proveedor']);
-                $paidsDetailsTemp[$item] = $detail;
-            }
-            $paidsDetails = $paidsDetailsTemp;
-        }
-        
-        $order_report = new ReportCompleteOrder(
-                                $this->modelOrderReport->getOrderData($order)
-                );
+        $stock['current'] = $stock_order->getCurrentOrderStock();
+        $stock['initial'] = $stock_order->getInitStockProducts();
+        $stock['global'] = $stock_order->getGlobalValues();    
         
         return($this->responseHttp([
             'show_order' => true,
-            'current_stock' => $this->getStock($order),
             'order_info' => $order_report->getStatusData(),
             'order' => $order,
-            'title' => 'Pedido [' . $order['nro_pedido'] . ']',
+            'title' => 'Pedido [' . $order['nro_pedido'] . '][R' . 
+                        $order['regimen'] . ']' ,
             'order_report' => $order_report->getStatusData(),
-            'ubicacion' => $this->whereIsOrder($order),
-            'warenHouseDays' => $this->getWarenHouseDaysInitial($order),
-            'orderInvoices' => $invoicesOrder,
-            'initialExpenses' => $initialExpenses,
-            'paidsDetails' => $paidsDetails,
-            'activeStok' => $this->modelOrderInvoiceDetail->getActiveStokProductsByOrder($nroOrder),
-            'parcials' => $parcials,
-            'sumsValues' => $this->myModel->getValuesOrder($order),
+            'stock_order' => $stock, 
+            'order_invoices' => $params['order_invoices'],
+            'parcials' => $order_report->getPartialInfo(),
             'list_active' => 'class="active"',
             'titleContent' => 'Detalle De Pedido [ ' . $nroOrder . '] [' . $order['incoterm'] . '] [Regimen ' . $order['regimen'] . ']'
         ]));
     }
-    
     
     
     /**
@@ -271,8 +249,10 @@ class Pedido extends MY_Controller
             'incoterms' => json_encode($this->modelBase->get_table([
                                     'table' => 'tarifa_incoterm'])),
             'titleContent' => 'Registro de nuevo Pedido',
+            'title' => 'Nuevo Pedido',
             'countries' => $this->myModel->getCountries(),
             'create_order' => true,
+            'form' => true,
         ]));
     }
     
@@ -286,9 +266,17 @@ class Pedido extends MY_Controller
         if($order == false){
             return($this->listar());
         }
+        
+        if($order['fecha_arribo']){
+            $order['fecha_arribo'] = date('d/m/Y', strtotime($order['fecha_arribo']));
+        }else{
+            $order['fecha_arribo'] = '';
+        }
+        
         return($this->responseHttp([
             'edit_order'    => true,
-            'order'         => $order,
+            'form' => true,
+            'order' => $order,
             'title' => 'Editar Pedido ' . $order['nro_pedido'],
             'incoterms'     => json_encode($this->modelBase->get_table([
                                                    'table' => 'tarifa_incoterm'
@@ -297,7 +285,6 @@ class Pedido extends MY_Controller
                                                           . $nroOrder . ']</b>',
         ]));
     }
-    
     
     
     /**
@@ -355,8 +342,7 @@ class Pedido extends MY_Controller
             return($this->responseHttp([
                 'order' => $nroOrder,
                 'viewMessage' => true,
-                'message' => 'El pedido no puede ser Eliminado,
-                             tiene dependencias!',
+                'message' => 'El pedido no puede ser Eliminado!',
             ]));
         }        
     }
@@ -377,25 +363,20 @@ class Pedido extends MY_Controller
         
         if ($pedido['fecha_arribo'] == '' || $pedido['fecha_arribo'] == NULL) {
             unset($pedido['fecha_arribo']);
-        } else {
-            $pedido['fecha_arribo'] = str_replace(
-                    '/', 
-                    '-', 
-                    $pedido['fecha_arribo']
-                ); 
-            
-            $pedido['fecha_arribo'] = date(
-                    'Y-m-d', 
-                    strtotime($pedido['fecha_arribo'])
+        } else {            
+            $pedido['fecha_arribo'] = date( 'Y-m-d', strtotime( 
+                    str_replace( '/','-', $pedido['fecha_arribo'])
+                    )
                 );
             
         }
         
+        #coloca ceros al inicio del numero de pedido
         if (! isset($pedido['id_pedido'])) {
-            if ((int) $pedido['n_pedido'] < 100 && intval($pedido['n_pedido']) > 9) {
+            if ( $pedido['n_pedido'] < 100 &&  $pedido['n_pedido'] > 9) {
                 $pedido['n_pedido'] = '0' . intval($pedido['n_pedido']);
             }
-            if ((int) $pedido['n_pedido'] < 9) {
+            if ($pedido['n_pedido'] < 9) {
                 $pedido['n_pedido'] = '00' . intval($pedido['n_pedido']);
             }
             
@@ -403,20 +384,21 @@ class Pedido extends MY_Controller
             
             unset($pedido['n_pedido']);
             unset($pedido['y_pedido']);
-            
-            $this->db->where('nro_pedido', $pedido['nro_pedido']);
-            $resultDb = $this->db->get($this->controller);
-            
-            if ($resultDb->num_rows() == 1) {
+
+            if ($this->modelOrder->get($pedido['nro_pedido'])) {
                 $config['order'] = $pedido['nro_pedido'];
                 $config['viewMessage'] = true;
                 $config['message'] = 'El pedido ya existe!';
-                $this->responseHttp($config);
-                return true;
+                $this->modelLog->errorLog(
+                    'Se inteta registrar un pedido Existente!',
+                    $this->db->last_query()
+                    );
+                return $this->responseHttp($config);
             }
         }
         
         $status = $this->validData($pedido);
+        
         if ($status['status']) {
             if (! isset($pedido['id_pedido'])) {
                 $this->modelOrder->create($pedido);
@@ -440,87 +422,16 @@ class Pedido extends MY_Controller
                 'order' => $pedido['nro_pedido'],
                 'viewMessage' => true,
                 'fail' => true,
-                'message' => 'La información de uno de los campos es incorrecta!',
+                'message' => 'La información de uno de los campos es incorrecta, 
+                              presione el botón de regreso del navegador y 
+                              verifique la información ingresada!',
                 'data' => $status
             ];
             $this->responseHttp($config);
             return true;
         }
     }
-    
-    
-    /**
-     * Retorna un arreglo indicando el lugar donde se encuentra el pedido
-     * barco
-     * bodega puerto
-     * almacenera
-     * u cordovez
-     * @param string $nroOrder
-     * @return array
-     */
-    private function whereIsOrder(array $order):array
-    {
-        $localtions = [
-            'buque' => false,
-            'puerto' => false,
-            'almacenera' => false,
-            'cordovez' => false,
-        ];
-           
-        if($order['fecha_arribo'] == null){
-                $localtions['buque'] = 'active';
-                return $localtions;
-        }  
         
-        if( 
-            ($order['fecha_arribo'] != null) &&
-            ($order['fecha_salida_bodega_puerto'] == null)
-            ){
-                $localtions['puerto'] = 'active';
-                return $localtions;
-        }
-        
-        if( 
-            ($order['fecha_arribo'] != null) &&
-            ($order['fecha_salida_bodega_puerto'] != null) &&
-            ($order['fecha_ingreso_almacenera'] == null) &&
-            ($order['regimen'] == 70)            
-            ){
-                $localtions['transporte'] = 'active';
-                return $localtions;
-        }
-        
-        if( 
-            ($order['fecha_arribo'] != null) &&
-            ($order['fecha_ingreso_almacenera'] != null) &&
-            ($order['fecha_salida_almacenera'] == null)&&
-            ($order['regimen'] == 70)
-            ){
-                $localtions['almacenera'] = 'active';
-                return $localtions;
-        }
-        
-        if( ($order['fecha_arribo'] != null) &&
-            ($order['fecha_salida_bodega_puerto'] != null) &&
-            ($order['fecha_ingreso_almacenera'] != null) &&
-            ($order['fecha_salida_almacenera'] != null)&&
-            ($order['regimen'] == 70)
-            ){
-                $localtions['cordovez'] = 'active';
-                return $localtions;
-        }
-        
-        if( ($order['fecha_arribo'] != null) &&
-            ($order['fecha_salida_bodega_puerto'] != null) &&
-            ($order['regimen'] == 10)
-            ){
-                $localtions['cordovez'] = 'active';
-                return $localtions;
-        }
-        return $localtions;
-    }
-    
-    
     /**
      * retorna las estadisticas de los pedidos para la cabecera de la lista
      *

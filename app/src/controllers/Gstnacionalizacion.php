@@ -53,7 +53,7 @@ class Gstnacionalizacion extends MY_Controller
     public function index()
     {
         $this->modelLog->redirectLog(
-            'Redireccionamiento por error', 
+            'Redireccionamiento por error en el controller Gstinicializacion', 
             current_url()
             );
         return ($this->redirectPage('ordersList'));
@@ -374,21 +374,17 @@ class Gstnacionalizacion extends MY_Controller
         
         $expense = $_POST;
         
-        $expense['fecha'] = date('Y-m-d', strtotime($expense['fecha']));
+        $expense['fecha'] = date('Y-m-d', strtotime(str_replace('/', '-', $expense['fecha'])));
         if(isset($expense['fecha_fin'])){
-            $expense['fecha_fin'] = date(
-                                       'Y-m-d', strtotime($expense['fecha_fin'])
-                                        );
-        }else{
-            $expense['fecha_fin'] = null;
-        }
+            unset($expense['fecha_fin']);
+        };
         
         $expense['id_user'] = $this->session->userdata('id_user');
         $expense['tipo'] = 'NACIONALIZACION';
         $expense['valor_provisionado'] = floatval(
                                                  $expense['valor_provisionado']
                                                 );
-        $expense['last_update'] = date('Y-m-d H:m:s');
+        $expense['last_update'] = date('Y-m-d H:m:s');        
         
         if ($this->modelExpenses->update($expense)) {
             return ($this->redirectPage('parcial', $expense['id_parcial']));

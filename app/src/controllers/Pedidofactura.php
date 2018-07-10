@@ -87,15 +87,18 @@ class Pedidofactura extends MY_Controller
             $config['invoiceDetail'] = $invoiceDetail;
         }
         
+        $order = $this->modelOrder->get($invoiceOrder['nro_pedido']);
+        
         return ($this->responseHttp([
             'titleContent' => 'Detalle Factura [ # ' .
                                       $invoiceOrder['id_factura_proveedor'] .
                                      ' ] Pedido [ ' . $invoiceOrder['nro_pedido'] . ' ]',
             'show_invoices' => true,
+            'title' => 'Factura Pedido ' . $order['nro_pedido'],
             'user' => $this->modelUser->get($invoiceOrder['id_user']),
             'invoice' => $invoiceOrder,
             'invoiceDetail' => $invoiceDetail,
-            'order' => $this->modelOrder->get($invoiceOrder['nro_pedido']),
+            'order' => $order,
             'sums' => $sums,
             'supplier' => $this->modelSupplier->get($invoiceOrder['identificacion_proveedor']),
        ]));
@@ -114,12 +117,29 @@ class Pedidofactura extends MY_Controller
             $this->modelLog->warningLog('Acceso directo, Redireccionamiento ', current_url());
             return($this->index());
         }
+        
+        $alert_message = False;
+        $go_dollar = False;
+        
+        if ($order['incoterm'] != 'CFR'){
+            $alert_message = True;
+        }
+        
+        if ($order['incoterm'] == 'EXW' || $order['incoterm'] == 'FCA'){
+            $go_dollar = False;
+        }
+        
         $suppliers = $this->modelSupplier->getByLocation('INTERNACIONAL');
         return($this->responseHttp([
             'create_invoice' => true,
             'order' => $order,
+            'title' => 'Registro de Factura Pedido ' . $order['nro_pedido'],
+            'alert_message' => $alert_message,
+            'go_dollar' => $go_dollar,
             'suppliers' => $suppliers,
-            'titleContent' => 'Ingreso de Factura Pedido: [' . $nroOrder . ']',
+            'titleContent' => 'Ingresando Factura ' .
+            ' Pedido [' . $order['nro_pedido'] . ']' .
+            ' Incoterm ['. $order['incoterm'] . ']', 
         ]));
     }
 
@@ -135,9 +155,32 @@ class Pedidofactura extends MY_Controller
             $this->modelLog->warningLog('acceso directo, aviso redireccionamiento', current_url());
             return($this->index());
         }
+        
+        $order = $this->modelOrder->get($invoiceOrder['nro_pedido']);
+        
+        $supplier = $this->modelSupplier->get($invoiceOrder['identificacion_proveedor']);
+        
+        $alert_message = False;
+        $go_dollar = False;
+        
+        if ($order['incoterm'] != 'CFR'){
+            $alert_message = True;
+        }
+        
+        if ($order['incoterm'] == 'EXW' || $order['incoterm'] == 'FCA'){
+            $go_dollar == True;
+        }
+        
+        
         return($this->responseHttp([
-            'titleContent' => 'Editando Pedido Factura',
+            'titleContent' => 'Editando Factura ' . 
+                                $invoiceOrder['id_factura_proveedor'] . 
+                              ' <small>' . $supplier['nombre'] . '</small>' .
+                               'Incoterm ['. $order['incoterm'] . ']', 
+            'title' => 'Registro de Factura Pedido ' . $order['nro_pedido'],
             'edit_invoice' => true,
+            'go_dollar' => $go_dollar,
+            'alert_message' => $alert_message,
             'invoice' => $invoiceOrder,
             'supplier' => $this->modelSupplier->get($invoiceOrder['identificacion_proveedor']),
         ]));
@@ -162,6 +205,7 @@ class Pedidofactura extends MY_Controller
             return($this->responseHttp([
                 'order' => $invoiceOrder['nro_pedido'],
                 'viewMessage' => true,
+                'title' => 'Confirmacion De Eliminación de Registro',
                 'deleted' => true,
                 'message' => 'Factura Eliminada Exitosamente!',
             ]));
@@ -279,7 +323,6 @@ class Pedidofactura extends MY_Controller
      */
     public function responseHttp($config)
     {
-        $config['title'] = 'Facturas Pedidos';
         $config['base_url'] = base_url();
         $config['rute_url'] = base_url() . 'index.php/';
         $config['controller'] = $this->controller;

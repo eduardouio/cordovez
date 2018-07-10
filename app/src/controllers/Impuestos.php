@@ -282,14 +282,17 @@ class Impuestos extends MY_Controller
             $init_data,
             $param_taxes,
             $order
-            ); 
-               
+            );
+        
         return ($this->responseHttp([
             'titleContent' => 'Resumen de Impuestos Liquidación Aduana del Pedido ' .
-                                              $init_data['order']['nro_pedido'],
+                                              $init_data['order']['nro_pedido'] . 
+                                            ' [ ' . $order['incoterm'] . ' Régimen' . 
+                                            $order['regimen'] .  ' ]' ,
             'init_data' => $init_data,
             'order_taxes' => $orderTaxes->getTaxes(),
             'regimen' => 'R10',
+            'title' => 'Impuestos R10 ' . $order['nro_pedido'],
             'order' => $order,
             'user' => $this->modelUser->get($init_data['order']['id_user']),
         ]));
@@ -438,19 +441,27 @@ class Impuestos extends MY_Controller
      */
     public function actualizarR10()
     {   
-        
-        if($_POST['have_etiquetas_fiscales'] == 'on'){
-            $_POST['have_etiquetas_fiscales'] = 1;
-        }else{
-            $_POST['have_etiquetas_fiscales'] = 0;
+        if (! $_POST){
+            return $this->index();
         }
         
-        if($_POST['bg_have_tasa_control'] == 'on'){
-            $_POST['bg_have_tasa_control'] = 1;
+        $order = $_POST;
+        
+        if (isset($order['have_etiquetas_fiscales']) && $order['have_etiquetas_fiscales'] == 'on'){
+            $order['have_etiquetas_fiscales'] = 1;
         }else{
-            $_POST['bg_have_tasa_control'] = 0;
+            $order['have_etiquetas_fiscales'] = 0;
         }
-                
+        
+        if (isset($order['bg_have_tasa_control']) && $order['bg_have_tasa_control'] == 'on'){
+            $order['bg_have_tasa_control'] = 1;
+        }else{
+            $order['bg_have_tasa_control'] = 0;
+        }
+        if($order['exoneracion_arancel'] > 100){
+            $order['exoneracion_arancel'] = 100;
+        }
+        
         if ($this->modelOrder->update($_POST)){
             $this->modelLog->susessLog(
                 'Se ha actualizado correctamente los parameros de impuestos'

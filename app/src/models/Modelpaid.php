@@ -69,6 +69,9 @@ class Modelpaid extends CI_Model{
             $this->modelLog->susessLog(
                 'Documento de pago listado correctamente'
                 );
+            
+            $invoice['saldo'] = round($invoice['valor'], 2) - round($invoice['invoiceDetails']['sums'],2);
+            
             return $invoice;
         }
         $this->modelLog->errorLog(

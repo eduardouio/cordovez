@@ -176,7 +176,11 @@
             <span class="fa fa-cubes"></span>
             Volver Al Pedido
             </a>
-            &nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="{{rute_url}}parcial/presentar/{{parcial.id_parcial }}" class="btn btn-default btn-sm">
+            <span class="fa fa-list-ol"></span>
+            Volver Al Parcial
+            </a>
+            &nbsp;&nbsp;
             
             {% if  info_invoices.values_isok == true %}
              	{%  if partial_expenses.all_ok == true %}

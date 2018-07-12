@@ -160,6 +160,8 @@ class orderTaxes {
             $taxes_product['ice_advalorem']
             + $taxes_product['ice_especifico']
             + $taxes_product['fodinfa']
+            + $taxes_product['arancel_advalorem_pagar']
+            + $taxes_product['arancel_especifico_pagar']
             + $taxes_product['etiquetas_fiscales']
             + $prorrateo_item['prorrateo_pedido']
             );
@@ -196,7 +198,7 @@ class orderTaxes {
             'base_advalorem' => $taxes_product['base_advalorem'],
             'base_ice_epecifico' => $taxes_product['base_ice_especifico'],
             'ice_especifico' => $taxes_product['ice_especifico'],
-            'ice_especifico_unitario' => 
+            'ice_especifico_unitario' =>
             $taxes_product['ice_especifico_unitario'],
             'ice_advalorem' => $taxes_product['ice_advalorem'],
             'ice_advalorem_unitario' =>
@@ -218,6 +220,7 @@ class orderTaxes {
                 $taxes_product['costo_total']
                 / $product['unidades']),
         ]);
+        
     }
     
     /**
@@ -442,6 +445,34 @@ class orderTaxes {
                     );
             }
             
+            $arancel_advalorem = (
+                $prorrateos['cif'] *
+                $this->getTaxParam('ARANCEL ADVALOREM')
+                );
+            
+            $arancel_advalorem_unitario = ($arancel_advalorem / $product['unidades']);
+            
+            $arancel_especifico = (
+                $this->getTaxParam('ARANCEL ESPECIFICO')
+                * (($product['capacidad_ml']/ $limite_capacidad) * $product['grado_alcoholico'])
+                ) * $product['unidades'];
+                
+                $arancel_especifico_unitario = ($arancel_especifico /  $product['unidades']);
+                
+                $arancel_especifico_liberado =   (
+                    $arancel_especifico
+                    * ($this->order['exoneracion_arancel'] / 100)
+                    );
+                
+                $arancel_advalorem_liberado =  (
+                    $arancel_advalorem
+                    * ($this->order['exoneracion_arancel'] / 100)
+                    );
+                
+                
+                $arancel_advalorem_pagar =  ($arancel_advalorem - $arancel_advalorem_liberado);
+                $arancel_especifico_pagar = ($arancel_especifico - $arancel_especifico_liberado);
+            
             $base_ice_especifico = $this->getTaxParam('ICE ESPECIFICO');
             
             $ice_especifico = (
@@ -465,6 +496,8 @@ class orderTaxes {
                 + $prorrateos['cif']
                 + $prorrateos['tasa_control']
                 + $prorrateos['otros']
+                + $arancel_especifico_pagar
+                + $arancel_advalorem_pagar
                 );
             
             $ex_aduana_unitario = ($exaduana/$product['unidades']);
@@ -482,33 +515,6 @@ class orderTaxes {
             
             $ice_advalorem_unitario =  $ice_advalorem / $product['unidades'];
             
-            $arancel_advalorem = (
-                $prorrateos['cif'] *
-                $this->getTaxParam('ARANCEL ADVALOREM')
-                );
-            
-            $arancel_advalorem_unitario = ($arancel_advalorem / $product['unidades']);
-                        
-            $arancel_especifico = ( 
-                $this->getTaxParam('ARANCEL ESPECIFICO')
-                * (($product['capacidad_ml']/ $limite_capacidad) * $product['grado_alcoholico'])
-                ) * $product['unidades'];
-            
-            $arancel_especifico_unitario = ($arancel_especifico /  $product['unidades']);
-            
-            $arancel_especifico_liberado =   (
-                $arancel_especifico 
-                * ($this->order['exoneracion_arancel'] / 100)
-                );
-            
-            $arancel_advalorem_liberado =  (
-                $arancel_advalorem
-                * ($this->order['exoneracion_arancel'] / 100)
-                );
-            
-            
-            $arancel_advalorem_pagar =  ($arancel_advalorem - $arancel_advalorem_liberado);
-            $arancel_especifico_pagar = ($arancel_especifico - $arancel_especifico_liberado);
             
             $iva = (
                 $prorrateos['cif']

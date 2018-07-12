@@ -311,9 +311,8 @@
       <a href="{{rute_url}}gstinicial/validargi/{{init_data.order.nro_pedido}}" class="btn btn-sm btn-default"> <span class="fa fa-arrow-left"></span> Volver A Gastos Pedido</a>
    </div>
 </div>
-<!-- Modal -->
-<form action="{{ rute_url }}impuestos/liquidarIvaOrder/" method="post">
-   <input type="hidden" name="nro_pedido" value="{{ order.nro_pedido }}" />
+<form action="{{rute_url}}impuestos/liquidarIvaOrder/" method="post">
+   <input type="hidden" name="nro_pedido" value="{{ order.nro_pedido }}">
    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog" role="document">
          <div class="modal-content">
@@ -335,13 +334,94 @@
                <div class="row">
                   <div class="col-md-4">
                      <div class="form-group">
+                        <label>Arancel Advalorem</label>
+                        <input 
+                           type="text" 
+                           name="arancel_advalorem_pagar"  
+                           value="{{ order_taxes.sums.arancel_advalorem_pagar | number_format(3,'.',',')}}" readonly="readonly" 
+                           step="0.001"
+                           class="number"
+                           />
+                     </div>
+                  </div>
+                  <div class="col-md-4">
+                     <div class="form-group">
+                        <label>Arancel Adv pagado</label>
+                        <input 
+                           type="number" 
+                           name="arancel_advalorem_pagar_pagado" 
+                           id="arancel_advalorem_pagar_pagado"  
+                           value="{{ order_taxes.sums.arancel_advalorem_pagar | number_format(3,'.','') }}" required="required" 
+                           step="0.001"
+                           class="number"
+                           />
+                     </div>
+                  </div>
+                  <div class="col-md-4">
+                     <div class="form-group">
+                        <label for="">Diferecia Arancel Adv.</label>
+                        <input 
+                           type="number" 
+                           step="0.001" 
+                           id="diferencia_arancel_advalorem_pagar_pagado" 
+                           value="0"  
+                           class="number"
+                           readonly="readonly"
+                           />
+                     </div>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-md-4">
+                     <div class="form-group">
+                        <label>Arancel Específico</label>
+                        <input 
+                           type="text" 
+                           name="arancel_especifico_pagar"  
+                           class="number"
+                           value="{{ order_taxes.sums.arancel_especifico_pagar | number_format(3,'.',',')}}" readonly="readonly" 
+                           step="0.001"
+                           />
+                     </div>
+                  </div>
+                  <div class="col-md-4">
+                     <div class="form-group">
+                        <label>Arancel Esp Pagado</label>
+                        <input 
+                           type="number" 
+                           name="arancel_especifico_pagar_pagado" 
+                           id="arancel_especifico_pagar_pagado"  
+                           class="number"
+                           value="{{ order_taxes.sums.arancel_especifico_pagar | number_format(3,'.','') }}" 
+                           required="required" 
+                           step="0.001"
+                           />
+                     </div>
+                  </div>
+                  <div class="col-md-4">
+                     <div class="form-group">
+                        <label for="">Diferencia Arancel Esp</label>
+                        <input 
+                           type="number" 
+                           step="0.001" 
+                           class="number"
+                           id="diferencia_arancel_especifico_pagar_pagado" 
+                           value="0" 
+                           readonly="readonly"
+                           />
+                     </div>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-md-4">
+                     <div class="form-group">
                         <label>Fodinfa</label>
                         <input 
                            type="text" 
                            name="fodinfa" 
-                           class="number form-control" 
                            value="{{ order_taxes.sums.fodinfa | number_format(3,'.',',')}}" 
                            readonly="readonly" 
+                           class="number"
                            step="0.001"
                            />
                      </div>
@@ -352,8 +432,8 @@
                         <input 
                            type="number" 
                            name="fodinfa_pagado" 
-                           id="fodinfa_pagado" 
-                           class="number form-control" 
+                           id="fodinfa_pagado"  
+                           class="number"
                            value="{{ order_taxes.sums.fodinfa | number_format(3,'.','') }}" 
                            required="required" 
                            step="0.001"
@@ -366,9 +446,9 @@
                         <input 
                            type="number" 
                            step="0.001" 
-                           id="diferencia_fodinfa" 
-                           value="0" 
-                           class="number form-control" 
+                           id="diferencia_fodinfa_pagado" 
+                           value="0"  
+                           class="number"
                            readonly="readonly"
                            />
                      </div>
@@ -377,52 +457,12 @@
                <div class="row">
                   <div class="col-md-4">
                      <div class="form-group">
-                        <label>Arancel Advalorem</label>
-                        <input type="text" name="fodinfa" class="form-control" value="{{ order_taxes.sums.arancel_advalorem | number_format(3,'.',',')}}" readonly="readonly" step="0.001"/>
-                     </div>
-                  </div>
-                  <div class="col-md-4">
-                     <div class="form-group">
-                        <label>Arancel Adv pagado</label>
-                        <input type="number" name="arancel_advalorem_pagado" id="arancel_advalorem_pagado" class="form-control" value="{{ order_taxes.sums.arancel_advalorem | number_format(3,'.','') }}" required="required" step="0.001"/>
-                     </div>
-                  </div>
-                  <div class="col-md-4">
-                     <div class="form-group">
-                        <label for="">Diferecia Arancel Adv.</label>
-                        <input type="number" step="0.001" id="diferencia_arancel_advalorem" value="0" class="form-control" readonly="readonly"/>
-                     </div>
-                  </div>
-               </div>
-               <div class="row">
-                  <div class="col-md-4">
-                     <div class="form-group">
-                        <label>Arancel Específico</label>
-                        <input type="text" name="arancel_especifico" class="form-control" value="{{ order_taxes.sums.arancel_especifico | number_format(3,'.',',')}}" readonly="readonly" step="0.001"/>
-                     </div>
-                  </div>
-                  <div class="col-md-4">
-                     <div class="form-group">
-                        <label>Arancel Esp Pagado</label>
-                        <input type="number" name="arancel_especifico_pagado" id="arancel_especifico_pagado" class="form-control" value="{{ order_taxes.sums.arancel_especifico | number_format(3,'.','') }}" required="required" step="0.001"/>
-                     </div>
-                  </div>
-                  <div class="col-md-4">
-                     <div class="form-group">
-                        <label for="">Diferencia Arancel Esp</label>
-                        <input type="number" step="0.001" id="diferencia_arancel_especifico" value="0" class="form-control" readonly="readonly"/>
-                     </div>
-                  </div>
-               </div>
-               <div class="row">
-                  <div class="col-md-4">
-                     <div class="form-group">
                         <label>ICE Advalorem</label>
                         <input 
-                           type="text" 
-                           class="number form-control" 
+                           type="text"  
                            value="{{ order_taxes.sums.ice_advalorem | number_format(3,'.',',') }}" 
                            readonly="readonly" 
+                           class="number"
                            name="ice_advalorem" 
                            step="0.001"
                            />
@@ -432,10 +472,10 @@
                      <div class="form-group">
                         <label>ICE Advalorem Pagado </label>
                         <input 
-                           type="number" 
-                           class="number form-control" 
+                           type="number"  
                            value="{{ order_taxes.sums.ice_advalorem | number_format(3,'.','') }}" 
                            name="ice_advalorem_pagado" 
+                           class="number"
                            id="ice_advalorem_pagado" 
                            required="required" 
                            step="0.001"
@@ -446,10 +486,10 @@
                      <div class="form-group">
                         <label for="diferencia">Diferencia ICE Advalorem</label>
                         <input 
-                           type="text" 
+                           type="number" 
+                           class="number"
                            readonly="readonly" 
-                           id="direferencia_ice_advalorem" 
-                           class="number form-control" 
+                           id="diferencia_ice_advalorem_pagado"  
                            value="0" 
                            step="0.001"
                            />
@@ -461,11 +501,11 @@
                      <div class="form-group">
                         <label>ICE Específico</label>
                         <input 
-                           type="text" 
-                           class="number form-control" 
+                           type="text"  
                            value="{{ order_taxes.sums.ice_especifico | number_format(3,'.',',') }}" 
                            readonly="readonly" 
                            name="ice_especifico" 
+                           class="number"
                            step="0.001"
                            />
                      </div>
@@ -474,12 +514,12 @@
                      <div class="form-group">
                         <label>ICE Específico Pagado </label>
                         <input 
-                           type="number" 
-                           class="number form-control" 
+                           type="number"  
                            value="{{ order_taxes.sums.ice_especifico | number_format(3,'.','') }}" 
                            name="ice_especifico_pagado" 
                            id="ice_especifico_pagado" 
                            required="required" 
+                           class="number"
                            step="0.001"
                            />
                      </div>
@@ -488,10 +528,10 @@
                      <div class="form-group">
                         <label>Diferencia ICE Específico</label>
                         <input 
-                           type="text" 
+                           type="number" 
                            readonly="readonly" 
-                           id="direferencia_especifico" 
-                           class="number form-control"
+                           class="number"
+                           id="diferencia_ice_especifico_pagado"  
                            value="0" 
                            step="0.001"
                            />
@@ -503,10 +543,10 @@
                      <div class="form-group">
                         <label>IVA </label>
                         <input 
-                           type="text" 
-                           class="number form-control" 
+                           type="text"  
                            value="{{ order_taxes.sums.iva | number_format(3,'.',',') }}" 
                            readonly="readonly" 
+                           class="number"
                            name="iva" 
                            step="0.001"
                            />
@@ -517,72 +557,45 @@
                         <label>IVA Pagado </label>
                         <input 
                            type="number" 
-                           class="number form-control" 
+                           class="number" 
                            value="{{ order_taxes.sums.iva | number_format(3,'.','') }}" 
                            name="iva_pagado" 
                            id="iva_pagado" 
-                           required="required" 
+                           required= "required" 
                            step="0.001"
                            />
                      </div>
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
-                        <label>Diferencia ICE Específico</label>
+                        <label>Diferencia IVA</label>
                         <input 
-                           type="text" 
+                           class="number"
+                           type="number" 
                            readonly="readonly" 
-                           id="direferencia_iva" 
-                           class="number form-control" 
-                           value="0"
-                           step="0.001"
-                           />
+                           class= "number"
+                           id="diferencia_iva_pagado"  
+                           value="0" 
+                           step="0.001"/>
                      </div>
                   </div>
                </div>
-               <div class="row">
-                  <div class="col-md-12">
-                     <strong class="text-danger">Totales</strong>
-                     <hr />
-                  </div>
-               </div>
-               <hr />
-               <div class="row">
-                  <div class="col-md-6">
-                     <div class="form-group">
-                        <label>Fecha Liquidación:</label>
-                        <div class="input-group">
-                           <input 
-                              type="text" 
-                              class="form-control fecha" 
-                              name="fecha_liquidacion" 
-                              placeholder="dd/mm/yyyy
-                              ">
-                        </div>
-                     </div>
-                  </div>
-                  <div class="col-md-6">
-                     <div class="form-group">
-                        <label>Nro de Liquidacion</label>
-                        <input 
-                           type="text" 
-                           class="number form-control"
-                           name="nro_liquidacion" 
-                           required="required" 
-                           step="0.001"
-                           />
-                     </div>
-                  </div>
-               </div>
-               <div class="row">
+                              <div class="row" style="background-color:#eee;">
                   <div class="col-md-4">
                      <div class="form-group">
                         <label>Autoliquidación</label>       
                         <input 
                            type="text" 
                            class="text-primary number" 
-                           value="{{ (order_taxes.sums.ice_especifico + order_taxes.sums.ice_advalorem + order_taxes.sums.fodinfa + order_taxes.sums.iva)  | number_format(3,'.','')}}" 
-                           readonly="readonly"
+                           value="{{ (
+                        order_taxes.sums.iva_total - (order_taxes.sums.iva_total - order_taxes.sums.iva) 
+                        + order_taxes.sums.ice_advalorem 
+                        + order_taxes.sums.ice_especifico 
+                        + order_taxes.sums.fodinfa
+                        + order_taxes.sums.arancel_advalorem_pagar 
+                        + order_taxes.sums.arancel_especifico_pagar
+                        ) | number_format(3,'.',',') 
+                        }}" readonly="readonly"
                            />
                      </div>
                   </div>
@@ -590,10 +603,17 @@
                      <div class="form-group">
                         <label>Autoliquidación Pagada</label>       
                         <input 
-                           type="number" 
-                           class="text-warning number" 
-                           value="{{ (order_taxes.sums.ice_especifico + order_taxes.sums.ice_advalorem + order_taxes.sums.fodinfa + order_taxes.sums.iva)  | number_format(3,'.','') }}" 
-                           readonly="readonly" 
+                           type="text" 
+                           class="number text-success"
+                           value="{{ (
+                        order_taxes.sums.iva_total - (order_taxes.sums.iva_total - order_taxes.sums.iva) 
+                        + order_taxes.sums.ice_advalorem 
+                        + order_taxes.sums.ice_especifico 
+                        + order_taxes.sums.fodinfa
+                        + order_taxes.sums.arancel_advalorem_pagar 
+                        + order_taxes.sums.arancel_especifico_pagar
+                        ) | number_format(3,'.',',') 
+                        }}" readonly="readonly" 
                            id="autoliquidacion"
                            />
                      </div>
@@ -602,15 +622,42 @@
                      <div class="form-group">
                         <label>Diferencias</label>       
                         <input 
-                           type="text" 
-                           class="text-danger number"  
-                           readonly="readonly" 
-                           value="0" 
+                           type="number" 
+                           class="number text-danger"  
+                           readonly="readonly"
+                           value="0"
                            id="total_diferencias"
                            />
                      </div>
                   </div>
                </div>
+               <div class="row" style="background-color:#eee;">
+                  <div class="col-md-6">
+                     <div class="form-group">
+                        <label>Fecha Liquidación:</label>
+                        <div class="input-group">
+                           <input 
+                              type="text" 
+                              class= "fecha" 
+                              name="fecha_liquidacion" 
+                              placeholder="dd/mm/yyyy">
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-md-6">
+                     <div class="form-group">
+                        <label>Nro de Liquidacion</label>
+                        <input 
+                           type="text" 
+                           class="number"
+                           name="nro_liquidacion" 
+                           required="required" 
+                           step="0.001"
+                           />
+                     </div>
+                  </div>
+               </div>    
+
             </div>
             <div class="modal-footer">
                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
@@ -623,83 +670,73 @@
       </div>
    </div>
 </form>
-
+<!-- /Modal -->
 <script>
-   /**
-   * Maneja los totales de la liquidacion en los formularios
-   */
-   
-   var fodinfa =  parseFloat({{ order_taxes.sums.fodinfa | number_format(3,'.','') }});
-   var ice_advalorem = parseFloat({{ order_taxes.sums.ice_advalorem | number_format(3,'.','') }});
-   var arancel_advalorem = parseFloat({{ order_taxes.sums.arancel_advalorem }})
-   var arancel_especifico = parseFloat({{ order_taxes.sums.arancel_especifico }})
-   var ice_especifico = parseFloat({{ order_taxes.sums.ice_especifico | number_format(3,'.','') }});
-   var iva = parseFloat({{ order_taxes.sums.iva | number_format(3,'.','') }});
-   var total_liquidacion = parseFloat( {{ (order_taxes.sums.ice_especifico + order_taxes.sums.ice_advalorem + order_taxes.sums.fodinfa + order_taxes.sums.iva)  | number_format(3,'.','')}} );
-   var total_diferencias = 0.0;
-   
-   $('#fodinfa_pagado').keyup(function(){
-       var new_fodinfa = parseFloat($('#fodinfa_pagado').val());
-       var diferencia = Math.round((fodinfa - new_fodinfa) * 1000) / 1000;
-       $('#diferencia_fodinfa').val(diferencia);
-       actualizarTotales();
-   });
-   
-   $('#ice_advalorem_pagado').keyup(function(){
-       var new_advalorem = parseFloat($('#ice_advalorem_pagado').val());
-       var diferencia = Math.round((ice_advalorem - new_advalorem) * 1000) / 1000;
-       $('#direferencia_ice_advalorem').val(diferencia);
-       actualizarTotales();
-   });
-   
+  $('#arancel_advalorem_pagar_pagado').keyup(function(){
+    var val_inicial = {{ order_taxes.sums.arancel_advalorem_pagar | number_format (3, '.','') }};
+    actualizarImpuesto('arancel_advalorem_pagar_pagado', val_inicial );
+  });
+
+  $('#arancel_especifico_pagar_pagado').keyup(function(){
+    var val_inicial = {{ order_taxes.sums.arancel_especifico_pagar | number_format (3, '.','') }};
+    actualizarImpuesto('arancel_especifico_pagar_pagado', val_inicial );
+  });
+
+    $('#fodinfa_pagado').keyup(function(){
+    var val_inicial = {{ order_taxes.sums.fodinfa | number_format (3, '.','') }};
+    actualizarImpuesto('fodinfa_pagado', val_inicial );
+  });
+
    $('#ice_especifico_pagado').keyup(function(){
-       var new_ice_especifico_pagado = parseFloat($('#ice_especifico_pagado').val());
-       var diferencia = Math.round((ice_especifico - new_ice_especifico_pagado) * 1000) / 1000;
-       $('#direferencia_especifico').val(diferencia);
-       actualizarTotales();
-   });
-   
-   $('#arancel_especifico_pagado').keyup(function(){
-       var new_arancel_especifico_pagado = parseFloat($('#arancel_especifico_pagado').val());
-       var diferencia = Math.round((arancel_especifico - new_arancel_especifico_pagado) * 1000) / 1000;
-       $('#diferencia_arancel_especifico').val(diferencia);
-       actualizarTotales();
-   });
-   
-   $('#arancel_advalorem_pagado').keyup(function(){
-       var new_arancel_advalorem_pagado = parseFloat($('#arancel_advalorem_pagado').val());
-       var diferencia = Math.round((arancel_advalorem - new_arancel_advalorem_pagado) * 1000) / 1000;
-       $('#diferencia_arancel_advalorem').val(diferencia);
-       actualizarTotales();
-   });
-   
-   $('#iva_pagado').keyup(function(){
-       var new_iva_pagado = parseFloat($('#iva_pagado').val());
-       var diferencia = Math.round((iva - new_iva_pagado) * 1000) / 1000;
-       $('#direferencia_iva').val(diferencia);
-       actualizarTotales();
-   });
-   
-   /**
-   * Actualiza los totales del formulario
-   */
-   function actualizarTotales(){
-   
-       total_diferencias = (
-           parseFloat($('#diferencia_fodinfa').val()) + 
-           parseFloat($('#direferencia_ice_advalorem').val()) + 
-           parseFloat($('#direferencia_especifico').val()) + 
-           parseFloat($('#direferencia_iva').val()) +
-           parseFloat($('#diferencia_arancel_advalorem').val()) +
-           parseFloat($('#diferencia_arancel_especifico').val())
-           )
-       
-       $('#autoliquidacion').val( 
-           Math.round((total_liquidacion - total_diferencias) * 1000) / 1000
-           );
-   
-       $('#total_diferencias').val(total_diferencias);
+    var val_inicial = {{ order_taxes.sums.ice_especifico | number_format (3, '.','') }};
+    actualizarImpuesto('ice_especifico_pagado', val_inicial );
+  });
+
+  $('#ice_advalorem_pagado').keyup(function(){
+    var val_inicial = {{ order_taxes.sums.ice_advalorem | number_format (3, '.','') }};
+    console.dir(val_inicial);
+    actualizarImpuesto('ice_advalorem_pagado', val_inicial );
+  });
+
+  $('#iva_pagado').keyup(function(){
+    var val_inicial = {{ order_taxes.sums.iva | number_format (3, '.','') }};
+    actualizarImpuesto('iva_pagado', val_inicial );
+  });
+
+  function actualizarImpuesto(id_input, old_value){
+  var value =  old_value - $('#'+ id_input).val() ;
+  value =  Math.round(value * 1000)/ 1000;
+  $('#' + 'diferencia_' + id_input).val(value);
+  actualizarTotales();
+  }
+
+  function actualizarTotales(){
+      var total_liquidacion =  {{ (
+                        order_taxes.sums.iva_total - (order_taxes.sums.iva_total - order_taxes.sums.iva) 
+                        + order_taxes.sums.ice_advalorem 
+                        + order_taxes.sums.ice_especifico 
+                        + order_taxes.sums.fodinfa
+                        + order_taxes.sums.arancel_advalorem_pagar 
+                        + order_taxes.sums.arancel_especifico_pagar
+                        ) | number_format(3,'.','') 
+                        }};
+
+      var total_pagar = (
+          parseFloat($('#arancel_advalorem_pagar_pagado').val() )+
+          parseFloat($('#arancel_especifico_pagar_pagado').val() )+
+          parseFloat($('#fodinfa_pagado').val() )+
+          parseFloat($('#ice_especifico_pagado').val() )+
+          parseFloat($('#ice_advalorem_pagado').val() )+
+          parseFloat($('#iva_pagado').val())
+          );
+
+      console.dir(total_pagar);
+
+      $('#autoliquidacion').val(total_pagar);
+      $('#total_diferencias').val(parseFloat(total_liquidacion - total_pagar));
    }
+
+
 </script>
 <script>
    /**

@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+require_once 'lib/ReportCompleteOrder.php';
+
 /**
  * Controller encargado de manejar los items de las facturas informativas
  *
@@ -26,6 +28,7 @@ class Facinfdetalle extends MY_Controller
     private $modelUser;
     private $modelLog;
     private $modelParcial;
+    private $modelOrderReport;
 
     public function __construct()
     {
@@ -51,6 +54,8 @@ class Facinfdetalle extends MY_Controller
         $this->load->model('modelorderinvoice');
         $this->load->model('modelorderinvoicedetail');
         $this->load->model('modelparcial');
+        $this->load->model('ModelOrderReport');
+        $this->modelOrderReport = new ModelOrderReport();
         $this->modelOrder = new Modelorder();
         $this->modelInfoInvoice = new Modelinfoinvoice();
         $this->modelSupplier = new Modelsupplier();
@@ -193,12 +198,14 @@ class Facinfdetalle extends MY_Controller
     public function eliminar($idInfoInvoiceDetail)
     {
         $infoInvoiceDetail = $this->modelInfoInvoiceDetail->get($idInfoInvoiceDetail);
+        
         if($infoInvoiceDetail == false){
             $this->modelLog->errorLog('El registro que intenta eliminar no existe ' . current_url());            
             return($this->index());
         }
         
         if($this->modelInfoInvoiceDetail->delete($idInfoInvoiceDetail)){
+            $this->calcAndUpdateGO($infoInvoiceDetail['id_factura_informativa']);
             $this->redirectPage('infoInvoiceShow', $infoInvoiceDetail['id_factura_informativa']);
         }else{
             print 'No se puede comunicar con la Base de Datos';
@@ -234,6 +241,8 @@ class Facinfdetalle extends MY_Controller
              $this->modelLog->errorLog('No se puede anadir un item en la factura' . current_url());
             }             
         }
+        
+        $this->calcAndUpdateGO($idInfoInvoice);
         return($this->redirectPage('infoInvoiceShow', $infoInvoice['id_factura_informativa']));
     }
     
@@ -253,11 +262,110 @@ class Facinfdetalle extends MY_Controller
         $infoInvoiceDetail['last_update'] = date('Y-m-d H:m:s');
         $infoInvoiceDetail['id_user'] = $this->session->userdata('id_user');
         if($this->modelInfoInvoiceDetail->update($infoInvoiceDetail)){
+            
            $this->modelLog->susessLog('Detalle Factura Informativa Actualizada ' .  current_url());
+           $this->calcAndUpdateGO($infoInvoiceDetail['id_factura_informativa']);
            return($this->redirectPage('infoInvoiceShow', $infoInvoiceDetail['id_factura_informativa']));
         }else{
            $this->modelLog->errorLog('No se puede actualizar detalle factura infromativa ' . current_url());
            print 'Error con la base de datos';
+        }
+    }
+    
+    
+    /**
+     * Actualiza el costo de los gastos en origen para un parcial
+     * Solo funciona para una sola factura informativa
+     * @param int $id_parcial
+     */
+    private function calcAndUpdateGO(int $id_info_invoice){
+        
+        $params = [
+            'val_parcial' => 0.0,
+            'val_total' => 0.0,
+            'origin_expenses' => 0.0,
+            'parcial_percent' => 0.0,
+            'parcial_origen_expenses' => 0.0,
+            'money' => '',
+        ];
+        
+        $info_invoice = $this->modelInfoInvoice->get($id_info_invoice);
+        $parcial = $this->modelParcial->get($info_invoice['id_parcial']);
+        $order = $this->modelOrder->get($parcial['nro_pedido']);
+        $order_data = $this->modelOrderReport->getOrderData($order);
+        
+        $partials = $order_data['partials'];
+        $current_parcial = [];
+        
+        foreach ($partials as $idx => $par){
+            if ($par['id_parcial'] == $parcial['id_parcial']){
+                $current_parcial = $par;
+            }
+        }
+        
+        
+        foreach ($current_parcial['info_invoices'] as $idx => $invoice){
+            if($invoice['detalle_factura']){
+                foreach ($invoice['detalle_factura'] as $k => $v){
+                    $params['val_parcial'] += (
+                        $v['nro_cajas'] *
+                        $this->modelOrderInvoiceDetail->getPriceProduct(
+                            $v['detalle_pedido_factura']
+                            )
+                        );
+                }
+            }
+        }
+                    
+        foreach ($order_data['order_invoices'] as $idx => $invoice ){
+            if($invoice['detail']){
+                foreach ($invoice['detail'] as $k => $v){
+                    $params['val_total'] += ($v['costo_caja'] * $v['nro_cajas']);
+                    
+                }
+                    $params['origin_expenses'] += $invoice['gasto_origen'];
+                    $params['money'] = $invoice['moneda'];
+            }
+        }
+        
+        #cuando se sepa como hacer esta liquidacion en moneda extrangera
+        # buscar la forma de implementarlo aqui.
+        if($order['incoterm'] == 'EXW' || $order['incoterm'] == 'FCA')
+        {
+            foreach ($order_data['init_expenses'] as $idx => $exp){
+                if($exp['concepto'] == 'GASTO ORIGEN'){
+                    $params['origin_expenses'] = $exp['valor_provisionado'];
+                    break;
+                }
+            }
+        }
+        
+        
+        $params['parcial_percent'] = (
+                                        $params['val_parcial'] 
+                                        / $params['val_total']
+                );
+        
+        $params['parcial_origen_expenses'] = (
+                $params['parcial_percent'] 
+                * $params['origin_expenses']
+            );
+        
+        if (count($current_parcial['info_invoices']) == 1){
+                $current_info_invoice = $current_parcial['info_invoices'][0]; 
+                $current_info_invoice['gasto_origen'] = $params['parcial_origen_expenses'];
+                $current_info_invoice['valor'] = $params['val_parcial'];
+                $current_info_invoice['moneda'] = $params['money'];
+                unset($current_info_invoice['detalle_factura']);
+                $this->modelInfoInvoice->update($current_info_invoice);
+                return true;
+        }else{
+            $this->modelLog->errorLog(
+                'Los parciales no deben tener mas de una factura informativa',
+                current_url()
+                );
+            print 'Los pariciales al momento solo pueden tener una sola FI';
+            exit();
         }
     }
     

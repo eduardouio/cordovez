@@ -1,50 +1,23 @@
 <div class="row">
 	<div class="col-md-3">
-		{% if saldoFactura > 0 %}
-		    &nbsp;
-    <small class="text-danger"> <span class="fa fa-warning"></span> Completar El Detalle De La Factura
-    </small>
-    <br>
-    <br>
-		<a
-			href="{{ rute_url }}facinfdetalle/nuevo/{{ infoInvoice.id_factura_informativa }}"
-			class="btn btn-default btn-sm"> <span class="fa fa-file"></span>
-			Agregar Detalle
-		</a> 			
-		{% endif %}
-		{% if saldoFactura < 0 %}
-		<h4 class="text-danger" ><span class="fa fa-warning"></span> Factura Inválida, VALORES EXCEDIDOS</h4>  
-		{% endif %}
-		{% if saldoFactura == 0 %}
-		<h4 class="text-succes" ><span class="fa fa-check"></span> Factura Completa</h4>  
-		{% endif %}
-		<br>
-		<br>
+	<a href="{{ rute_url }}facinfdetalle/nuevo/{{ infoInvoice.id_factura_informativa }}" class="btn btn-sm btn-primary">
+	<span class="fa fa-cube"></span>
+	Agrerar Producto
+	</a>
 	</div>
 	<div class="col-md-3 text-right">
 		<h4 class="text-primary">
-			<small>Val Factura: {{moneda | raw}}</small> <span> {{ infoInvoice.valor | number_format(2,',','.')}}</span>
+			<small>Val Factura: {{ moneda | raw }}</small> <span> {{ infoInvoice.valor | number_format(3,',','.')}}</span>
 		</h4>
 	</div>
 	<div class="col-md-3 text-right">
 		<h4 class="text-success">
-			<small>Val Justificado: {{ moneda | raw }}</small> <span> {{ valor_justificado | number_format(2,',','.') }}</span>
+			<small>Gasto Origen: {{ moneda_origin_expenses | raw }}</small> <span> {{ infoInvoice.gasto_origen | number_format(3,',','.') }}</span>
 		</h4>
 	</div>
 	<div class="col-md-3 text-right">
-		<h4 
-		{% if saldoFactura > 0 %}
-			class="text-success"
-		{% endif %}
-		{% if saldoFactura < 0 %}
-			class ="text-danger"
-		{% endif %}
-		{% if saldoFactura == 0 %}
-		class ="text-success"
-		{% endif %}
-		class="text-defult"
-		>
-			<small>Val Pendiente: {{ moneda | raw }}</small> <span> {{ saldoFactura | number_format(2,',','.') }}</span>
+		<h4 class="text-defult" >
+			<small>FOB: {{ moneda | raw }}</small> <span> {{ (infoInvoice.valor + infoInvoice.gasto_origen) | number_format(3,',','.') }}</span>
 		</h4>
 	</div>
 </div>
@@ -142,6 +115,30 @@
             <td class="text-right">--</td>
             <td class="text-right">{{totalValue | number_format(2,',','.')}}</td>
             <td class="text-right"></td>
+          </tr>
+          <tr class="text-right">
+          <td colspan="9">Valor Producto {{ moneda | raw }}</td>
+          <td>{{totalValue | number_format(3,',','.')}}</td>
+          </tr>
+          <tr class="text-right">
+          <td colspan="9">Gasto Origen {{ moneda_origin_expenses | raw }}</td>
+          <td> {{ infoInvoice.gasto_origen | number_format(3,',','.')}}</td>
+          </tr>
+          <tr class="text-right">
+          <td colspan="9">FOB {{ moneda | raw }}</td>
+          <td>{{ (infoInvoice.valor + infoInvoice.gasto_origen) | number_format(3,',','.') }} </td>
+          </tr>
+          <tr class="text-right">
+          <td colspan="9">Flete {{ moneda | raw }}</td>
+          <td>{{ infoInvoice.flete_aduana }}</td>
+          </tr>
+          <tr class="text-right">
+          <td colspan="9">Seguro {{ moneda | raw }}</td>
+          <td>{{ infoInvoice.seguro_aduana }}</td>
+          </tr>
+          <tr class="text-right">
+          <td colspan="9">CIF {{ moneda | raw }}</td>
+          <td>{{ (infoInvoice.flete_aduana  + infoInvoice.seguro_aduana + infoInvoice.valor + infoInvoice.gasto_origen) | number_format(3,',','.') }} </td>
           </tr>
 			</tbody>
 		</table>

@@ -58,6 +58,14 @@ class Modelorderinvoicedetail extends CI_Model
     
     
     /**
+     * Retorna el precio para un producto de la lista
+     */
+    public function getPriceProduct(int $id_order_invoice_detail): float{
+        $product = $this->get($id_order_invoice_detail);
+        return floatval($product['costo_caja']);
+    }
+    
+    /**
      * registra el detalle de una factura
      * @param array $orderInvoiceDetail
      * @return int | boolean

@@ -1,14 +1,14 @@
-{% set valor_justificado = 0 %}
-{%  for detail in infoInvoice.details %}
-	{% set valor_justificado = valor_justificado + ((detail.oderDetail.costo_caja)*(detail.nro_cajas)) %}
-{% endfor %}
-
-{% set saldoFactura = (infoInvoice.valor - valor_justificado) | number_format(2) %}
 {% set moneda = '&euro;' %}
+{% set moneda_origin_expenses = '&euro;' %}
+
 {% if infoInvoice.moneda == 'DOLARES' %}
-{% set moneda = '$' %}
+    {% set moneda = '$' %}
+    {% set moneda_origin_expenses = '$' %}
 {% endif %}
 
+{% if order.incoterm == 'EXW' or  order.incoterm == 'FCA' %}
+	{% set moneda_origin_expenses = '$' %}	
+{% endif %}
 <div class="well well-sm">
 	<div class="row">
 		<div class="col-md-3">
@@ -31,7 +31,7 @@
 	</div>
 	<div class="row">
 		<div class="col-md-2">
-			<strong>Valor {{moneda | raw}}:</strong> <span class="text-primary">{{ infoInvoice.valor | number_format(2,',','.')}}</span>
+			<strong>Valor {{ moneda | raw }}:</strong> <span class="text-primary">{{ infoInvoice.valor | number_format(2,',','.')}}</span>
 		</div>
 		<div class="col-md-2">
 			<strong>Moneda </strong> <span class="text-success"> {{ moneda | raw }}
@@ -39,7 +39,7 @@
 			</span>
 		</div>
 		<div class="col-md-2">
-			<strong>Tipo de Cambio:</strong> <span class="text-danger"> $
+			<strong>Tipo de Cambio:</strong> <span class="text-danger">
 				{{ infoInvoice.tipo_cambio | number_format(2,',','.') }}
 			</span>
 		</div>

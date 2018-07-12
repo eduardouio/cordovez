@@ -1,23 +1,20 @@
-{% set saldoEuros  =  (sumsValues.valInvoicesEuros  - sumsValues.infoInvoicesEuros) %}
-{% set saldoDolares  =  (sumsValues.valInvoicesDollars  - sumsValues.infoInvoicesDollars) %}
-{% set fob = (sumsValues.valInvoices) %}
-{% set cif = (fob + sumsValues.valSecureExpense  + sumsValues.valShipExpnese)  %}
-{% set nacionalizado = 0 %}
-{% if order.regimen == 70  %}
-	{% set nacionalizado = sumsValues.infoInvoices  %}
-{% endif %}
+{% set money = '$' %}
+{% if haveEuros == true %}
+	{% set money = '&euro' %}
+{%  endif %}
+
 <div class="well well-sm">
    <div class="row">
       <div class="col-sm-3">
          <strong>FOB Disponible:</strong>
          <strong class="text-primary">
-         $ {{fob | number_format(2,',','.')}}
+         {{ money | raw }} {{stock_order.global.current | number_format(2,',','.')}}
          </strong>  
       </div>
       <div class="col-sm-2">
          <strong>Parciales Anteriores:</strong>
          <span class="text-primary">
-         <strong>{{ olderPartials | number_format(0) }}</strong>
+         <strong>{{ parciales_anteriores | number_format(0) }}</strong>
       </div>
       <div class="col-sm-2">
          <strong>
@@ -57,7 +54,7 @@
          </span>
       </div>
       <div class="col-sm-2">
-         <strong>C Origen:</strong> 
+         <strong>Puerto:</strong> 
          <span class="text-primary">
          {{ order.ciudad_origen  }}            
          </span>
@@ -76,37 +73,18 @@
    </div>
 </div>
 <br>
-<div class="row">
-   <div class="col-sm-3">
-      &nbsp;
-   </div>
-   <div class="col-sm-3">
-      <h4 class="text-primary">
-         <small>Saldo en $:</small>
-         <span id="saldo_dolares">
-            {{ saldoDolares | number_format(2, '.', ',') }}
-         </span>
-      </h4>
-   </div>
-   <div class="col-sm-3">
-      <h4 class="text-primary">
-         <small>Saldo En &euro;:</small>
-         <span id="saldo_euros"> 
-            {{ (saldoEuros) | number_format(2, '.', ',')}}
-         </span>
-      </h4>
-   </div>
-   <div class="col-sm-3">
-      <a href="{{rute_url}}pedido/presentar/{{order.nro_pedido}}" class="btn btn-sm btn-warning">
-         <span class="fa fa-arrow-left fa-fw"></span>
-         Cancelar y Volver al Parcial<b>[{{parcial.id_parcial}}]</b>
-         </a>
-   </div>
-</div>
-<br>
 <form method="post" action="{{rute_url}}facinformativa/validar/">
+	{% if edit_invoice == true %}
+		<input type="hidden" name="id_factura_informativa"  value="{{ info_invoice.id_factura_informativa }}">	
+	{% endif %}
 	<input type="hidden" name="id_parcial"  value="{{ parcial.id_parcial }}">
-	<input type="hidden" name="nro_pedido" value="{{ order.nro_pedido }}" />
+	{% if haveEuros == false %}
+      		<input type="hidden" name="moneda" value="DOLARES">
+      		<input type="hidden" name="tipo_cambio" value="1">      		
+    {% else %}
+    		<input type="hidden" name="moneda" value="EUROS">
+      		<input type="hidden" name="tipo_cambio" value="{{ haveEuros.tipo_cambio }}">
+	{% endif %}
    <div class="row">
       <div class="col-md-1">
          <div class="form-group">
@@ -141,7 +119,7 @@
                class="form-control" 
                autofocus="autofocus" 
                required="required" 
-               value="{{ infoInvoice.nro_factura_informativa }}" 
+               value="{{ info_invoice.nro_factura_informativa }}" 
                >
          </div>
       </div>
@@ -155,10 +133,10 @@
                   id="fecha_emision" 
                   required="required" 
                   name="fecha_emision" 
-                  {% if infoInvoice.fecha_emision == null %}
+                  {% if info_invoice.fecha_emision == null %}
                      value="" 
                      {% else %}
-                        value="{{ infoInvoice.fecha_emision | date('m-d-Y') }}" 
+                        value="{{ info_invoice.fecha_emision | date('d-m-Y') }}" 
                   {% endif %}
                   >
                <div class="input-group-addon">
@@ -167,39 +145,6 @@
             </div>
          </div>
       </div>
-            {% if haveEuros.euros == true %}
-      <div class="col-md-2">
-                 <div class="form-group">
-            <label>Moneda</label>
-            <select
-               name="moneda"
-               id="moneda"
-               required = "required"
-               class="form-control"
-               >
-               <option value="EUROS">EUROS</option>
-               <option value="DOLARES">DOLARES</option>
-            </select>
-         </div>
-      </div>
-      <div class="col-md-2">
-      	         <div class="form-group">
-            <label>Tipo De Cambio</label>
-            <input 
-               class="form-control" 
-               type="number"
-               step="0.000000000001"
-               name="tipo_cambio"
-               id="tipo_cambio"
-               value="{{haveEuros.tipo_cambio}}" 
-               required="required" 
-               >
-         </div>
-      </div>
-           {% else %}
-      <input type="hidden" name="moneda" value="DOLARES">
-      <input type="hidden" name="tipo_cambio" value="1">
-      {% endif %}
        <div class="col-md-2">
          <div class="form-group">
             <label>Nro Referendo</label>
@@ -210,15 +155,82 @@
                placeholder="000-0000-00-000000"
                class="form-control" 
                maxlength="20" 
-               value="{{infoInvoice.nro_refrendo}}" 
+               value="{{info_invoice.nro_refrendo}}" 
+               >
+         </div>
+      </div>      
+      <div class="col-md-2">
+         <div class="form-group">
+            <label>Gasto Origen
+         	{% if haveEuros == false %}
+           		(USD)
+       	    {% else %}
+           		(EUROS)
+       	    {% endif %}
+            </label>
+            <input 
+               type="text" 
+               name = "gasto_origen"
+               id = "gasto_origen"
+               placeholder="Gasto Origen"
+               class="form-control" 
+               step=" 0.001" 
+               value="{{ info_invoice.gasto_origen }}"
+               {% if create_invoice == true %}
+                disabled="disabled"
+               {% endif %}
                >
          </div>
       </div>
    </div>
    <div class="row">
-      <div class="col-md-12">
+   <div class="col-md-2">
+   	<div class="form-group">
+   	<label for="">
+   	Flete Aduana
+   	{% if haveEuros == false %}
+   		(USD)
+   	{% else %}
+   		(EUROS)
+   	{% endif %}
+   	</label>
+   	<input 
+   		type="number" 
+   		class="form-control" 
+   		step="0.001" 
+   		required="required" 
+   		name="flete_aduana"
+   		id="flete_aduana"
+   		value="{{ info_invoice.flete_aduana }}"
+   		/>
+   	</div>
+   </div>
+   <div class="col-md-2">
+   	<div class="form-group">
+   	<label for="">
+   	Seguro Aduana
+   	{% if haveEuros == false %}
+   		(USD)
+   	{% else %}
+   		(EUROS)
+   	{% endif %}
+   	</label>
+   	<input 
+   		type="number" 
+   		class="form-control"
+   		name="seguro_aduana"
+   		id="seguro_aduana"
+   		step="0.001"
+   		required="required" 
+   		value="{{ info_invoice.seguro_aduana }}"
+   	/>
+   	</div>
+   </div>
+   </div>
          <hr>
-         <button type="submit" class="btn btn-sm btn-default" >
+   <div class="row">
+      <div class="col-md-10">
+         <button type="submit" class="btn btn-sm btn-primary" >
          <span class="fa fa-save fa-fw"></span>
          Guardar Registro
          </button>
@@ -227,33 +239,15 @@
          Volver al Pedido <b>[{{order.nro_pedido}}]</b>
          </a>
       </div>
+      <div class="col-md-2 text-right">
+      <a href="{{rute_url}}pedido/presentar/{{order.nro_pedido}}" class="btn btn-sm btn-warning">
+         <span class="fa fa-list-ol"></span>
+         Volver al Parcial
+         </a>
+      </div>
    </div>
 </form>
-<script type="text/javascript">   
-   $('#moneda').change(function(){
-     if($(this).val() === 'EUROS'){
-       $('#tipo_cambio').removeAttr('readonly');
-     }else{
-       $('#tipo_cambio').attr('readonly', true);
-       $('#tipo_cambio').val(1);
-     }
-     $('#total').val($('#valor').val() * $('#tipo_cambio').val());  
-   });
-   
-   $('#valor').keyup(function(){
-     $('#total').val($('#valor').val() * $('#tipo_cambio').val());  
-   })
 
-   $('#tipo_cambio').keyup(function(){
-     $('#total').val($('#valor').val() * $('#tipo_cambio').val());   
-   });
-
-   //tranformamos a mayusculas los comentarios
-   $('#comentarios').keyup(function() {
-   this.value = this.value.toUpperCase();
-});
-</script>
-
-  <script type="text/javascript">
+<script type="text/javascript">
        $('#nro_refrendo').mask('999-9999-99-99999999');
-   </script>
+</script> 

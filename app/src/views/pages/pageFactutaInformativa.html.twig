@@ -28,7 +28,6 @@
 				<span class="fa fa-eye"></span> &nbsp;Ver Registro {{idInfoInvoice}}
 			</a>
 		{% endif %}
-		
 			<!-- Si se elimina una factura informativa vuelve al pedido  -->
 			{% if deleted == true %} 
 						<a href="{{rute_url}}facinformativa/presentar/{{ id_row }}">
@@ -46,12 +45,8 @@
 	{% include 'sections/mostrar-factura-informativa.html.twig' %}
 {% endif %}
 
-{% if create_invoice == true %}
+{% if frm_invoice == true %}
 	{% include 'forms/frm-factura-informativa.html.twig' %}  
-{% endif %}
-
-{% if edit_invoice == true %}
-	{% include 'forms/frm-factura-informativa-edit.html.twig' %}    
 {% endif %}
 
 {% include 'base/content_close.html.twig' %}

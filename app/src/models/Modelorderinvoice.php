@@ -207,6 +207,9 @@ class Modelorderinvoice extends CI_Model
         if (is_array($orderInvoices)){
             foreach ($orderInvoices as $item => $invoice){
                 if($invoice['moneda'] == 'EUROS'){
+                    $this->modelLog->generalLog(
+                        'Pedido en moneda Nacional'
+                        );
                     return true;
                 }
             }

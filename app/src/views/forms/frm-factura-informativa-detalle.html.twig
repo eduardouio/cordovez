@@ -29,6 +29,7 @@
             <th>Producto</th>
             <th>Gr. Alc.</th>
             <th>Nro Cajas</th>
+            <th>Botellas</th>
             <th>Costo</th>
             <th>Agregar</th>
             <th>Nro Cajas</th>
@@ -42,6 +43,7 @@
             <td>{{product.producto}}</td>
             <td class="text-right">{{product.grado_alcoholico}}</td>
             <td class="text-right">{{product.stock}}</td>
+            <td class="text-right">{{ product.stock * product.cantidad_x_caja}}</td>
             <td class="text-right"
               id="costo_caja_{{product.detalle_pedido_factura}}">{{product.costo_caja | number_format(3,".",",")}}</td>
             <td class="pull-right">
@@ -78,62 +80,29 @@
     </div>
   </div>
 <div class="row">
-<div class="col-md-9"></div>
-    <div class="col-md-3 text-right">
-            <button type="submit" class="btn btn-sm btn-default">
-      <span class="fa fa-plus"></span> Agregar Seleccionados
+    <div class="col-md-10">
+       <button type="submit" class="btn btn-sm btn-primary">
+	      <span class="fa fa-save"></span> Agregar Seleccionados
       </button>
+      &nbsp;
+      &nbsp;
+      <a
+        href="{{rute_url}}facinformativa/presentar/{{infoInvoice.id_factura_informativa}}"
+        class="btn btn-sm btn-default"> <span class="fa fa-cubes"></span>
+      Volver a Factura Informativa
+      </a>
     </div>
-
-</div>
-<br>
-  <div class="row">
-    <div class="col-md-6">&nbsp;</div>
+    
     <div class="col-md-2 text-right">
       <div class="form-group">
         <label> Valor Total</label> <input type="number" id="valor_total"
           disabled="" class="text-right"
           style="color: #a94442; font-weight: bold;">
       </div>
-    </div>
-    <div class="col-md-2 text-right">
-      <div class="form-group">
-        <label> Valor M&aacute;ximo</label> <input type="number"
-          id="valor_maximo" disabled="" class="text-right"
-          style="color: #a94442; font-weight: bold;"
-          value="{{infoInvoice.valor}}">
-      </div>
-    </div>
-    <div class="col-md-2 text-right">
-      <div class="form-group">
-        <label> Diferencia</label> <input type="number"
-          id="valor_diferencia" disabled="" class="text-right"
-          style="color: #a94442; font-weight: bold;">
-      </div>
-    </div>
   </div>
-      <div class="row">
-    <div class="col-md-4">
-      <a
-        href="{{rute_url}}facinformativa/presentar/{{infoInvoice.id_factura_informativa}}"
-        class="btn btn-sm btn-default"> <span class="fa fa-cubes"></span>
-      Volver a Factura Informativa [{{order.nro_pedido}}]
-      </a>
-    </div>
   </div>
 </form>
 <script type="text/javascript">
-  function calDiferencia(){	
-  	var a = parseFloat($('#valor_total').val());
-  	var b = {{ infoInvoice.valor}};
-  	$('#valor_diferencia').val(b-a);
-  
-  	if((b-a) > b){
-  		alert('El valor de la factura ha sido excedido');
-  	}
-  }
-
-
   	/**
   	* anade un nuevo item value para calcular el total
   	* si existe lo reemplaza
@@ -161,9 +130,7 @@
   	  	valueTotal = (Math.round(valueTotal * 100))/100
   		$('#valor_total').val(valueTotal);
   }
-  
-
-
+  	  
 </script>
 <script type="text/javascript">
   var maxValueInfoInvoice = parseFloat({{ infoInvoice.valor | number_format('4','.') }});
@@ -190,8 +157,7 @@
   	}
   });
  
-  	$('#nro_cajas_{{product.detalle_pedido_factura}}').change(function(){
-  	  	
+  	$('#nro_cajas_{{product.detalle_pedido_factura}}').change(function(){  	  	
   		if( this.value < 0){
   			alert('INGRESE UN VALOR MAYOR A CERO')
   			this.value = 0;	

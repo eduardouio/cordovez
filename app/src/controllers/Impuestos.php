@@ -410,8 +410,8 @@ class Impuestos extends MY_Controller
             'id_parcial' => $_POST['id_parcial'],
             'bg_have_tasa_control' => 0,
             'bg_have_etiquetas_fiscales' => 0,
-            'observaciones' => $_POST['observaciones'],
             'tipo_cambio' => $_POST['tipo_cambio'],
+            'exoneracion_arancel' => $_POST['exoneracion_arancel'],
         ];
         
         if (isset($_POST['bg_have_etiquetas_fiscales']) && 
@@ -427,8 +427,7 @@ class Impuestos extends MY_Controller
         }
         
        $this->modelParcial->update($paramsParcial);
-       
-        
+           
         return ($this->redirectPage('showTaxesParcial', $_POST['id_parcial']));
     }
     
@@ -462,11 +461,10 @@ class Impuestos extends MY_Controller
             $order['exoneracion_arancel'] = 100;
         }
         
-        if ($this->modelOrder->update($_POST)){
+        if ($this->modelOrder->update($order)){
             $this->modelLog->susessLog(
                 'Se ha actualizado correctamente los parameros de impuestos'
                 );
-            
             return $this->redirectPage('showTaxesOrder', $_POST['nro_pedido']); 
             
         }else{
@@ -485,6 +483,7 @@ class Impuestos extends MY_Controller
         }
         
         $order = $this->input->post();
+        
         $order['have_etiquetas_fiscales'] = 1 ;
         $order['bg_have_tasa_control'] = 1;
         $order['bg_isliquidated'] = 1;
@@ -523,7 +522,8 @@ class Impuestos extends MY_Controller
             );
         $parcial['bg_have_etiquetas_fiscales'] = 1 ;
         $parcial['bg_isliquidated'] = 1;
-        $parcial['bg_have_tasa_control'] = 1;               
+        $parcial['bg_have_tasa_control'] = 1;     
+        
         if($this->modelParcial->update($parcial)){
             return $this->redirectPage(
                 'showTaxesParcialLiquidate', $parcial['id_parcial']

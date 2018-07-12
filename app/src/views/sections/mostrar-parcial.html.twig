@@ -7,18 +7,9 @@
 </ol>
 </div>
 <div class="col-md-7 text-right">
-	<a href="{{rute_url}}gstnacionalizacion/parcial/{{parcial.id_parcial}}" class="btn btn-default btn-sm" >
+	<a href="{{rute_url}}gstnacionalizacion/parcial/{{parcial.id_parcial}}" class="btn btn-sm btn-primary" >
 				<span class="fa fa-gear"></span> Gastos Parcial
-		</a>
-		
-		<a href="{{rute_url}}facturapagos/nuevo/{{order.nro_pedido}}" class="btn btn-default btn-sm">
-				<span class="fa fa-file-o"></span> Justificar Gasto
-		</a>
-	{% if parcial.bg_isliquidated == '0' %}
-		<a href="{{rute_url}}parcial/eliminar/{{parcial.id_parcial}}" class="btn btn-sm btn-danger">
-				<span class="fa fa-trash fa-fw"></span>Eliminar Parcial
-		</a>
-		{% endif %}
+	</a>	
 		</div>
 	</div>
 <!-- Tabs -->
@@ -48,7 +39,7 @@
 <div class="row">
 	<div class="col-md-2">
 		<a href="{{rute_url}}pedido/presentar/{{ order.nro_pedido }}" class="btn btn-default btn-sm">
-			<i class="fa fa-cubes"></i> Volver al Pedido [{{ order.nro_pedido }}]
+			<i class="fa fa-cubes"></i> Volver al Pedido
 		</a>
 	</div>
 </div>

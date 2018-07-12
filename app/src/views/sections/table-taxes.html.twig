@@ -1,7 +1,7 @@
 <div class="row">
    <div class="col-md-4">
       <div class="text-tittle">Par&aacute;metros compatidos por el parcial </div>
-     <table class="table table-condensed table-bordered table-hover">
+      <table class="table table-condensed table-bordered table-hover">
          <thead>
             <tr>
                <th>Concepto</th>
@@ -26,8 +26,12 @@
                <td class="text-right">{{ parcial_taxes.data_general.tipo_cambio_parcial | number_format(6,',','.') }}</td>
             </tr>
             <tr>
+               <td class="text-right brackground-gray"><strong>Gasto Origen</strong></td>
+               <td class="text-right">{{ parcial_taxes.sums.gasto_origen | number_format(3,',','.') }}</td>
+            </tr>
+            <tr>
                <td class="text-right brackground-gray"><strong>FOB</strong></td>
-               <td class="text-right">{{ parcial_taxes.sums.fob | number_format(3,',','.') }}</td>
+               <td class="text-right">{{ (parcial_taxes.sums.fob) | number_format(3,',','.') }}</td>
             </tr>
             <tr>
                <td class="text-right brackground-gray"><strong>Porcentaje</strong></td>
@@ -36,46 +40,46 @@
             <tr>
                <td class="text-right brackground-gray"><strong> Etiquetas Fiscales</strong></td>
                {% if parcial_taxes.data_general.have_etiquetas ==  true %}
-               		<td class="text-right">
-               		<span class="text-success">
-               		<span class="fa fa-check"></span>
-               		Incluido
-               		</span>
-					</td>
+               <td class="text-right">
+                  <span class="text-success">
+                  <span class="fa fa-check"></span>
+                  Incluido
+                  </span>
+               </td>
                {% else %}
                <td class="text-right">
-					<span class="text-danger">
-               		<span class="fa fa-ban"></span>
-               		No Incluido
-               		</span>
-               	</td>
+                  <span class="text-danger">
+                  <span class="fa fa-ban"></span>
+                  No Incluido
+                  </span>
+               </td>
                {% endif %}
             </tr>
             <tr>
                <td class="text-right brackground-gray"><strong> Tasa de Servicio Aduanero</strong></td>
                {% if parcial_taxes.data_general.have_tasa_control == true %}
-               		<td class="text-right">
-               		<span class="text-success">
-               		<span class="fa fa-check"></span>
-               		Incluido
-               		</span>
-               		</td>
+               <td class="text-right">
+                  <span class="text-success">
+                  <span class="fa fa-check"></span>
+                  Incluido
+                  </span>
+               </td>
                {% else %}
                <td class="text-right">
-					<span class="text-danger">
-               		<span class="fa fa-ban"></span>
-               		No Incluido
-               		</span>
-               		</td>
+                  <span class="text-danger">
+                  <span class="fa fa-ban"></span>
+                  No Incluido
+                  </span>
+               </td>
                {% endif %}
             </tr>
             <tr>
-            <td class="text-right brackground-gray"><strong>Base Arancel Específico</strong></td>
-            <td class="text-right">{{ parcial_taxes.data_general.base_arancel_especifico | number_format(2, ',', '.') }}</td>
+               <td class="text-right brackground-gray"><strong>Base Arancel Específico</strong></td>
+               <td class="text-right">{{ parcial_taxes.data_general.base_arancel_especifico | number_format(2, ',', '.') }}</td>
             </tr>
             <tr>
-            <td class="text-right brackground-gray"><strong>Base Advalorem</strong></td>
-            <td class="text-right">{{ parcial_taxes.data_general.base_advalorem | number_format(2, ',', '.') }}</td>
+               <td class="text-right brackground-gray"><strong>Base Advalorem</strong></td>
+               <td class="text-right">{{ parcial_taxes.data_general.base_advalorem | number_format(2, ',', '.') }}</td>
             </tr>
          </tbody>
       </table>
@@ -95,117 +99,197 @@
 </div>
 <div class="row">
    <div class="col-md-12">
-      <div class="table-responsive">
-         <table class="table table-condensed table-bordered table-hover table-striped">
-            <tr>
-               <th>#</th>
-               <th>Producto</th>
-               <th>Cajas</th>
-               <th>Unds</th>
-               <th>Costo Caja </th>
-               <th>Costo Unidad </th>
-               <th>FOB </th>
-               <th>Flete A</th>
-               <th>Seguro A</th>
-               <th>CIF</th>
-               <th>Fodinfa</th>
-               <th>Etiquetas Fiscales</th>
-               <th>Tasa Control</th>
-               <th>Exaduana </th>
-               <th>Exaduana U</th>
-               <th>B Advalorem</th>
-               <th>Presentacion</th>
-               <th>% Alch</th>
-               <th>Arancel Esp U</th>
-               <th>Arancel Adv U</th>
-               <th>ICE Especifico</th>
-               <th>ICE Avalorem</th>
-               <th>Total ICE</th>
-               <th>Prorrateo Pedido</th>
-               <th>Prorrateo Parcial</th>
-               <th>IVA</th>
-            </tr>
-            {% for tax in parcial_taxes['taxes'] %}
-            <tr>
-            <td> {{ loop.index }} </td>
-            <td nowrap>{{ tax.product }}</td>
-            <td class="text-right"> {{ tax.cajas }} </td>
-            <td class="text-right">{{ tax.unidades }}</td>
-            <td class="text-right">{{ tax.costo_caja | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.costo_unidad | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.fob | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.flete_aduana | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.seguro_aduana | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.cif | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.fodinfa | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.etiquetas_fiscales | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.tasa_control | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.ex_aduana | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.ex_aduana_unitario | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.base_advalorem | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.capacidad_ml | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.grado_alcoholico | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.ice_especifico_unitario | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.ice_advalorem_unitario | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.ice_especifico | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.ice_advalorem | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.total_ice | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.prorrateo_pedido | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.prorrateo_parcial | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.iva | number_format(2,',','.') }}</td>
-            </tr>
-            {% endfor %}
-            <tr style="background-color:#2E86C1; color:#fff; font-weight:bold;">
-               <td colspan="2">Sumas:</td>
-               <td class="text-right">{{ parcial_taxes.sums.cajas }}</td>
-               <td class="text-right">{{ parcial_taxes.sums.unidades }}</td>
-               <td class="text-center">--</td>
-               <td class="text-center">--</td>
-               <td class="text-right">{{ parcial_taxes.sums.fob | number_format(2,',','.') }}</td>
-               <td class="text-right">{{ parcial_taxes.sums.flete_aduana | number_format(2,',','.') }}</td>
-               <td class="text-right">{{ parcial_taxes.sums.seguro_aduana | number_format(2,',','.')}}</td>
-               <td class="text-right">{{ parcial_taxes.sums.cif | number_format(2,',','.') }}</td>
-               <td class="text-right">{{ parcial_taxes.sums.fodinfa | number_format(2,',','.') }}</td>
-               <td class="text-right">{{ parcial_taxes.sums.etiquetas_fiscales | number_format(2,',','.') }}</td>
-               <td class="text-right">{{ parcial_taxes.sums.tasa_control | number_format(2,',','.') }}</td>
-               <td class="text-right">{{ parcial_taxes.sums.ex_aduana | number_format(2,',','.') }}</td>
-               <td class="text-center">--</td>
-               <td class="text-center">--</td>
-               <td class="text-center">--</td>
-               <td class="text-center">--</td>
-               <td class="text-center">--</td>
-               <td class="text-center">--</td>
-               <td class="text-right">{{ parcial_taxes.sums.ice_especifico | number_format(2,',','.') }}</td>
-               <td class="text-right">{{ parcial_taxes.sums.ice_advalorem | number_format(2,',','.') }}</td>
-               <td class="text-right">{{ parcial_taxes.sums.total_ice | number_format(2,',','.') }}</td>
-               <td class="text-right">{{ parcial_taxes.sums.prorrateo_pedido | number_format(2,',','.') }}</td>
-               <td class="text-right">{{ parcial_taxes.sums.prorrateo_parcial | number_format(2,',','.') }}</td>
-               <td class="text-right">{{ parcial_taxes.sums.iva | number_format(2,',','.') }}</td>
-            </tr>
-         </table>
-         
-		  <strong class="text-primary">Datos Finales de Liquidación Impuestos:</strong>
-         <div class="well well-sm" style="font-size: 14px;height: 40px;">
-         	<span class="col-md-2">
-            Fodinfa: 
-            <strong>{{ parcial_taxes.sums.fodinfa  | number_format(3,',','.')}}</strong>
-            </span>
-            <span class="col-md-3">
-            ICE Advalorem: 
-            <strong>{{ parcial_taxes.sums.ice_advalorem  | number_format(3,',','.')}}</strong>
-            </span>
-            <span class="col-md-3">
-            ICE Específico: 
-            <strong>{{ parcial_taxes.sums.ice_especifico  | number_format(3,',','.')}}</strong>
-            </span>
-            <span class="col-md-2">
-            IVA: 
-            <strong>{{ parcial_taxes.sums.iva  | number_format(3,',','.')}}</strong>
-            </span>
-            <span class="col-md-2 text-danger">
-            Liquidación: 
-            <strong>{{ (parcial_taxes.sums.ice_especifico + parcial_taxes.sums.ice_advalorem + parcial_taxes.sums.fodinfa + parcial_taxes.sums.iva)  | number_format(3,',','.')}}</strong>
-            </span>
+      <!-- Nav tabs -->
+      <ul class="nav nav-tabs" role="tablist">
+         <li role="presentation" class="active"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab"> <span class="fa fa-money"></span> Resumen de Liquidación</a></li>
+         <li role="presentation"><a href="#home" aria-controls="home" role="tab" data-toggle="tab"> <span class="fa fa-cube"></span> Detalle Impuestos Por Producto</a></li>
+      </ul>
+      <!-- Tab panes -->
+      <div class="tab-content">
+         <div role="tabpanel" class="tab-pane active" id="profile">
+            <table class="table table-striped table-hover table-condensed table-bordered">
+               <tbody>
+                  <tr>
+                     <th>#</th>
+                     <th>Concepto</th>
+                     <th>Tipo</th>
+                     <th>Liquidación Aduana</th>
+                     <th>Valor Liberado</th>
+                     <th>Valor A Pagar</th>
+                  </tr>
+                  <tr class="text-right">
+                     <td>1</td>
+                     <td>ARANCEL ADVALOREM</td>
+                     <td>DERECHO ARANCELARIO</td>
+                     <td>{{ parcial_taxes.sums.arancel_advalorem | number_format(3,'.',',') }}</td>
+                     <td class="text-primary" >{{ parcial_taxes.sums.arancel_advalorem_liberado | number_format(3,'.',',') }}</td>
+                     <td class="text-success" >{{ parcial_taxes.sums.arancel_advalorem_pagar | number_format(3,'.',',') }}</td>
+                  </tr>
+                  <tr class="text-right">
+                     <td>2</td>
+                     <td>ARANCEL ESPECÍFICO</td>
+                     <td>DERECHO ARANCELARIO</td>
+                     <td>{{ parcial_taxes.sums.arancel_especifico | number_format(3,'.',',') }}</td>
+                     <td class="text-primary" >{{ parcial_taxes.sums.arancel_especifico_liberado | number_format(3,'.',',') }}</td>
+                     <td class="text-success" >{{ parcial_taxes.sums.arancel_especifico_pagar | number_format(3,'.',',') }}</td>
+                  </tr>
+                  <tr class="text-right">
+                     <td>3</td>
+                     <td>FODINFA</td>
+                     <td>IMPUESTO</td>
+                     <td>{{ parcial_taxes.sums.fodinfa | number_format(3,'.',',') }}</td>
+                     <td class="text-primary" >0.000</td>
+                     <td class="text-success" >{{ parcial_taxes.sums.fodinfa | number_format(3,'.',',') }}</td>
+                  </tr>
+                  <tr class="text-right">
+                     <td>4</td>
+                     <td>ICE ADVALOREM</td>
+                     <td>IMPUESTO</td>
+                     <td>{{ parcial_taxes.sums.ice_advalorem | number_format(3,'.',',') }}</td>
+                     <td class="text-primary" >0.000</td>
+                     <td class="text-success" >{{ parcial_taxes.sums.ice_advalorem | number_format(3,'.',',') }}</td>
+                  </tr>
+                  <tr class="text-right">
+                     <td>5</td>
+                     <td>ICE ESPECÍFICO</td>
+                     <td>IMPUESTO</td>
+                     <td>{{ parcial_taxes.sums.ice_especifico | number_format(3,'.',',') }}</td>
+                     <td class="text-primary" >0.000</td>
+                     <td class="text-success" >{{ parcial_taxes.sums.ice_especifico | number_format(3,'.',',') }}</td>
+                  </tr>
+                  <tr class="text-right">
+                     <td>6</td>
+                     <td>IVA</td>
+                     <td>IMPUESTO</td>
+                     <td>{{ parcial_taxes.sums.iva_total | number_format(3,'.',',') }}</td>
+                     <td class="text-primary" >{{ (parcial_taxes.sums.iva_total - parcial_taxes.sums.iva) | number_format(2,'.',',') }}</td>
+                     <td class="text-success" >{{ parcial_taxes.sums.iva | number_format(3,'.',',') }}</td>
+                  </tr>
+                  <tr style="background-color:#2E86C1; color:#fff; font-weight:bold;" class="text-right">
+                     <td colspan="3">TOTAL:</td>
+                     <td>
+                        {{ (
+                        parcial_taxes.sums.iva_total 
+                        + parcial_taxes.sums.ice_advalorem 
+                        + parcial_taxes.sums.ice_especifico 
+                        + parcial_taxes.sums.fodinfa
+                        + parcial_taxes.sums.arancel_advalorem 
+                        + parcial_taxes.sums.arancel_especifico
+                        ) | number_format(3,'.',',') 
+                        }}
+                     </td>
+                     <td>         
+                        {{ (   (parcial_taxes.sums.iva_total - parcial_taxes.sums.iva)
+                        + parcial_taxes.sums.arancel_advalorem_liberado
+                        + parcial_taxes.sums.arancel_especifico_liberado
+                        ) | number_format(3,'.',',') 
+                        }}
+                     </td>
+                     <td>
+                        {{ (
+                        parcial_taxes.sums.iva_total - (parcial_taxes.sums.iva_total - parcial_taxes.sums.iva) 
+                        + parcial_taxes.sums.ice_advalorem 
+                        + parcial_taxes.sums.ice_especifico 
+                        + parcial_taxes.sums.fodinfa
+                        + parcial_taxes.sums.arancel_advalorem_pagar 
+                        + parcial_taxes.sums.arancel_especifico_pagar
+                        ) | number_format(3,'.',',') 
+                        }}
+                     </td>
+                  </tr>
+               </tbody>
+            </table>
+         </div>
+         <div role="tabpanel" class="tab-pane" id="home">
+            <div class="table-responsive">
+               <table class="table table-condensed table-bordered table-hover table-striped">
+                  <tr>
+                     <th>#</th>
+                     <th>Producto</th>
+                     <th>Cajas</th>
+                     <th>Unds</th>
+                     <th>Costo Caja </th>
+                     <th>Costo Unidad </th>
+                     <th>FOB </th>
+                     <th>Flete A</th>
+                     <th>Seguro A</th>
+                     <th>CIF</th>
+                     <th>Fodinfa</th>
+                     <th>Etiquetas Fiscales</th>
+                     <th>Tasa Control</th>
+                     <th>Exaduana </th>
+                     <th>Exaduana U</th>
+                     <th>B Advalorem</th>
+                     <th>Presentacion</th>
+                     <th>% Alch</th>
+                     <th>Arancel Esp U</th>
+                     <th>Arancel Adv U</th>
+                     <th>ICE Especifico</th>
+                     <th>ICE Avalorem</th>
+                     <th>Total ICE</th>
+                     <th>Prorrateo Pedido</th>
+                     <th>Prorrateo Parcial</th>
+                     <th>IVA</th>
+                  </tr>
+                  {% for tax in parcial_taxes['taxes'] %}
+                  <tr>
+                     <td> {{ loop.index }} </td>
+                     <td nowrap>{{ tax.product }}</td>
+                     <td class="text-right"> {{ tax.cajas }} </td>
+                     <td class="text-right">{{ tax.unidades }}</td>
+                     <td class="text-right">{{ tax.costo_caja | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ tax.costo_unidad | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ tax.fob | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ tax.flete_aduana | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ tax.seguro_aduana | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ tax.cif | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ tax.fodinfa | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ tax.etiquetas_fiscales | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ tax.tasa_control | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ tax.ex_aduana | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ tax.ex_aduana_unitario | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ tax.base_advalorem | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ tax.capacidad_ml | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ tax.grado_alcoholico | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ tax.ice_especifico_unitario | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ tax.ice_advalorem_unitario | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ tax.ice_especifico | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ tax.ice_advalorem | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ tax.total_ice | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ tax.prorrateo_pedido | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ tax.prorrateo_parcial | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ tax.iva | number_format(2,',','.') }}</td>
+                  </tr>
+                  {% endfor %}
+                  <tr style="background-color:#2E86C1; color:#fff; font-weight:bold;">
+                     <td colspan="2">Sumas:</td>
+                     <td class="text-right">{{ parcial_taxes.sums.cajas }}</td>
+                     <td class="text-right">{{ parcial_taxes.sums.unidades }}</td>
+                     <td class="text-center">--</td>
+                     <td class="text-center">--</td>
+                     <td class="text-right">{{ parcial_taxes.sums.fob | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ parcial_taxes.sums.flete_aduana | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ parcial_taxes.sums.seguro_aduana | number_format(2,',','.')}}</td>
+                     <td class="text-right">{{ parcial_taxes.sums.cif | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ parcial_taxes.sums.fodinfa | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ parcial_taxes.sums.etiquetas_fiscales | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ parcial_taxes.sums.tasa_control | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ parcial_taxes.sums.ex_aduana | number_format(2,',','.') }}</td>
+                     <td class="text-center">--</td>
+                     <td class="text-center">--</td>
+                     <td class="text-center">--</td>
+                     <td class="text-center">--</td>
+                     <td class="text-center">--</td>
+                     <td class="text-center">--</td>
+                     <td class="text-right">{{ parcial_taxes.sums.ice_especifico | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ parcial_taxes.sums.ice_advalorem | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ parcial_taxes.sums.total_ice | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ parcial_taxes.sums.prorrateo_pedido | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ parcial_taxes.sums.prorrateo_parcial | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ parcial_taxes.sums.iva | number_format(2,',','.') }}</td>
+                  </tr>
+               </table>
+            </div>
          </div>
       </div>
    </div>
@@ -229,141 +313,145 @@
 </div>
 <!-- Modal -->
 <form action="{{rute_url}}impuestos/liquidarIvaParcial/" method="post">
-<input type="hidden" name="id_parcial" value="{{ parcial.id_parcial }}">
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-   <div class="modal-dialog" role="document">
-      <div class="modal-content">
-         <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">Valores Cancelados</h4>
-         </div>
-         <div class="modal-body" style="padding:25px;">
+   <input type="hidden" name="id_parcial" value="{{ parcial.id_parcial }}">
+   <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+         <div class="modal-content">
+            <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+               <h4 class="modal-title" id="myModalLabel">Valores Cancelados</h4>
+            </div>
+            <div class="modal-body" style="padding:25px;">
                <div class="row">
                   <div class="col-md-12">
                      <h5 style="text-align: justify;">
-                     <span class="fa fa-warning"></span>
-                     Por favor compruebe que los montos pagados en la liquidación,
-                     si es necesario modifique los valores que no corresponden
+                        <span class="fa fa-warning"></span>
+                        Por favor compruebe que los montos pagados en la liquidación,
+                        si es necesario modifique los valores que no corresponden
                      </h5>
                   </div>
                </div>
                <br />
-               <!--
-                  <div class="row">
+               <div class="row">
                   <div class="col-md-4">
                      <div class="form-group">
                         <label>Arancel Advalorem</label>
                         <input 
-                        type="text" 
-                        name="arancel_advalorem"  
-                        value="{{ parcial_taxes.sums.arancel_advalorem | number_format(3,'.',',')}}" readonly="readonly" 
-                        step="0.001"
-                        />
+                           type="text" 
+                           name="arancel_advalorem_pagar"  
+                           value="{{ parcial_taxes.sums.arancel_advalorem_pagar | number_format(3,'.',',')}}" readonly="readonly" 
+                           step="0.001"
+                           class="number"
+                           />
                      </div>
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
                         <label>Arancel Adv pagado</label>
                         <input 
-                        type="number" 
-                        name="arancel_advalorem_pagado" 
-                        id="arancel_advalorem_pagado"  
-                        value="{{ parcial_taxes.sums.arancel_advalorem | number_format(3,'.','') }}" required="required" 
-                        step="0.001"
-                        />
+                           type="number" 
+                           name="arancel_advalorem_pagar_pagado" 
+                           id="arancel_advalorem_pagar_pagado"  
+                           value="{{ parcial_taxes.sums.arancel_advalorem_pagar | number_format(3,'.','') }}" required="required" 
+                           step="0.001"
+                           class="number"
+                           />
                      </div>
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
                         <label for="">Diferecia Arancel Adv.</label>
                         <input 
-                        type="number" 
-                        step="0.001" 
-                        id="diferencia_arancel_advalorem" 
-                        value="0"  
-                        readonly="readonly"
-                        />
+                           type="number" 
+                           step="0.001" 
+                           id="diferencia_arancel_advalorem_pagar_pagado" 
+                           value="0"  
+                           class="number"
+                           readonly="readonly"
+                           />
                      </div>
                   </div>
                </div>
-                                 <div class="row">
+               <div class="row">
                   <div class="col-md-4">
                      <div class="form-group">
                         <label>Arancel Específico</label>
                         <input 
-                        type="text" 
-                        name="arancel_especifico"  
-                        value="{{ parcial_taxes.sums.arancel_especifico | number_format(3,'.',',')}}" readonly="readonly" 
-                        step="0.001"
-                        />
+                           type="text" 
+                           name="arancel_especifico_pagar"  
+                           class="number"
+                           value="{{ parcial_taxes.sums.arancel_especifico_pagar | number_format(3,'.',',')}}" readonly="readonly" 
+                           step="0.001"
+                           />
                      </div>
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
                         <label>Arancel Esp Pagado</label>
                         <input 
-                        type="number" 
-                        name="arancel_especifico_pagado" 
-                        id="arancel_especifico_pagado"  
-                        value="{{ parcial_taxes.sums.arancel_especifico | number_format(3,'.','') }}" 
-                        required="required" 
-                        step="0.001"
-                        />
+                           type="number" 
+                           name="arancel_especifico_pagar_pagado" 
+                           id="arancel_especifico_pagar_pagado"  
+                           class="number"
+                           value="{{ parcial_taxes.sums.arancel_especifico_pagar | number_format(3,'.','') }}" 
+                           required="required" 
+                           step="0.001"
+                           />
                      </div>
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
                         <label for="">Diferencia Arancel Esp</label>
                         <input 
-                        type="number" 
-                        step="0.001" 
-                        id="diferencia_arancel_especifico" 
-                        value="0" 
-                        readonly="readonly"
-                        />
+                           type="number" 
+                           step="0.001" 
+                           class="number"
+                           id="diferencia_arancel_especifico_pagar_pagado" 
+                           value="0" 
+                           readonly="readonly"
+                           />
                      </div>
                   </div>
                </div>
-            -->
                <div class="row">
                   <div class="col-md-4">
                      <div class="form-group">
                         <label>Fodinfa</label>
                         <input 
-                        type="text" 
-                        name="fodinfa" 
-                        value="{{ parcial_taxes.sums.fodinfa | number_format(3,'.',',')}}" 
-                        readonly="readonly" 
-                        class="number form-control"
-                        step="0.001"
-                        />
+                           type="text" 
+                           name="fodinfa" 
+                           value="{{ parcial_taxes.sums.fodinfa | number_format(3,'.',',')}}" 
+                           readonly="readonly" 
+                           class="number"
+                           step="0.001"
+                           />
                      </div>
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
                         <label>Fodinfa Pagado</label>
                         <input 
-                        type="number" 
-                        name="fodinfa_pagado" 
-                        id="fodinfa_pagado"  
-                        class="number form-control"
-                        value="{{ parcial_taxes.sums.fodinfa | number_format(3,'.','') }}" 
-                        required="required" 
-                        step="0.001"
-                        />
+                           type="number" 
+                           name="fodinfa_pagado" 
+                           id="fodinfa_pagado"  
+                           class="number"
+                           value="{{ parcial_taxes.sums.fodinfa | number_format(3,'.','') }}" 
+                           required="required" 
+                           step="0.001"
+                           />
                      </div>
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
                         <label for="">Diferencia Fodinfa</label>
                         <input 
-                        type="number" 
-                        step="0.001" 
-                        id="diferencia_fodinfa" 
-                        value="0"  
-                        class="number form-control"
-                        readonly="readonly"
-                        />
+                           type="number" 
+                           step="0.001" 
+                           id="diferencia_fodinfa_pagado" 
+                           value="0"  
+                           class="number"
+                           readonly="readonly"
+                           />
                      </div>
                   </div>
                </div>
@@ -372,40 +460,40 @@
                      <div class="form-group">
                         <label>ICE Advalorem</label>
                         <input 
-                        type="text"  
-                        value="{{ parcial_taxes.sums.ice_advalorem | number_format(3,'.',',') }}" 
-                        readonly="readonly" 
-                        class="number form-control"
-                        name="ice_advalorem" 
-                        step="0.001"
-                        />
+                           type="text"  
+                           value="{{ parcial_taxes.sums.ice_advalorem | number_format(3,'.',',') }}" 
+                           readonly="readonly" 
+                           class="number"
+                           name="ice_advalorem" 
+                           step="0.001"
+                           />
                      </div>
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
                         <label>ICE Advalorem Pagado </label>
                         <input 
-                        type="number"  
-                        value="{{ parcial_taxes.sums.ice_advalorem | number_format(3,'.','') }}" 
-                        name="ice_advalorem_pagado" 
-                        class="number form-control"
-                        id="ice_advalorem_pagado" 
-                        required="required" 
-                        step="0.001"
-                        />
+                           type="number"  
+                           value="{{ parcial_taxes.sums.ice_advalorem | number_format(3,'.','') }}" 
+                           name="ice_advalorem_pagado" 
+                           class="number"
+                           id="ice_advalorem_pagado" 
+                           required="required" 
+                           step="0.001"
+                           />
                      </div>
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
                         <label for="diferencia">Diferencia ICE Advalorem</label>
                         <input 
-                        type="text" 
-                        class="number form-control"
-                        readonly="readonly" 
-                        id="direferencia_ice_advalorem"  
-                        value="0" 
-                        step="0.001"
-                        />
+                           type="number" 
+                           class="number"
+                           readonly="readonly" 
+                           id="diferencia_ice_advalorem_pagado"  
+                           value="0" 
+                           step="0.001"
+                           />
                      </div>
                   </div>
                </div>
@@ -414,40 +502,40 @@
                      <div class="form-group">
                         <label>ICE Específico</label>
                         <input 
-                        type="text"  
-                        value="{{ parcial_taxes.sums.ice_especifico | number_format(3,'.',',') }}" 
-                        readonly="readonly" 
-                        name="ice_especifico" 
-                        class="number form-control"
-                        step="0.001"
-                        />
+                           type="text"  
+                           value="{{ parcial_taxes.sums.ice_especifico | number_format(3,'.',',') }}" 
+                           readonly="readonly" 
+                           name="ice_especifico" 
+                           class="number"
+                           step="0.001"
+                           />
                      </div>
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
                         <label>ICE Específico Pagado </label>
                         <input 
-                        type="number"  
-                        value="{{ parcial_taxes.sums.ice_especifico | number_format(3,'.','') }}" 
-                        name="ice_especifico_pagado" 
-                        id="ice_especifico_pagado" 
-                        required="required" 
-                        class="number form-control"
-                        step="0.001"
-                        />
+                           type="number"  
+                           value="{{ parcial_taxes.sums.ice_especifico | number_format(3,'.','') }}" 
+                           name="ice_especifico_pagado" 
+                           id="ice_especifico_pagado" 
+                           required="required" 
+                           class="number"
+                           step="0.001"
+                           />
                      </div>
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
                         <label>Diferencia ICE Específico</label>
                         <input 
-                        type="text" 
-                        readonly="readonly" 
-                        class="number form-control"
-                        id="direferencia_especifico"  
-                        value="0" 
-                        step="0.001"
-                        />
+                           type="number" 
+                           readonly="readonly" 
+                           class="number"
+                           id="diferencia_ice_especifico_pagado"  
+                           value="0" 
+                           step="0.001"
+                           />
                      </div>
                   </div>
                </div>
@@ -456,212 +544,211 @@
                      <div class="form-group">
                         <label>IVA </label>
                         <input 
-                        type="text"  
-                        value="{{ parcial_taxes.sums.iva | number_format(3,'.',',') }}" 
-                        readonly="readonly" 
-                        class="number form-control"
-                        name="iva" 
-                        step="0.001"
-                        />
+                           type="text"  
+                           value="{{ parcial_taxes.sums.iva | number_format(3,'.',',') }}" 
+                           readonly="readonly" 
+                           class="number"
+                           name="iva" 
+                           step="0.001"
+                           />
                      </div>
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
                         <label>IVA Pagado </label>
                         <input 
-                        type="number" 
-                        class="number form-control" 
-                        value="{{ parcial_taxes.sums.iva | number_format(3,'.','') }}" 
-                        name="iva_pagado" 
-                        id="iva_pagado" 
-                        required= "required" 
-                        step="0.001"
-                        />
+                           type="number" 
+                           class="number" 
+                           value="{{ parcial_taxes.sums.iva | number_format(3,'.','') }}" 
+                           name="iva_pagado" 
+                           id="iva_pagado" 
+                           required= "required" 
+                           step="0.001"
+                           />
                      </div>
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
-                        <label>Diferencia ICE Específico</label>
+                        <label>Diferencia IVA</label>
                         <input 
-                        class="number form-control"
-                        type="text" 
-                        readonly="readonly" 
-                        class= "number"
-                        id="direferencia_iva"  
-                        value="0" 
-                        step="0.001"/>
+                           class="number"
+                           type="number" 
+                           readonly="readonly" 
+                           class= "number"
+                           id="diferencia_iva_pagado"  
+                           value="0" 
+                           step="0.001"/>
                      </div>
                   </div>
                </div>
-               <hr />
-                                 <div class="row">
-                  <div class="col-md-6">
-                     <div class="form-group">
-                        <label>Fecha Liquidación:</label>
-                           <div class="input-group">
-                              <input 
-                              type="text" 
-                              class="form-control fecha" 
-                              name="fecha_liquidacion" 
-                              placeholder="dd/mm/yyyy
-                              ">
-                           </div>
-                     </div>
-                  </div>
-                  <div class="col-md-6">
-                     <div class="form-group">
-                        <label>Nro de Liquidacion</label>
-                        <input 
-                        type="text" 
-                        class="number form-control"
-                        name="nro_liquidacion" 
-                        required="required" 
-                        step="0.001"
-                        />
-                     </div>
-                  </div>
-               </div>
-               <div class="row">
-                  <div class="col-md-12">
-                     <strong class="text-danger">Totales</strong>
-                     <hr />
-                  </div>
-               </div>               
-               <div class="row">
+                              <div class="row" style="background-color:#eee;">
                   <div class="col-md-4">
                      <div class="form-group">
                         <label>Autoliquidación</label>       
                         <input 
-                        type="text" 
-                        class="text-primary number form-control" 
-                        value="{{ (parcial_taxes.sums.ice_especifico + parcial_taxes.sums.ice_advalorem + parcial_taxes.sums.fodinfa + parcial_taxes.sums.iva)  | number_format(3,'.','')}}" readonly="readonly"
-                        />
+                           type="text" 
+                           class="text-primary number" 
+                           value="{{ (
+                        parcial_taxes.sums.iva_total - (parcial_taxes.sums.iva_total - parcial_taxes.sums.iva) 
+                        + parcial_taxes.sums.ice_advalorem 
+                        + parcial_taxes.sums.ice_especifico 
+                        + parcial_taxes.sums.fodinfa
+                        + parcial_taxes.sums.arancel_advalorem_pagar 
+                        + parcial_taxes.sums.arancel_especifico_pagar
+                        ) | number_format(3,'.',',') 
+                        }}" readonly="readonly"
+                           />
                      </div>
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
                         <label>Autoliquidación Pagada</label>       
                         <input 
-                        type="number" 
-                        class="number form-control text-success"
-                        value="{{ (parcial_taxes.sums.ice_especifico + parcial_taxes.sums.ice_advalorem + parcial_taxes.sums.fodinfa + parcial_taxes.sums.iva)  | number_format(3,'.','') }}" readonly="readonly" 
-                        id="autoliquidacion"
-                        />
+                           type="text" 
+                           class="number text-success"
+                           value="{{ (
+                        parcial_taxes.sums.iva_total - (parcial_taxes.sums.iva_total - parcial_taxes.sums.iva) 
+                        + parcial_taxes.sums.ice_advalorem 
+                        + parcial_taxes.sums.ice_especifico 
+                        + parcial_taxes.sums.fodinfa
+                        + parcial_taxes.sums.arancel_advalorem_pagar 
+                        + parcial_taxes.sums.arancel_especifico_pagar
+                        ) | number_format(3,'.',',') 
+                        }}" readonly="readonly" 
+                           id="autoliquidacion"
+                           />
                      </div>
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
                         <label>Diferencias</label>       
                         <input 
-                        type="text" 
-                        class="number form-control text-danger"  
-                        readonly="readonly"
-                        value="0"
-                        id="total_diferencias"
-                        />
+                           type="number" 
+                           class="number text-danger"  
+                           readonly="readonly"
+                           value="0"
+                           id="total_diferencias"
+                           />
                      </div>
                   </div>
                </div>
-         </div>
-         <div class="modal-footer">
-            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-primary btn-sm"> 
-            <span class="fa fa-check"></span>
-            Confirmar y continuar
-            </button>
+               <div class="row" style="background-color:#eee;">
+                  <div class="col-md-6">
+                     <div class="form-group">
+                        <label>Fecha Liquidación:</label>
+                        <div class="input-group">
+                           <input 
+                              type="text" 
+                              class= "fecha" 
+                              name="fecha_liquidacion" 
+                              placeholder="dd/mm/yyyy">
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-md-6">
+                     <div class="form-group">
+                        <label>Nro de Liquidacion</label>
+                        <input 
+                           type="text" 
+                           class="number"
+                           name="nro_liquidacion" 
+                           required="required" 
+                           step="0.001"
+                           />
+                     </div>
+                  </div>
+               </div>    
+
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
+               <button type="submit" class="btn btn-primary btn-sm"> 
+               <span class="fa fa-check"></span>
+               Confirmar y continuar
+               </button>
+            </div>
          </div>
       </div>
    </div>
-</div>
-            </form>
+</form>
+<!-- /Modal -->
 <script>
+  $('#arancel_advalorem_pagar_pagado').keyup(function(){
+    var val_inicial = {{ parcial_taxes.sums.arancel_advalorem_pagar | number_format (3, '.','') }};
+    actualizarImpuesto('arancel_advalorem_pagar_pagado', val_inicial );
+  });
 
-/**
-* Maneja los totales de la liquidacion en los formularios
-*/
+  $('#arancel_especifico_pagar_pagado').keyup(function(){
+    var val_inicial = {{ parcial_taxes.sums.arancel_especifico_pagar | number_format (3, '.','') }};
+    actualizarImpuesto('arancel_especifico_pagar_pagado', val_inicial );
+  });
 
-var fodinfa =  parseFloat({{ parcial_taxes.sums.fodinfa | number_format(3,'.','') }});
-var ice_advalorem = parseFloat({{ parcial_taxes.sums.ice_advalorem | number_format(3,'.','') }});
-var arancel_advalorem = parseFloat({{ parcial_taxes.sums.arancel_advalorem }})
-var arancel_especifico = parseFloat({{ parcial_taxes.sums.arancel_especifico }})
-var ice_especifico = parseFloat({{ parcial_taxes.sums.ice_especifico | number_format(3,'.','') }});
-var iva = parseFloat({{ parcial_taxes.sums.iva | number_format(3,'.','') }});
-var total_liquidacion = parseFloat( {{ (parcial_taxes.sums.ice_especifico + parcial_taxes.sums.ice_advalorem + parcial_taxes.sums.fodinfa + parcial_taxes.sums.iva)  | number_format(3,'.','')}} );
-var total_diferencias = 0.0;
+    $('#fodinfa_pagado').keyup(function(){
+    var val_inicial = {{ parcial_taxes.sums.fodinfa | number_format (3, '.','') }};
+    actualizarImpuesto('fodinfa_pagado', val_inicial );
+  });
 
-$('#fodinfa_pagado').keyup(function(){
-    var new_fodinfa = parseFloat($('#fodinfa_pagado').val());
-    var diferencia = Math.round((fodinfa - new_fodinfa) * 1000) / 1000;
-    $('#diferencia_fodinfa').val(diferencia);
-    actualizarTotales();
-});
+   $('#ice_especifico_pagado').keyup(function(){
+    var val_inicial = {{ parcial_taxes.sums.ice_especifico | number_format (3, '.','') }};
+    actualizarImpuesto('ice_especifico_pagado', val_inicial );
+  });
 
-$('#ice_advalorem_pagado').keyup(function(){
-    var new_advalorem = parseFloat($('#ice_advalorem_pagado').val());
-    var diferencia = Math.round((ice_advalorem - new_advalorem) * 1000) / 1000;
-    $('#direferencia_ice_advalorem').val(diferencia);
-    actualizarTotales();
-});
+  $('#ice_advalorem_pagado').keyup(function(){
+    var val_inicial = {{ parcial_taxes.sums.ice_advalorem | number_format (3, '.','') }};
+    console.dir(val_inicial);
+    actualizarImpuesto('ice_advalorem_pagado', val_inicial );
+  });
 
-$('#ice_especifico_pagado').keyup(function(){
-    var new_ice_especifico_pagado = parseFloat($('#ice_especifico_pagado').val());
-    var diferencia = Math.round((ice_especifico - new_ice_especifico_pagado) * 1000) / 1000;
-    $('#direferencia_especifico').val(diferencia);
-    actualizarTotales();
-});
+  $('#iva_pagado').keyup(function(){
+    var val_inicial = {{ parcial_taxes.sums.iva | number_format (3, '.','') }};
+    actualizarImpuesto('iva_pagado', val_inicial );
+  });
 
-$('#arancel_especifico_pagado').keyup(function(){
-    var new_arancel_especifico_pagado = parseFloat($('#arancel_especifico_pagado').val());
-    var diferencia = Math.round((arancel_especifico - new_arancel_especifico_pagado) * 1000) / 1000;
-    $('#diferencia_arancel_especifico').val(diferencia);
-    actualizarTotales();
-});
+  function actualizarImpuesto(id_input, old_value){
+  var value =  old_value - $('#'+ id_input).val() ;
+  value =  Math.round(value * 1000)/ 1000;
+  $('#' + 'diferencia_' + id_input).val(value);
+  actualizarTotales();
+  }
 
-$('#arancel_advalorem_pagado').keyup(function(){
-    var new_arancel_advalorem_pagado = parseFloat($('#arancel_advalorem_pagado').val());
-    var diferencia = Math.round((arancel_advalorem - new_arancel_advalorem_pagado) * 1000) / 1000;
-    $('#diferencia_arancel_advalorem').val(diferencia);
-    actualizarTotales();
-});
+  function actualizarTotales(){
+      var total_liquidacion =  {{ (
+                        parcial_taxes.sums.iva_total - (parcial_taxes.sums.iva_total - parcial_taxes.sums.iva) 
+                        + parcial_taxes.sums.ice_advalorem 
+                        + parcial_taxes.sums.ice_especifico 
+                        + parcial_taxes.sums.fodinfa
+                        + parcial_taxes.sums.arancel_advalorem_pagar 
+                        + parcial_taxes.sums.arancel_especifico_pagar
+                        ) | number_format(3,'.','') 
+                        }};
 
-$('#iva_pagado').keyup(function(){
-    var new_iva_pagado = parseFloat($('#iva_pagado').val());
-    var diferencia = Math.round((iva - new_iva_pagado) * 1000) / 1000;
-    $('#direferencia_iva').val(diferencia);
-    actualizarTotales();
-});
+      var total_pagar = (
+          parseFloat($('#arancel_advalorem_pagar_pagado').val() )+
+          parseFloat($('#arancel_especifico_pagar_pagado').val() )+
+          parseFloat($('#fodinfa_pagado').val() )+
+          parseFloat($('#ice_especifico_pagado').val() )+
+          parseFloat($('#ice_advalorem_pagado').val() )+
+          parseFloat($('#iva_pagado').val())
+          );
 
-/**
-* Actualiza los totales del formulario
-*/
-function actualizarTotales(){
+      console.dir(total_pagar);
 
-    total_diferencias = (
-        parseFloat($('#diferencia_fodinfa').val()) + 
-        parseFloat($('#direferencia_ice_advalorem').val()) + 
-        parseFloat($('#direferencia_especifico').val()) + 
-        parseFloat($('#direferencia_iva').val()) +
-        parseFloat($('#diferencia_arancel_advalorem').val()) +
-        parseFloat($('#diferencia_arancel_especifico').val())
-        )
-    
-    $('#autoliquidacion').val( 
-        Math.round((total_liquidacion - total_diferencias) * 1000) / 1000
-        );
+      $('#autoliquidacion').val(total_pagar);
+      $('#total_diferencias').val(parseFloat(total_liquidacion - total_pagar));
+   }
 
-    $('#total_diferencias').val(total_diferencias);
-}
+
 </script>
 <script>
-/**
-* Envia un formulario al hacer click sobre el
-*/
-
-$('#update_tasa').change(function(){
-    $('#parcial_form').submit();
-});
-
-$('#update_etiquetas').change(function(){
-    $('#parcial_form').submit();
-});
-</script>
+   /**
+   * Envia un formulario al hacer click sobre el
+   */
+   
+   $('#update_tasa').change(function(){
+       $('#parcial_form').submit();
+   });
+   
+   $('#update_etiquetas').change(function(){
+       $('#parcial_form').submit();
+   });
+</script>;

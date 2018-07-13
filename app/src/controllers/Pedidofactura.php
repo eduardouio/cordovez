@@ -92,7 +92,8 @@ class Pedidofactura extends MY_Controller
         return ($this->responseHttp([
             'titleContent' => 'Detalle Factura [ # ' .
                                       $invoiceOrder['id_factura_proveedor'] .
-                                     ' ] Pedido [ ' . $invoiceOrder['nro_pedido'] . ' ]',
+                                     ' ] Pedido [ ' . $invoiceOrder['nro_pedido'] . ' ] [R '. 
+                                    $order['regimen'] .']',
             'show_invoices' => true,
             'title' => 'Factura Pedido ' . $order['nro_pedido'],
             'user' => $this->modelUser->get($invoiceOrder['id_user']),

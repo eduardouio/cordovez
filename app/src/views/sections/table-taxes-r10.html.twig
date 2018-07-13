@@ -211,6 +211,8 @@
                <th>Seguro A</th>
                <th>Flete A</th>
                <th>CIF</th>
+               <th>Arancel Advalorem</th>                       
+               <th>Arancel Especifico</th>
                <th>Fodinfa</th>
                <th>Etiquetas Fiscales</th>
                <th>Tasa Control</th>
@@ -219,8 +221,6 @@
                <th>B Advalorem</th>
                <th>Presentacion</th>
                <th>% Alch</th>
-               <th>Arancel Especifico</th>
-               <th>Arancel Advalorem</th>
                <th>Arancel Esp U</th>
                <th>Arancel Adv U</th>
                <th>ICE Especifico</th>
@@ -241,6 +241,8 @@
                <td class="text-right">{{ tax.seguro_aduana | number_format(2,',','.') }}</td>
                <td class="text-right">{{ tax.flete_aduana | number_format(2,',','.') }}</td>
                <td class="text-right">{{ tax.cif | number_format(2,',','.') }}</td>
+               <td class="text-right">{{ tax.arancel_especifico_pagar | number_format(2,',','.') }}</td>
+               <td class="text-right">{{ tax.arancel_advalorem_pagar | number_format(2,',','.') }}</td>
                <td class="text-right">{{ tax.fodinfa | number_format(2,',','.') }}</td>
                <td class="text-right">{{ tax.etiquetas_fiscales | number_format(2,',','.') }}</td>
                <td class="text-right">{{ tax.tasa_control | number_format(2,',','.') }}</td>
@@ -249,8 +251,6 @@
                <td class="text-right">{{ tax.base_advalorem | number_format(2,',','.') }}</td>
                <td class="text-right">{{ tax.capacidad_ml | number_format(2,',','.') }}</td>
                <td class="text-right">{{ tax.grado_alcoholico | number_format(2,',','.') }}</td>
-               <td class="text-right">{{ tax.arancel_especifico_pagar | number_format(2,',','.') }}</td>
-               <td class="text-right">{{ tax.arancel_advalorem_pagar | number_format(2,',','.') }}</td>
                <td class="text-right">{{ tax.ice_especifico_unitario | number_format(2,',','.') }}</td>
                <td class="text-right">{{ tax.ice_advalorem_unitario | number_format(2,',','.') }}</td>
                <td class="text-right">{{ tax.ice_especifico | number_format(2,',','.') }}</td>
@@ -270,12 +270,12 @@
                <td class="text-right">{{ order_taxes.sums.seguro_aduana | number_format(2,',','.')}}</td>
                <td class="text-right">{{ order_taxes.sums.flete_aduana | number_format(2,',','.') }}</td>
                <td class="text-right">{{ order_taxes.sums.cif | number_format(2,',','.') }}</td>
+               <td class="text-right">{{ order_taxes.sums.arancel_especifico_pagar | number_format(2,',','.') }}</td>
+               <td class="text-right">{{ order_taxes.sums.arancel_advalorem_pagar | number_format(2,',','.') }}</td>
                <td class="text-right">{{ order_taxes.sums.fodinfa | number_format(2,',','.') }}</td>
                <td class="text-right">{{ order_taxes.sums.etiquetas_fiscales | number_format(2,',','.') }}</td>
                <td class="text-right">{{ order_taxes.sums.tasa_control | number_format(2,',','.') }}</td>
                <td class="text-right">{{ order_taxes.sums.ex_aduana | number_format(2,',','.') }}</td>
-               <td class="text-center">--</td>
-               <td class="text-center">--</td>
                <td class="text-center">--</td>
                <td class="text-center">--</td>
                <td class="text-center">--</td>

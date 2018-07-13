@@ -266,7 +266,7 @@ class Reliquidacion extends MY_Controller
     
     
     /**
-     * Genera impuestos para R10 de un pedido
+     * Genera la reliquidacion de impuestos para R10
      *
      * @param string $nroOrder
      */

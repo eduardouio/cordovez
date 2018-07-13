@@ -292,11 +292,11 @@ class parcialTaxes {
                         * $detail_order_invoice['costo_caja']
                         )
                     + ($this->gastos_origen * $percent)
-                    ) * $this->$this->type_change_parcial;
+                    ) * $this->type_change_parcial;
                     
                     $gasto_origen =
                     ($this->gastos_origen * $percent)
-                    * $this->$this->type_change_parcial;
+                    * $this->type_change_parcial;
                     
             }else{
                 $fob = (

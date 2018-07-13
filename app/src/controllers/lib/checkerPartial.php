@@ -171,6 +171,7 @@ class checkerPartial
         ]);
     }
     
+    
     /**
      * Obtiene el valor de la tasa aduanera
      *
@@ -205,11 +206,13 @@ class checkerPartial
         
         foreach ($this->info_invoices as $idx => $invoice) {
             unset($invoice['detailInvoice']['sums']);
+            if($invoice['detailInvoice']){
             foreach ($invoice['detailInvoice'] as $item => $detail) {
                 $unidades += (
                     $detail['nro_cajas'] * $detail['cantidad_x_caja']
                     );
                 $boxes += $detail['nro_cajas'];
+            }
             }
         }
         

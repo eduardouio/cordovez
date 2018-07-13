@@ -353,8 +353,10 @@ class orderTaxes {
                 $fob_invoice += $invoice['valor'];
             }
                         
-            $fob_percent = ( $fob_invoice 
-                / ($product['costo_caja'] *  $product['cajas'])
+            $fob_percent = ( 
+                ($product['costo_caja'] *  $product['cajas'] )
+                / 
+                $fob_invoice
                 );
             
             $tasa_control = 0.0;
@@ -376,7 +378,6 @@ class orderTaxes {
             
             $prorrateo_item = [
                 'fob_percent' => $fob_percent,
-                'fob_invoice' => $fob_invoice * $this->type_change_order,
                 'product' => $product,
                 'seguro_aduana' => $this->order['seguro_aduana'] * $fob_percent,
                 'flete_aduana' => $this->order['flete_aduana'] * $fob_percent,
@@ -418,21 +419,15 @@ class orderTaxes {
             
             $fodinfa = 0; 
             
-            if ($this->order['incoterm'] == 'FOB'){
+            if ($this->order['incoterm'] == 'FOB' || $this->order['incoterm'] == 'CFR'){
                 $fodinfa = 
                 (
-                    $prorrateos['fob_invoice']
+                    $product['fob']
                     + $prorrateos['gasto_origen']
                 ) 
                 * $this->getTaxParam('FODINFA');
-                
-            }elseif ($this->order['incoterm'] == 'CFR'){
-                $fodinfa = ( 
-                            $prorrateos['fob_invoice'] + $prorrateos['gasto_origen']
-                            ) 
-                         * $this->getTaxParam('FODINFA');
             }else{
-                $fodinfa = $prorrateos['fob_invoice']
+                $fodinfa = ($product['fob'] - $prorrateos['gasto_origen']) 
                             * $this->getTaxParam('FODINFA');
             }            
             
@@ -518,7 +513,7 @@ class orderTaxes {
             
             $iva = (
                 $prorrateos['cif']
-                + $fodinfa
+                + $fodinfa 
                 + $ice_advalorem
                 + $ice_especifico
                 + $arancel_advalorem_pagar
@@ -585,7 +580,6 @@ class orderTaxes {
                 return $tax['valor'];
             }
         }
-        print $tax_name;
         return False;
     }
 }

@@ -116,6 +116,8 @@
                <th>B Advalorem</th>
                <th>Cap.</th>
                <th>% Alch</th>
+               <th>Arancel Advalorem</th>                       
+               <th>Arancel Especifico</th>
                <th>Arancel Esp U</th>
                <th>Arancel Adv U</th>
                <th>ICE Especifico</th>
@@ -147,6 +149,8 @@
             <td class="text-right">{{ tax.base_advalorem | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.capacidad_ml | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.grado_alcoholico | number_format(2,',','.') }}</td>
+            <td class="text-right">{{ tax.arancel_advalorem | number_format(2,',','.') }}</td>
+            <td class="text-right">{{ tax.arancel_especifico | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.ice_especifico_unitario | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.ice_advalorem_unitario | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.ice_especifico | number_format(2,',','.') }}</td>
@@ -173,6 +177,8 @@
                <td class="text-right">{{ parcial_taxes.sums.etiquetas_fiscales | number_format(2,',','.') }}</td>
                <td class="text-right">{{ parcial_taxes.sums.tasa_control | number_format(2,',','.') }}</td>
                <td class="text-right">{{ parcial_taxes.sums.ex_aduana | number_format(2,',','.') }}</td>
+               <td class="text-center">--</td>
+               <td class="text-center">--</td>
                <td class="text-center">--</td>
                <td class="text-center">--</td>
                <td class="text-center">--</td>

@@ -135,15 +135,17 @@ class Pedido extends MY_Controller
         $orders_open = 0;
         $orders_closed = 0;
         
-        foreach ($all_orders as $idx => $order){
-            $order['info'] = $this->modelBasicOrderInfo->getInfoOrder($order['nro_pedido']);
-            array_push($init_data, $order);
-            if($order['bg_isclosed'] == 1){
-                $orders_closed ++;
-            }else{
-                $orders_open ++;
-            }
-        }       
+        if($all_orders){
+            foreach ($all_orders as $idx => $order){
+                $order['info'] = $this->modelBasicOrderInfo->getInfoOrder($order['nro_pedido']);
+                array_push($init_data, $order);
+                if($order['bg_isclosed'] == 1){
+                    $orders_closed ++;
+                }else{
+                    $orders_open ++;
+                }
+            }    
+        }
         
         $this->responseHttp([
             'list_orders' => true,

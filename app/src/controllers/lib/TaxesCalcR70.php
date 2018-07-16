@@ -450,14 +450,6 @@ class parcialTaxes {
             * (($product['capacidad_ml']/ $limite_capacidad) * $product['grado_alcoholico'])
             ) * $product['unidades'];
             
-            /**
-            print '<h1>' .  $this->getTaxParam('ARANCEL ESPECIFICO') . '</h1>';
-            print '<h1>' .  $limite_capacidad . '</h1>';
-            print '<h1>' .  $product['capacidad_ml'] . '</h1>';
-            print '<h1>' .  $product['grado_alcoholico'] . '</h1>';
-            print '<h1>' .  $product['unidades'] . '</h1>';
-            **/
-            
             $arancel_especifico_unitario = ($arancel_especifico /  $product['unidades']);
             
             $arancel_especifico_liberado =   (

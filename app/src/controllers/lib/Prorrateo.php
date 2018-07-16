@@ -70,8 +70,11 @@ class Prorrateo {
                     $expense['valor_provisionado']
                     * $fobs['fob_parcial_razon_inicial']
                     );
-                array_push( $prorrateos['prorrateo_pedido'], $expense);
+                if($expense['concepto'] != 'GASTO ORIGEN'){
+                    array_push( $prorrateos['prorrateo_pedido'], $expense);                   
+                }
             }
+            
             return $prorrateos;
     }
     

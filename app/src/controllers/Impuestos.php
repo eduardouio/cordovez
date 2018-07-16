@@ -492,8 +492,8 @@ class Impuestos extends MY_Controller
             );
         $order['fecha_liquidacion'] = date(
             'Y-m-d', strtotime($order['fecha_liquidacion'])
-            );
-                
+            );        
+        
         if($this->modelOrder->update($order)){
             return $this->redirectPage(
                 'showTaxesOrderLiquidate', 

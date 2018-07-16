@@ -132,12 +132,12 @@ class Reliquidacion extends MY_Controller
         $prorrateoParams = new Prorrateo($init_data);
         $prorrateo_values = $prorrateoParams->getValues();
         $init_data['fobs_parcial'] = $prorrateo_values['fobs_parcial'];
-        $init_data['warenhouses'] = $prorrateo_values['warenhouses'];
+        $init_data['warenhouses'] = $prorrateo_values['warenhouses'];       
         
         $prorrateos = $this->updateProrrateoParcial(
             $prorrateo_values,
             $parcial
-            );
+            );       
         
         $param_taxes = $this->modelRatesExpenses->getTaxesParams();
         
@@ -148,12 +148,38 @@ class Reliquidacion extends MY_Controller
             $parcial
             );
         
-
+        $product_taxes = $parcialTaxes->getTaxes();
+        
+        #actualizamos los productos de la lista de la factura del pedido
+        
+        if ($parcial['bg_isclosed'] == 0){
+            foreach ($product_taxes['taxes'] as $idx => $tax_product){
+                $product = [
+                    'id_factura_informativa_detalle' => $tax_product['id_factura_informativa_detalle'],
+                    'arancel_advalorem' => $tax_product['arancel_advalorem'],
+                    'arancel_especifico' => $tax_product['arancel_especifico'],
+                    'ice_advalorem' => $tax_product['ice_advalorem'],
+                    'ice_advalorem_pagado' => $tax_product['ice_advalorem_pagado'],
+                    'ice_advalorem_saldo' => $tax_product['ice_advalorem_diferencia'],
+                    'ice_especifico' => $tax_product['ice_especifico'],
+                    'fodinfa' => $tax_product['fodinfa'],
+                    'iva' => $tax_product['iva'],
+                    'indirectos' => $tax_product['indirectos'],
+                    'costo' => $tax_product['costo_total']
+                ];
+                
+                if($this->modelInfoInvoiceDetail->update($product) == False){
+                    print 'Error en el sistema';
+                    exit();
+                }
+            }
+        }
+        
         return ($this->responseHttp([
             'titleContent' => 'Resumen de Impuestos Liquidación Aduana del Pedido ' .
             $init_data['order']['nro_pedido'],
             'init_data' => $init_data,
-            'parcial_taxes' => $parcialTaxes->getTaxes(),
+            'parcial_taxes' => $product_taxes,
             'prorrateos' => $prorrateos,
             'parcial' => $parcial,
             'tipo' => 'parcial',
@@ -242,12 +268,20 @@ class Reliquidacion extends MY_Controller
             }
         }
         
+        $init_expenses = $this->modelInitExpenses->getAll($order);
+        
+        foreach ($init_expenses as $idx => $exp){
+            if($exp['concepto'] == 'GASTO ORIGEN'){
+                unset($init_expenses[$idx]);
+            }
+        }
+        
         return([
             'order' => $order,
             'order_invoices' => $order_invoices,
             'order_invoice_detail' => $order_invoice_detail,
             'products_base' => $products_base,
-            'init_expeses' => $this->modelInitExpenses->getAll($order),
+            'init_expeses' => $init_expenses,
             'parcial' => $parcial,
             'all_parcials' => $this->modelParcial->getAllParcials(
                 $parcial['nro_pedido']
@@ -304,12 +338,38 @@ class Reliquidacion extends MY_Controller
             $order
             );
         
+        $product_taxes = $orderTaxes->getTaxes();
+        
+        #actualizamos los productos de la lista de la factura del pedido
+        if ($order['bg_isclosed'] == 0){
+            foreach ($product_taxes['taxes'] as $idx => $tax_product){
+                $product = [
+                    'detalle_pedido_factura' => $tax_product['detalle_pedido_factura'],
+                    'arancel_advalorem' => $tax_product['arancel_advalorem'],
+                    'arancel_especifico' => $tax_product['arancel_especifico'],
+                    'ice_advalorem' => $tax_product['ice_advalorem'],
+                    'ice_advalorem_pagado' => $tax_product['ice_advalorem_pagado'],
+                    'ice_advalorem_saldo' => $tax_product['ice_advalorem_diferencia'],
+                    'ice_especifico' => $tax_product['ice_especifico'],
+                    'fodinfa' => $tax_product['fodinfa'],
+                    'iva' => $tax_product['iva'],
+                    'indirectos' => $tax_product['indirectos'],
+                    'costo' => $tax_product['costo_total']
+                ];
+                
+                if($this->ModelOrderInvoiceDetail->update($product) == False){
+                 print 'Error en el sistema';
+                 exit();
+                }
+            }
+        }
+        
         return ($this->responseHttp([
             'titleContent' => 'Resumen de Liquidacion Pedido ' .
                                 $init_data['order']['nro_pedido'] . 
                                 ' Regimen : ' . $order['regimen'],
             'init_data' => $init_data,
-            'order_taxes' => $orderTaxes->getTaxes(),
+            'order_taxes' => $product_taxes,
             'regimen' => 'R10',
             'tipo' => 'orden',
             'id' => $nroOrder,
@@ -510,12 +570,13 @@ class Reliquidacion extends MY_Controller
         )
     {
         
-        if($parcial['bg_isliquidated']){
+        if($parcial['bg_isclosed']){
             $this->modelLog->generalLog(
                 'El parcial se encuentra cerrado no se puede continuar'
                 );
             return $this->getProrrateosParcial($parcial['id_parcial']);
-        }
+            
+        }       
         
         $fobs = $prorrateo_values['fobs_parcial'];
         $warenhouses = $prorrateo_values['warenhouses'];
@@ -573,7 +634,7 @@ class Reliquidacion extends MY_Controller
                 array_push($prorrateo_detail, $detail);
                 
             }
-            
+
             return [
                 'prorrateo' => $prorrateoHeader,
                 'prorrateo_detail' => $prorrateo_detail,

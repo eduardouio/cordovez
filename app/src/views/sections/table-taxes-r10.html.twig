@@ -336,9 +336,9 @@
                      <div class="form-group">
                         <label>Arancel Advalorem</label>
                         <input 
-                           type="text" 
+                           type="number" 
                            name="arancel_advalorem_pagar"  
-                           value="{{ order_taxes.sums.arancel_advalorem_pagar | number_format(3,'.',',')}}" readonly="readonly" 
+                           value="{{ order_taxes.sums.arancel_advalorem_pagar | number_format(3,'.','')}}" readonly="readonly" 
                            step="0.001"
                            class="number"
                            />
@@ -376,10 +376,10 @@
                      <div class="form-group">
                         <label>Arancel Específico</label>
                         <input 
-                           type="text" 
+                           type="number" 
                            name="arancel_especifico_pagar"  
                            class="number"
-                           value="{{ order_taxes.sums.arancel_especifico_pagar | number_format(3,'.',',')}}" readonly="readonly" 
+                           value="{{ order_taxes.sums.arancel_especifico_pagar | number_format(3,'.','')}}" readonly="readonly" 
                            step="0.001"
                            />
                      </div>
@@ -417,9 +417,9 @@
                      <div class="form-group">
                         <label>Fodinfa</label>
                         <input 
-                           type="text" 
+                           type="number" 
                            name="fodinfa" 
-                           value="{{ order_taxes.sums.fodinfa | number_format(3,'.',',')}}" 
+                           value="{{ order_taxes.sums.fodinfa | number_format(3,'.','')}}" 
                            readonly="readonly" 
                            class="number"
                            step="0.001"
@@ -459,8 +459,8 @@
                      <div class="form-group">
                         <label>ICE Advalorem</label>
                         <input 
-                           type="text"  
-                           value="{{ order_taxes.sums.ice_advalorem | number_format(3,'.',',') }}" 
+                           type="number"  
+                           value="{{ order_taxes.sums.ice_advalorem | number_format(3,'.','') }}" 
                            readonly="readonly" 
                            class="number"
                            name="ice_advalorem" 
@@ -501,8 +501,8 @@
                      <div class="form-group">
                         <label>ICE Específico</label>
                         <input 
-                           type="text"  
-                           value="{{ order_taxes.sums.ice_especifico | number_format(3,'.',',') }}" 
+                           type="number"  
+                           value="{{ order_taxes.sums.ice_especifico | number_format(3,'.','') }}" 
                            readonly="readonly" 
                            name="ice_especifico" 
                            class="number"
@@ -543,8 +543,8 @@
                      <div class="form-group">
                         <label>IVA </label>
                         <input 
-                           type="text"  
-                           value="{{ order_taxes.sums.iva | number_format(3,'.',',') }}" 
+                           type="number"  
+                           value="{{ order_taxes.sums.iva | number_format(3,'.','') }}" 
                            readonly="readonly" 
                            class="number"
                            name="iva" 

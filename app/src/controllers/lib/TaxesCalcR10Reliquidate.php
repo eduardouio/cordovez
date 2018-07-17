@@ -127,6 +127,11 @@ class orderTaxesReliquidate {
             $this->order['ice_advalorem'] 
             - $this->order['ice_advalorem_pagado']
             );
+        $diferencia_ice_especifico = (
+            $this->order['ice_especifico'] 
+            - $this->order['ice_especifico_pagado']
+            ) ;
+        
         
         $num_products = count($taxes);
         $reliquidate_taxes = [];
@@ -151,6 +156,14 @@ class orderTaxesReliquidate {
                     - $tax['ice_advalorem_pagado']
                     );
             }
+            
+            $tax['ice_especifico'] = (
+                $tax['ice_especifico']
+                - ( $diferencia_ice_especifico/$num_products )
+                );
+            
+            $tax['total_ice'] = $tax['ice_especifico'] + $tax['ice_advalorem'];
+            
             array_push($reliquidate_taxes, $tax);
         }
         
@@ -535,6 +548,9 @@ class orderTaxesReliquidate {
                 $arancel_advalorem_pagar =  ($arancel_advalorem - $arancel_advalorem_liberado);
                 $arancel_especifico_pagar = ($arancel_especifico - $arancel_especifico_liberado);
                 
+                $arancel_advalorem_unitario = (
+                    $arancel_advalorem_pagar 
+                    / $product['unidades']);
                 
                 $base_ice_especifico = $this->getTaxParam('ICE ESPECIFICO');
                 

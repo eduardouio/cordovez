@@ -201,11 +201,9 @@
 	</div>
 
 	<div class="col-md-offset-8 text-right">
-		{% if saldoFactura != 0 %}
 	<a href="{{rute_url}}facturapagos/editar/{{document.id_documento_pago}}" class="btn btn-info btn-sm"> 
-	Editar Cabeceras Facura
+	<span class="fa fa-pencil"></span> Editar Cabeceras Facura
 	</a>
-{% endif %}
 	</div>
 </div>
 <!-- Modal HTML -->
@@ -356,6 +354,5 @@ $('#concepto').keyup(function(){
 $('#comentarios').keyup(function(){
 	this.value = this.value.toUpperCase();
 });
-
 
 </script>

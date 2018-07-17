@@ -149,7 +149,6 @@ class Reliquidacion extends MY_Controller
             );
         
         $product_taxes = $parcialTaxes->getTaxes();
-        
         #actualizamos los productos de la lista de la factura del pedido
         
         if ($parcial['bg_isclosed'] == 0){
@@ -176,7 +175,7 @@ class Reliquidacion extends MY_Controller
         }
         
         return ($this->responseHttp([
-            'titleContent' => 'Resumen de Impuestos Liquidación Aduana del Pedido ' .
+            'titleContent' => 'Resumen de Impuestos Liquidación Aduana del Pedido' .
             $init_data['order']['nro_pedido'],
             'init_data' => $init_data,
             'parcial_taxes' => $product_taxes,

@@ -129,8 +129,14 @@ class parcialTaxesReliquidate {
             - $this->parcial['ice_advalorem_pagado']
             );
         
+        $diferencia_ice_especifico = (
+            $this->parcial['ice_especifico']
+            - $this->parcial['ice_especifico_pagado']
+            );
+        
         $num_products = count($taxes);
         $reliquidate_taxes = [];
+        
         
         foreach ( $taxes as $idx => $tax){
             if($have_tasa){
@@ -152,6 +158,29 @@ class parcialTaxesReliquidate {
                     - $tax['ice_advalorem_pagado']
                     );
             }
+            
+            $tax['ice_especifico'] = (
+                $tax['ice_especifico']
+                - ( $diferencia_ice_especifico/$num_products )
+                );
+
+            $tax['indirectos'] = (
+              $tax['ice_advalorem']
+            + $tax['ice_especifico']
+            + $tax['fodinfa']
+            + $tax['arancel_advalorem_pagar']
+            + $tax['arancel_especifico_pagar']
+            + $tax['prorrateos_total']
+            + $tax['etiquetas_fiscales']
+                );
+            
+            #print '<pre>';
+            #print_r($tax);
+            #print '</pre>';
+            #print $tax['indirectos'];
+            
+            $tax['total_ice'] = $tax['ice_especifico'] + $tax['ice_advalorem'];
+            
             array_push($reliquidate_taxes, $tax);
         }
         
@@ -379,8 +408,7 @@ class parcialTaxesReliquidate {
                 (   $detail_info_invoice['nro_cajas']
                     * $detail_order_invoice['costo_caja']
                     )
-                ) * $this->type_change_parcial
-                + ($this->gastos_origen * $percent);
+                ) * $this->type_change_parcial;
                 
                 $gasto_origen = ($this->gastos_origen * $percent);
         }
@@ -425,8 +453,10 @@ class parcialTaxesReliquidate {
         array $product
         ): array
         {
+        
             
             $prorrateo = $this->prorrateo['prorrateo'];
+            
             $prorrateo_detail = $this->prorrateo['prorrateo_detail'];
             $fobs_parcial = $this->init_data['fobs_parcial'];
             $prorrateos_pedido = 0.0;
@@ -441,9 +471,9 @@ class parcialTaxesReliquidate {
                         $prorrateos_parcial += $gst_prorrateo['valor_provisionado'];
                     }
                 }
-            }
+            }            
             
-            $fob_percent = ( $product['percent']);
+            $fob_percent = ($product['percent']);
             $tasa_control = 0.0;
             
             foreach ($prorrateo_detail as $key => $value) {
@@ -474,13 +504,21 @@ class parcialTaxesReliquidate {
                     * $fob_percent
                     ),
             ];
+            
+            print '<pre>';
+            print_r($prorrateo_item);
+            print '</pre>';
+            
+            
             $prorrateo_item ['cif'] = (
                 (
                     $product['fob']
                     + $prorrateo_item['seguro_aduana']
                     + $prorrateo_item['flete_aduana']
+                    + ($this->gastos_origen * $product['percent'])
                     )
                 );
+            
             return  $prorrateo_item;
     }
     

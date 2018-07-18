@@ -105,8 +105,11 @@
                <th>Cajas</th>
                <th>Unds</th>
                <th>FOB </th>
+               <th>% FOB</th>
                <th>Seguro A</th>
                <th>Flete A</th>
+               <th>Seguro</th>
+               <th>Flete</th>
                <th>CIF</th>
                <th>Fodinfa</th>
                <th>Etiquetas Fiscales</th>
@@ -138,8 +141,11 @@
             <td class="text-right"> {{ tax.cajas }} </td>
             <td class="text-right">{{ tax.unidades }}</td>
             <td class="text-right">{{ tax.fob | number_format(2,',','.') }}</td>
+            <td class="text-right">{{ tax.fob_percent | number_format(3,',','.') }}</td>
             <td class="text-right">{{ tax.seguro_aduana | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.flete_aduana | number_format(2,',','.') }}</td>
+            <td class="text-right">{{ tax.seguro | number_format(2,',','.') }}</td>
+            <td class="text-right">{{ tax.flete | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.cif | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.fodinfa | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.etiquetas_fiscales | number_format(2,',','.') }}</td>
@@ -158,7 +164,7 @@
             <td class="text-right">{{ tax.ice_advalorem_pagado | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.ice_advalorem_diferencia | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.total_ice | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ (tax.prorrateos_total - tax.etiquetas_fiscales - tax.tasa_control) | number_format(2,',','.') }}</td>
+            <td class="text-right">{{ tax.prorrateos_total | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.indirectos | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.costo_total | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.costo_caja_final | number_format(2,',','.') }}</td>
@@ -170,8 +176,11 @@
                <td class="text-right">{{ parcial_taxes.sums.cajas }}</td>
                <td class="text-right">{{ parcial_taxes.sums.unidades }}</td>
                <td class="text-right">{{ parcial_taxes.sums.fob | number_format(2,',','.') }}</td>
+               <td class="text-right">{{ parcial_taxes.sums.fob_percent | number_format(3,',','.') }}</td>
                <td class="text-right">{{ parcial_taxes.sums.seguro_aduana | number_format(2,',','.')}}</td>
                <td class="text-right">{{ parcial_taxes.sums.flete_aduana | number_format(2,',','.') }}</td>
+               <td class="text-right">{{ parcial_taxes.sums.seguro | number_format(2,',','.')}}</td>
+               <td class="text-right">{{ parcial_taxes.sums.flete | number_format(2,',','.') }}</td>
                <td class="text-right">{{ parcial_taxes.sums.cif | number_format(2,',','.') }}</td>
                <td class="text-right">{{ parcial_taxes.sums.fodinfa | number_format(2,',','.') }}</td>
                <td class="text-right">{{ parcial_taxes.sums.etiquetas_fiscales | number_format(2,',','.') }}</td>
@@ -190,7 +199,7 @@
                <td class="text-right">{{ parcial_taxes.sums.ice_advalorem_pagado | number_format(2,',','.') }}</td>
                <td class="text-right">{{ parcial_taxes.sums.ice_advalorem_diferencia | number_format(2,',','.') }}</td>
                <td class="text-right">{{ parcial_taxes.sums.total_ice | number_format(2,',','.') }}</td>
-               <td class="text-right">{{ (parcial_taxes.sums.prorrateos_total - parcial_taxes.sums.etiquetas_fiscales - parcial_taxes.sums.tasa_control) | number_format(2,',','.') }}</td>
+               <td class="text-right">{{ parcial_taxes.sums.prorrateos_total | number_format(2,',','.') }}</td>
                <td class="text-right">{{ parcial_taxes.sums.indirectos | number_format(2,',','.') }}</td>
                <td class="text-right">{{ parcial_taxes.sums.costo_total | number_format(2,',','.') }}</td>
                <td class="text-center">--</td>

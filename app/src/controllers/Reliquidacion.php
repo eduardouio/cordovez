@@ -133,7 +133,7 @@ class Reliquidacion extends MY_Controller
         $prorrateo_values = $prorrateoParams->getValues();
         $init_data['fobs_parcial'] = $prorrateo_values['fobs_parcial'];
         $init_data['warenhouses'] = $prorrateo_values['warenhouses'];       
-        
+
         $prorrateos = $this->updateProrrateoParcial(
             $prorrateo_values,
             $parcial
@@ -153,6 +153,12 @@ class Reliquidacion extends MY_Controller
         
         if ($parcial['bg_isclosed'] == 0){
             foreach ($product_taxes['taxes'] as $idx => $tax_product){
+
+                print '<pre>';
+                print_r($tax_product);
+                print '</pre>';
+                exit();
+
                 $product = [
                     'id_factura_informativa_detalle' => $tax_product['id_factura_informativa_detalle'],
                     'arancel_advalorem' => $tax_product['arancel_advalorem'],
@@ -215,15 +221,16 @@ class Reliquidacion extends MY_Controller
         
         if($parcial['bg_isliquidated'] == 0){
             $this->modelLog->warningLog(
-                'El parical aun no ha liquidado los impuestos'
+                'El parical aun no ha liquidado los impuestos' .
+                ' redireccionando a liquidacion'
                 );
-            return $this->index();
+            return $this->redirectPage('showTaxesParcial', $id_parcial);
         }
         
         $info_invoices = $this->modelInfoInvoice->getByParcial(
             $parcial['id_parcial']
             );
-        
+
         $infoInfoiceDetail = [];
         $products_base = [];
         
@@ -233,7 +240,7 @@ class Reliquidacion extends MY_Controller
                 );
             array_push($infoInfoiceDetail, $products);
         }
-        
+
         $infoInfoiceDetail = $infoInfoiceDetail[0];
         
         foreach ($infoInfoiceDetail as $item => $dt){
@@ -248,9 +255,8 @@ class Reliquidacion extends MY_Controller
             $product['detalle_pedido_factura'] = $dt['detalle_pedido_factura'];
             
             array_push($products_base, $product);
-        }
-        
-        
+        }       
+
         $order_invoices = $this->modelOrderInvoice->getbyOrder(
             $parcial['nro_pedido']
             );
@@ -269,12 +275,13 @@ class Reliquidacion extends MY_Controller
         
         $init_expenses = $this->modelInitExpenses->getAll($order);
         
+        #eliminamos los gastos de origen porque se prorratean en el FOB
         foreach ($init_expenses as $idx => $exp){
             if($exp['concepto'] == 'GASTO ORIGEN'){
                 unset($init_expenses[$idx]);
             }
         }
-        
+
         return([
             'order' => $order,
             'order_invoices' => $order_invoices,
@@ -568,14 +575,14 @@ class Reliquidacion extends MY_Controller
         array $parcial
         )
     {
-        
-        if($parcial['bg_isclosed']){
+
+        if($parcial['bg_isclosed'] == 1){
             $this->modelLog->generalLog(
                 'El parcial se encuentra cerrado no se puede continuar'
                 );
-            return $this->getProrrateosParcial($parcial['id_parcial']);
-            
+            return $this->getProrrateosParcial($parcial['id_parcial']);            
         }       
+
         
         $fobs = $prorrateo_values['fobs_parcial'];
         $warenhouses = $prorrateo_values['warenhouses'];

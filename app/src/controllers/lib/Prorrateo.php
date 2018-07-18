@@ -66,18 +66,66 @@ class Prorrateo {
             }
             
             foreach ($this->init_data['init_expeses'] as $idx => $expense){
-                $expense['valor_prorrateado'] = (
-                    $expense['valor_provisionado']
-                    * $fobs['fob_parcial_razon_inicial']
+
+                $expense['valor_prorrateado'] =  (
+                                            $expense['valor_provisionado']
+                                            * $fobs['fob_parcial_razon_inicial']
+                                                );
+                
+                if($expense['concepto'] == 'TASA DE CONTROL ADUANERO' && $expense['valor_provisionado'] > 40){
+                    $expense['valor_prorrateado'] = $this->getTCAValue(
+                        $expense['valor_provisionado']
                     );
-                if($expense['concepto'] != 'GASTO ORIGEN'){
-                    array_push( $prorrateos['prorrateo_pedido'], $expense);                   
                 }
+
+                array_push( $prorrateos['prorrateo_pedido'], $expense);        
             }
             
             return $prorrateos;
     }
     
+
+    /**
+     * Obtiene el valor de la tasa para el parcial
+     * @param $global_value float valor inicial de la provision
+     */
+    private function getTCAValue($global_value){
+        $tasa_sum = 0.0;        
+
+        foreach ($this->init_data['products'] as $key => $prod) {
+            $prod['peso'] = 0;
+
+            foreach ($this->init_data['order_invoice_detail'] as $idx => $oid) {
+                if($oid['detalle_pedido_factura'] == $prod['detalle_pedido_factura']){
+                    $prod['cod_contable'] = $oid['cod_contable'];
+                    break;
+                }
+            }
+
+            foreach ($this->init_data['products_base'] as $i => $pb){
+                if($pb['cod_contable'] == $prod['cod_contable']){
+                    $prod['peso'] = $pb['peso'];
+                    break;
+                }
+            }
+
+            $tasa = ($prod['peso']*1000/2000*.10);
+
+            if($tasa > 700){
+                $tasa_sum += 700;                
+            }else{
+                $tasa_sum += $tasa;
+            }
+
+        }
+
+        #si el valor excede lo que ingresaron se envia el mismo de la provision
+        if($tasa_sum  <= $global_value){
+            return $tasa_sum;
+        }else{
+            return $global_value;
+        }
+    }
     
     /**
      * Retorna el costo por bodegaje del parcial, y el saldo para el proximo

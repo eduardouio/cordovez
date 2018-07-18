@@ -261,6 +261,7 @@ class orderTaxesReliquidate {
         return([
             'product' => $product['nombre'],
             'detalle_pedido_factura' => $product['detalle_pedido_factura'],
+            'nro_factura_informativa' => 0,
             'cod_contable' => $product['cod_contable'],
             'cantidad_x_caja' => $product['cantidad_x_caja'],
             'cajas_importadas' => $product['cajas_importadas'],

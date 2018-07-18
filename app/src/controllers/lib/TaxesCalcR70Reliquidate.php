@@ -22,6 +22,8 @@ class parcialTaxesReliquidate {
     private $gastos_origen = 0.0;
     private $etiquetas_fiscales_valor = 0.0;
     private $iva_base = 0.12;
+    private $id_factura_informativa;
+    private $nro_factura_informativa;
     private $base_tasa_aduanera = 0.10;
     private $ice_advalorem_base = 0.75;
     private $type_change_invoice = 0.0;
@@ -294,7 +296,10 @@ class parcialTaxesReliquidate {
         return([
             'product' => $product['nombre'],
             'cod_contable' => $product['cod_contable'],
+            'id_factura_informativa' => $this->id_factura_informativa,
+            'nro_factura_informativa' => $this->nro_factura_informativa,
             'id_factura_informativa_detalle' => $product['id_factura_informativa_detalle'],
+            'detalle_pedido_factura' => $product['detalle_pedido_factura'],
             'cantidad_x_caja' => $product['cantidad_x_caja'],
             'cajas_importadas' => $product['cajas_importadas'],
             'unidades_importadas' => $product['unidades_importadas'],
@@ -327,6 +332,8 @@ class parcialTaxesReliquidate {
             'iva_total' => $taxes_product['iva_total'],
             'ex_aduana' => $taxes_product['ex_aduana'],
             'ex_aduana_unitario' => $taxes_product['ex_aduana_unitario'],
+            'exaduana_sin_etiquetas' => $taxes_product['exaduana_sin_etiquetas'],
+            'exaduana_sin_tasa' => $taxes_product['exaduana_sin_tasa'],
             'base_advalorem' => $taxes_product['base_advalorem'],
             'base_ice_epecifico' => $taxes_product['base_ice_especifico'],
             'ice_especifico' => $taxes_product['ice_especifico'],
@@ -393,6 +400,8 @@ class parcialTaxesReliquidate {
         $gasto_origen = 0.0;
 
         $total_invoices = $this->init_data['info_invoices'][0]['valor'];
+        $this->id_factura_informativa = $this->init_data['info_invoices'][0]['id_factura_informativa'];
+        $this->nro_factura_informativa = $this->init_data['info_invoices'][0]['nro_factura_informativa'];
 
         $percent = round((
             (   $detail_order_invoice['costo_caja']
@@ -438,6 +447,7 @@ class parcialTaxesReliquidate {
         return ([
             'nombre'=> $product_base['nombre'],
             'id_factura_informativa_detalle' => $detail_info_invoice['id_factura_informativa_detalle'],
+            'detalle_pedido_factura' => $detail_info_invoice['detalle_pedido_factura'],
             'cod_contable' => $product['cod_contable'],
             'cajas_importadas' => $detail_order_invoice['nro_cajas'],
             'gasto_origen' => $gasto_origen,
@@ -730,6 +740,8 @@ class parcialTaxesReliquidate {
                 'ice_especifico_unitario' => ($ice_especifico/$product['unidades']),
                 'ex_aduana' => $exaduana,
                 'ex_aduana_unitario' => $ex_aduana_unitario,
+                'exaduana_sin_etiquetas' => $exaduana_sin_etiquetas,
+                'exaduana_sin_tasa' => $exaduana_sin_tasa,
                 'etiquetas_fiscales'=> $etiquetas_fiscales,
                 'gasto_origen' => $product['gasto_origen'],
                 'base_advalorem' => $base_advalorem,

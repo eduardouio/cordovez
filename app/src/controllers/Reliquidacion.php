@@ -149,28 +149,76 @@ class Reliquidacion extends MY_Controller
             );
         
         $product_taxes = $parcialTaxes->getTaxes();
+
         #actualizamos los productos de la lista de la factura del pedido
-        
+        #solo si el parcial no ha cerrado
         if ($parcial['bg_isclosed'] == 0){
             foreach ($product_taxes['taxes'] as $idx => $tax_product){
 
-                print '<pre>';
-                print_r($tax_product);
-                print '</pre>';
-                exit();
-
                 $product = [
                     'id_factura_informativa_detalle' => $tax_product['id_factura_informativa_detalle'],
-                    'arancel_advalorem' => $tax_product['arancel_advalorem'],
-                    'arancel_especifico' => $tax_product['arancel_especifico'],
-                    'ice_advalorem' => $tax_product['ice_advalorem'],
-                    'ice_advalorem_pagado' => $tax_product['ice_advalorem_pagado'],
-                    'ice_advalorem_saldo' => $tax_product['ice_advalorem_diferencia'],
-                    'ice_especifico' => $tax_product['ice_especifico'],
+                    'product' => $tax_product['product'],
+                    'cod_contable' => $tax_product['cod_contable'],
+                    'nro_factura_informativa' => $tax_product['nro_factura_informativa'],
+                    'id_factura_informativa_detalle' => $tax_product['id_factura_informativa_detalle'],
+                    'detalle_pedido_factura' => $tax_product['detalle_pedido_factura'],
+                    'cantidad_x_caja' => $tax_product['cantidad_x_caja'],
+                    'cajas_importadas' => $tax_product['cajas_importadas'],
+                    'unidades_importadas' => $tax_product['unidades_importadas'],
+                    'unidades' => $tax_product['unidades'],
+                    'costo_caja' => $tax_product['costo_caja'],
+                    'costo_unidad' => $tax_product['costo_unidad'],
+                    'peso' => $tax_product['peso'],
+                    'capacidad_ml' => $tax_product['capacidad_ml'],
+                    'fob' => $tax_product['fob'],
+                    'fob_percent' => $tax_product['fob_percent'],
+                    'seguro_aduana' => $tax_product['seguro_aduana'],
+                    'flete_aduana' => $tax_product['flete_aduana'],
+                    'seguro' => $tax_product['seguro'],
+                    'flete' => $tax_product['flete'],
+                    'gasto_origen' => $tax_product['gasto_origen'],
+                    'cif' => $tax_product['cif'],
+                    'fecha_liquidacion' => $tax_product['fecha_liquidacion'],
+                    'nro_pedido' => $tax_product['nro_pedido'],
+                    'id_parcial' => $tax_product['id_parcial'],
+                    'otros' => $tax_product['otros'],
+                    'prorrateo_parcial' => $tax_product['prorrateo_parcial'],
+                    'prorrateo_pedido' => $tax_product['prorrateo_pedido'],
+                    'prorrateos_total' => $tax_product['prorrateos_total'],
+                    'tasa_control' => $tax_product['tasa_control'],
                     'fodinfa' => $tax_product['fodinfa'],
                     'iva' => $tax_product['iva'],
+                    'iva_unidad' => $tax_product['iva_unidad'],
+                    'iva_total' => $tax_product['iva_total'],
+                    'ex_aduana' => $tax_product['ex_aduana'],
+                    'ex_aduana_unitario' => $tax_product['ex_aduana_unitario'],
+                    'exaduana_sin_etiquetas' => $tax_product['exaduana_sin_etiquetas'],
+                    'exaduana_sin_tasa' => $tax_product['exaduana_sin_tasa'],
+                    'base_advalorem' => $tax_product['base_advalorem'],
+                    'base_ice_epecifico' => $tax_product['base_ice_epecifico'],
+                    'ice_especifico' => $tax_product['ice_especifico'],
+                    'ice_especifico_unitario' => $tax_product['ice_especifico_unitario'],
+                    'ice_advalorem' => $tax_product['ice_advalorem'],
+                    'ice_advalorem_sin_tasa' => $tax_product['ice_advalorem_sin_tasa'],
+                    'ice_advalorem_sin_etiquetas' => $tax_product['ice_advalorem_sin_etiquetas'],
+                    'ice_advalorem_unitario' => $tax_product['ice_advalorem_unitario'],
+                    'arancel_especifico' => $tax_product['arancel_especifico'],
+                    'arancel_advalorem' => $tax_product['arancel_advalorem'],
+                    'arancel_especifico_unitario' => $tax_product['arancel_especifico_unitario'],
+                    'arancel_advalorem_unitario' => $tax_product['arancel_advalorem_unitario'],
+                    'arancel_especifico_liberado' => $tax_product['arancel_especifico_liberado'],
+                    'arancel_advalorem_liberado' => $tax_product['arancel_advalorem_liberado'],
+                    'arancel_especifico_pagar' => $tax_product['arancel_especifico_pagar'],
+                    'arancel_advalorem_pagar' => $tax_product['arancel_advalorem_pagar'],
+                    'etiquetas_fiscales' => $tax_product['etiquetas_fiscales'],
+                    'ice_unitario' => $tax_product['ice_unitario'],
+                    'total_ice' => $tax_product['total_ice'],
+                    'ice_advalorem_pagado' => $tax_product['ice_advalorem_pagado'],
+                    'ice_advalorem_diferencia' => $tax_product['ice_advalorem_diferencia'],
                     'indirectos' => $tax_product['indirectos'],
-                    'costo' => $tax_product['costo_total']
+                    'costo_total' => $tax_product['costo_total'],
+                    'costo_caja_final' => $tax_product['costo_caja_final'],
+                    'costo_botella' => $tax_product['costo_botella'],
                 ];
                 
                 if($this->modelInfoInvoiceDetail->update($product) == False){

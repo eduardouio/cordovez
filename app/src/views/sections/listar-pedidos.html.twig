@@ -44,7 +44,7 @@
             <div class="col-sm-3" style="align: right;">
       <form class="form-inline" method="post">
   <div class="form-group">
-    <input type="text" class="form-control" name="nro_pedido" placeholder="Buscar Pedido">
+    <input type="text" class="form-control" name="nro_pedido" placeholder="Buscar Pedido" autocomplete="off" >
 	 <button type="submit" class="btn btn-sm btn-default"><span class="fa fa-search"></span></button>
   </div>
 </form>
@@ -59,6 +59,7 @@
                <th>Origen</th>
                <th>Proveedor</th>
                <th>Arribo</th>
+               <th>Ingreso Almagro</th>
                <th>FOB</th>
                <th>Nacionalizado</th>
                <th>Saldo</th>
@@ -83,8 +84,15 @@
                		{{ order.info.supplier.nombre }}
                </td>
                <td>
-                   {{ order.fecha_arribo }}
+                   {{ order.fecha_arribo | date('d/m/Y') }}
                    <small class="text-gray">[21]</small>
+               </td>
+               <td class="text-right">
+                {% if order.fecha_ingreso_almacenera != null %}
+                   {{ order.fecha_arribo | date('d/m/Y') }}
+                {% else %}
+                    --/--/----
+                {% endif %}
                </td>
                <td class="text-right">
                	  {{ money | raw }}

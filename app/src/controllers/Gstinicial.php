@@ -321,9 +321,13 @@ class Gstinicial extends MY_Controller
             'validateExpenses' => True,
             'titleContent' => 'Generar Gastos Iniciales Pedido: [' . 
                                 $nroOrder . '] ' . 
-                                ' <small>Validar Información</small>',
+                                ' <small>Validar Información</small> ' .
+                                '&nbsp;&nbsp;&nbsp;&nbsp;<small> Fecha Ingreso Bodegaje: ' .
+                                $order['fecha_ingreso_almacenera'] . 
+                                '</small>',
             'dates_order' => $checked_order->checkOrder(),
             'order' => $order,
+            'title' => 'Gastos Iniciales [' . $nroOrder . ']',
             'have_euros' => $this->modelOrderInvoice->haveEuros($nroOrder),
             'invoices_order' => $checked_order->checkOrderInvoices(),
             'initial_tributes' => $checked_order->getInitialTributes(),

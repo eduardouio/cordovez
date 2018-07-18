@@ -213,6 +213,8 @@
                      <th>FOB </th>
                      <th>Flete A</th>
                      <th>Seguro A</th>
+                     <th>Flete</th>
+                     <th>Seguro</th>
                      <th>CIF</th>
                      <th>Fodinfa</th>
                      <th>Etiquetas Fiscales</th>
@@ -242,6 +244,8 @@
                      <td class="text-right">{{ tax.fob | number_format(2,',','.') }}</td>
                      <td class="text-right">{{ tax.flete_aduana | number_format(2,',','.') }}</td>
                      <td class="text-right">{{ tax.seguro_aduana | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ tax.flete | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ tax.seguro | number_format(2,',','.') }}</td>
                      <td class="text-right">{{ tax.cif | number_format(2,',','.') }}</td>
                      <td class="text-right">{{ tax.fodinfa | number_format(2,',','.') }}</td>
                      <td class="text-right">{{ tax.etiquetas_fiscales | number_format(2,',','.') }}</td>
@@ -270,6 +274,8 @@
                      <td class="text-right">{{ parcial_taxes.sums.fob | number_format(2,',','.') }}</td>
                      <td class="text-right">{{ parcial_taxes.sums.flete_aduana | number_format(2,',','.') }}</td>
                      <td class="text-right">{{ parcial_taxes.sums.seguro_aduana | number_format(2,',','.')}}</td>
+                     <td class="text-right">{{ parcial_taxes.sums.flete | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ parcial_taxes.sums.seguro | number_format(2,',','.')}}</td>
                      <td class="text-right">{{ parcial_taxes.sums.cif | number_format(2,',','.') }}</td>
                      <td class="text-right">{{ parcial_taxes.sums.fodinfa | number_format(2,',','.') }}</td>
                      <td class="text-right">{{ parcial_taxes.sums.etiquetas_fiscales | number_format(2,',','.') }}</td>

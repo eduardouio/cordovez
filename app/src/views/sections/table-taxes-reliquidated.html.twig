@@ -1,3 +1,8 @@
+{% if parcial.bg_isclosed == 0 %}    
+   <span style="background-color:#d41; float:right;color:#fff;padding:2px;border-radius:4px;">
+      Parcial Liquidado y Cerrado
+   </span>
+{% endif %}
 <div class="row">
    <div class="col-md-4">
       <div class="text-tittle">Par&aacute;metros compatidos por el parcial </div>
@@ -171,7 +176,7 @@
             <td class="text-right">{{ tax.costo_botella | number_format(2,',','.') }}</td>
             </tr>
             {% endfor %}
-            <tr style="background-color:#2E86C1; color:#fff; font-weight:bold;">
+            <tr style="background-color:#2E86C1; color:#fff;">
                <td colspan="2">Sumas:</td>
                <td class="text-right">{{ parcial_taxes.sums.cajas }}</td>
                <td class="text-right">{{ parcial_taxes.sums.unidades }}</td>
@@ -230,13 +235,15 @@
    <div class="col-md-6 text-right">
       <a href="{{ rute_url }}pedido/presentar/{{ order.nro_pedido }}" class="btn btn-sm btn-default"> 
       <span class="fa fa-check"></span>Volver al Pedido </a>
+       {% if parcial.bg_isclosed == 0 %}      
       &nbsp;&nbsp;
       <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#myModal">
       <span class="fa fa-save"></span> Liquidar Parcial
       </button>      
+   {% endif %}
    </div>   
 </div>
 </div>
-
+if()
 {% include 'forms/frm-cierre-pedido.html.twig'  %}
 

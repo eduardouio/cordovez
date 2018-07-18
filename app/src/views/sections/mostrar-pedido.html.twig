@@ -59,7 +59,7 @@
    </div>
 </div>
 <div class="row">
-<div class="col-md-5">
+<div class="col-md-6">
 <ol class="breadcrumb" style="color: #111;">
   <li class="{{ order_report.where_is.buque }}"> <span class="fa fa-ship"></span> Buque</a></li>
   <li class="{{ order_report.where_is.puerto }}"> <span class="fa fa-simplybuilt"></span> Puerto</li>
@@ -68,9 +68,19 @@
   	<li class="{{ order_report.where_is.almacenera }}"> <span class="fa fa-fort-awesome"></span>Almacenera</li>
   {% endif %}
   <li class="{{ order_report.where_is.cordovez }}"> <span class="fa fa-home"></span> Cordovez</li>
+  <li> 
+    <span class="fa fa-calendar"></span> Ingr. Almacenera
+    <strong>
+      {% if(order.fecha_ingreso_almacenera != null) %}
+      {{ order.fecha_ingreso_almacenera | date('d/m/Y')  }}
+      {% else %}
+      Pendiente
+      {% endif %}
+    </strong>
+  </li>
 </ol>
 </div>
-<div class="col-md-7 text-right">
+<div class="col-md-6 text-right">
 		<a href="{{rute_url}}gstinicial/validargi/{{order.nro_pedido}}" class="btn btn-primary btn-sm">
 				<span class="fa fa-gear"></span> Gastos Iniciales
 		</a>

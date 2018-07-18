@@ -25,6 +25,7 @@ class orderTaxesReliquidate {
     private $etiquetas_fiscales_valor = 0.0;
     private $gastos_origen;
     private $have_control_tasa = True;
+    private $base_tasa_aduanera = 0.10;
     private $taxes = [];
     
     /**
@@ -127,42 +128,88 @@ class orderTaxesReliquidate {
             $this->order['ice_advalorem'] 
             - $this->order['ice_advalorem_pagado']
             );
+
         $diferencia_ice_especifico = (
             $this->order['ice_especifico'] 
             - $this->order['ice_especifico_pagado']
             ) ;
         
-        
-        $num_products = count($taxes);
+        #todos los productos de la liquidacion
+        $all_products = count($taxes);
+        #Solo los productos con Ice Advalorem
+        $num_products = 0;
+
+        foreach ($taxes as $key => $tax) {
+            if($tax['ice_advalorem'] > 0){
+                $num_products ++;
+            }
+        }    
+
+
         $reliquidate_taxes = [];
 
         foreach ( $taxes as $idx => $tax){
-            if($have_tasa){
-                $tax['ice_advalorem_pagado'] = (
-                    $tax['ice_advalorem_sin_etiquetas'] 
-                    - ( $diferencia/$num_products )
-                    );
-                $tax['ice_advalorem_saldo'] = (
-                    $tax['ice_advalorem'] 
-                    - $tax['ice_advalorem_pagado']
-                    );
+            if($tax['ice_advalorem'] > 0){
+
+                if($have_tasa){
+                    $tax['ice_advalorem_pagado'] = (
+                        $tax['ice_advalorem_sin_etiquetas'] 
+                        - ( $diferencia/$num_products )
+                        );
+                    $tax['ice_advalorem_diferencia'] = (
+                        $tax['ice_advalorem'] 
+                        - $tax['ice_advalorem_pagado']
+                        );
+                    $tax['exaduana_antes'] = $tax['exaduana_sin_etiquetas'];
+                }else{
+                    $tax['ice_advalorem_pagado'] = (
+                        $tax['ice_advalorem_sin_tasa']
+                        - ( $diferencia/$num_products )
+                        );
+                    $tax['ice_advalorem_diferencia'] = (
+                        $tax['ice_advalorem']
+                        - $tax['ice_advalorem_pagado']
+                        );
+                    $tax['exaduana_antes'] = $tax['exaduana_sin_tasa'];
+                }
             }else{
-                $tax['ice_advalorem_pagado'] = (
-                    $tax['ice_advalorem_sin_tasa']
-                    - ( $diferencia/$num_products )
-                    );
-                $tax['ice_advalorem_diferencia'] = (
-                    $tax['ice_advalorem']
-                    - $tax['ice_advalorem_pagado']
-                    );
+                $tax['ice_advalorem_pagado'] = 0;
+                $tax['ice_advalorem_diferencia'] = 0;
             }
             
             $tax['ice_especifico'] = (
                 $tax['ice_especifico']
-                - ( $diferencia_ice_especifico/$num_products )
+                - ( $diferencia_ice_especifico/$all_products)
                 );
             
             $tax['total_ice'] = $tax['ice_especifico'] + $tax['ice_advalorem'];
+
+            $tax['indirectos'] = (
+              $tax['total_ice']
+            + $tax['fodinfa']
+            + $tax['arancel_advalorem_pagar']
+            + $tax['arancel_especifico_pagar']
+            + $tax['prorrateos_total']
+            + $tax['gasto_origen']
+                );
+
+
+
+            $costo_total = (
+                $tax['total_ice']
+                + $tax['arancel_advalorem_pagar']
+                + $tax['arancel_especifico_pagar']
+                + $tax['fodinfa']
+                + $tax['prorrateos_total']
+                + $tax['fob']
+                + $tax['gasto_origen']
+            );
+
+            $tax['costo_total'] = $costo_total;
+            $tax['costo_caja_final']  = $costo_total/$tax['cajas'];
+            $tax['costo_botella'] = $costo_total/$tax['unidades'];
+
+            
             
             array_push($reliquidate_taxes, $tax);
         }
@@ -197,7 +244,7 @@ class orderTaxesReliquidate {
             $this->order['tipo_cambio_impuestosR10'];
         }
         
-        $this->gastos_origen = 0;
+        $this->incoterm = strtoupper($this->init_data['order']['incoterm']);
         $etiquetas_fiscales = 0.0;
         
         foreach ($this->init_data['init_expenses'] as $idx => $exp){
@@ -215,12 +262,14 @@ class orderTaxesReliquidate {
         }
         
         
-        
+        #si los gastos de origen no estan en la lista de GI estan en el pedido
+        # verificar si trabaja bien con los incoterms mencionados. los GO estan
+        # en la moneda del pedido
         if ($this->order['incoterm'] == 'FOB' || $this->order['incoterm'] == 'CFR'){
-            $this->gastos_origen = $this->order['gasto_origen'];
+            $this->gastos_origen = (
+                $this->order['gasto_origen']
+            );
         }
-        
-        $this->incoterm = strtoupper($this->init_data['order']['incoterm']);
         
         $this->have_labes = boolval(
             $this->order['have_etiquetas_fiscales']
@@ -248,21 +297,11 @@ class orderTaxesReliquidate {
         
         $taxes_product = $this->getDetailTaxesProduct($product, $prorrateo_item);
         
-        $indirectos = (
-            $taxes_product['ice_advalorem']
-            + $taxes_product['ice_especifico']
-            + $taxes_product['fodinfa']
-            + $taxes_product['arancel_advalorem_pagar']
-            + $taxes_product['arancel_especifico_pagar']
-            + $taxes_product['etiquetas_fiscales']
-            + $prorrateo_item['prorrateo_pedido']
-            );
-        
         return([
             'product' => $product['nombre'],
-            'detalle_pedido_factura' => $product['detalle_pedido_factura'],
-            'nro_factura_informativa' => 0,
             'cod_contable' => $product['cod_contable'],
+            'nro_factura_informativa' => 0,
+            'detalle_pedido_factura' => $product['detalle_pedido_factura'],
             'cantidad_x_caja' => $product['cantidad_x_caja'],
             'cajas_importadas' => $product['cajas_importadas'],
             'unidades_importadas' => $product['unidades_importadas'],
@@ -273,22 +312,33 @@ class orderTaxesReliquidate {
             'peso' => $product['peso'],
             'capacidad_ml'=> $product['capacidad_ml'],
             'grado_alcoholico'=> $product['grado_alcoholico'],
-            'gasto_origen' => $product['gasto_origen'],
             'fob' => $product['fob'],
             'fob_percent' => $prorrateo_item['fob_percent'],
             'seguro_aduana' => $prorrateo_item['seguro_aduana'],
             'flete_aduana' =>$prorrateo_item['flete_aduana'],
+            'seguro' => $prorrateo_item['seguro'],
+            'flete' =>$prorrateo_item['flete'],
+            'gasto_origen' => $product['gasto_origen'],
             'cif' => $prorrateo_item ['cif'],
+            'fecha_liquidacion' => $this->order['fecha_liquidacion'],
+            'nro_pedido' => $this->order['nro_pedido'],
+            'id_parcial' => 0,
             'otros' =>  $prorrateo_item['otros'],
+            'prorrateo_parcial' => 0,
             'prorrateo_pedido' => $prorrateo_item['prorrateo_pedido'],
-            'indirectos' => $indirectos,
+            'prorrateos_total' => $prorrateo_item['prorrateo_pedido'],
             'tasa_control' => $prorrateo_item['tasa_control'],
             'fodinfa' => $taxes_product['fodinfa'],
-            'iva_total' => $taxes_product['iva_total'],
             'iva' => $taxes_product['iva'],
             'iva_unidad' => $taxes_product['iva_unidad'],
+            'iva_total' => $taxes_product['iva_total'],
             'ex_aduana' => $taxes_product['ex_aduana'],
             'ex_aduana_unitario' => $taxes_product['ex_aduana_unitario'],
+            'exaduana_sin_etiquetas' => $taxes_product['exaduana_sin_etiquetas'],
+            'exaduana_sin_tasa' => $taxes_product['exaduana_sin_tasa'],
+            'ex_aduana_unitario_sin_tasa' => $taxes_product['ex_aduana_unitario_sin_tasa'],
+            'ex_aduana_unitario_sin_etiquetas' => $taxes_product['ex_aduana_unitario_sin_etiquetas'],
+            'exaduana_pago' => 0.0,
             'base_advalorem' => $taxes_product['base_advalorem'],
             'base_ice_epecifico' => $taxes_product['base_ice_especifico'],
             'ice_especifico' => $taxes_product['ice_especifico'],
@@ -307,15 +357,9 @@ class orderTaxesReliquidate {
             'arancel_advalorem_pagar' => $taxes_product['arancel_advalorem_pagar'],
             'etiquetas_fiscales'=> $taxes_product['etiquetas_fiscales'],
             'ice_unitario'=> $taxes_product['ice_unitario'],
-            'total_ice' => $taxes_product['total_ice'],
-            'costo_caja_final' => $taxes_product['costo_total'] / $product['cajas'],
-            'costo_total' => $taxes_product['costo_total'],
-            'costo_botella'=> (
-                $taxes_product['costo_total']
-                / $product['unidades']),
         ]);
-        
     }
+
     
     /**
      * Retorna la Informacion del producto al que se le esta calculando el
@@ -361,44 +405,40 @@ class orderTaxesReliquidate {
             $total_invoices += $invoice['valor'];
         }
         
-        $percent = (
-            $detail_invoice['nro_cajas']
-            * $detail_order_invoice['costo_caja']
-            ) / $total_invoices;
+        $percent = round((
+            ($detail_invoice['nro_cajas']* $detail_order_invoice['costo_caja']) 
+            / $total_invoices),3);
             
-            if ($this->incoterm == 'CFR'){
-                #si en algun momento hay varias facturas no va a funcionar tienes
-                # se debe calcular en base a las facturas adicionales que existan
-                $fob = (
-                    (
-                        $detail_invoice['nro_cajas']
-                        * $detail_order_invoice['costo_caja']
-                        )
-                    * $this->type_change_order
-                    );
+        if ($this->incoterm == 'CFR'){
+            #si en algun momento hay varias facturas no va a funcionar tienes
+            # se debe calcular en base a las facturas adicionales que existan
+            $fob = (
+                (
+                    $detail_invoice['nro_cajas']
+                    * $detail_order_invoice['costo_caja']
+                    )
+                * $this->type_change_order
+                );
+            
+        }elseif ($this->incoterm == 'FOB'){
+            $fob = (
+                (   $detail_invoice['nro_cajas']
+                    * $detail_order_invoice['costo_caja']
+                    )
+                + ($this->gastos_origen * $percent)
+                ) * $this->type_change_order;
                 
-            }elseif ($this->incoterm == 'FOB'){
-                $fob = (
-                    (   $detail_invoice['nro_cajas']
-                        * $detail_order_invoice['costo_caja']
-                        )
-                    + ($this->gastos_origen * $percent)
-                    ) * $this->type_change_order;
-                    
-                    $gasto_origen =
-                    ($this->gastos_origen * $percent)
-                    * $this->type_change_order;
-                    
-            }else{
-                $fob = (
-                    (   $detail_invoice['nro_cajas']
-                        * $detail_order_invoice['costo_caja']
-                        )
-                    ) * $this->type_change_order
-                    + ($this->gastos_origen * $percent);
-                    
-                    $gasto_origen = ($this->gastos_origen * $percent);
-            }
+                $gasto_origen =
+                ($this->gastos_origen * $percent)
+                * $this->type_change_order;
+                
+        }else{
+            $fob = (
+                ($detail_invoice['nro_cajas']* $detail_order_invoice['costo_caja'])
+                 * $this->type_change_order );
+                
+                $gasto_origen = ($this->gastos_origen * $percent);
+        }
             
             return ([
                 'nombre'=> $product_base['nombre'],
@@ -423,6 +463,7 @@ class orderTaxesReliquidate {
                     ),
                 'capacidad_ml' =>  $product_base['capacidad_ml'] ,
                 'peso' => $product_base['peso'] ,
+                'percent' => $percent,
                 'grado_alcoholico' => $detail_order_invoice['grado_alcoholico'],
                 'fob' => $fob,
             ]);
@@ -437,44 +478,47 @@ class orderTaxesReliquidate {
         array $product
         ): array
         {
-            $fob_invoice = 0.0;
+            $tasa_control = 0.0;
+            $seguro = 0.0;
+            $flete = 0.0;
             $prorrateos_pedido = 0.0;
             
             foreach($this->init_data['init_expenses'] as $idx => $gst_prorrateo){
                 $prorrateos_pedido += $gst_prorrateo['valor_provisionado'];
+                 if($gst_prorrateo['concepto'] == 'FLETE'){
+                            #la primera opcion muestra el Flete sin GO
+                            #segunda suma los dos para mostrarlos en el display
+                            #$flete = ($gst_prorrateo['valor_provisionado'] * $product['percent']);
+                            $flete = ($gst_prorrateo['valor_provisionado'] * $product['percent']) 
+                                    + ($this->gastos_origen * $product['percent']);
+                        }
+                        if($gst_prorrateo['concepto'] == 'POLIZA SEGURO'){
+                            $seguro = $gst_prorrateo['valor_provisionado'] * $product['percent'];
+                        }
             }
-            
-            foreach ($this->init_data['order_invoices'] as $idx => $invoice){
-                $fob_invoice += $invoice['valor'];
-            }
-            
-            $fob_percent = (
-                ($product['costo_caja'] *  $product['cajas'] )
-                /
-                $fob_invoice
-                );
-            
-            $tasa_control = 0.0;
             
             foreach ($this->init_data['init_expenses'] as $key => $value) {
                 if ($this->have_control_tasa){
                     if($value['concepto'] == 'TASA DE CONTROL ADUANERO'){
-                        $tasa_control = 0; 
+                         $tasa_control = ($product['peso']*1000/2000*$this->base_tasa_aduanera);
+                        if($tasa_control > 700){
+                            $tasa_control = 700;
+                        }
                     }
                 }
-            }
+            }           
             
-            $this->gastos_origen = (
-                $this->type_change_order * $this->gastos_origen
-                );
-            
+            $fob_percent = ($product['percent']);
+
             $prorrateo_item = [
                 'fob_percent' => $fob_percent,
                 'product' => $product,
                 'seguro_aduana' => $this->order['seguro_aduana'] * $fob_percent,
                 'flete_aduana' => $this->order['flete_aduana'] * $fob_percent,
-                'otros' =>  $this->order['otros'] * $fob_percent,
+                'seguro' => $seguro,
+                'flete' => $flete,
                 'gasto_origen' => $this->gastos_origen * $fob_percent,
+                'otros' =>  $this->order['otros'] * $fob_percent,
                 'tasa_control' => $tasa_control,
                 'prorrateo_pedido' => $prorrateos_pedido * $fob_percent,
             ];
@@ -524,7 +568,7 @@ class orderTaxesReliquidate {
                     * $prorrateos['fob_percent']
                 );
             
-            $arancelid_factura_informativa_detalle_advalorem_unitario = ($arancel_advalorem / $product['unidades']);
+            $arancel_advalorem_unitario = ($arancel_advalorem / $product['unidades']);
             
             $arancel_especifico = (
                 $this->getTaxParam('ARANCEL ESPECIFICO')
@@ -544,11 +588,7 @@ class orderTaxesReliquidate {
                     );
                                 
                 $arancel_advalorem_pagar =  ($arancel_advalorem - $arancel_advalorem_liberado);
-                $arancel_especifico_pagar = ($arancel_especifico - $arancel_especifico_liberado);
-                
-                $arancel_advalorem_unitario = (
-                    $arancel_advalorem_pagar 
-                    / $product['unidades']);
+                $arancel_especifico_pagar = ($arancel_especifico - $arancel_especifico_liberado);               
                 
                 $base_ice_especifico = $this->getTaxParam('ICE ESPECIFICO');
                 
@@ -632,11 +672,11 @@ class orderTaxesReliquidate {
                         * $product['unidades'];
                 }
                 
-                $ice_advalorem_sin_tasa_porcentaje = $ice_advalorem_sin_tasa / $ice_advalorem;                
                 
                 $ice_advalorem_unitario = $ice_advalorem / $product['unidades'];                
-                
-                $iva =  $iva_total = $this->order['iva_pagado'] * $prorrateos['fob_percent'];
+                $iva =  $iva_total = (
+                    $this->order['iva_pagado'] * $prorrateos['fob_percent']
+                    );
                     
                 return ([
                     'fodinfa' => $fodinfa,
@@ -645,13 +685,16 @@ class orderTaxesReliquidate {
                     'ice_especifico_unitario' => ($ice_especifico/$product['unidades']),
                     'ex_aduana' => $exaduana,
                     'ex_aduana_unitario' => $ex_aduana_unitario,
+                    'exaduana_sin_etiquetas' => $exaduana_sin_etiquetas,
+                    'exaduana_sin_tasa' => $exaduana_sin_tasa,
+                    'ex_aduana_unitario_sin_tasa' => $ex_aduana_unitario_sin_tasa,
+                    'ex_aduana_unitario_sin_etiquetas' => $ex_aduana_unitario_sin_etiquetas,
                     'etiquetas_fiscales'=> $etiquetas_fiscales,
                     'base_advalorem' => $base_advalorem,
                     'gasto_origen' => $product['gasto_origen'],
                     'ice_advalorem' => $ice_advalorem,
                     'ice_advalorem_sin_etiquetas' => $ice_advalorem_sin_etiquetas,
                     'ice_advalorem_sin_tasa' => $ice_advalorem_sin_tasa,
-                    'ice_advalorem_sin_tasa_porcentaje' => $ice_advalorem_sin_tasa_porcentaje,          
                     'ice_advalorem_unitario' => $ice_advalorem_unitario,
                     'ice_unitario'=> $ice_advalorem_unitario,
                     'arancel_especifico' => $arancel_especifico,
@@ -666,15 +709,6 @@ class orderTaxesReliquidate {
                     'iva' => $iva,
                     'iva_total' => $iva_total,
                     'iva_unidad' => $iva / $product['unidades'],
-                    'costo_total' =>(
-                        $product['fob']
-                        + $fodinfa
-                        + $arancel_advalorem_pagar
-                        + $arancel_especifico_pagar
-                        + $ice_advalorem
-                        + $ice_especifico
-                        + $prorrateos['prorrateo_pedido']
-                        ),
                 ]);
                     
     }

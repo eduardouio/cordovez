@@ -162,6 +162,7 @@ class parcialTaxesReliquidate {
                         $tax['ice_advalorem']
                         - $tax['ice_advalorem_pagado']
                         );
+                    #$tax['exaduana_antes'] = $tax['exaduana_sin_etiquetas'];
                 }else{
 
                     $tax['ice_advalorem_pagado'] = (
@@ -173,10 +174,10 @@ class parcialTaxesReliquidate {
                         $tax['ice_advalorem']
                         - $tax['ice_advalorem_pagado']
                         );
+                    #$tax['exaduana_antes'] = $tax['exaduana_sin_tasa'];
                 }
             }else{
                 $tax['ice_advalorem_pagado'] = 0;
-                $tax['ice_advalorem_diferencia'] = 0;
                 $tax['ice_advalorem_diferencia'] = 0;
 
             }
@@ -334,6 +335,9 @@ class parcialTaxesReliquidate {
             'ex_aduana_unitario' => $taxes_product['ex_aduana_unitario'],
             'exaduana_sin_etiquetas' => $taxes_product['exaduana_sin_etiquetas'],
             'exaduana_sin_tasa' => $taxes_product['exaduana_sin_tasa'],
+            'ex_aduana_unitario_sin_tasa' => $taxes_product['ex_aduana_unitario_sin_tasa'],
+            'ex_aduana_unitario_sin_etiquetas' => $taxes_product['ex_aduana_unitario_sin_etiquetas'],
+            'exaduana_pago' => 0.0,
             'base_advalorem' => $taxes_product['base_advalorem'],
             'base_ice_epecifico' => $taxes_product['base_ice_especifico'],
             'ice_especifico' => $taxes_product['ice_especifico'],
@@ -352,7 +356,6 @@ class parcialTaxesReliquidate {
             'arancel_advalorem_pagar' => $taxes_product['arancel_advalorem_pagar'],
             'etiquetas_fiscales'=> $taxes_product['etiquetas_fiscales'],
             'ice_unitario'=> $taxes_product['ice_unitario'],
-            'total_ice' => $taxes_product['total_ice'],
         ]);
     }
     
@@ -511,6 +514,8 @@ class parcialTaxesReliquidate {
                 if ($gst_prorrateo['tipo'] == 'gasto_inicial'){
                     if($gst_prorrateo['concepto'] != 'TASA DE CONTROL ADUANERO'){
                         if($gst_prorrateo['concepto'] == 'FLETE'){
+                            #la primera opcion muestra el Flete sin GO
+                            #segunda suma los dos para mostrarlos en el display
                             #$flete = ($gst_prorrateo['valor_prorrateado'] * $product['percent']);
                             $flete = ($gst_prorrateo['valor_prorrateado'] * $product['percent']) 
                                     + ($this->gastos_origen * $product['percent']);
@@ -518,8 +523,6 @@ class parcialTaxesReliquidate {
                         if($gst_prorrateo['concepto'] == 'POLIZA SEGURO'){
                             $seguro = $gst_prorrateo['valor_prorrateado'] * $product['percent'];
                         }
-
-
 
                         array_push($prorrateo_pedido, $gst_prorrateo['valor_prorrateado'] * $product['percent']);
                     }
@@ -731,7 +734,9 @@ class parcialTaxesReliquidate {
             
             $ice_advalorem_unitario =  $ice_advalorem / $product['unidades'];
             
-            $iva = $iva_total = $this->parcial['iva_pagado'] * $prorrateos['fob_percent'];                    
+            $iva = $iva_total = (
+                $this->parcial['iva_pagado'] * $prorrateos['fob_percent']
+                );                    
                     
             return ([
                 'fodinfa' => $fodinfa,
@@ -742,6 +747,8 @@ class parcialTaxesReliquidate {
                 'ex_aduana_unitario' => $ex_aduana_unitario,
                 'exaduana_sin_etiquetas' => $exaduana_sin_etiquetas,
                 'exaduana_sin_tasa' => $exaduana_sin_tasa,
+                'ex_aduana_unitario_sin_tasa' => $ex_aduana_unitario_sin_tasa,
+                'ex_aduana_unitario_sin_etiquetas' => $ex_aduana_unitario_sin_etiquetas,
                 'etiquetas_fiscales'=> $etiquetas_fiscales,
                 'gasto_origen' => $product['gasto_origen'],
                 'base_advalorem' => $base_advalorem,
@@ -762,15 +769,6 @@ class parcialTaxesReliquidate {
                 'iva' => $iva,
                 'iva_total' => $iva_total,
                 'iva_unidad' => $iva / $product['unidades'],
-                'costo_total' =>(
-                    $product['fob']
-                    + $fodinfa
-                    + $arancel_advalorem_pagar
-                    + $arancel_especifico_pagar
-                    + $ice_advalorem
-                    + $ice_especifico
-                    + $prorrateos['prorrateos_total']
-                    ),
             ]);
     }
     

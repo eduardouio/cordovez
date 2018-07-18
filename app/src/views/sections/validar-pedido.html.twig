@@ -102,7 +102,11 @@
                <th class="text-center">ESTADO</th>
             </tr>
             <tr>
-               <td>Facturas Producto  <strong>{{order.nro_pedido}}</strong> Proveedor Internacional</td>
+               <td>Facturas Producto  <strong>{{order.nro_pedido}}</strong> Proveedor Internacional
+                <a href="{{rute_url}}pedidofactura/presentar/">
+                <span class="fa fa-ete"></span>
+                </a>
+               </td>
                {% if invoices_order == false %}
                <td>No Registrado</td>
                <td class="danger"><span class="fa fa-ban text-danger"></span>

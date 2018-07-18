@@ -191,6 +191,7 @@ class Reliquidacion extends MY_Controller
                     'iva_unidad' => $tax_product['iva_unidad'],
                     'iva_total' => $tax_product['iva_total'],
                     'ex_aduana' => $tax_product['ex_aduana'],
+                    #'ex_aduana_antes' =>$tax_product['ex_aduana_antes'],
                     'ex_aduana_unitario' => $tax_product['ex_aduana_unitario'],
                     'exaduana_sin_etiquetas' => $tax_product['exaduana_sin_etiquetas'],
                     'exaduana_sin_tasa' => $tax_product['exaduana_sin_tasa'],
@@ -236,6 +237,7 @@ class Reliquidacion extends MY_Controller
             'prorrateos' => $prorrateos,
             'parcial' => $parcial,
             'tipo' => 'parcial',
+            'title' => 'Reliquidacion Parcial Pedido [' . $parcial['nro_pedido'] . ']',
             'id' => $parcial['id_parcial'],
             'warenhouses' => $init_data['warenhouses'],
             'regimen' => 'R70',
@@ -398,22 +400,75 @@ class Reliquidacion extends MY_Controller
         if ($order['bg_isclosed'] == 0){
             foreach ($product_taxes['taxes'] as $idx => $tax_product){
                 $product = [
-                    'detalle_pedido_factura' => $tax_product['detalle_pedido_factura'],
-                    'arancel_advalorem' => $tax_product['arancel_advalorem'],
-                    'arancel_especifico' => $tax_product['arancel_especifico'],
-                    'ice_advalorem' => $tax_product['ice_advalorem'],
+                    'detalle_pedido_factura' => $tax_product['detalle_pedido_factura'],  
+                    'product'=> $tax_product['product'],
+                    'nro_factura_informativa' => 0,
+                    'cantidad_x_caja' => $tax_product['cantidad_x_caja'],
+                    'cajas_importadas' => $tax_product['cajas_importadas'],
+                    'unidades_importadas' => $tax_product['unidades_importadas'],
+                    'unidades' => $tax_product['unidades'],
+                    'costo_unidad' => $tax_product['costo_unidad'],
+                    'peso' => $tax_product['peso'],
+                    'capacidad_ml' => $tax_product['capacidad_ml'],
+                    'fob' => $tax_product['fob'],
+                    'fob_percent' => $tax_product['fob_percent'],
+                    'seguro_aduana' => $tax_product['seguro_aduana'],
+                    'flete_aduana' => $tax_product['flete_aduana'],
+                    'seguro' => $tax_product['seguro'],
+                    'flete' => $tax_product['flete'],
+                    'gasto_origen' =>$tax_product['gasto_origen'],
+                    'cif' =>$tax_product['cif'],
+                    'fecha_liquidacion' =>$tax_product['fecha_liquidacion'],
+                    'nro_pedido' =>$tax_product['nro_pedido'],
+                    'id_parcial' =>0,
+                    'otros' =>$tax_product['otros'],
+                    'prorrateo_parcial' =>0,
+                    'prorrateo_pedido' =>$tax_product['prorrateo_pedido'],
+                    'prorrateos_total' =>$tax_product['prorrateos_total'],
+                    'tasa_control' =>$tax_product['tasa_control'],
+                    'fodinfa' =>$tax_product['fodinfa'],
+                    'iva' =>$tax_product['iva'],
+                    'iva_unidad' =>$tax_product['iva_unidad'],
+                    'iva_total' =>$tax_product['iva_total'],
+                    'ex_aduana' =>$tax_product['ex_aduana'],
+                    #'ex_aduana_antes' =>$tax_product['ex_aduana_antes'],
+                    'ex_aduana_unitario' =>$tax_product['ex_aduana_unitario'],
+                    'exaduana_sin_etiquetas' =>$tax_product['exaduana_sin_etiquetas'],
+                    'exaduana_sin_tasa' =>$tax_product['exaduana_sin_tasa'],
+                    'base_advalorem' =>$tax_product['base_advalorem'],
+                    'base_ice_epecifico' =>$tax_product['base_ice_epecifico'],
+                    'ice_especifico' =>$tax_product['ice_especifico'],
+                    'ice_especifico_unitario' =>$tax_product['ice_especifico_unitario'],
+                    'ice_advalorem' =>$tax_product['ice_advalorem'],
+                    'ice_advalorem_sin_tasa' =>$tax_product['ice_advalorem_sin_tasa'],
+                    'ice_advalorem_sin_etiquetas' =>$tax_product['ice_advalorem_sin_etiquetas'],
+                    'ice_advalorem_unitario' =>$tax_product['ice_advalorem_unitario'],
+                    'arancel_especifico' =>$tax_product['arancel_especifico'],
+                    'arancel_advalorem' =>$tax_product['arancel_advalorem'],
+                    'arancel_especifico_unitario' =>$tax_product['arancel_especifico_unitario'],
+                    'arancel_advalorem_unitario' =>$tax_product['arancel_advalorem_unitario'],
+                    'arancel_especifico_liberado' =>$tax_product['arancel_especifico_liberado'],
+                    'arancel_advalorem_liberado' =>$tax_product['arancel_advalorem_liberado'],
+                    'arancel_especifico_pagar' =>$tax_product['arancel_especifico_pagar'],
+                    'arancel_advalorem_pagar' =>$tax_product['arancel_advalorem_pagar'],
+                    'etiquetas_fiscales' =>$tax_product['etiquetas_fiscales'],
+                    'ice_unitario' =>$tax_product['ice_unitario'],
                     'ice_advalorem_pagado' => $tax_product['ice_advalorem_pagado'],
-                    'ice_advalorem_saldo' => $tax_product['ice_advalorem_diferencia'],
-                    'ice_especifico' => $tax_product['ice_especifico'],
-                    'fodinfa' => $tax_product['fodinfa'],
-                    'iva' => $tax_product['iva'],
+                    'ice_advalorem_diferencia' => $tax_product['ice_advalorem_diferencia'],
                     'indirectos' => $tax_product['indirectos'],
-                    'costo' => $tax_product['costo_total']
+                    'costo_total' => $tax_product['costo_total'],
+                    'costo_caja_final' => $tax_product['costo_caja_final'],
+                    'costo_botella' => $tax_product['costo_botella'],
+                    'total_ice' =>$tax_product['total_ice'],
                 ];
                 
                 if($this->ModelOrderInvoiceDetail->update($product) == False){
-                 print 'Error en el sistema';
-                 exit();
+                    print 'Error en el sistema';
+                    $this->modelLog->errorLog(
+                        'No se se puede modificar la reliquidacion del pedido',
+                        $this->db->last_query()
+                    );
+                    exit();
                 }
             }
         }
@@ -424,6 +479,7 @@ class Reliquidacion extends MY_Controller
                                 ' Regimen : ' . $order['regimen'],
             'init_data' => $init_data,
             'order_taxes' => $product_taxes,
+            'title' => 'Reliquidacion Pedido [' . $nroOrder . ']',
             'regimen' => 'R10',
             'tipo' => 'orden',
             'id' => $nroOrder,
@@ -555,14 +611,33 @@ class Reliquidacion extends MY_Controller
         $record['id_user_cierre'] = $this->session->userdata('id_user');       
         
         if($_POST['tipo'] == 'orden'){
-            $this->modelOrder->update($record);
-            $this->modelLog->susessLog('Pedido ' . $_POST['id'] . 'fue cerrrado');
-            return $this->redirectPage('showTaxesOrderLiquidate', $_POST['id']);
+            if($this->modelOrder->update($record)){
+                $this->modelLog->susessLog('Pedido ' . $_POST['id'] . 'fue cerrrado');
+                return $this->redirectPage('showTaxesOrderLiquidate', $_POST['id']);
+            }else{
+                $this->modelLog->errorLog(
+                    'No se puede cerrar el pedido',
+                    $this->db->last_query()
+                );
+                print 'Error con la base de datos';
+            }
         }
-        
-        $this->modelParcial->update($record);
-        $this->modelLog->susessLog('El parcial ' . $_POST['id'] . ' fue cerrado');
-        return $this->redirectPage('showTaxesParcialLiquidate', $_POST['id']);
+
+        if($this->modelParcial->update($record)){
+            $this->modelLog->susessLog(
+                'El parcial ' . $_POST['id'] . ' fue cerrado'
+            );
+
+            return $this->redirectPage(
+                'showTaxesParcialLiquidate', $_POST['id']
+                );
+        }else{
+            $this->modelLog->errorLog(
+                    'No se puede cerrar el parcial',
+                    $this->db->last_query()
+                );
+                print 'Error con la base de datos';
+        }
     }
     
     
@@ -733,7 +808,6 @@ class Reliquidacion extends MY_Controller
     private function responseHttp($config)
     {
         return ($this->twig->display($this->template, array_merge($config, [
-            'title' => 'Impuestos Aduana',
             'base_url' => base_url(),
             'rute_url' => base_url() . 'index.php/',
             'controller' => $this->controller,

@@ -417,19 +417,8 @@ class orderTaxes {
                 $limite_capacidad = 2000;
             }
             
-            $fodinfa = 0; 
-            
-            if ($this->order['incoterm'] == 'FOB' || $this->order['incoterm'] == 'CFR'){
-                $fodinfa = 
-                (
-                    $product['fob']
-                    + $prorrateos['gasto_origen']
-                ) 
-                * $this->getTaxParam('FODINFA');
-            }else{
-                $fodinfa = ($product['fob'] - $prorrateos['gasto_origen']) 
-                            * $this->getTaxParam('FODINFA');
-            }            
+           $base_fodinfa = $prorrateos['cif'];  
+           $fodinfa = ( $base_fodinfa * $this->getTaxParam('FODINFA'));   
             
             $etiquetas_fiscales = 0.0;
             

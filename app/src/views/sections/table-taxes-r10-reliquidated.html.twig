@@ -220,7 +220,14 @@
 
 <br>
 <div class="row">
-   <div class="col-md-6"></div>
+   <div class="col-md-2">
+      {% if parcial.bg_isclosed == 1    %}
+         <a class="btn btn-sm btn-primary" href="{{ rute_url }}impuestos/reverso/pc/{{parcial.id_parcial}}">
+            <span class="fa fa-refresh"></span> Reingreso Liquidación
+         </a>
+      {% endif %}
+   </div>
+   <div class="col-md-4"></div>
    <div class="col-md-6 text-right">
       <a href="{{ rute_url }}pedido/presentar/{{ order.nro_pedido }}" class="btn btn-sm btn-default"> <span class="fa fa-check"></span> Volver al Pedido </a>
       {% if order.bg_isclosed == 0 %}      

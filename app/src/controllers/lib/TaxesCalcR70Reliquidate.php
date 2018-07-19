@@ -18,6 +18,7 @@ class parcialTaxesReliquidate {
     private $prorrateo;
     private $param_taxes;
     private $parcial;
+    private $total_items = 0;
     private $incoterm;
     private $gastos_origen = 0.0;
     private $etiquetas_fiscales_valor = 0.0;
@@ -230,6 +231,7 @@ class parcialTaxesReliquidate {
         $unities = 0.0;
         
         foreach ($this->init_data['products'] as $idx => $prod){
+            $this->total_items++;
             $product_data = $this->getProductData($prod);
             $unities += $product_data['unidades'];
             
@@ -273,8 +275,7 @@ class parcialTaxesReliquidate {
         
         $this->have_control_tasa = boolval(
             $this->parcial['bg_have_tasa_control']
-            );
-        
+            );        
     }
     
     
@@ -286,7 +287,6 @@ class parcialTaxesReliquidate {
      */
     private function getTaxesProduct(array $detail_info_invoice): array
     {
-        
         $product = $this->getProductData($detail_info_invoice);
         $prorrateo_item = $this->getProrrateoItem(
             $detail_info_invoice,
@@ -497,16 +497,19 @@ class parcialTaxesReliquidate {
             $fobs_parcial = $this->init_data['fobs_parcial'];
 
             foreach ($prorrateo_detail as $key => $value) {
-                if ($this->have_control_tasa){
-                    if($value['concepto'] == 'TASA DE CONTROL ADUANERO'){                            
-                        $tasa_control = ($product['peso']*1000/2000*$this->base_tasa_aduanera);
-                        if($tasa_control > 700){
-                            $tasa_control = 700;
-                        }
+                if( $value['concepto'] == 'TASA DE CONTROL ADUANERO' 
+                    &&  $this->total_items > 1
+                    ){                            
+                    $tasa_control = ($product['peso']*1000/2000*$this->base_tasa_aduanera);
+                    if($tasa_control > 700){
+                        $tasa_control = 700;
                     }
+                }elseif($value['concepto'] == 'TASA DE CONTROL ADUANERO' 
+                    &&  $this->total_items == 1){
+                    $tasa_control = $value['valor_prorrateado'];
                 }
-            }            
-            
+                }
+
             $prorrateo_item_p = [];            
             $prorrateo_pedido = [];
 

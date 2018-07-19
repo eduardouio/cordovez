@@ -193,19 +193,20 @@ class Impuestos extends MY_Controller
         }
         
         $infoInfoiceDetail = $infoInfoiceDetail[0];
-        
-        foreach ($infoInfoiceDetail as $item => $dt){
-            $invoice_detail = $this->ModelOrderInvoiceDetail->get(
-                $dt['detalle_pedido_factura']
-                );
-            
-            $product =  $this->modelProducts->get(
-                $invoice_detail['cod_contable']
-                );
-            
-            $product['detalle_pedido_factura'] = $dt['detalle_pedido_factura'];
-            
-            array_push($products_base, $product);
+        if($infoInfoiceDetail) {
+            foreach ($infoInfoiceDetail as $item => $dt){
+                $invoice_detail = $this->ModelOrderInvoiceDetail->get(
+                    $dt['detalle_pedido_factura']
+                    );
+                
+                $product =  $this->modelProducts->get(
+                    $invoice_detail['cod_contable']
+                    );
+                
+                $product['detalle_pedido_factura'] = $dt['detalle_pedido_factura'];
+                
+                array_push($products_base, $product);
+            }
         }
         
         
@@ -532,6 +533,43 @@ class Impuestos extends MY_Controller
         print '<h1>Error de sistema</h1>';
         return $this->redirectPage('showTaxesParcial', $parcial['id_parcial']);
      }
+
+
+     /**
+      * Saca a un pedido de la liquidacion final
+      * 
+      * @param  string $tipo tipo de registro
+      * @param  string $id   idetificacion del registro a modificar
+      * @return null       Retorna a los gastos del parcial del pedido uniciales
+      */
+     public function reverso(string $tipo, string $id){       
+
+        if($tipo == 'pedido'){
+            $order = $this->modelOrder->get($id);
+            if($order && $order['bg_isclosed'] == 0){
+                $order['last_update'] = date('Y-m-d');
+                $order['bg_isliquidated'] = 0;
+                if($this->modelOrder->update($order)){
+                    return  $this->redirectPage('validargi', $id);
+                }
+            }
+
+        }elseif($tipo == 'pc'){
+            $parcial = $this->modelParcial->get($id);
+            if($parcial && $parcial['bg_isclosed'] == 0){
+                $parcial['last_update'] = date('Y-m-d');
+                $parcial['bg_isliquidated'] = 0;
+                if($this->modelParcial->update($parcial)){
+                    return $this->redirectPage('parcial', $id);
+                };
+            }
+        }
+
+        $this->modelLog->errorLog(
+            'Acceso restringido al sitio',
+            current_url()
+        );
+    }
      
         
     /**

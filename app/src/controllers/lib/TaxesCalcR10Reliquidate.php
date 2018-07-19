@@ -17,6 +17,7 @@ class orderTaxesReliquidate {
     private $param_taxes;
     private $incoterm;
     private $order;
+    private $total_items = 0;
     private $iva_base = 0.12;
     private $ice_advalorem_base = 0.75;
     private $type_change_invoice = 0.0;
@@ -226,6 +227,7 @@ class orderTaxesReliquidate {
         $unities = 0;
         
         foreach ($this->init_data['order_invoice_detail'] as $idx => $det){
+            $this->total_items++;
             $product_data  = $this->getProductData($det);
             $unities += $product_data['unidades'];
         }
@@ -497,14 +499,19 @@ class orderTaxesReliquidate {
                         }
             }
             
+
+
             foreach ($this->init_data['init_expenses'] as $key => $value) {
-                if ($this->have_control_tasa){
-                    if($value['concepto'] == 'TASA DE CONTROL ADUANERO'){
-                         $tasa_control = ($product['peso']*1000/2000*$this->base_tasa_aduanera);
-                        if($tasa_control > 700){
-                            $tasa_control = 700;
-                        }
+                if( $value['concepto'] == 'TASA DE CONTROL ADUANERO' 
+                    &&  $this->total_items > 1
+                    ){                            
+                    $tasa_control = ($product['peso']*1000/2000*$this->base_tasa_aduanera);
+                    if($tasa_control > 700){
+                        $tasa_control = 700;
                     }
+                }elseif($value['concepto'] == 'TASA DE CONTROL ADUANERO' 
+                    &&  $this->total_items == 1){
+                    $tasa_control = $value['valor_provisionado'];
                 }
             }           
             

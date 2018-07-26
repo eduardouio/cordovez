@@ -250,7 +250,7 @@ body {
 }
 
 .control-radio .control_indicator {
-	border-radius: undefined%;
+    border-radius: undefined;
 }
 
 .control:hover input ~ .control_indicator, .control input:focus ~

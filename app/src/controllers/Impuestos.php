@@ -18,7 +18,6 @@ require 'lib/Prorrateo.php';
  */
 class Impuestos extends MY_Controller
 {
-
     private $controller = "impuestos";
     private $template = '/pages/pageImpuestos.html';
     private $modelOrder;
@@ -71,6 +70,7 @@ class Impuestos extends MY_Controller
         $this->load->model('Modelrateexpenses');
         $this->load->model('Modelprorrateo');
         $this->load->model('Modelprorrateodetail');
+        $this->load->helper('utils.php');
         $this->modelInitExpenses = new Modelinitexpenses();
         $this->modelOrder = new Modelorder();
         $this->ModelOrderInvoiceDetail = new Modelorderinvoicedetail();
@@ -145,7 +145,25 @@ class Impuestos extends MY_Controller
                                         $param_taxes, 
                                         $parcial
             );        
-               
+        
+        
+        if(checkTASAControl($init_data)){
+            $weigth = False;
+            foreach ($init_data['order_invoice_detail'] as $k => $item){
+                if($item['peso'] == null || $item['peso'] == '' || $item['peso'] == 0){
+                    $this->modelLog->warningLog(
+                        'Uno de los items de la factura no tiene ingresado el peso'
+                        );
+                    $weigth = True;
+                }
+            }
+            
+            if($weigth){
+                return $this->redirectPage('insertWeigth', $init_data['order_invoices'][0]['id_pedido_factura']);
+            }
+        }
+        
+
         return ($this->responseHttp([
             'titleContent' => 'Resumen de Impuestos Liquidación Aduana del Pedido ' . 
                                         $init_data['order']['nro_pedido'],
@@ -158,7 +176,9 @@ class Impuestos extends MY_Controller
             'user' => $this->modelUser->get($init_data['parcial']['id_user']),
         ]));
     }
-    
+
+
+ 
 
     
     /**
@@ -231,7 +251,7 @@ class Impuestos extends MY_Controller
             'order_invoices' => $order_invoices,
             'order_invoice_detail' => $order_invoice_detail,
             'products_base' => $products_base,
-            'init_expeses' => $this->modelInitExpenses->getAll($order),
+            'init_expenses' => $this->modelInitExpenses->getAll($order),
             'parcial' => $parcial,
             'all_parcials' => $this->modelParcial->getAllParcials(
                                                         $parcial['nro_pedido']
@@ -284,6 +304,23 @@ class Impuestos extends MY_Controller
             $param_taxes,
             $order
             );
+        
+        if(checkTASAControl($init_data)){
+            $weigth = False;
+            foreach ($init_data['order_invoice_detail'] as $k => $item){
+                if($item['peso'] == null || $item['peso'] == '' || $item['peso'] == 0){
+                    $this->modelLog->warningLog(
+                        'Uno de los items de la factura no tiene ingresado el peso'
+                        );
+                    $weigth = True;
+                }
+            }
+            
+            if($weigth){
+                return $this->redirectPage('insertWeigth', $init_data['order_invoices'][0]['id_pedido_factura']);
+            }
+        }
+        
         
         return ($this->responseHttp([
             'titleContent' => 'Resumen de Impuestos Liquidación Aduana del Pedido ' .

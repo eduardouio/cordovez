@@ -505,7 +505,7 @@ class orderTaxesReliquidate {
                 if( $value['concepto'] == 'TASA DE CONTROL ADUANERO' 
                     &&  $this->total_items > 1
                     ){                            
-                    $tasa_control = ($product['peso']*1000/2000*$this->base_tasa_aduanera);
+                    $tasa_control = ($detail_invoice['peso']*1000/2000*$this->base_tasa_aduanera);
                     if($tasa_control > 700){
                         $tasa_control = 700;
                     }
@@ -612,7 +612,6 @@ class orderTaxesReliquidate {
                     * $product['unidades']
                     );
                 
-                $ice_especifico_unitario =  ($ice_especifico / $product['unidades']);
                 
                 $exaduana = (
                     $fodinfa

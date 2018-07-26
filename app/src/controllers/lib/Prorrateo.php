@@ -65,7 +65,7 @@ class Prorrateo {
                 }
             }
             
-            foreach ($this->init_data['init_expeses'] as $idx => $expense){
+            foreach ($this->init_data['init_expenses'] as $idx => $expense){
 
                 $expense['valor_prorrateado'] =  (
                                             $expense['valor_provisionado']
@@ -90,6 +90,7 @@ class Prorrateo {
      * @param $global_value float valor inicial de la provision
      */
     private function getTCAValue($global_value){
+        
         $tasa_sum = 0.0;        
 
         foreach ($this->init_data['products'] as $key => $prod) {

@@ -125,12 +125,11 @@ class Pedido extends MY_Controller
         $init_data = [];
         $all_orders = [];
         
-        if($_POST){
-            $all_orders = $this->modelOrder->search($_POST['nro_pedido']);
+        if($_GET){
+            $all_orders = $this->modelOrder->search($_GET['nro_pedido']);
         }else{
             $all_orders = $this->modelOrder->getAll();
         }
-        
         
         $orders_open = 0;
         $orders_closed = 0;

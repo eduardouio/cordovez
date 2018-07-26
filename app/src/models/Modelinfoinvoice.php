@@ -281,7 +281,7 @@ class Modelinfoinvoice extends CI_Model
         return false;
     }
     
-    
+
     /**
      * Verifica si un registro ya existe en la base de datos
      * @param array $informativeInvoice
@@ -293,12 +293,13 @@ class Modelinfoinvoice extends CI_Model
             'table' => $this->table,
             'where' => [
                 'nro_factura_informativa' => $informativeInvoice['nro_factura_informativa'],
-                'id_parcial' => $informativeInvoice['id_parcial'],
             ],
         ]);
+
         if( gettype($infoInvoice) == 'array' && count($infoInvoice) > 0 ){
-            return ($infoInvoice[0]['id_factura_informativa']);
+            return true;
         }
+
         return 0;
     }
     

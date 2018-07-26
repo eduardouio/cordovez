@@ -1,3 +1,12 @@
+<div class="row">
+	<div class="alert text-warning">
+	<span class="fa fa-warning"></span>
+	Si el pedido tiene Tasa de Control basada en pesos, se debe ingresar el peso del item,
+	es decir el peso del total de cajas de este producto, 
+	este valor se encuentra al final de la DAI. 
+	</div>
+</div>
+
 <div class="well well-sm">
    <div class="row">
       <div class="col-md-3">
@@ -81,8 +90,6 @@
             >
          </div>
       </div>
-
-
       <div class="col-md-1">
          <label>Costo Caja</label>
          <input 
@@ -97,6 +104,16 @@
    </div>
 </div>   
 <div class="row">
+<div class="col-md-2">
+	<div class="form-group">
+	<label for="">Peso Item KG</label>
+	<input 
+		type="number" 
+		class="form-control"
+		name ="peso"
+		/>
+	</div>
+</div>
 	<div class="col-md-2">
 	<div class="input-group">
 		<label>Cantidad Caja</label>

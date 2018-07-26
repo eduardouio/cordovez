@@ -364,10 +364,7 @@ class orderTaxes {
             foreach ($this->init_data['init_expenses'] as $key => $value) {
                 if ($this->have_control_tasa){
                     if($value['concepto'] == 'TASA DE CONTROL ADUANERO'){
-                        $tasa_control = (
-                            $value['valor_provisionado']
-                            * $fob_percent
-                            );
+                        $tasa_control = ((floatval($detail_invoice['peso'])*1000)/2000) * 0.10;
                     }
                 }
             }

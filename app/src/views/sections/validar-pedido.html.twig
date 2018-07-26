@@ -161,7 +161,7 @@
                </td>
                {% endif %}
             </tr>
-            {% for expense in init_expeses.expenses_order %}
+            {% for expense in init_expenses.expenses_order %}
             {% set sumExpenses = sumExpenses + expense.valor_provisionado %}
             <tr>
                <td>
@@ -237,7 +237,7 @@
          Volver Al Pedido [{{order.nro_pedido}}]
          </a>
          {% if  invoices_order.values_isok == true %}
-         	{%  if init_expeses.all_ok == true %}
+         	{%  if init_expenses.all_ok == true %}
          		{% if order.regimen == '70'%}
          			{% if have_parcial == False %}
                          <button data-toggle="modal" data-target="#myModal" class="btn btn-success btn-sm pull-right">

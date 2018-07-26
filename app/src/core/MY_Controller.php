@@ -138,6 +138,7 @@ class MY_Controller extends CI_Controller
             'loginForm' =>  'index.php/login/',
             'home' =>  'index.php/home',
             'ordersList' => 'index.php/pedido/listar',
+            'insertWeigth' => 'index.php/detallepedido/ActualizarPeso',
             'orderInvoicePresent' => 'index.php/pedidofactura/presentar',
             'orderDetailAdd' => 'index.php/detallepedido/nuevo',
             'infoInvoiceShow' => 'index.php/facinformativa/presentar',

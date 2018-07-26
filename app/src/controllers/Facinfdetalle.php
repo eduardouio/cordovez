@@ -56,6 +56,7 @@ class Facinfdetalle extends MY_Controller
         $this->load->model('modelparcial');
         $this->load->model('ModelOrderReport');
         $this->modelOrderReport = new ModelOrderReport();
+        $this->load->helper('utils');
         $this->modelOrder = new Modelorder();
         $this->modelInfoInvoice = new Modelinfoinvoice();
         $this->modelSupplier = new Modelsupplier();
@@ -220,15 +221,15 @@ class Facinfdetalle extends MY_Controller
     public function validar()
     {
         if(!$_POST){
-            $this->modelLog->redirectLog('Acceso Invalido a Validar ' . current_url());
             return($this->index());            
         }
         
         $inputForm = $_POST;
         $idInfoInvoice = $inputForm['id_factura_informativa'];
-        $infoInvoice = $this->modelInfoInvoice->get($idInfoInvoice);
         unset($inputForm['id_factura_informativa']);
-        $itemsInvoice = array_chunk($inputForm, 3, true);
+        $infoInvoice = $this->modelInfoInvoice->get($idInfoInvoice);
+        $itemsInvoice = array_chunk($inputForm, 3, true);       
+        
         foreach ($itemsInvoice as $item){
             $myItemInvoice = [];
             foreach ($item as $key => $value){
@@ -237,8 +238,17 @@ class Facinfdetalle extends MY_Controller
                 $itemName = explode('-', $key);
                 $myItemInvoice[$itemName[0]] = $value;
             }
-            if($this->modelInfoInvoiceDetail->create($myItemInvoice) == false){
-             $this->modelLog->errorLog('No se puede anadir un item en la factura' . current_url());
+            
+            $new_item = updateWeigth(
+                $this->modelOrderInvoiceDetail->get($myItemInvoice['detalle_pedido_factura']),
+                $myItemInvoice
+                );
+                        
+            if($this->modelInfoInvoiceDetail->create($new_item) == false){
+             $this->modelLog->errorLog(
+                 'No se puede anadir un item en la factura', 
+                 current_url()
+                 );
             }             
         }
         
@@ -255,17 +265,26 @@ class Facinfdetalle extends MY_Controller
     public function actualizar()
     {
         if(!$_POST){
-            $this->modelLog->redirectLog('Acceso Invalido a Actualizar ' . current_url());
             return($this->index());
         }
+        
         $infoInvoiceDetail = $_POST;
         $infoInvoiceDetail['last_update'] = date('Y-m-d H:m:s');
         $infoInvoiceDetail['id_user'] = $this->session->userdata('id_user');
-        if($this->modelInfoInvoiceDetail->update($infoInvoiceDetail)){
-            
+        
+        
+        $new_item = updateWeigth(
+            $this->modelOrderInvoiceDetail->get($infoInvoiceDetail['detalle_pedido_factura']),
+            $infoInvoiceDetail
+            );
+        
+        if($this->modelInfoInvoiceDetail->update($new_item)){
            $this->modelLog->susessLog('Detalle Factura Informativa Actualizada ' .  current_url());
-           $this->calcAndUpdateGO($infoInvoiceDetail['id_factura_informativa']);
-           return($this->redirectPage('infoInvoiceShow', $infoInvoiceDetail['id_factura_informativa']));
+           #se anade a la funcion el calculo del peso del producto
+           $this->calcAndUpdateGO($new_item['id_factura_informativa']);
+           
+
+           return($this->redirectPage('infoInvoiceShow', $new_item['id_factura_informativa']));
         }else{
            $this->modelLog->errorLog('No se puede actualizar detalle factura infromativa ' . current_url());
            print 'Error con la base de datos';

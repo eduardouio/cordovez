@@ -33,7 +33,7 @@ class checkerOrder
                         $order_invoices, 
                         $paids_init_expenses, 
                         array $rate_expenses, 
-        array $unused_expenses
+                        array $unused_expenses
         ){
         $this->order = $order;
         $this->order_invoices = $order_invoices;
@@ -262,7 +262,7 @@ class checkerOrder
             'MANO DE OBRA ETIQUETADO' => (
                 $unidades * $labeled_value_unity['valor']
                 ),
-            'TASA DE SERVICIO ADUANERO' => $this->getTSA(),
+            'TASA DE CONTROL ADUANERO' => $this->getTSA(),
             'ETIQUETAS FISCALES' => $label_unity['valor'] * $unidades ,
         ];
                 
@@ -282,7 +282,7 @@ class checkerOrder
             }else{
                 array_push($unused_expenses, $expense);
             }
-        }
+        }       
         
         return ([
             'unused_expenses' => $unused_expenses,
@@ -304,28 +304,30 @@ class checkerOrder
         }
             
         $tsa_base = $this->searchTaxesPercent(
-            'TASA DE SERVICIO ADUANERO'
+            'TASA DE CONTROL ADUANERO'
             );
-        
         $tsa = 0.0;
         
         foreach ($this->order_invoices as $idx => $invoice){
+            
             unset($invoice['detailInvoice']['sums']);
+            
             if($invoice['detailInvoice']){
+                
             foreach ($invoice['detailInvoice'] as $itm => $product){
                 
                 $tasa = (
-                    ((floatval($product['peso'])/1000) * floatval($tsa_base['valor'])) 
-                    * $product['unidades']
-                    );
+                    ((floatval($product['peso'])*1000)/2000) * floatval($tsa_base['valor']));
+                
                 if ($tasa < 700 ){
                     $tsa += $tasa;
                 }else{
-                    $tsa += 7000;
+                    $tsa += 700;
                 }
             }            
             }            
         }
+
         return $tsa;
     }
     

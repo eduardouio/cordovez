@@ -316,7 +316,7 @@ class Gstinicial extends MY_Controller
             $order_invoices,
             $paids_init_expenses 
             );
-                
+        
         return ($this->responseHttp([
             'validateExpenses' => True,
             'titleContent' => 'Generar Gastos Iniciales Pedido: [' . 
@@ -331,7 +331,7 @@ class Gstinicial extends MY_Controller
             'have_euros' => $this->modelOrderInvoice->haveEuros($nroOrder),
             'invoices_order' => $checked_order->checkOrderInvoices(),
             'initial_tributes' => $checked_order->getInitialTributes(),
-            'init_expeses' => $checked_order->checkInitExpenses(),
+            'init_expenses' => $checked_order->checkInitExpenses(),
             'unused_expenses' => $checked_order->getInitialTributes(),
             'have_parcial' => $this->checkParcials($order),
             'user' => $this->modeluser->get($order['id_user']),
@@ -570,6 +570,7 @@ class Gstinicial extends MY_Controller
                 }
             }
         }
+        
         return $unusedExpenses;
     }
     

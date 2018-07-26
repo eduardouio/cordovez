@@ -204,7 +204,7 @@ class Modelorder extends CI_Model
                 floatval($value['cantidad_x_caja']));
             $value['total_item'] = (floatval($value['costo_caja']) *
                 floatval($value['nro_cajas']));
-            $value['peso'] = $product['peso'];
+            //$value['peso'] = $product['peso'];
             $result[$key] = $value;
         }
 

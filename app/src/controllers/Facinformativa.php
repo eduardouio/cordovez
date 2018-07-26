@@ -318,8 +318,11 @@ class Facinformativa extends MY_Controller
         }
         
         $infoInvoice = $this->input->post();
-        $nroOrder = $infoInvoice['nro_pedido'];
-        unset($infoInvoice['nro_pedido']);
+
+        #$nroOrder = $infoInvoice['nro_pedido'];
+        #unset($infoInvoice['nro_pedido']);
+
+        $parcial = $this->modelParcial->get($_POST['id_parcial']);
         
         $infoInvoice['fecha_emision'] = str_replace(
                     '/', 
@@ -332,10 +335,10 @@ class Facinformativa extends MY_Controller
                 strtotime($infoInvoice['fecha_emision'])
             );
         
-        $infoInvoice['id_user'] = $this->session->userdata('id_user');
-        
+        $infoInvoice['id_user'] = $this->session->userdata('id_user');       
+
         if (
-            ($this->modelInfoInvoice->existRow($infoInvoice) > 0) && 
+            ($this->modelInfoInvoice->existRow($infoInvoice) == true) && 
             (! isset($infoInvoice['id_factura_informativa']))
             ){
             
@@ -377,12 +380,11 @@ class Facinformativa extends MY_Controller
                 
             }
         } else {
-            $order = $this->modelOrder->get($nroOrder);
             return ($this->responseHttp([
                 'viewMessage' => 'true',
                 'titleContent' => 'Verifique la información ingresada',
                 'create_invoice' => true,
-                'order' => $order,
+                'order' => $parcial,
                 'supplier' => $this->modelsupplier->get($this->almaceneraId),
                 'haveEuros' => $this->orderHaveEuros($order['nro_pedido']),
                 'sumsValues' => $this->myModel->getValuesOrder($order),
@@ -405,12 +407,12 @@ class Facinformativa extends MY_Controller
     public function eliminar($idFacInformative)
     {
         $infoInvoice = $this->modelInfoInvoice->get($idFacInformative);
-        if ($infoInvoice == false) {
-            $this->redirectPage('ordersList');
-            return false;
-        }
+        $parcial = $this->modelParcial->get($infoInvoice['id_parcial']);
+        $order = $this->modelOrder->get($parcial['nro_pedido']);
+
+
         if ($this->modelInfoInvoice->delete($idFacInformative)) {
-            $this->redirectPage('presentOrder', $infoInvoice['nro_pedido']);
+            $this->redirectPage('presentOrder', $parcial['nro_pedido']);
         } else {
             $this->responseHttp([
                 'titleContent' =>   'No se puede eliminar el registro <small>' .
@@ -421,7 +423,7 @@ class Facinformativa extends MY_Controller
                 'deleted' => true,
                 'message' => 'No puede ser eliminado, tiene dependencias',
                 'id_row' => $infoInvoice['id_factura_informativa'],
-                'order' => $infoInvoice['nro_pedido']
+                'order' => $order,
             ]);
         }
     }

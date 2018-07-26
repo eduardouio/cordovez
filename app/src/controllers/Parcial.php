@@ -175,27 +175,34 @@ class Parcial extends MY_Controller
         return ($this->redirectPage('presentOrder', $nroOrder));        
     }
         
-    
+
     /**
      * Elimina un parcial vacio
      * @param int $idParcial
      */
-    public function eliminar(int $idParcial)
-    {
+    public function eliminar(int $idParcial = 0)
+    {  
         $parcial = $this->modelParcial->get($idParcial);
-        
-        if($parcial == False){
-            $this->modelLog->warningLog('El parcial no existe');
-            return $this->index();
+
+        if ($parcial == false || $idParcial == 0){
+            $this->redirectPage('ordersList');
         }
-        
+
+        $order = $this->modelOrder->get($parcial['nro_pedido']);
+
         if($this->modelParcial->delete($parcial)){
-            return ($this->redirectPage('presentOrder', $parcial['nro_pedido']));
-        }
+            $this->modelLog->susessLog(
+                'El parcial ' . $idParcial . 'Fue eliminado del sistema'                
+            );
+            print 'Eliminado';
+        }else{
+            print 'No se puede eliminar tiene dependencias';
+            #return ($this->redirectPage('showParcial', $parcial['id_parcial']));
+        }        
         
-        return ($this->redirectPage('showParcial', $parcial['id_parcial']));
     }
-    
+
+
     
     
     /**
@@ -233,7 +240,7 @@ class Parcial extends MY_Controller
         return 0;
     }
     
-    
+
     /*
      * Redenderiza la informacion y la envia al navegador
      * @param array $config informacion de la plantilla

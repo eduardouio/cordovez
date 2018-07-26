@@ -1,3 +1,11 @@
+<div class="row">
+	<div class="alert text-warning">
+	<span class="fa fa-warning"></span>
+	Si el pedido tiene Tasa de Control basada en pesos, se debe ingresar del item,
+	es decir el peso del total de cajas de este producto, 
+	este valor se encuentra al final de la DAI. 
+	</div>
+</div>
 <form method="post" action="{{rute_url}}detallepedido/validar">
    <input type="hidden" name="detalle_pedido_factura" value="{{detailInvoiceOrder.detalle_pedido_factura}}">
    <input type="hidden" name="id_pedido_factura" value="{{detailInvoiceOrder.id_pedido_factura}}">
@@ -56,7 +64,7 @@
 
 
       <div class="col-md-1">
-         <label>Costo Caj</label>
+         <label>Costo Caja</label>
          <input 
          type="number" 
          class="form-control" 
@@ -68,6 +76,18 @@
          value="{{ detailInvoiceOrder.costo_caja }}" 
          >
    </div>
+   
+   <div class="col-md-2">
+	<div class="form-group">
+	<label for="">Peso Item KG</label>
+	<input 
+		type="number" 
+		class="form-control"
+		name ="peso"
+		value="{{ detailInvoiceOrder.peso }}"
+		/>
+	</div>
+</div>
 </div>
 <div class="row">
    <div class="col-md-2">

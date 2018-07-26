@@ -1,9 +1,10 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-require 'lib/TaxesCalcR70Reliquidate.php';
-require 'lib/TaxesCalcR10Reliquidate.php';
-require 'lib/Prorrateo.php';
+require_once 'lib/TaxesCalcR70Reliquidate.php';
+require_once 'lib/TaxesCalcR10Reliquidate.php';
+require_once 'lib/StockOrder.php';
+require_once 'lib/Prorrateo.php';
 
 /**
  * Controller encargado del calculo de impuestos
@@ -18,7 +19,7 @@ require 'lib/Prorrateo.php';
  */
 class Reliquidacion extends MY_Controller
 {
-    private $controller = "reliquidacion";
+    private $controller = 'reliquidacion';
     private $template = '/pages/pageReliquidacion.html';
     private $modelOrder;
     private $modelParcial;
@@ -37,6 +38,7 @@ class Reliquidacion extends MY_Controller
     private $modelProrrateo;
     private $modelProrrateoDetail;
     
+
     /**
      * Contructor de la clase
      */
@@ -46,6 +48,7 @@ class Reliquidacion extends MY_Controller
         $this->init();
     }
     
+
     /**
      * Inicia los modelos de la clase
      */
@@ -230,8 +233,9 @@ class Reliquidacion extends MY_Controller
         }
         
         return ($this->responseHttp([
-            'titleContent' => 'Resumen de Impuestos Liquidación Aduana del Pedido' .
-            $init_data['order']['nro_pedido'],
+            'titleContent' => 'Resumen de Impuestos Liquidación Aduana del Pedido ' .
+                $init_data['order']['nro_pedido'] . ' R['. $init_data['order']['regimen'] 
+                .'] ' . $init_data['order']['incoterm'],
             'init_data' => $init_data,
             'parcial_taxes' => $product_taxes,
             'prorrateos' => $prorrateos,
@@ -337,7 +341,7 @@ class Reliquidacion extends MY_Controller
             'order_invoices' => $order_invoices,
             'order_invoice_detail' => $order_invoice_detail,
             'products_base' => $products_base,
-            'init_expeses' => $init_expenses,
+            'init_expenses' => $init_expenses,
             'parcial' => $parcial,
             'all_parcials' => $this->modelParcial->getAllParcials(
                 $parcial['nro_pedido']
@@ -613,6 +617,7 @@ class Reliquidacion extends MY_Controller
         if($_POST['tipo'] == 'orden'){
             if($this->modelOrder->update($record)){
                 $this->modelLog->susessLog('Pedido ' . $_POST['id'] . 'fue cerrrado');
+                $this->closeOrder($_POST['id']);
                 return $this->redirectPage('showTaxesOrderLiquidate', $_POST['id']);
             }else{
                 $this->modelLog->errorLog(
@@ -800,7 +805,25 @@ class Reliquidacion extends MY_Controller
         
     }
     
-    
+    /**
+     * [closeOrder description]
+     * @param  string $nro_order [description]
+     * @return boolean             cieerra un pedido si es el ultimo parcial
+     */
+    private function closeOrder(string $nro_order){
+        $this->modelLog->warningLog
+        (
+            'Inicia comprobacion previo al cierre de un pedido'
+        );
+        
+        
+        
+        $stokOrder = new StockOrder();
+
+        return false;
+    }
+
+
     /*
      * Redenderiza la informacion y la envia al navegador
      * @param array $config informacion de la plantilla

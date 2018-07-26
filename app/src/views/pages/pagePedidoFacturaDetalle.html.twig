@@ -12,7 +12,9 @@
 	{% include 'forms/frm-pedido-factura-detalle-edit.html.twig' %}    
 {% endif %}
 
-
+{% if edit_weigth == true %}
+	{% include 'forms/frm-pedido-factura-detalle-peso.html.twig' %}
+{% endif %}
 
 {% if viewMessage == true %}
 	<div class="well">

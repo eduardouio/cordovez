@@ -370,10 +370,10 @@ class parcialTaxes {
         foreach ($prorrateo_detail as $key => $value) {
             if ($this->have_control_tasa){
                 if($value['concepto'] == 'TASA DE CONTROL ADUANERO'){
-                    $tasa_control = (
-                        $value['valor_prorrateado']
-                        * $fob_percent
-                    );
+                    $tasa_control = ((floatval($detail_info_invoice['peso'])*1000)/2000) * 0.10;
+                    if($tasa_control > 700){
+                        $tasa_control = 700;
+                    }
                 }                
             }
         }   

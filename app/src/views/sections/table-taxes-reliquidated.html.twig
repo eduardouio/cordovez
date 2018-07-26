@@ -1,4 +1,4 @@
-{% if parcial.bg_isclosed == 0 %}    
+{% if parcial.bg_isclosed == 1 %}    
    <span style="background-color:#d41; float:right;color:#fff;padding:2px;border-radius:4px;">
       Parcial Liquidado y Cerrado
    </span>
@@ -232,7 +232,7 @@
 <hr />
 <div class="row">
    <div class="col-md-2">
-      {% if parcial.bg_isclosed == 1    %}
+      {% if parcial.bg_isliquidated == 1    %}
          <a class="btn btn-sm btn-primary" href="{{ rute_url }}impuestos/reverso/pc/{{parcial.id_parcial}}">
             <span class="fa fa-refresh"></span> Reingreso Liquidación
          </a>

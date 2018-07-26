@@ -1,0 +1,39 @@
+<div class="row">
+	<div class="alert text-warning">
+	<span class="fa fa-warning"></span>
+	Si el pedido tiene Tasa de Control basada en pesos, se debe el peso ingresar 
+	del item,
+	es decir el peso del total de cajas de este producto, 
+	este valor se encuentra al final de la DAI, que se elabora antes del ingreso 
+	a Almagro. 
+	</div>
+</div>
+<form action="" method="post">
+<input type="hidden" name="nro_pedido" value="{{ order.nro_pedido }}" />
+<table class="table table-bordered table-condensed">
+	<tr>
+		<th>#</th>
+		<th>Producto</th>
+		<th>Precio</th>
+		<th>Cajas</th>
+		<th>Unidades</th>
+		<th>Grado Alcolico</th>
+		<th>Peso</th>
+	</tr>
+	{% for item in order_details %}
+	<tr class="text-right">
+	<td>{{ loop.index }}</td>
+	<td>{{ item.product }} </td>
+	<td>{{ item.costo_caja | number_format(3, ',','.')}}</td>
+	<td>{{ item.nro_cahas }}</td>
+	<td>{{ item.unidades }}</td>
+	<td>{{ item.grado_alcoholico | number_format(2, ',','.')}}</td>
+	<td><input type="number" name="{{ item.detalle_pedido_factura }}" value = "{{ item.peso }}" required /></td>
+	</tr>
+	{% endfor %}
+</table>
+<button type="submit" class="btn btn-sm btn-primary">
+<span class="fa fa-save"></span>
+Guardar y Continuar
+</button>
+</form>

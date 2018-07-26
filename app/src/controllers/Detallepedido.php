@@ -81,6 +81,7 @@ class Detallepedido extends MY_Controller
 		$products = $this->modelProduct->getBySupplier($invoiceOrder['identificacion_proveedor']);
 		$supplier = $this->modelSupplier->get($invoiceOrder['identificacion_proveedor']);
 		$this->responseHttp([
+		    'title' => 'Registro de nuevo producto para Factura [ ' . $invoiceOrder['id_factura_proveedor'],
 		    'titleContent' => 'Registro de nuevo producto para Factura [ ' . $invoiceOrder['id_factura_proveedor']  . 
 		                      ' ] de [ ' . $supplier['nombre']  .' ] Pedido [ ' . $invoiceOrder['nro_pedido'] .
 		                      ' ]',
@@ -90,6 +91,53 @@ class Detallepedido extends MY_Controller
             'invoice' => $invoiceOrder,
 		    'supplier' => $supplier,
         ]);
+	}
+	
+	
+	/**
+	 * Actualiza los pesos de los items de las facturas
+	 *
+	 * @param int $id_order_invoice
+	 * @return bool redirect presentar 
+	 */
+	public function ActualizarPeso(int $id_order_invoice){
+	    if(!$_POST){
+	        $order_invoice = $this->modelOrderInvoice->get($id_order_invoice);
+	        $order_invoice_details = $this->modelOrderInvoiceDetail->getByOrderInvoice($id_order_invoice);
+	        $order = $this->modelOrder->get($order_invoice['nro_pedido']);
+	        $supplier = $this->modelSupplier->get($order_invoice['identificacion_proveedor']);
+	        
+	        foreach ($order_invoice_details as $k => $item){
+	            $product = $this->modelProduct->get($item['cod_contable']);
+	            $order_invoice_details[$k]['product'] = $product['nombre'];
+	            $order_invoice_details[$k]['cantidad_x_caja'] = $product['cantidad_x_caja'];
+	            $order_invoice_details[$k]['unidades'] = $product['cantidad_x_caja'] * $item['nro_cajas'];            
+	        }        
+	        
+	        return ($this->responseHttp([
+	            'title' => 'Actualizar Pesos Items',
+	            'titleContent' => 'Actualizando Pesos de Factura N '  . 
+	                               $order_invoice['id_factura_proveedor'] . ' de ' .  
+	                               $supplier['nombre']  . ' Pedido [' . 
+	                               $order['nro_pedido']  . ']',
+	            'edit_weigth' => true,
+	            'order' => $order,
+	            'order_details' => $order_invoice_details,
+	            'order_invoice' => $order_invoice,	            
+	        ])
+	            );
+	    
+	    }else{
+	        $order = $_POST['nro_pedido'];
+	        unset($_POST['nro_pedido']);
+	        foreach ($_POST as $idx => $w){
+	            $this->modelOrderInvoiceDetail->update([
+	                'detalle_pedido_factura' => $idx,
+	                'peso' =>  $w,
+	            ]);	            
+	        }
+	        $this->redirectPage('presentOrder', $order);        
+	    }
 	}
 
 
@@ -109,6 +157,7 @@ class Detallepedido extends MY_Controller
 	    $product = $this->modelProduct->get($detailInvoiceOrder['cod_contable']);
 	    
 	    $this->responseHttp([
+	        'title' => 'Modificar Producto [ ' . $product['nombre'] . ']',
 	        'titleContent' => 'Modificar Producto [ ' . $product['nombre'] . ' ] de la Factura [ ' . 
 	                           $invoiceOrer['id_factura_proveedor'] . '] Pedido ['. $invoiceOrer['nro_pedido'] .']',
 	        'edit' => true,
@@ -135,6 +184,7 @@ class Detallepedido extends MY_Controller
         }
 
         return($this->responseHttp([
+            'title' => 'Error en validación de datos',
             'orderDetail' => $detailOrderInvoice,
             'viewMessage' => true,
             'message' => 'No se puede eliminar el registro',
@@ -183,6 +233,7 @@ class Detallepedido extends MY_Controller
 				}
 		}else{
 			return($this->responseHttp([
+			    'title' => 'Error en validación de datos',
 			    'titleContent' => 'Error en uno de los campos',
 			    'viewMessage' => true,
 			    'message' => 'La información de uno de los campos es incorrecta!',
@@ -232,7 +283,6 @@ class Detallepedido extends MY_Controller
 	* Envia la respuestas html al navegador
 	*/
 	public function responseHttp($config){
-		$config['title'] = 'Facturas Pedidos';
 		$config['base_url'] = base_url();
 		$config['rute_url'] = base_url() . 'index.php/';
 		$config['controller'] = $this->controller;

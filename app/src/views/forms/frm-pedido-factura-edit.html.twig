@@ -90,6 +90,7 @@
               {% if invoice.vencimiento_pago != null %}
                 value="{{invoice.vencimiento_pago | date('d/m/Y') }}" 
               {% endif %}
+              autocomplete="off"
                >
             <div class="input-group-addon">
                <span class="glyphicon glyphicon-th"></span>
@@ -108,7 +109,8 @@
                name="fecha_pago" 
               {% if invoice.fecha_pago != null %}
                value="{{ invoice.fecha_pago | date('d/m/Y')}}"              
-              {% endif %}              
+              {% endif %} 
+              autocomplete="off"             
                >
             <div class="input-group-addon">
                <span class="glyphicon glyphicon-th"></span>

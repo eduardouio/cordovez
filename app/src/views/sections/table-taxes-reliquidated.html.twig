@@ -108,26 +108,29 @@
                <th>#</th>
                <th>Producto</th>
                <th>Cajas</th>
+               <th>UxC</th>
                <th>Unds</th>
                <th>FOB </th>
-               <th>% FOB</th>
                <th>Seguro A</th>
                <th>Flete A</th>
-               <th>Seguro</th>
-               <th>Flete</th>
                <th>CIF</th>
+               {%  if  tax.arancel_especifico_pagar > 0 %}
+               <th>Arancel Especifico</th>
+               {% endif %}
+               {% if tax.arancel_advalorem_pagar %}
+               <th>Arancel Advalorem</th>                       
+               {% endif %}
                <th>Fodinfa</th>
                <th>Etiquetas Fiscales</th>
+               {% if tax.tasa_control > 0 %}
                <th>Tasa Control</th>
-               <th>Exaduana </th>
+               {% endif %}
                <th>Exaduana U</th>
                <th>B Advalorem</th>
                <th>Cap.</th>
                <th>% Alch</th>
-               <th>Arancel Advalorem</th>                       
-               <th>Arancel Especifico</th>
-               <th>Arancel Esp U</th>
-               <th>Arancel Adv U</th>
+               	<th>ICE Esp U</th>
+               	<th>ICE Adv U</th>
                <th>ICE Especifico</th>
                <th>ICE Avalorem Reliquidado</th>
                <th>ICE Avalorem Pagado </th>
@@ -144,24 +147,27 @@
             <td> {{ loop.index }} </td>
             <td nowrap>{{ tax.product }}</td>
             <td class="text-right"> {{ tax.cajas }} </td>
+            <td class="text-right"> {{ tax.cantidad_x_caja }} </td>
             <td class="text-right">{{ tax.unidades }}</td>
             <td class="text-right">{{ tax.fob | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.fob_percent | number_format(3,',','.') }}</td>
             <td class="text-right">{{ tax.seguro_aduana | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.flete_aduana | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.seguro | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.flete | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.cif | number_format(2,',','.') }}</td>
+            {% if tax.arancel_especifico_pagar > 0 %}
+            <td class="text-right">{{ tax.arancel_especifico_pagar | number_format(2,',','.') }}</td>
+            {% endif %}
+            {% if tax.arancel_advalorem_pagar %}
+            <td class="text-right">{{ tax.arancel_advalorem_pagar | number_format(2,',','.') }}</td>
+            {% endif %}
             <td class="text-right">{{ tax.fodinfa | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.etiquetas_fiscales | number_format(2,',','.') }}</td>
+            {% if tax.tasa_control > 0 %}
             <td class="text-right">{{ tax.tasa_control | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.ex_aduana | number_format(2,',','.') }}</td>
+            {% endif %}
             <td class="text-right">{{ tax.ex_aduana_unitario | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.base_advalorem | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.capacidad_ml | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.grado_alcoholico | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.arancel_advalorem | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ tax.arancel_especifico | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.ice_especifico_unitario | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.ice_advalorem_unitario | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.ice_especifico | number_format(2,',','.') }}</td>
@@ -179,20 +185,23 @@
             <tr style="background-color:#2E86C1; color:#fff;">
                <td colspan="2">Sumas:</td>
                <td class="text-right">{{ parcial_taxes.sums.cajas }}</td>
+               <td class="text-center">--</td>
                <td class="text-right">{{ parcial_taxes.sums.unidades }}</td>
                <td class="text-right">{{ parcial_taxes.sums.fob | number_format(2,',','.') }}</td>
-               <td class="text-right">{{ parcial_taxes.sums.fob_percent | number_format(3,',','.') }}</td>
                <td class="text-right">{{ parcial_taxes.sums.seguro_aduana | number_format(2,',','.')}}</td>
                <td class="text-right">{{ parcial_taxes.sums.flete_aduana | number_format(2,',','.') }}</td>
-               <td class="text-right">{{ parcial_taxes.sums.seguro | number_format(2,',','.')}}</td>
-               <td class="text-right">{{ parcial_taxes.sums.flete | number_format(2,',','.') }}</td>
                <td class="text-right">{{ parcial_taxes.sums.cif | number_format(2,',','.') }}</td>
+               {% if parcial_taxes.sums.arancel_especifico_pagar > 0 %}
+               <td class="text-right">{{ parcial_taxes.sums.arancel_especifico_pagar | number_format(2,',','.') }}</td>
+               {% endif %}
+               {% if parcial_taxes.sums.arancel_advalorem_pagar > 0 %}
+               <td class="text-right">{{ parcial_taxes.sums.arancel_advalorem_pagar | number_format(2,',','.') }}</td>
+               {% endif %}
                <td class="text-right">{{ parcial_taxes.sums.fodinfa | number_format(2,',','.') }}</td>
                <td class="text-right">{{ parcial_taxes.sums.etiquetas_fiscales | number_format(2,',','.') }}</td>
+               {% if parcial_taxes.sums.tasa_control %}
                <td class="text-right">{{ parcial_taxes.sums.tasa_control | number_format(2,',','.') }}</td>
-               <td class="text-right">{{ parcial_taxes.sums.ex_aduana | number_format(2,',','.') }}</td>
-               <td class="text-center">--</td>
-               <td class="text-center">--</td>
+               {%  endif %}
                <td class="text-center">--</td>
                <td class="text-center">--</td>
                <td class="text-center">--</td>
@@ -232,7 +241,7 @@
 <hr />
 <div class="row">
    <div class="col-md-2">
-      {% if parcial.bg_isliquidated == 1    %}
+      {% if parcial.bg_isliquidated == 1 and parcial.bg_isclosed == 0  %}
          <a class="btn btn-sm btn-primary" href="{{ rute_url }}impuestos/reverso/pc/{{parcial.id_parcial}}">
             <span class="fa fa-refresh"></span> Reingreso Liquidación
          </a>

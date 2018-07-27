@@ -97,10 +97,6 @@ class Facturapagos extends MY_Controller
                 );            
         }
         
-        
-        
-        
-        
         $this->responseHttp([
             'list' => true,
             'controller' => $this->controller,
@@ -137,7 +133,9 @@ class Facturapagos extends MY_Controller
             $this->redirectPage('paidsList');
             return false;
         }
+        
         $document = $this->modelPaid->get($nroDocument);
+        
         if ($document == false){
             $this->redirectPage('paidsList');
             return false;
@@ -160,9 +158,11 @@ class Facturapagos extends MY_Controller
             $this->redirectPage('paidsList');
             return false;
         }
+        
         $this->db->where('id_documento_pago', $nroDocument);
         if($this->db->delete($this->controller)){
             $this->responseHttp([
+                'title' => 'Factura Eliminada',
                 'titleContent' => 'Registro Eliminado',
                 'viewMessage' => true,
                 'deleted' => true,
@@ -172,6 +172,7 @@ class Facturapagos extends MY_Controller
         }
         
         $document = $this->modelPaid->get($nroDocument);
+        
         $this->responseHttp([
             'titleContent' => 'Error Al Eliminal',
             'viewMessage' => true,
@@ -273,6 +274,7 @@ class Facturapagos extends MY_Controller
         }
         
         $this->responseHttp([
+            'title' => 'Facrura #' . $document['nro_factura'] . ' ' . $document['supplier']['nombre'],
             'titleContent' => 'Detalle Documento De Pago [' . 
                                   $document['nro_factura']. '] <small>'. 
                                   $document['supplier']['nombre'] . '</small>',
@@ -354,7 +356,6 @@ class Facturapagos extends MY_Controller
      */
     public function responseHttp($config)
     {
-        $config['title'] = 'Documentos   Pagos';
         $config['base_url'] = base_url();
         $config['rute_url'] = base_url() . 'index.php/';
         $config['controller'] = $this->controller;

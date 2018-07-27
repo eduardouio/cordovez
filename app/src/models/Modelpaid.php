@@ -102,6 +102,7 @@ class Modelpaid extends CI_Model{
                                         dc.identificacion_proveedor = 
                                         pr.identificacion_proveedor
                                                     )
+                    where dc.bg_closed != 1
                     ORDER BY 
                     dc.bg_closed ASC, 
                     pr.nombre ASC,

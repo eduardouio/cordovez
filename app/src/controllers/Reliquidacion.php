@@ -589,7 +589,7 @@ class Reliquidacion extends MY_Controller
         
     
     /**
-     * Conforma el cioerre de un pedido o un parcial
+     * Conforma el cierre de un pedido o un parcial
      * 
      * @param string $tipo
      * @param string $id
@@ -616,8 +616,9 @@ class Reliquidacion extends MY_Controller
         
         if($_POST['tipo'] == 'orden'){
             if($this->modelOrder->update($record)){
-                $this->modelLog->susessLog('Pedido ' . $_POST['id'] . 'fue cerrrado');
+                $this->modelLog->susessLog('Pedido ' . $_POST['id'] . 'fue cerrrado');               
                 $this->closeOrder($_POST['id']);
+                
                 return $this->redirectPage('showTaxesOrderLiquidate', $_POST['id']);
             }else{
                 $this->modelLog->errorLog(
@@ -644,7 +645,6 @@ class Reliquidacion extends MY_Controller
                 print 'Error con la base de datos';
         }
     }
-    
     
     
     /**
@@ -806,20 +806,44 @@ class Reliquidacion extends MY_Controller
     }
     
     /**
-     * [closeOrder description]
+     * Comprueba si es el ultimo parcual de un pedido, en caso de que lo sea 
+     * cierra el pedido
+     * 
      * @param  string $nro_order [description]
      * @return boolean             cieerra un pedido si es el ultimo parcial
      */
-    private function closeOrder(string $nro_order){
+    public function closeOrder(string $nro_order){
         $this->modelLog->warningLog
         (
             'Inicia comprobacion previo al cierre de un pedido'
-        );
+        );       
+        $order = $this->modelOrder->get($nro_order);
         
+        if($order == false){
+            $this->modelLog->errorLog(
+                'El pedido no existe',
+                $this->db->last_query()
+                );
+            return False;
+        }
         
+        if (intval($order['regimen'] == 10 )){
+            return False;
+        }
         
-        $stokOrder = new StockOrder();
-
+        $this->load->model('ModelStockOrder');
+        $modelOrderStock = new ModelStockOrder();
+        $dataStock = $modelOrderStock->getData($order);       
+        $stockOrder = new StockOrder(
+            $order, 
+            $dataStock['detail_order_invoices'], 
+            $dataStock['detail_info_invoices']
+            );
+        
+        print '<pre>';
+        print_r($stockOrder->getCurrentOrderStock());
+        print '</pre>';
+        
         return false;
     }
 

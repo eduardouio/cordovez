@@ -365,13 +365,19 @@ class orderTaxes {
                 if ($this->have_control_tasa){
                     if($value['concepto'] == 'TASA DE CONTROL ADUANERO'){
                         $tasa_control = ((floatval($detail_invoice['peso'])*1000)/2000) * 0.10;
+                        
+                        if($tasa_control > 700){
+                            $tasa_control = 700;
+                        }
                     }
                 }
             }
             
-            $this->gastos_origen = (
-                $this->type_change_order * $this->gastos_origen
-                                    ); 
+            if($this->incoterm == 'CFR' || $this->incoterm == 'FOB'){
+                $this->gastos_origen = (
+                    $this->type_change_order * $this->gastos_origen
+                    );
+            }
             
             $prorrateo_item = [
                 'fob_percent' => $fob_percent,

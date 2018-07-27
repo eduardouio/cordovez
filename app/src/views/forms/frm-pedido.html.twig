@@ -122,7 +122,7 @@
                         	name="flete_aduana" 
                         	step="0.01" 
                         	required="true" 
-                        	value="{{order.seguro_aduana | number_format(2,'.','')}}" 
+                        	value="{{ order.flete_aduana | number_format(2,'.','')}}"
                         	class="form-control"
                         	>
                   </div>
@@ -134,8 +134,8 @@
                         	type="number" 
                         	name="seguro_aduana" 
                         	step="0.01" 
-                        	required="true" 
-                        	value="{{ order.flete_aduana | number_format(2,'.','')}}" 
+                        	required="true"
+                        	value="{{order.seguro_aduana | number_format(2,'.','')}}" 
                         	class="form-control"
                         	>
                   </div>

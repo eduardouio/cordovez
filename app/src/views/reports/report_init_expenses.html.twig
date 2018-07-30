@@ -1,0 +1,70 @@
+<span style="font-size: 14px;text-align: center"> <strong> Reporte {{  title_report }} </strong> </span>
+<br />
+<div style="font-size: 12px">
+<br />
+Fecha Impresion: <span style="color: #333; font-weight: bold;"> {{ fecha }} </span>
+<br />
+Impreso Por:  <span style="color: #333; font-weight: bold;"> {{ user.nombres }} </span>
+<br />
+Pedido: <span style="color: #333; font-weight: bold;"> {{ order.nro_pedido }} </span>
+<br />
+Regimen: <span style="color: #333; font-weight: bold;"> {{ order.regimen }} </span>
+</div>
+<br />
+<table border="1">
+<tr style="background-color: #eeeeee;">
+	<td style="text-align: center; width: 20;"><strong>#</strong></td>
+	<td style="text-align: center; width: 250;"><strong>Concepto</strong></td>
+	<td style="text-align: center; width: 100;"><strong>Proveedor</strong></td>
+	<td style="text-align: center; width: 60;"><strong>Nro Facturas</strong></td>
+	<td style="text-align: center; width: 60;"><strong>F. Emisión</strong></td>
+	<td style="text-align: center; width: 55;"><strong>Provisión</strong></td>
+	<td style="text-align: center; width: 55;"><strong>Valor F</strong></td>
+	<td style="text-align: center; width: 55;"><strong>Saldo</strong></td>
+</tr>
+{% set sum_provision = 0 %}
+{% set sum_valor_facturas = 0 %}
+{% set sum_valor_saldo = 0 %}
+
+{% for expense in data %}
+{% set sum_provision = sum_provision +  expense.valor_provisionado %}
+{% set sum_valor_facturas = sum_valor_facturas + expense.sums %}
+{% set sum_valor_saldo = sum_valor_saldo + expense.saldo %}
+<tr>
+<td style="text-align: center; width: 20; height: 22px;">{{ loop.index }}</td>
+<td style="text-align: left; width: 250;">{{ expense.concepto }}</td>
+<td style="text-align: left; width: 100;">{% for supplier in expense.supplier %} {{ supplier }} {% endfor %}</td>
+<td style="text-align: center; width: 60;">{% for invoice in expense.num_invoices %} {{ invoice }} {% endfor %}</td>
+<td style="text-align: center; width: 60;">{% for date in expense.fecha_emision %} {{ date }} {% endfor %}</td>
+<td style="text-align: rigth; width: 55;">{{ expense.valor_provisionado | number_format(2,'.','') }}</td>
+<td style="text-align: rigth; width: 55;">{{ expense.sums | number_format(2,'.','')}}</td>
+<td style="text-align: rigth; width: 55;">{{ expense.saldo | number_format(2,'.','') }}</td>
+</tr>
+{% endfor %}
+<tr style="background-color: #eeeeee;">
+<td colspan="5" style="text-align: rigth;font-weight: bold;height:30px;">SUMAS:&nbsp; </td>
+<td style="text-align: rigth;font-weight: bold;"> <strong>$ {{ sum_provision | number_format(2,'.','') }}</strong></td>
+<td style="text-align: rigth;font-weight: bold;"> <strong>$ {{ sum_valor_facturas | number_format(2,'.','') }}</strong></td>
+<td style="text-align: rigth;font-weight: bold;"> <strong>$ {{ sum_valor_saldo | number_format(2,'.','') }}</strong></td>
+</tr>
+</table>
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<table border="1">
+<tr>
+<td style="text-align: center; font-weight: bold">Recibido Por:</td>
+<td style="text-align: center; font-weight: bold">Entregado Por:</td>
+<td style="text-align: center; font-weight: bold">Fecha Entrega: </td>
+</tr>
+<tr>
+<td style="height: 50px;"></td>
+<td></td>
+<td></td>
+</tr>
+</table>

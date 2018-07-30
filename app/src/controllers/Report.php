@@ -13,13 +13,14 @@
  */
 class Report extends MY_Controller{
     private $modelLog;
-    private $modelReportProvisiones;
     private $empresa;
-    
+    private $modelReportExpenses;
+    private $modelUser;
+    private $modelOrder;
+    private $template = '/reports/report_init_expenses.html';
     function __construct(){
         parent::__construct();
         $this->init();
-        
     }
     
     /**
@@ -30,25 +31,55 @@ class Report extends MY_Controller{
             exit(0);
         }
         $this->load->library('Pdf');
-        $this->load->model('ModelReportProvisiones');
-        $this->modelReportProvisiones = new ModelReportProvisiones();
+        $this->load->model('Modelreportexpenses');
+        $this->load->model('Modeluser');
+        $this->load->model('Modelorder');
+        $this->modelUser = new Modeluser();
+        $this->modelOrder = new Modelorder();
+        $this->modelReportExpenses = new Modelreportexpenses();
         $this->empresa = selectCompany('cordovez');
     }
         
     
-    public function gastosiniciales(string $nro_pedido){
-        $data = $this->modelReportProvisiones->getbyOrder($nro_pedido);       
+    /**
+     * Obtiene los gastos iniciales de un pedido
+     */
+    public function gastosiniciales($nro_order){
+        $data = $this->modelReportExpenses->getInitiExpenses($nro_order);
+        $report_data = [
+            'data' => $data,
+            'title_report' => 'Gastos Iniciales',       
+            'fecha' => date('d/m/Y H:m:s'),
+            'user' => $this->modelUser->get($this->session->userdata('id_user')),
+            'order' => $this->modelOrder->get($nro_order),
+        ];
         
-        $pdf = new Pdf('P', 'mm', 'A4', true, 'UTF-8', false);
-        // set document information
+        $html = $this->twig->render($this->template, $report_data); 
+        return (
+            $this->basePDF(
+                'Agencias y Representaciones Cordovez S.A.', 
+                'Reporte Gastos Iniciales' , 
+                $nro_order, $html)
+            );
+    }
+    
+    /**
+     * Genera la bade de un pdf 
+     * @param string $author
+     * @param string $title
+     */
+    private function basePDF(string $author, string $title, string $nro_pedido, string $html){   
+        
+        $pdf = new Pdf('P', 'mm', 'A4', true, 'UTF-8', false);       
+        
         $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetAuthor($this->empresa['name']);
-        $pdf->SetTitle('Reporte General De Gastos Iniciales');
-        $pdf->SetSubject('Reporte de Proviciones Iniciales');
+        $pdf->SetAuthor($author);
+        $pdf->SetTitle($title);
+        $pdf->SetSubject($author);
         $pdf->SetKeywords('Importaciones, PDF, pedidos');
         
         // set default header data
-        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, 'Reporte de Gastos Iniciales Pedido ' . $nro_pedido, $this->empresa['name'] );
+        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, 'Reporte de Gastos Iniciales Pedido ' . $nro_pedido, $author );
         
         // set header and footer fonts
         $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
@@ -74,75 +105,14 @@ class Report extends MY_Controller{
             $pdf->setLanguageArray($l);
         }
         
-        // ---------------------------------------------------------
         
-        // set font
-        $pdf->SetFont('helvetica', '', 10);
-        
-        // add a page
-        $pdf->AddPage();
-        
-        #$pdf->Write(0, 'Detalle de proviciones iniciales pedido ' . $nro_pedido , '', 0, 'L', true, 0, false, false, 0);
-        #$pdf->Write(1, '', '', 0, 'L', true, 0, false, false, 0);
-        
-        
-        $pdf->SetFont('helvetica', '', 9);
-        
-        // -----------------------------------------------------------------------------
-        
-     
-        // Table with rowspans and THEAD
-        $tbl = '
-            <strong>Detalle de los pedidos de la casa</strong>
-            <br/>
-            <img src="http://179.49.60.158:8888/img/logo_imnac.jpg" >
-            <br/>
-            <table border="1" cellpadding="1" class="table">
-            <thead>
-             <tr style="background-color:#333333;color:#FFFFFF;">
-              <td width="170" align="center"><b>Detalle Provisión</b></td>
-              <td width="150" align="center"><b>Proveedor</b></td>
-              <td width="80" align="center"> <b>Factura</b></td>
-              <td width="80" align="center"><b>Fecha</b></td>
-              <td width="60" align="center"><b>Provisión</b></td>
-              <td width="60" align="center"><b>Justif</b></td>
-              <td width="60" align="center"><b>Saldo</b></td>
-             </tr>
-            </thead>
-                {{items}}
-            </table>';
-        
-        $items = '';
-        
-        foreach ($data as $k => $exp){
-            $items .= '<tr>';
-            $items .= '<td width="170" align="left">' . $exp['Concepto'] .  '</td>';
-            $items .= '<td width="150" align="left">sds' . '</td>';
-            $items .= '<td width="80" align="rigth">asas' . '</td>';
-            $items .= '<td width="80" align="rigth">' . $exp['Fecha Provisión'] . '</td>';
-            $items .= '<td width="60" align="rigth">' . $exp['Valor Provisionado'] . '</td>';
-            $items .= '<td width="60" align="rigth">asas' . '</td>';
-            $items .= '<td width="60" align="rigth">asas' . '</td>';
-            $items .= '</tr>';
-        }
-        
-       $tbl2 = str_replace('{{items}}', $items, $tbl);      
-       
-       $tbl2 .= '<br/><br/><br/><br/><br/><br/><br/> strong Firma: __________________';
-       
-       $pdf->writeHTML($tbl2, true, false, false, false, '');
-       
-      
-       
-    
-        // -----------------------------------------------------------------------------
+        $pdf->SetFont('helvetica', '', 8);       
+        $pdf->AddPage();                  
+        $pdf->writeHTML($html, true, false, true, false, '');
+            
         
         //Close and output PDF document
-        $pdf->Output('reporteGastosIniciales.pdf', 'I');
-        
-        //============================================================+
-        // END OF FILE
-        //============================================================+
-    }
+        $pdf->Output('report.pdf', 'I');
+            }      
     
 }

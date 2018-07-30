@@ -240,7 +240,29 @@ class Facturapagos extends MY_Controller
         }
     }
 
-
+    
+    /**
+     * Verifica que las facturas que estan como abiertas sean cerradas
+     * si la suma de los items es igual a la suma del valor total
+     * @return boolean
+     */
+    public function checkinvoices(){
+        print 'Cerrando Facturas completas';
+        $open_invoices = $this->modelPaid->getAll();
+        
+        foreach ($open_invoices as $idx => $invoice){
+            $detail = $this->modelPaidDetail->get($invoice['id_documento_pago']);
+            if ($invoice['valor'] == $detail['sums']){
+                $invoice['bg_closed'] = 1;
+                $this->modelPaid->update($invoice);
+            }
+        }
+        
+        return $this->redirectPage('paidsList');
+    }      
+        
+    
+    
     /**
      * Recupera la informacion completa de una factura
      * @param $idInvoice

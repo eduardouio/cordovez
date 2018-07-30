@@ -106,8 +106,7 @@ class Modelpaid extends CI_Model{
                     ORDER BY 
                     dc.bg_closed ASC, 
                     pr.nombre ASC,
-                    dc.fecha_emision DESC
-                    LIMIT 600;';
+                    dc.fecha_emision DESC';
         
         $result = $this->db->query($query);
         $result = $result->result_array();
@@ -283,6 +282,8 @@ class Modelpaid extends CI_Model{
        unset($document['id_documento_pago']);
        unset($document['supplier']);
        unset($document['invoiceDetails']);
+       unset($document['nombre']);
+       
        if($this->db->update($this->table, $document)){
            $this->modelLog->susessLog(
                'Documento pago actualizado correctamente'
@@ -295,4 +296,5 @@ class Modelpaid extends CI_Model{
            );
         return False; 
     }
+    
 };

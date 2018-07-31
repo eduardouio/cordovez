@@ -87,8 +87,10 @@ class checkerOrder
         $have_initial_warenhouse = False;
         
         $expenses_order = [];
+        
         foreach ($this->paids_init_expenses as $item => $expense) {
             $expense['invoices'] = [];
+            
             if ($expense['paids']) {
                 foreach ($expense['paids'] as $idx => $paid) {
                     array_push(
@@ -107,6 +109,8 @@ class checkerOrder
             }
             
             array_push($expenses_order, $expense);
+            
+            
         }
         return ([
             'expenses_order' => $expenses_order,

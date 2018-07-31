@@ -114,15 +114,15 @@
                <th>Seguro A</th>
                <th>Flete A</th>
                <th>CIF</th>
-               {%  if  tax.arancel_especifico_pagar > 0 %}
+               {%  if  parcial_taxes.sums.arancel_especifico_pagar > 0 %}
                <th>Arancel Especifico</th>
                {% endif %}
-               {% if tax.arancel_advalorem_pagar %}
+               {% if parcial_taxes.sums.arancel_advalorem_pagar %}
                <th>Arancel Advalorem</th>                       
                {% endif %}
                <th>Fodinfa</th>
                <th>Etiquetas Fiscales</th>
-               {% if tax.tasa_control > 0 %}
+               {% if parcial_taxes.sums.tasa_control > 0 %}
                <th>Tasa Control</th>
                {% endif %}
                <th>Exaduana U</th>

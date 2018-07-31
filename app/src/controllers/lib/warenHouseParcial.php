@@ -32,6 +32,7 @@ class warenHouseParcial
 {
     private $order = [];
     private $parcial = [];
+    private $all_parcials = [];
     
     
     /**
@@ -39,10 +40,10 @@ class warenHouseParcial
      * @param array $order
      * @param array $parcials
      */
-    function __construct(array $order, array $parcial){
-        
+    function __construct(array $order, array $parcial, $all_parcials){
         $this->order = $order;
         $this->parcial = $parcial;
+        $this->all_parcials = $all_parcials;
     }
        
         
@@ -52,7 +53,7 @@ class warenHouseParcial
      */
     public function getLastWarenhouseParcial(){
         $lastParcial = $this->getLastParcial();
-        $warenHouses = []; 
+        $warenHouses = [];        
         
         if($lastParcial['expenses']){
             foreach ( $lastParcial['expenses'] as $expensesNationalization => $v) {
@@ -92,24 +93,17 @@ class warenHouseParcial
       * @return int
       */
      private function getLastParcial()
-     {
-         return $this->parcial;
+     {          
          
-         $keys = [];
+         $x = count($this->all_parcials);
          
-         foreach ($this->parcials as $parcial => $item){
-             array_push($keys, $item['id_parcial']);
+         if( $x > 1){
+             #de los parciales retorna el penultimo
+             $pos = $x-2;
+             return $this->all_parcials[$pos];
          }
          
-         $lastParcialId = max($keys);
-         
-         foreach ($this->parcials as $parcial => $item){
-             if($item['id_parcial'] == $lastParcialId){
-                 return $item;
-             }
-         }
-         
-         return 0;
+         return False;
      }
      
      

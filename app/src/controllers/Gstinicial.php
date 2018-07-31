@@ -337,8 +337,8 @@ class Gstinicial extends MY_Controller
             'user' => $this->modeluser->get($order['id_user']),
         ]));
     }
-
-   
+    
+    
     /**
      * Inicia el asistente para establecer las provisiones de bodega inicial
      * y las provisiones de demoraje
@@ -486,6 +486,8 @@ class Gstinicial extends MY_Controller
             }elseif($expense['concepto'] == 'FLETE' && $order['incoterm'] == 'CFR'){
                 $expense['bg_closed'] = 1;
             }
+            
+            $this->setISD($nro_order);
             $this->modelExpenses->create($expense);
         }
                 
@@ -635,6 +637,72 @@ class Gstinicial extends MY_Controller
         $this->modelLog->errorLog('EL gasto en origen no fue creado');
         return False;
     }
+    
+    
+    /**
+     *  Crea la provision de ISD en los gastos iniciales
+     */
+    private function setISD(string $nro_order){
+        $this->modelLog->warningLog(
+            'Se llama a la creacion del gasto inicial ISD'
+            );
+        
+        $order = $this->modelOrder->get($nro_order);
+        $order_invoices = $this->modelOrderInvoice->getbyOrder($nro_order);
+        
+        $valor_base = 0.0;
+        
+        foreach ($order_invoices as $k => $invoice){
+            $valor_base += ($invoice['valor'] * $invoice['tipo_cambio']);
+        }
+        
+        $gasto_origen = 0.0;
+        
+        if($order['incoterm'] == 'CFR' || $order['incoterm'] == 'FOB' ){
+            $gasto_origen = ($order['gasto_origen'] * $invoice['tipo_cambio']);
+        }
+        
+        #aqui se calcula el ISD
+        $valor_isd = ($valor_base + $gasto_origen) * 0.05;
+        
+        $isd_expenses = $this->modelExpenses->getByName(
+            $order['nro_pedido'],
+            'ISD'
+            );
+        
+        
+        if($isd_expenses){
+            $isd_expenses['valor_provisionado'] = $valor_isd;
+            if($this->modelExpenses->update($isd_expenses)){
+                $this->modelLog->warningLog('Se actualiza el ISD ' . $order['nro_pedido']);
+            }else{
+                $this->modelLog->errorLog(
+                    'No se puede actualizar el ISD',
+                    $this->db->last_query()
+                    );
+            }
+        }else{
+            if($this->modelExpenses->create([
+                'identificacion_proveedor' => 0,
+                'nro_pedido' => $order['nro_pedido'],
+                'valor_provisionado' => $valor_isd,
+                'id_parcial' => '0',
+                'concepto' => 'ISD',
+                'tipo' => 'INICIAL',
+                'fecha' => date('Y-m-d'),
+                'id_user' => $this->session->userdata('id_user')
+            ])){
+                $this->modelLog->warningLog('Se registra el ISD' . $order['nro_pedido']);
+            }else{
+                $this->modelLog->errorLog(
+                    'No se puede registrar el ISD',
+                    $this->db->last_query()
+                    );
+            }
+        }
+        
+    }
+    
     
     
      /**

@@ -166,11 +166,14 @@
             <tr>
                <td>
                {% if expense.paids == False %}
-               		{% if expense.concepto == 'ISD' %}
+               		{% if expense.concepto == 'ISD' or (expense.concepto == 'FLETE' and order.incoterm == 'CFR')  %}
+               		
                				<small class="label label-success">Justificado</small>
                		{% else %}
                        		<small class="label label-danger"> &nbsp;Provisión&nbsp;</small>
                		{% endif %}
+               		
+               		
                {%  else %}
                		{% if expense.bg_closed == 0 %}
                			<small class="label label-warning">Just. Parcial</small>

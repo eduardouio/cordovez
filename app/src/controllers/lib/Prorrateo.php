@@ -77,7 +77,7 @@ class Prorrateo {
                         $expense['valor_provisionado']
                     );
                 }
-
+        
                 array_push( $prorrateos['prorrateo_pedido'], $expense);        
             }
             
@@ -90,20 +90,20 @@ class Prorrateo {
      * @param $global_value float valor inicial de la provision
      */
     private function getTCAValue($global_value){
-        
         $tasa_sum = 0.0;        
-        if($this->init_data['products']){
+        if($this->init_data['products']){ 
         foreach ($this->init_data['products'] as $key => $prod) {
             $prod['peso'] = 0;
-
+            
             foreach ($this->init_data['order_invoice_detail'] as $idx => $oid) {
                 if($oid['detalle_pedido_factura'] == $prod['detalle_pedido_factura']){
                     $prod['cod_contable'] = $oid['cod_contable'];
                     break;
                 }
-            }
-
-            foreach ($this->init_data['products_base'] as $i => $pb){
+            }           
+                       
+            
+            foreach ($this->init_data['order_invoice_detail'] as $i => $pb){
                 if($pb['cod_contable'] == $prod['cod_contable']){
                     $prod['peso'] = $pb['peso'];
                     break;

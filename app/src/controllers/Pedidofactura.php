@@ -23,6 +23,7 @@ class Pedidofactura extends MY_Controller
     private $modelUser;
     private $modelLog;
     private $modeOrderInvoice;
+    private $modelExpenses;
     private $modeOrderInvoiceDetail;
 
     /**
@@ -50,6 +51,8 @@ class Pedidofactura extends MY_Controller
         $this->load->model('modelorderinvoice');
         $this->load->model('modelorderinvoicedetail');
         $this->load->model('modellog');
+        $this->load->model('Modelexpenses');
+        $this->modelExpenses = new Modelexpenses();
         $this->modelOrder = new Modelorder();
         $this->modelUser = new Modeluser();
         $this->modelSupplier = new Modelsupplier();
@@ -233,7 +236,6 @@ class Pedidofactura extends MY_Controller
         }
         
         $orderInvoice = $this->input->post();
-   
         
         if($orderInvoice['fecha_emision'] == ''){
             unset($orderInvoice['fecha_emision']);
@@ -263,7 +265,9 @@ class Pedidofactura extends MY_Controller
         if (! isset($orderInvoice['id_pedido_factura'])) {
             $this->db->where('id_factura_proveedor', $orderInvoice['id_factura_proveedor']);
             $this->db->where('identificacion_proveedor', $orderInvoice['identificacion_proveedor']);
+            
             $resultDb = $this->db->get($this->controller);
+            
             $order = $resultDb->result_array();
             
             if ($resultDb->num_rows() == 1) {
@@ -281,11 +285,15 @@ class Pedidofactura extends MY_Controller
         if ($status['status']) {
             if (! isset($orderInvoice['id_pedido_factura'])) {
                 $resultQuery = $this->modeOrderInvoice->create($orderInvoice);
+                #Actualizamo o creamos el ISD para el pedido
+                $this->setISD($orderInvoice['nro_pedido']);
                 $this->redirectPage('orderDetailAdd', $resultQuery);
                 return true;
             } else {
                 $orderInvoice['last_update'] = date('Y-m-d H:i:s');
                 $this->modeOrderInvoice->update($orderInvoice);
+                #Actualizamo o creamos el ISD para el pedido
+                $this->setISD($orderInvoice['nro_pedido']);
                 $this->redirectPage('orderInvoicePresent', $orderInvoice['id_pedido_factura']);
                 return true;
             }
@@ -298,6 +306,70 @@ class Pedidofactura extends MY_Controller
         }
     }
     
+    
+    /**
+     *  Crea la provision de ISD en los gastos iniciales 
+     */
+    private function setISD(string $nro_order){
+        $this->modelLog->warningLog(
+            'Se llama a la creacion del gasto inicial ISD'
+            );
+        
+        $order = $this->modelOrder->get($nro_order);
+        $order_invoices = $this->modeOrderInvoice->getbyOrder($nro_order);
+        
+        $valor_base = 0.0;
+        
+        foreach ($order_invoices as $k => $invoice){
+            $valor_base += ($invoice['valor'] * $invoice['tipo_cambio']);
+        }
+        
+        $gasto_origen = 0.0;
+        
+        if($order['incoterm'] == 'CFR' || $order['incoterm'] == 'FOB' ){
+            $gasto_origen = ($order['gasto_origen'] * $invoice['tipo_cambio']);
+        }
+        
+        #aqui se calcula el ISD
+        $valor_isd = ($valor_base + $gasto_origen) * 0.05;
+        
+        $isd_expenses = $this->modelExpenses->getByName(
+                $order['nro_pedido'], 
+                'ISD'
+            );            
+                   
+        
+        if($isd_expenses){
+            $isd_expenses['valor_provisionado'] = $valor_isd;
+            if($this->modelExpenses->update($isd_expenses)){
+                $this->modelLog->warningLog('Se actualiza el ISD ' . $order['nro_pedido']);                                
+            }else{
+                $this->modelLog->errorLog(
+                    'No se puede actualizar el ISD',
+                    $this->db->last_query()
+                    );
+            }
+        }else{
+            if($this->modelExpenses->create([
+                'identificacion_proveedor' => 0,
+                'nro_pedido' => $order['nro_pedido'],
+                'valor_provisionado' => $valor_isd,
+                'id_parcial' => '0',
+                'concepto' => 'ISD',
+                'tipo' => 'INICIAL',
+                'fecha' => date('Y-m-d'),
+                'id_user' => $this->session->userdata('id_user')
+            ])){                
+                $this->modelLog->warningLog('Se registra el ISD' . $order['nro_pedido']);
+            }else{
+                $this->modelLog->errorLog(
+                    'No se puede registrar el ISD',
+                    $this->db->last_query()
+                    );
+            }
+        }
+        
+    }      
     
 
     /**

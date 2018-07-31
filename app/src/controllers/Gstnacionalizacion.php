@@ -168,6 +168,11 @@ class Gstnacionalizacion extends MY_Controller
         $dateExitWarenhouseParcial = $warenhouse_post['fecha_salida_almacenera'];
         $valor_provisionado = $warenhouse_post['valor_provisionado'];
         
+        $parcial = $this->modelParcial->get($idParcial);
+        $order = $this->modelOrder->get($parcial['nro_pedido']);
+        
+        
+        
         unset($warenhouse_post['id_parcial']);
         unset($warenhouse_post['fecha_salida_almacenera']);
         unset($warenhouse_post['valor_provisionado']);
@@ -411,19 +416,21 @@ class Gstnacionalizacion extends MY_Controller
     
 
     /**
-     * Valida la bodega parcial para un parcial
+     * Muestra en formulario para agregar la bodega a un parcial
+     * Permite cambiar la fecha de entrada a la almacenera solo si
+     * es el ultimo parcial
      *
      * @param int $idInfoInvoice
      */
     public function validarbodegaparcial(int $idParcial)
     {
         $parcial = $this->modelParcial->get($idParcial);
+        
         if ($parcial == false) {
             return ($this->index());
         }
-        $parcial['expenses'] = $this->modelExpenses->getPartialExpenses(
-            $idParcial
-            );
+        
+        
         $order = $this->modelOrder->get($parcial['nro_pedido']);
         
         $resumeOrder = new resumeOrder(
@@ -431,7 +438,21 @@ class Gstnacionalizacion extends MY_Controller
                 $parcial['nro_pedido'])
             );
         
-        $parcialWarenhouse = new warenHouseParcial($order, $parcial);
+        $all_parcials = $this->modelParcial->getByOrder($parcial['nro_pedido']);
+        
+        $all_parcials_temp = [];
+        
+        if($all_parcials){
+            foreach ($all_parcials as $idx => $par){
+                $par['expenses'] = $this->modelExpenses->getPartialExpenses(
+                    $par['id_parcial']
+                    );
+                array_push($all_parcials_temp, $par);
+            }
+        }
+        
+        
+        $parcialWarenhouse = new warenHouseParcial($order, $parcial, $all_parcials_temp);
         $lastWarenHouseParcial = $parcialWarenhouse->getLastWarenhouseParcial();       
         
         $values_order = $resumeOrder->getValuesOrder();
@@ -443,15 +464,20 @@ class Gstnacionalizacion extends MY_Controller
         
         if ($lastWarenHouseParcial == False){
             $bodegaje += 8;
-        }
-               
+        }       
+        
+        $ordnidal_parcial = ordinalNumberParcial(
+            $all_parcials, $parcial['id_parcial']
+            );       
         
         return ($this->responseHttp([
             'validWarenHouse' => True,
             'titleContent' => 'Generar Provisiones Por Bodega Del Parcial Pedido [' 
                                 . $order['nro_pedido'] . 
-                                '] Parcial [' . $parcial['id_parcial'] . ']',
+                                    '] [Parcial ' . $ordnidal_parcial . 
+                                  ' de ' . count($all_parcials)  . ']',
             'parcial' => $parcial,
+            'title' => 'Validar Bodega Parcial',
             'almacenaje' => $bodegaje,
             'lastWarenHouseParcial' => $lastWarenHouseParcial,
             'order' => $order,
@@ -537,7 +563,6 @@ class Gstnacionalizacion extends MY_Controller
     private function responseHttp($config)
     {
         $config['base_url'] = base_url();
-        $config['title'] = 'Gastos Nacionalización';
         $config['rute_url'] = base_url() . 'index.php/';
         $config['controller'] = $this->controller;
         $config['iconTitle'] = 'fa-cubes';

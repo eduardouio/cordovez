@@ -202,6 +202,9 @@
         <span class="fa fa-arrow-left"></span>
         Volver al Pedido <b>[{{invoice.nro_pedido}}]</b>
       </a>
+      <a href="{{rute_url}}gstinicial/validargi/{{order.nro_pedido}}" class="btn btn-primary btn-sm">
+				<span class="fa fa-gear"></span> Gastos Iniciales
+		</a>
     </div>
     
     {% if order.regimen == 70 and order.bg_haveExpenses == 0 %}

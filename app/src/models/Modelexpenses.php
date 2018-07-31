@@ -149,10 +149,41 @@ class Modelexpenses extends CI_Model
         if((gettype($expense))&&(count($expense) > 0)){
             return (floatval($expense[0]['valor_provisionado']));
         }
-        $this->modelLog->warningLog('El concepto de Gasto no esta Registrado');
-        $this->modelLog->warningLog($this->db->last_query());
+        $this->modelLog->errorLog(
+            'El concepto de Gasto no esta Registrado',
+            $this->db->last_query()
+            );
+        
         return false;
     }
+    
+    
+    /**
+     * retorna el valor de un gasto incicial
+     * @param string $nroOrder nro_pedido
+     * @return float valor del gasto
+     */
+    public function getByName(string $nroOrder, string $detailName)
+    {
+        $expense = $this->modelBase->get_table([
+            'table' => $this->table,
+            'where' => [
+                'nro_pedido' => $nroOrder,
+                'concepto' => $detailName,
+            ],
+        ]);
+        
+        if($expense &&(count($expense) > 0)){
+            return ($expense[0]);
+        }
+        $this->modelLog->errorLog(
+            'El concepto de Gasto no esta Registrado',
+            $this->db->last_query()
+            );
+        
+        return false;
+    }
+    
     
     
     /**

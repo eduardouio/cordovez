@@ -829,11 +829,17 @@ class Reliquidacion extends MY_Controller
         
         if (intval($order['regimen'] == 10 )){
             return False;
-        }
+        }       
         
         $this->load->model('ModelStockOrder');
         $modelOrderStock = new ModelStockOrder();
-        $dataStock = $modelOrderStock->getData($order);       
+        
+        $dataStock = $modelOrderStock->getData($order);
+        
+        print '<pre>';
+        print_r($dataStock);
+        print '</pre>';
+        
         $stockOrder = new StockOrder(
             $order, 
             $dataStock['detail_order_invoices'], 

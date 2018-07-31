@@ -143,17 +143,19 @@ class Modelreportexpenses extends CI_Model
             $tributes['arancel_especifico'] = $parcial['arancel_especifico_pagar_pagado'];
             $tributes['ice_advalorem'] = $parcial['ice_advalorem_pagado'];
             $tributes['ice_especifico'] = $parcial['ice_especifico_pagado'];
+            $tributes['iva'] = $parcial['iva_pagado'];
             
         }elseif($id_parcial == 0){
             $pedido = $this->modelOrder->get($nro_order);
             
             $tributes['fecha_pago'] = $pedido['fecha_liquidacion'];
             $tributes['nro_liquidacion'] = $pedido['nro_liquidacion'];
-            $tributes['fodinfa'] = $pedido['fodinfa'];
+            $tributes['fodinfa'] = $pedido['fodinfa_pagado'];
             $tributes['arancel_advalorem'] = $pedido['arancel_advalorem_pagar_pagado'];
             $tributes['arancel_especifico'] = $pedido['arancel_especifico_pagar_pagado'];
             $tributes['ice_advalorem'] = $pedido['ice_advalorem_pagado'];
             $tributes['ice_especifico'] = $pedido['ice_especifico_pagado'];
+            $tributes['iva'] = $pedido['iva_pagado'];
         }
         
         $tributes['total'] = (

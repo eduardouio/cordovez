@@ -102,17 +102,17 @@ if (!defined('K_PATH_IMAGES')) {
 
 if (!defined('PDF_HEADER_LOGO')) {
 	$tcpdf_header_logo = '';
-	if (@file_exists(K_PATH_IMAGES.'logo_cordovez.jpg')) {
-		$tcpdf_header_logo = 'logo_cordovez.jpg';
-	}
+	#if (@file_exists(K_PATH_IMAGES.'logo_cordovez.jpg')) {
+	#	$tcpdf_header_logo = 'logo_cordovez.jpg';
+	#}
 	
 	#if (@file_exists(K_PATH_IMAGES.'logo_imnac.jpg')) {
 	#    $tcpdf_header_logo = 'logo_imnac.jpg';
 	#}
 	#
-	#if (@file_exists(K_PATH_IMAGES.'logo_vid.jpg')) {
-	#    $tcpdf_header_logo = 'logo_vid.jpg';
-	#}
+	if (@file_exists(K_PATH_IMAGES.'logo_vid.jpg')) {
+	    $tcpdf_header_logo = 'logo_vid.jpg';
+	}
 	
 	define ('PDF_HEADER_LOGO', $tcpdf_header_logo);
 }

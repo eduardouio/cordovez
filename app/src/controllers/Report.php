@@ -17,6 +17,7 @@ class Report extends MY_Controller{
     private $modelReportExpenses;
     private $modelUser;
     private $modelOrder;
+    private $modelParcial;
     private $template = '/reports/report_init_expenses.html';
     function __construct(){
         parent::__construct();
@@ -34,10 +35,14 @@ class Report extends MY_Controller{
         $this->load->model('Modelreportexpenses');
         $this->load->model('Modeluser');
         $this->load->model('Modelorder');
+        $this->load->model('Modelparcial');
+        $this->modelParcial = new Modelparcial();
         $this->modelUser = new Modeluser();
         $this->modelOrder = new Modelorder();
         $this->modelReportExpenses = new Modelreportexpenses();
         $this->empresa = selectCompany('cordovez');
+        #$this->empresa = selectCompany('imnac');
+        #$this->empresa = selectCompany('vid');
     }
         
     
@@ -45,13 +50,17 @@ class Report extends MY_Controller{
      * Obtiene los gastos iniciales de un pedido
      */
     public function gastosiniciales($nro_order){
-        $data = $this->modelReportExpenses->getInitiExpenses($nro_order);
+        $data = $this->modelReportExpenses->getExpenses($nro_order);
+        $order = $this->modelOrder->get($nro_order);
+        
         $report_data = [
             'data' => $data,
             'title_report' => 'Gastos Iniciales',       
             'fecha' => date('d/m/Y H:m:s'),
             'user' => $this->modelUser->get($this->session->userdata('id_user')),
-            'order' => $this->modelOrder->get($nro_order),
+            'order' => $order,
+            'taxes' => $this->modelReportExpenses->getTributes($nro_order),
+            'regimen' => $order['regimen']
         ];
         
         $html = $this->twig->render($this->template, $report_data); 
@@ -62,6 +71,40 @@ class Report extends MY_Controller{
                 $nro_order, $html)
             );
     }
+    
+    
+    /**
+     * Retorna los gastos del parcial
+     * @param int $id_parcial
+     */
+    public function gastosnacionalizacion(int $id_parcial){
+        $data = $this->modelReportExpenses->getExpenses('000-00',$id_parcial);
+        $parcial = $this->modelParcial->get($id_parcial);
+        $all_parcials = $this->modelParcial->getByOrder($parcial['nro_pedido']);
+        $nro_parcial = ordinalNumberParcial($all_parcials, $id_parcial);
+        
+        $report_data = [
+            'data' => $data,
+            'title_report' => 'Gastos Parcial ' . $nro_parcial ,
+            'fecha' => date('d/m/Y H:m:s'),
+            'user' => $this->modelUser->get($this->session->userdata('id_user')),
+            'nro_pedido' => $parcial['nro_pedido'],
+            'taxes' => $this->modelReportExpenses->getTributes('000-00', $id_parcial),
+            'order' => $this->modelOrder->get($parcial['nro_pedido']),
+            'nro_parcial' => $nro_parcial,
+            'id_parcial' => $id_parcial,
+        ];
+        
+        $html = $this->twig->render($this->template, $report_data);
+        return (
+            $this->basePDF(
+                'Agencias y Representaciones Cordovez S.A.',
+                'Reporte Gastos Parcial ' . $nro_parcial ,
+                $parcial['nro_pedido'], $html)
+            );
+    }
+    
+    
     
     /**
      * Genera la bade de un pdf 
@@ -74,12 +117,12 @@ class Report extends MY_Controller{
         
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor($author);
-        $pdf->SetTitle($title);
+        $pdf->SetTitle($title . ' Pedido' . $nro_pedido);
         $pdf->SetSubject($author);
         $pdf->SetKeywords('Importaciones, PDF, pedidos');
         
         // set default header data
-        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, 'Reporte de Gastos Iniciales Pedido ' . $nro_pedido, $author );
+        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, $this->empresa['name'], $this->empresa['ruc'], $this->empresa['address'] );
         
         // set header and footer fonts
         $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));

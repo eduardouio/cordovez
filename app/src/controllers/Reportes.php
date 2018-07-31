@@ -143,7 +143,6 @@ class Reportes extends MY_Controller
         ]);
     }
 
-    
     /*
      * Redenderiza la informacion y la envia al navegador
      * @param array $config informacion de la plantilla

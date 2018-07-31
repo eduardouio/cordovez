@@ -92,7 +92,7 @@ class Prorrateo {
     private function getTCAValue($global_value){
         
         $tasa_sum = 0.0;        
-
+        if($this->init_data['products']){
         foreach ($this->init_data['products'] as $key => $prod) {
             $prod['peso'] = 0;
 
@@ -118,6 +118,9 @@ class Prorrateo {
                 $tasa_sum += $tasa;
             }
 
+        }
+        }else{
+            print 'La factura informativa no tiene productos';
         }
 
         #si el valor excede lo que ingresaron se envia el mismo de la provision

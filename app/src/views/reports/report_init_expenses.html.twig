@@ -1,4 +1,4 @@
-<span style="font-size: 14px;text-align: center"> <strong> Reporte {{  title_report }} </strong> </span>
+<span style="font-size: 14px;text-align: center"> <strong> Reporte {{  title_report }} Pedido {{order.nro_pedido}} </strong> </span>
 <br />
 <div style="font-size: 12px">
 <br />
@@ -35,7 +35,7 @@ Regimen: <span style="color: #333; font-weight: bold;"> {{ order.regimen }} </sp
 <td style="text-align: left; width: 250;">{{ expense.concepto }}</td>
 <td style="text-align: left; width: 100;">{% for supplier in expense.supplier %} {{ supplier }} {% endfor %}</td>
 <td style="text-align: center; width: 60;">{% for invoice in expense.num_invoices %} {{ invoice }} {% endfor %}</td>
-<td style="text-align: center; width: 60;">{% for date in expense.fecha_emision %} {{ date }} {% endfor %}</td>
+<td style="text-align: center; width: 60;">{% for date in expense.fecha_emision %} {{ date | date('d/m/Y')}} {% endfor %}</td>
 <td style="text-align: rigth; width: 55;">{{ expense.valor_provisionado | number_format(2,'.','') }}</td>
 <td style="text-align: rigth; width: 55;">{{ expense.sums | number_format(2,'.','')}}</td>
 <td style="text-align: rigth; width: 55;">{{ expense.saldo | number_format(2,'.','') }}</td>
@@ -50,6 +50,32 @@ Regimen: <span style="color: #333; font-weight: bold;"> {{ order.regimen }} </sp
 </table>
 <br />
 <br />
+{% if regimen == 10 or id_parcial > 0 %}
+<span style="font-size: 12px"> <strong>Liquidación SENAE Pagado el {{ taxes.fecha_pago }} </strong> </span>
+<br />
+<table border="1">
+<tr style="background-color: #eeeeee;">
+	<td style="text-align: center; width: 94;"><strong>Nro Liquidación</strong></td>
+	<td style="text-align: center; width: 80;"><strong>Fodinfa</strong></td>
+	<td style="text-align: center; width: 80;"><strong>A. Advalorem</strong></td>
+	<td style="text-align: center; width: 80;"><strong>A. Especifico</strong></td>
+	<td style="text-align: center; width: 80;"><strong>ICE Advalorem</strong></td>
+	<td style="text-align: center; width: 80;"><strong>ICE Especifico</strong></td>
+	<td style="text-align: center; width: 80;"><strong>IVA</strong></td>
+	<td style="text-align: center; width: 80;"><strong>Total</strong></td>
+</tr>
+<tr>
+	<td style="text-align: rigth; width: 94;">{{ taxes.nro_liquidacion }}</td>
+	<td style="text-align: rigth; width: 80;">{{ taxes.fodinfa | number_format(2,'.','') }}</td>
+	<td style="text-align: rigth; width: 80;">{{ taxes.arancel_advalorem | number_format(2,'.','') }}</td>
+	<td style="text-align: rigth; width: 80;">{{ taxes.arancel_especifico | number_format(2,'.','') }}</td>
+	<td style="text-align: rigth; width: 80;">{{ taxes.ice_advalorem | number_format(2,'.','') }}</td>
+	<td style="text-align: rigth; width: 80;">{{ taxes.ice_especifico | number_format(2,'.','') }}</td>
+	<td style="text-align: rigth; width: 80;">{{ taxes.iva | number_format(2,'.','') }}</td>
+	<td style="text-align: rigth; width: 80;"> <strong>${{ taxes.total | number_format(2,'.','') }}</strong></td>
+</tr>
+</table>
+{% endif %}
 <br />
 <br />
 <br />

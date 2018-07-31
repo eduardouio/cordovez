@@ -14,7 +14,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Modelreportexpenses extends CI_Model
 {
-    private $modelBase;   
+    private $modelBase;
+    private $modelLog;
+    private $modelOrder;
+    private $modelParcial;
 
     /**
      * Costructor de la clase
@@ -22,37 +25,69 @@ class Modelreportexpenses extends CI_Model
     function __construct(){
         parent::__construct();
         $this->load->model('ModelBase');
+        $this->load->model('Modellog');
+        $this->load->model('Modelorder');
+        $this->load->model('Modelparcial');
+        $this->modelOrder = new Modelorder();
+        $this->modelParcial = new Modelparcial();
+        $this->modelLog = new Modellog();
         $this->modelBase = new ModelBase();
     }
     
     
     /**
-     * Retorna los gastos iniciales de un pedido 
+     * Retorna los gastos iniciales de un pedido, o de un parcial 
      * 
      * @param string $nro_order
+     * @param int $id_parcial
      * @return array
      */
-    public function getInitiExpenses(string $nro_order):array
+    public function getExpenses(string $nro_order, int $id_parcial = 0):array
     {
         $order_expenses = [];
-        
-        $sql = "SELECT 
-            id_gastos_nacionalizacion, 
-            concepto, 
-            nro_pedido, 
-            id_parcial, 
-            tipo, 
-            valor_provisionado, 
+        $sql = "SELECT
+            concepto,
+            id_gastos_nacionalizacion,
+            fecha,
+            fecha_fin,
+            nro_pedido,
+            id_parcial,
+            tipo,
+            valor_provisionado,
             bg_closed
-            FROM gastos_nacionalizacion 
-            WHERE nro_pedido = '$nro_order'
-            ";
-        #AND concepto != 'ISD'
+            FROM gastos_nacionalizacion";
         
+        if($id_parcial == 0){
+            $sql .= " WHERE nro_pedido = '$nro_order'
+            AND concepto != 'ISD'
+            ";
+        }else{
+            $sql .= " WHERE id_parcial = '$id_parcial'
+            AND concepto != 'ISD'
+            ";
+        }        
+        $sql .= ' ORDER BY fecha ASC';
         $result = $this->modelBase->runQuery($sql);
         
+        $warenhose_expenses = [];
+        $expenses = [];
+        
+        
+        foreach ($result as $k => $exp){
+            if( preg_match('/[a-zA-Z]-[0-9]/' , $exp['concepto'] ) )
+            {
+                array_push($warenhose_expenses, $exp);
+            }else{
+                array_push($expenses, $exp);
+            }
+        }
+        
+        asort($expenses, 0);
+        
+        $all_expenses = array_merge($expenses, $warenhose_expenses);
+        
         if($result){
-            foreach ($result as $idx => $exp){
+            foreach ($all_expenses as $idx => $exp){
                 array_push(
                     $order_expenses,
                     $this->getPaidsDetail($exp)
@@ -62,20 +97,7 @@ class Modelreportexpenses extends CI_Model
       
         return $order_expenses;
     }
-    
-    
-    
-    /**
-     * Retorna los gastos de un parcial 
-     * 
-     * @param int $id_parcial
-     * @return array
-     */
-    public function getParcialExpenses(int $id_parcial):array
-    {
-       return [];
-    }
-    
+        
     
     /**
      * retorna los gastos de nacionalizacion de un periodo
@@ -88,6 +110,67 @@ class Modelreportexpenses extends CI_Model
         
     }
     
+    
+    /**
+     * Retorna los tributos de un parcial o un pedido
+     * 
+     * @param string $nro_order
+     * @param int $id_parcial
+     * 
+     * @return array Tributos
+     */
+    public function getTributes(string $nro_order, int $id_parcial = 0): array {       
+        
+        $tributes = [
+            'nro_liquidacion' => '',
+            'fecha_pago' => '',
+            'cif' => 0.0,
+            'fodinfa' => 0.0,
+            'arancel_advalorem' => 0.0,
+            'arancel_especifico' => 0.0,
+            'ice_advalorem' => 0.0,
+            'ice_especifico' => 0.0,
+            'iva' => 0.0,
+            'total' => 0.0,
+        ];
+        
+        if($id_parcial > 0){
+            $parcial = $this->modelParcial->get($id_parcial);
+            $tributes['fecha_pago'] = $parcial['fecha_liquidacion']; 
+            $tributes['nro_liquidacion'] = $parcial['nro_liquidacion'];
+            $tributes['fodinfa'] = $parcial['fodinfa'];
+            $tributes['arancel_advalorem'] = $parcial['arancel_advalorem_pagar_pagado'];
+            $tributes['arancel_especifico'] = $parcial['arancel_especifico_pagar_pagado'];
+            $tributes['ice_advalorem'] = $parcial['ice_advalorem_pagado'];
+            $tributes['ice_especifico'] = $parcial['ice_especifico_pagado'];
+            
+        }elseif($id_parcial == 0){
+            $pedido = $this->modelOrder->get($nro_order);
+            
+            $tributes['fecha_pago'] = $pedido['fecha_liquidacion'];
+            $tributes['nro_liquidacion'] = $pedido['nro_liquidacion'];
+            $tributes['fodinfa'] = $pedido['fodinfa'];
+            $tributes['arancel_advalorem'] = $pedido['arancel_advalorem_pagar_pagado'];
+            $tributes['arancel_especifico'] = $pedido['arancel_especifico_pagar_pagado'];
+            $tributes['ice_advalorem'] = $pedido['ice_advalorem_pagado'];
+            $tributes['ice_especifico'] = $pedido['ice_especifico_pagado'];
+        }
+        
+        $tributes['total'] = (
+            $tributes['cif']
+            + $tributes['fodinfa']
+            + $tributes['arancel_advalorem']
+            + $tributes['arancel_especifico']
+            + $tributes['ice_advalorem']
+            + $tributes['ice_especifico']
+            + $tributes['iva']
+            );
+        
+        return $tributes;
+    }
+    
+    
+    
     /**
      * Retorna los detalles de un pago
      * 
@@ -95,6 +178,18 @@ class Modelreportexpenses extends CI_Model
      * @return array
      */
     private function getPaidsDetail(array $init_expense): array{
+        
+        if( preg_match('/[a-zA-Z]-[0-9]/' , $init_expense['concepto'] ) )
+        {
+            $start = substr($init_expense['fecha'], 5);
+            $end = substr($init_expense['fecha_fin'], 5);
+            
+            $start = str_replace('-', '/', $start);
+            $end = str_replace('-', '/', $end);
+            
+            $init_expense['concepto'] .= ' [' . $start . ' - ' . $end . ']';
+        }
+        
         $init_expense['num_invoices'] = [];
         $init_expense['fecha_emision'] = [];
         $init_expense['supplier'] = [];
@@ -115,16 +210,15 @@ class Modelreportexpenses extends CI_Model
                     LEFT JOIN proveedor as pro ON(pro.identificacion_proveedor = dp.identificacion_proveedor)
                     WHERE 
                     ddp.id_gastos_nacionalizacion = {{id_gasto_nacionalizacion}}
-                    AND ;
                     ";
         
-        $query = str_replace(
+        $sql = str_replace(
                     '{{id_gasto_nacionalizacion}}', 
                     $init_expense['id_gastos_nacionalizacion'] , 
                     $query
                     );
         
-        $detail_paid = $this->modelBase->runQuery($query);
+        $detail_paid = $this->modelBase->runQuery($sql);       
         
         if($detail_paid){
             foreach ($detail_paid as $idx => $dt_paid){

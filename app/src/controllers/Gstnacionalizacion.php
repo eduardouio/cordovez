@@ -241,11 +241,22 @@ class Gstnacionalizacion extends MY_Controller
                                     $paids_partial_expenses, 
                                     $unused_expenses
             );      
+        $all_parcials = $this->modelParcial->getByOrder($parcial['nro_pedido']);
+        $ordinal = ordinalNumberParcial(
+                $all_parcials,
+                $id_parcial
+            ); 
+        $ultimo = '';
+        
+        if(count($all_parcials) == $ordinal){
+            $ultimo = ' <strong>[Ultimo Parcial]</strong>';
+        }
         
         return ($this->responseHTTP([
             'showExpenses' => True,
-            'titleContent' => 'generar gastos nacionalizacion Parcial Pedido: [' . 
-                               $parcial['nro_pedido'] . '] Régimen 70',
+            'titleContent' => 'Generar gastos nacionalizacion Parcial Pedido: [' . 
+                               $parcial['nro_pedido'] . '] Régimen 70' . 
+                                ' Parcial # ' . $ordinal . ' de ' . count($all_parcials) . $ultimo,
             'dates_parcial' => $checkPartial->checkPartial(),
             'order' => $order,
             'parcial' => $parcial,

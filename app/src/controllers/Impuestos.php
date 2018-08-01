@@ -320,7 +320,9 @@ class Impuestos extends MY_Controller
                 return $this->redirectPage('insertWeigth', $init_data['order_invoices'][0]['id_pedido_factura']);
             }
         }
-        
+                    
+        $order_taxes = $orderTaxes->getTaxes();
+       
         
         return ($this->responseHttp([
             'titleContent' => 'Resumen de Impuestos Liquidación Aduana del Pedido ' .
@@ -328,10 +330,11 @@ class Impuestos extends MY_Controller
                                             ' [ ' . $order['incoterm'] . ' Régimen' . 
                                             $order['regimen'] .  ' ]' ,
             'init_data' => $init_data,
-            'order_taxes' => $orderTaxes->getTaxes(),
+            'order_taxes' => $order_taxes,
             'regimen' => 'R10',
             'title' => 'Impuestos R10 ' . $order['nro_pedido'],
             'order' => $order,
+            'etiquetas_fiscales' => $order_taxes['sums']['unidades'] * 0.13,
             'user' => $this->modelUser->get($init_data['order']['id_user']),
         ]));
     }
@@ -522,15 +525,13 @@ class Impuestos extends MY_Controller
         
         $order = $this->input->post();
         
-        $order['have_etiquetas_fiscales'] = 1 ;
-        $order['bg_have_tasa_control'] = 1;
         $order['bg_isliquidated'] = 1;
         $order['fecha_liquidacion'] = str_replace(
             '/', '-', $order['fecha_liquidacion']
             );
         $order['fecha_liquidacion'] = date(
             'Y-m-d', strtotime($order['fecha_liquidacion'])
-            );        
+            );                
         
         if($this->modelOrder->update($order)){
             return $this->redirectPage(
@@ -558,9 +559,8 @@ class Impuestos extends MY_Controller
         $parcial['fecha_liquidacion'] = date(
                             'Y-m-d', strtotime($parcial['fecha_liquidacion'])
             );
-        $parcial['bg_have_etiquetas_fiscales'] = 1 ;
+        
         $parcial['bg_isliquidated'] = 1;
-        $parcial['bg_have_tasa_control'] = 1;     
         
         if($this->modelParcial->update($parcial)){
             return $this->redirectPage(

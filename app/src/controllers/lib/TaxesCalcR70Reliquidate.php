@@ -28,6 +28,7 @@ class parcialTaxesReliquidate {
     private $type_change_parcial = 0.0;    
     private $taxes = [];
     
+    
     /**
      * Datos iniciales del parcial
      * @param array $init_data => Facturas, productos, parcial
@@ -185,7 +186,7 @@ class parcialTaxesReliquidate {
             + $tax['total_ice']
             + $tax['fodinfa']
             + $tax['prorrateos_total']
-            + $tax['gasto_origen']
+            #+ $tax['gasto_origen']
                 );
             
 
@@ -196,7 +197,7 @@ class parcialTaxesReliquidate {
             + $tax['fodinfa']
             + $tax['prorrateos_total']
             + $tax['fob']
-           # + $tax['gasto_origen']
+            #+ $tax['gasto_origen']
 
             );
 
@@ -423,6 +424,7 @@ class parcialTaxesReliquidate {
                 * $product_base['cantidad_x_caja']
                 ),
             'cajas' => $detail_info_invoice['nro_cajas'],
+            'nro_cajas' => $detail_info_invoice['nro_cajas'],
             'unidades' => (
                 $detail_info_invoice['nro_cajas']
                 * $product_base['cantidad_x_caja']
@@ -459,55 +461,38 @@ class parcialTaxesReliquidate {
 
             $tasa_control = $this->getTSA($product, $product['percent']);           
 
-            $prorrateo_item_p = [];            
-            $prorrateo_pedido = [];
-
+            $prorrateo_item_producto = [];            
+            $prorrateo_gastos_iniciales = [];
+            
             foreach($prorrateo_detail as $idx => $gst_prorrateo){
                 if ($gst_prorrateo['tipo'] == 'gasto_inicial'){
-                    if($gst_prorrateo['concepto'] != 'TASA DE CONTROL ADUANERO'){
-                        if($gst_prorrateo['concepto'] == 'FLETE'){
-                            #la primera opcion muestra el Flete sin GO
-                            #segunda suma los dos para mostrarlos en el display
-                            #$flete = ($gst_prorrateo['valor_prorrateado'] * $product['percent']);
-                            $flete = ($gst_prorrateo['valor_prorrateado'] * $product['percent']) 
-                                    + ($this->gastos_origen * $product['percent']);
-                        }
-                        if($gst_prorrateo['concepto'] == 'POLIZA SEGURO'){
-                            $seguro = $gst_prorrateo['valor_prorrateado'] * $product['percent'];
-                        }
-
-                        array_push($prorrateo_pedido, $gst_prorrateo['valor_prorrateado'] * $product['percent']);
-                    }
-
+                    array_push(
+                        $prorrateo_gastos_iniciales, 
+                        $gst_prorrateo['valor_prorrateado'] * $product['percent']
+                        );
                 }else{
-
-                    if($gst_prorrateo['concepto'] != 'ETIQUETAS FISCALES'){
-
-                        array_push( $prorrateo_item_p, $gst_prorrateo['valor_provisionado'] * $product['percent']);
-                    }else{
-                        array_push( $prorrateo_item_p, $this->etiquetas_fiscales_valor * $product['unidades']);
-                    }
-
+                    array_push( 
+                        $prorrateo_item_producto, 
+                        $gst_prorrateo['valor_provisionado'] * $product['percent']
+                        );
                 }
             } 
+                      
+           array_push($prorrateo_item_producto, $this->init_data['warenhouses']['almacenaje_aplicado'] * $product['percent']); 
 
-           array_push($prorrateo_item_p, $this->init_data['warenhouses']['almacenaje_aplicado'] * $product['percent']); 
-           array_push($prorrateo_pedido, $tasa_control);
+            $valor_prorrateos_parcial = 0.0;
+            $valor_prorrateos_gastos_iniciales = 0.0;
 
-            $prorrateos_parcial = 0.0;
-            $prorrateos_pedido = 0.0;
-
-            foreach ($prorrateo_pedido as $key => $value) {
-                $prorrateos_pedido += $value;
+            foreach ($prorrateo_gastos_iniciales as $key => $value) {
+                $valor_prorrateos_gastos_iniciales += $value;
             }
 
-            foreach ($prorrateo_item_p as $key => $value) {
-                $prorrateos_parcial += $value;
+            foreach ($prorrateo_item_producto as $key => $value) {
+                $valor_prorrateos_parcial += $value;
             }
 
             $fob_percent = ($product['percent']);
-            
-            
+                        
             $prorrateo_item = [
                 'fob_percent' => $fob_percent,
                 'seguro_aduana' => ($fobs_parcial['prorrateo_seguro_aduana']
@@ -522,9 +507,9 @@ class parcialTaxesReliquidate {
                 'otros' =>  $this->parcial['otros'] * $fob_percent,
                 'tasa_control' => $tasa_control,
 
-                'prorrateo_parcial' => $prorrateos_parcial,
-                'prorrateo_pedido' => $prorrateos_pedido,
-                'prorrateos_total' => $prorrateos_pedido + $prorrateos_parcial,
+                'prorrateo_parcial' => $valor_prorrateos_parcial,
+                'prorrateo_pedido' => $valor_prorrateos_gastos_iniciales,
+                'prorrateos_total' => $valor_prorrateos_gastos_iniciales + $valor_prorrateos_parcial,
             ];            
             
 

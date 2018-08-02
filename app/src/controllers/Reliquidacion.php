@@ -243,6 +243,8 @@ class Reliquidacion extends MY_Controller
             'title' => 'Reliquidacion Parcial Pedido [' . $parcial['nro_pedido'] . ']',
             'id' => $parcial['id_parcial'],
             'warenhouses' => $init_data['warenhouses'],
+            'bg_have_etiquetas' => 1,
+            'bg_hava_tasa_control' => 1,
             'regimen' => 'R70',
             'current_date' => date('d-m-Y') ,
             'current_user' => $this->modelUser->get(
@@ -485,6 +487,8 @@ class Reliquidacion extends MY_Controller
             'title' => 'Reliquidacion Pedido [' . $nroOrder . ']',
             'regimen' => 'R10',
             'tipo' => 'orden',
+            'bg_have_etiquetas' => 1,
+            'bg_hava_tasa_control' => 1,
             'id' => $nroOrder,
             'current_date' => date('d-m-Y') ,
             'order' => $order,

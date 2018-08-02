@@ -39,40 +39,22 @@
                <td class="text-right">{{ init_data.fobs_parcial.fob_parcial_razon_inicial | number_format(5,',','.') }}</td>
             </tr>
             <tr>
-               <td class="text-right brackground-gray"><strong> Etiquetas Fiscales</strong></td>
-               {% if parcial_taxes.data_general.have_etiquetas ==  true %}
+               <td class="text-right brackground-gray"><strong> Etiquetas Fiscales</strong></td>            
                		<td class="text-right">
                		<span class="text-success">
                		<span class="fa fa-check"></span>
                		Incluido
                		</span>
-					</td>
-               {% else %}
-               <td class="text-right">
-					<span class="text-danger">
-               		<span class="fa fa-ban"></span>
-               		No Incluido
-               		</span>
-               	</td>
-               {% endif %}
+					</td>               
             </tr>
             <tr>
                <td class="text-right brackground-gray"><strong> Tasa de Servicio Aduanero</strong></td>
-               {% if parcial_taxes.data_general.have_tasa_control == true %}
                		<td class="text-right">
                		<span class="text-success">
                		<span class="fa fa-check"></span>
                		Incluido
                		</span>
-               		</td>
-               {% else %}
-               <td class="text-right">
-					<span class="text-danger">
-               		<span class="fa fa-ban"></span>
-               		No Incluido
-               		</span>
-               		</td>
-               {% endif %}
+               		</td>           
             </tr>
             <tr>
             <td class="text-right brackground-gray"><strong>Base Arancel Específico</strong></td>

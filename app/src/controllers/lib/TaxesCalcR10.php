@@ -331,7 +331,7 @@ class orderTaxes {
                 / 
                 $fob_invoice
                 );
-            $tasa_control_producto = $this->getTSA($product, $fob_percent);                     
+            $tasa_control_producto = $this->getTSA($product, $fob_percent);
             
             if($this->incoterm == 'CFR' || $this->incoterm == 'FOB'){
                 $this->gastos_origen = (
@@ -388,7 +388,7 @@ class orderTaxes {
         }              
         
         foreach ($this->init_data['order_invoice_detail'] as $k => $item){
-            #aqui cambiar el costo de tasa 
+            #aqui cambiar el costo de tasa            
             $tasa = $item['peso'] * 0.05;
             if($tasa > 700){
                 $tasa_control_general += 700;
@@ -398,9 +398,9 @@ class orderTaxes {
         }
             
         #los pesos corresponden a las tasas
-        if($tasa_control_general == $tasa_control_provision){
+        if($tasa_control_general == $tasa_control_provision){           
             $tasa_item = $product['peso'] * 0.05;
-            if($tasa > 700){
+            if($tasa_item > 700){
                 return 700;
             }else{
                 return $tasa_item;

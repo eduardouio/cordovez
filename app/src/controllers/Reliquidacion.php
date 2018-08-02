@@ -194,7 +194,6 @@ class Reliquidacion extends MY_Controller
                     'iva_unidad' => $tax_product['iva_unidad'],
                     'iva_total' => $tax_product['iva_total'],
                     'ex_aduana' => $tax_product['ex_aduana'],
-                    #'ex_aduana_antes' =>$tax_product['ex_aduana_antes'],
                     'ex_aduana_unitario' => $tax_product['ex_aduana_unitario'],
                     'exaduana_sin_etiquetas' => $tax_product['exaduana_sin_etiquetas'],
                     'exaduana_sin_tasa' => $tax_product['exaduana_sin_tasa'],
@@ -377,7 +376,7 @@ class Reliquidacion extends MY_Controller
         
         if($order['regimen'] == '70'){
             $this->modelLog->warningLog(
-                'No se puede liquidar un pedidos de regimen Diferente al 70'
+                'No se puede liquidar un pedido R70'
                 );
             return $this->index();
         }
@@ -386,7 +385,7 @@ class Reliquidacion extends MY_Controller
             $this->modelLog->warningLog(
                 'El pedido que intenta reliquidar está abierto'
                 );
-            return $this->index();
+            return $this->redirectPage('showTaxesOrder', $nroOrder);
         }
 
         $init_data = $this->getOrderDataR10($nroOrder);
@@ -425,6 +424,7 @@ class Reliquidacion extends MY_Controller
                     'fecha_liquidacion' =>$tax_product['fecha_liquidacion'],
                     'nro_pedido' =>$tax_product['nro_pedido'],
                     'id_parcial' =>0,
+                    'tasa_control' => $tax_product['tasa_control'],
                     'otros' =>$tax_product['otros'],
                     'prorrateo_parcial' =>0,
                     'prorrateo_pedido' =>$tax_product['prorrateo_pedido'],
@@ -435,7 +435,6 @@ class Reliquidacion extends MY_Controller
                     'iva_unidad' =>$tax_product['iva_unidad'],
                     'iva_total' =>$tax_product['iva_total'],
                     'ex_aduana' =>$tax_product['ex_aduana'],
-                    #'ex_aduana_antes' =>$tax_product['ex_aduana_antes'],
                     'ex_aduana_unitario' =>$tax_product['ex_aduana_unitario'],
                     'exaduana_sin_etiquetas' =>$tax_product['exaduana_sin_etiquetas'],
                     'exaduana_sin_tasa' =>$tax_product['exaduana_sin_tasa'],
@@ -478,7 +477,7 @@ class Reliquidacion extends MY_Controller
         }
         
         return ($this->responseHttp([
-            'titleContent' => 'Resumen de Liquidacion Pedido ' .
+            'titleContent' => 'Resumen de Reliquidación ICE Pedido ' .
                                 $init_data['order']['nro_pedido'] . 
                                 ' Regimen : ' . $order['regimen'],
             'init_data' => $init_data,
@@ -508,7 +507,6 @@ class Reliquidacion extends MY_Controller
     {
         $order = $this->modelOrder->get($nro_pedido);
         
-        $order_detail = [];
         $products_base = [];
         
         $order_invoices = $this->modelOrderInvoice->getbyOrder(

@@ -22,15 +22,10 @@ class parcialTaxesReliquidate {
     private $incoterm;
     private $gastos_origen = 0.0;
     private $etiquetas_fiscales_valor = 0.0;
-    private $iva_base = 0.12;
     private $id_factura_informativa;
-    private $nro_factura_informativa;
-    private $base_tasa_aduanera = 0.10;
-    private $ice_advalorem_base = 0.75;
+    private $nro_factura_informativa;    
     private $type_change_invoice = 0.0;
-    private $type_change_parcial = 0.0;
-    private $have_labes = True;
-    private $have_control_tasa = True;
+    private $type_change_parcial = 0.0;    
     private $taxes = [];
     
     /**
@@ -98,11 +93,9 @@ class parcialTaxesReliquidate {
         $data_general = [
             'tipo_cambio_factura' => $this->type_change_invoice,
             'tipo_cambio_parcial' => $this->type_change_parcial,
-            'fob' => $taxes['sums']['fob'],
-            'have_tasa_control' => $this->have_control_tasa,
-            'have_etiquetas' => $this->have_labes,
-            'base_arancel_especifico' => $this->getTaxParam('ICE ESPECIFICO'),
-            'base_advalorem' => $this->getTaxParam('BASE ADVALOREM'),
+            'fob' => $taxes['sums']['fob'],        
+            'base_arancel_especifico' => $this->parcial['base_arancel_especifico'],
+            'base_advalorem' => $this->parcial['base_ice_advalorem'],
         ];
         
         $taxes['data_general'] = $data_general;        
@@ -118,17 +111,12 @@ class parcialTaxesReliquidate {
     private function calDiferenceICEAdvalorem(array $taxes) : array{
         
         $ice_advalorem_tasa = 0.0;
-
-        $have_tasa = false;       
+        $ice_advalorem_tasa = 0.0;
         
         foreach ( $taxes as $item => $tax ){
             $ice_advalorem_tasa += $tax['ice_advalorem_sin_etiquetas'];
         }
-        
-        if( round($this->parcial['ice_advalorem'], 4) == round($ice_advalorem_tasa, 4)){
-            $have_tasa = true;
-        }
-        
+                      
         $diferencia =  (
             $this->parcial['ice_advalorem']
             - $this->parcial['ice_advalorem_pagado']
@@ -154,7 +142,7 @@ class parcialTaxesReliquidate {
         
         foreach ( $taxes as $idx => $tax){
             if($tax['ice_advalorem'] > 0){
-                if($have_tasa){
+                if($this->parcial['bg_have_etiquetas_fiscales']){
                     $tax['ice_advalorem_pagado'] = (
                         $tax['ice_advalorem_sin_etiquetas']
                         - ( $diferencia/$num_products )
@@ -228,15 +216,7 @@ class parcialTaxesReliquidate {
      * Setea las consiguraciones iniciales para el calculo de los impuestos
      * Coloca los parametros para el calculo de impuestos
      */
-    private function setConfiguration(){
-        $unities = 0.0;
-        
-        foreach ($this->init_data['products'] as $idx => $prod){
-            $this->total_items++;
-            $product_data = $this->getProductData($prod);
-            $unities += $product_data['unidades'];
-            
-        }
+    private function setConfiguration(){      
         
         foreach ($this->init_data['order_invoices'] as $idx => $invoice){
             if ($idx == 0) {
@@ -257,26 +237,7 @@ class parcialTaxesReliquidate {
         foreach ($this->init_data['info_invoices'] as $idx => $inv){
             $this->gastos_origen += $inv['gasto_origen'];
         }
-        
-        $etiquetas_fiscales = 0;
-        
-        foreach ($this->init_data['parcial_expenses'] as $idx => $exp){
-            if($exp['concepto'] == 'ETIQUETAS FISCALES' ){
-                $etiquetas_fiscales = $exp['valor_provisionado'];
-            }
-        }
-        
-        if($etiquetas_fiscales){
-            $this->etiquetas_fiscales_valor = $etiquetas_fiscales / $unities;
-        }       
-        
-        $this->have_labes = boolval(
-            $this->init_data['parcial']['bg_have_etiquetas_fiscales']
-            );
-        
-        $this->have_control_tasa = boolval(
-            $this->parcial['bg_have_tasa_control']
-            );        
+               
     }
     
     
@@ -496,19 +457,7 @@ class parcialTaxesReliquidate {
             $prorrateo_detail = $this->prorrateo['prorrateo_detail'];
             $fobs_parcial = $this->init_data['fobs_parcial'];
 
-            foreach ($prorrateo_detail as $key => $value) {
-                if( $value['concepto'] == 'TASA DE CONTROL ADUANERO' 
-                    &&  $this->total_items > 1
-                    ){                            
-                        $tasa_control = ($detail_info_invoice['peso']*1000/2000*$this->base_tasa_aduanera);
-                    if($tasa_control > 700){
-                        $tasa_control = 700;
-                    }
-                }elseif($value['concepto'] == 'TASA DE CONTROL ADUANERO' 
-                    &&  $this->total_items == 1){
-                    $tasa_control = $this->parcial['tasa_control'];
-                }
-                }
+            $tasa_control = $this->getTSA($product, $product['percent']);
 
             $prorrateo_item_p = [];            
             $prorrateo_pedido = [];
@@ -591,6 +540,62 @@ class parcialTaxesReliquidate {
     }
     
     
+    
+    
+    
+    /**
+     * Calcula la tasa de control para el producto
+     * @param array $product
+     * @return float
+     */
+    private function getTSA($product, $fob_percent):float{
+        if($this->parcial['bg_have_tasa_control'] == 0){
+            return 0;
+        }
+        
+        $tasa_control_provision = 0.0;
+        $tasa_control_general = 0.0;
+        $cajas_totales = 0.0;
+        
+        foreach ($this->init_data['init_expenses'] as $k => $expense){
+            if($expense['concepto'] == 'TASA DE CONTROL ADUANERO'){
+                $tasa_control_provision = $expense['valor_provisionado'];
+            }
+        }
+        
+        #si no se halla la tasa de conrol retorna cero, indica que no esta
+        #provisionada
+        if($tasa_control_provision == 0){
+            return 0;
+        }
+        
+        foreach ($this->init_data['order_invoice_detail'] as $k => $item){
+            #aqui cambiar el costo de tasa
+            $tasa = $item['peso'] * 0.05;
+            $cajas_totales = $item['nro_cajas'];
+            if($tasa > 700){
+                $tasa_control_general += 700;
+            }else{
+                $tasa_control_general += $tasa;
+            }
+        }
+        
+        #los pesos corresponden a las tasas
+        if($tasa_control_general == $tasa_control_provision){
+            $tasa_caja = $tasa_control_general/$cajas_totales;
+            return ($tasa_caja * $product['nro_cajas']);
+        }
+        
+        #accion para los pesos que no coinciden
+        $tasa_prorrateo_parcial = (
+            $tasa_control_provision
+            * $this->prorrateo['prorrateo']['porcentaje_parcial']
+            );
+        
+        return ($tasa_prorrateo_parcial *  $fob_percent);
+    }
+    
+    
     /**
      * Retorna los impuestos que se aplica al producto
      *
@@ -630,7 +635,7 @@ class parcialTaxesReliquidate {
         $arancel_advalorem_unitario = ($arancel_advalorem / $product['unidades']);
         
         $arancel_especifico = (
-            $this->getTaxParam('ARANCEL ESPECIFICO')
+            $this->parcial['base_arancel_especifico']
             * (($product['capacidad_ml']/ $limite_capacidad) * $product['grado_alcoholico'])
             ) * $product['unidades'];
             
@@ -649,15 +654,10 @@ class parcialTaxesReliquidate {
             
             $arancel_advalorem_pagar =  ($arancel_advalorem - $arancel_advalorem_liberado);
             $arancel_especifico_pagar = ($arancel_especifico - $arancel_especifico_liberado);
-            
-            
-            
-            
-            $base_ice_especifico = $this->getTaxParam('ICE ESPECIFICO');
-            
+                        
             $ice_especifico = (
                 (
-                    $base_ice_especifico
+                    $this->parcial['base_ice_especifico']
                     *
                     (
                         ($product['capacidad_ml'] / $limite_capacidad )
@@ -705,33 +705,31 @@ class parcialTaxesReliquidate {
                 $exaduana_sin_tasa/$product['unidades']
                 );
             
-            
             $ice_advalorem = 0.0;
             $ice_advalorem_sin_etiquetas = 0.0;
-            $ice_advalorem_sin_tasa = 0.0;
+            $ice_advalorem_sin_tasa = 0.0;           
             
-            
-            $base_advalorem = ($this->getTaxParam('BASE ADVALOREM') * (
+            $base_advalorem = ($this->parcial['base_ice_advalorem'] * (
                 $product['capacidad_ml']/ 1000));
             
             if ($ex_aduana_unitario > $base_advalorem){
                 $ice_advalorem = (
                     $ex_aduana_unitario - $base_advalorem
-                    ) * $this->ice_advalorem_base
+                    ) * $this->parcial['porcentaje_ice_advalorem']
                     * $product['unidades'];
             }
             
             if ($ex_aduana_unitario_sin_etiquetas > $base_advalorem){
                 $ice_advalorem_sin_etiquetas = (
                     $ex_aduana_unitario_sin_etiquetas - $base_advalorem
-                    ) * $this->ice_advalorem_base
+                    ) * $this->parcial['porcentaje_ice_advalorem']
                     * $product['unidades'];
             }
             
             if ($ex_aduana_unitario_sin_tasa > $base_advalorem){
                 $ice_advalorem_sin_tasa = (
                     $ex_aduana_unitario_sin_tasa - $base_advalorem
-                    ) * $this->ice_advalorem_base
+                    ) * $this->parcial['porcentaje_ice_advalorem']
                     * $product['unidades'];
             }
             
@@ -743,7 +741,7 @@ class parcialTaxesReliquidate {
                     
             return ([
                 'fodinfa' => $fodinfa,
-                'base_ice_especifico' => $base_ice_especifico,
+                'base_ice_especifico' => $this->parcial['base_ice_especifico'],
                 'ice_especifico' => $ice_especifico,
                 'ice_especifico_unitario' => ($ice_especifico/$product['unidades']),
                 'ex_aduana' => $exaduana,
@@ -773,18 +771,5 @@ class parcialTaxesReliquidate {
                 'iva_total' => $iva_total,
                 'iva_unidad' => $iva / $product['unidades'],
             ]);
-    }
-    
-    /**
-     * Retorna el porcentaje para un impuesto o el valor
-     */
-    private function getTaxParam(string $tax_name):float
-    {
-        foreach ($this->param_taxes as $key => $tax) {
-            if($tax['concepto'] == $tax_name){
-                return $tax['valor'];
-            }
-        }
-        return False;
     }
 }

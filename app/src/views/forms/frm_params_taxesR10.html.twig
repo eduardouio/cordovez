@@ -9,8 +9,10 @@
                         <input 
                         type="checkbox" 
                         id = "update_etiquetas"
-                        name="have_etiquetas_fiscales"                        
+                        name="have_etiquetas_fiscales"
+                        {% if order.bg_have_etiquetas == 1 %}                        
                         checked="true"
+                        {% endif %}
                         >
                         <div class="control_indicator"></div>
                      </label>
@@ -53,7 +55,9 @@
                         type="checkbox" 
                         name="bg_have_tasa_control"
                         id = "update_tasa"
+                        {% if order.bg_have_tasa_control == 1 %}
                         checked="true"
+                        {% endif %}
                         >
                         <div class="control_indicator"></div>
                      </label>

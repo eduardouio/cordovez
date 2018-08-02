@@ -196,7 +196,7 @@ class parcialTaxesReliquidate {
             + $tax['fodinfa']
             + $tax['prorrateos_total']
             + $tax['fob']
-            + $tax['gasto_origen']
+           # + $tax['gasto_origen']
 
             );
 
@@ -236,7 +236,8 @@ class parcialTaxesReliquidate {
         
         foreach ($this->init_data['info_invoices'] as $idx => $inv){
             $this->gastos_origen += $inv['gasto_origen'];
-        }
+        }           
+        
                
     }
     
@@ -450,14 +451,13 @@ class parcialTaxesReliquidate {
         array $product
         ): array
         {
-            $tasa_control = 0.0;
             $seguro = 0;
             $flete = 0;
 
             $prorrateo_detail = $this->prorrateo['prorrateo_detail'];
             $fobs_parcial = $this->init_data['fobs_parcial'];
 
-            $tasa_control = $this->getTSA($product, $product['percent']);
+            $tasa_control = $this->getTSA($product, $product['percent']);           
 
             $prorrateo_item_p = [];            
             $prorrateo_pedido = [];
@@ -548,10 +548,7 @@ class parcialTaxesReliquidate {
      * @param array $product
      * @return float
      */
-    private function getTSA($product, $fob_percent):float{
-        if($this->parcial['bg_have_tasa_control'] == 0){
-            return 0;
-        }
+    private function getTSA($product, $fob_percent):float{      
         
         $tasa_control_provision = 0.0;
         $tasa_control_general = 0.0;
@@ -586,10 +583,19 @@ class parcialTaxesReliquidate {
             return ($tasa_caja * $product['nro_cajas']);
         }
         
+        
+        $porcentaje_parcial = 0;
+        
+        if(isset($this->prorrateo['prorrateo'][0])){
+            $porcentaje_parcial =  $this->prorrateo['prorrateo'][0]['porcentaje_parcial'];
+        }else{
+            $porcentaje_parcial = $this->prorrateo['prorrateo']['porcentaje_parcial'];
+            }
+                      
         #accion para los pesos que no coinciden
         $tasa_prorrateo_parcial = (
             $tasa_control_provision
-            * $this->prorrateo['prorrateo']['porcentaje_parcial']
+            * $porcentaje_parcial
             );
         
         return ($tasa_prorrateo_parcial *  $fob_percent);
@@ -623,9 +629,8 @@ class parcialTaxesReliquidate {
         
         $etiquetas_fiscales  = (
             $product['unidades']
-            * $this->etiquetas_fiscales_valor
+            * $this->parcial['base_etiquetas']
             );            
-        
         
         $arancel_advalorem = (
             $this->parcial['arancel_advalorem_pagar_pagado']

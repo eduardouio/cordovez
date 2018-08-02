@@ -81,7 +81,7 @@ class Prorrateo {
         
                 array_push( $prorrateos['prorrateo_pedido'], $expense);        
             }
-                                             
+                    
             return $prorrateos;
     }
     

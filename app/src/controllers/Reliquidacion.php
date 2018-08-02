@@ -329,11 +329,11 @@ class Reliquidacion extends MY_Controller
         $init_expenses = $this->modelInitExpenses->getAll($order);
         
         #eliminamos los gastos de origen porque se prorratean en el FOB
-        foreach ($init_expenses as $idx => $exp){
-            if($exp['concepto'] == 'GASTO ORIGEN'){
-                unset($init_expenses[$idx]);
-            }
-        }
+        #foreach ($init_expenses as $idx => $exp){
+        #    if($exp['concepto'] == 'GASTO ORIGEN'){
+        #        unset($init_expenses[$idx]);
+        #    }
+        #}
 
         return([
             'order' => $order,

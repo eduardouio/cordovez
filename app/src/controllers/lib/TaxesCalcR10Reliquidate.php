@@ -237,11 +237,13 @@ class orderTaxesReliquidate {
             }                   
         }
         
+        #si los gastos de origen no estan en la lista de GI estan en el pedido
+        # verificar si trabaja bien con los incoterms mencionados. los GO estan
         # en la moneda del pedido
-        if ($this->order['incoterm'] == 'FOB'){
+        if ($this->order['incoterm'] == 'FOB' || $this->order['incoterm'] == 'CFR'){
             $this->gastos_origen = (
                 $this->order['gasto_origen']
-            );
+                );
         }
       }
     

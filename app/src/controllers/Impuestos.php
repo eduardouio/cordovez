@@ -450,17 +450,10 @@ class Impuestos extends MY_Controller
         
         $paramsParcial = [
             'id_parcial' => $_POST['id_parcial'],
-            'bg_have_tasa_control' => 0,
-            'bg_have_etiquetas_fiscales' => 0,
+            'bg_have_tasa_control' => 0,           
             'tipo_cambio' => $_POST['tipo_cambio'],
             'exoneracion_arancel' => $_POST['exoneracion_arancel'],
         ];
-        
-        if (isset($_POST['bg_have_etiquetas_fiscales']) && 
-            $_POST['bg_have_etiquetas_fiscales'] == 'on') 
-        {
-            $paramsParcial['bg_have_etiquetas_fiscales'] = 1;
-        }
         
         if (isset($_POST['bg_have_tasa_control']) && 
             $_POST['bg_have_tasa_control'] == 'on') 
@@ -468,7 +461,7 @@ class Impuestos extends MY_Controller
             $paramsParcial['bg_have_tasa_control'] = 1;
         }
         
-       $this->modelParcial->update($paramsParcial);
+       $this->modelParcial->update($paramsParcial);      
            
         return ($this->redirectPage('showTaxesParcial', $_POST['id_parcial']));
     }

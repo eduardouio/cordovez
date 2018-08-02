@@ -72,15 +72,16 @@ class Prorrateo {
                                             * $fobs['fob_parcial_razon_inicial']
                                                 );
                 
-                if($expense['concepto'] == 'TASA DE CONTROL ADUANERO' && $expense['valor_provisionado'] > 40){
+                if($expense['concepto'] == 'TASA DE CONTROL ADUANERO'){
                     $expense['valor_prorrateado'] = $this->getTCAValue(
-                        $expense['valor_provisionado']
+                        $expense['valor_provisionado'],
+                        $fobs['fob_parcial_razon_inicial']
                     );
                 }
         
                 array_push( $prorrateos['prorrateo_pedido'], $expense);        
             }
-            
+                                             
             return $prorrateos;
     }
     
@@ -89,46 +90,47 @@ class Prorrateo {
      * Obtiene el valor de la tasa para el parcial
      * @param $global_value float valor inicial de la provision
      */
-    private function getTCAValue($global_value){
-        $tasa_sum = 0.0;        
-        if($this->init_data['products']){ 
-        foreach ($this->init_data['products'] as $key => $prod) {
-            $prod['peso'] = 0;
-            
-            foreach ($this->init_data['order_invoice_detail'] as $idx => $oid) {
-                if($oid['detalle_pedido_factura'] == $prod['detalle_pedido_factura']){
-                    $prod['cod_contable'] = $oid['cod_contable'];
-                    break;
-                }
-            }           
-                       
-            
-            foreach ($this->init_data['order_invoice_detail'] as $i => $pb){
-                if($pb['cod_contable'] == $prod['cod_contable']){
-                    $prod['peso'] = $pb['peso'];
-                    break;
-                }
-            }
-
-            $tasa = ($prod['peso']*1000/2000*.10);
-
+    private function getTCAValue($tasa_provision, $fob_parcial_razon_inicial){
+        $tasa_general = [];
+        $tasa_base_peso = 0;
+        
+        foreach ($this->init_data['order_invoice_detail'] as $k => $prod){
+            $tasa = $prod['peso'] * 0.05;
             if($tasa > 700){
-                $tasa_sum += 700;                
-            }else{
-                $tasa_sum += $tasa;
+                $tasa = 700;
             }
-
+            
+            $tasa_base_peso += $tasa;
+            
+            array_push($tasa_general, [
+                'detalle_pedido_factura' => $prod['detalle_pedido_factura'],
+                'cajas_item' => $prod['nro_cajas'],
+                'tasa_control' => $tasa,
+            ]);
         }
-        }else{
-            print 'La factura informativa no tiene productos';
+        
+        if($tasa_base_peso == $tasa_provision){
+            if($this->init_data['products']){
+                $tasa_prorrateo = 0.0;
+                foreach ($this->init_data['products'] as $k => $item){
+                    foreach ($tasa_general as $val) {
+                        if($val['detalle_pedido_factura'] = $item['detalle_pedido_factura']){
+                            $tasa_caja = ($val['tasa_control']/ $val['cajas_item']);
+                            $tasa_prorrateo += ($item['nro_cajas'] * $tasa_caja);
+                        }
+                    }
+                }
+                
+                return $tasa_prorrateo;
+                
+            }else{
+                print 'La factura informativa no tiene productos';
+            }
         }
-
-        #si el valor excede lo que ingresaron se envia el mismo de la provision
-        if($tasa_sum  <= $global_value){
-            return $tasa_sum;
-        }else{
-            return $global_value;
-        }
+        
+        return ($tasa_provision * $fob_parcial_razon_inicial);
+        
+               
     }
     
     /**

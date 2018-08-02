@@ -493,7 +493,6 @@ class parcialTaxesReliquidate {
             $seguro = 0;
             $flete = 0;
 
-            $prorrateo = $this->prorrateo['prorrateo'];
             $prorrateo_detail = $this->prorrateo['prorrateo_detail'];
             $fobs_parcial = $this->init_data['fobs_parcial'];
 
@@ -507,7 +506,7 @@ class parcialTaxesReliquidate {
                     }
                 }elseif($value['concepto'] == 'TASA DE CONTROL ADUANERO' 
                     &&  $this->total_items == 1){
-                    $tasa_control = $value['valor_prorrateado'];
+                    $tasa_control = $this->parcial['tasa_control'];
                 }
                 }
 

@@ -500,7 +500,6 @@ class orderTaxesReliquidate {
             }
             
 
-
             foreach ($this->init_data['init_expenses'] as $key => $value) {
                 if( $value['concepto'] == 'TASA DE CONTROL ADUANERO' 
                     &&  $this->total_items > 1

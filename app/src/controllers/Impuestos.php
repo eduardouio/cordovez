@@ -49,7 +49,7 @@ class Impuestos extends MY_Controller
     /**
      * Inicia los modelos de la clase
      */
-    public function init()
+    private function init()
     {
         if(! isset($this->session->userdata['id_user'])){
             exit(0);
@@ -163,10 +163,14 @@ class Impuestos extends MY_Controller
             }
         }
         
+        $all_parcials = $this->modelParcial->getAllParcials($parcial['nro_pedido']);
+        $ordinal_parcial = ordinalNumberParcial($all_parcials, $parcial['id_parcial']);
 
         return ($this->responseHttp([
-            'titleContent' => 'Resumen de Impuestos Liquidación Aduana del Pedido ' . 
-                                        $init_data['order']['nro_pedido'],
+            'title' => 'Impuesto Parcial ' . $ordinal_parcial . '/' . count($all_parcials),
+            'titleContent' => 'Resumen de Impuestos Liquidación Aduana [Parcial ' . 
+                              $ordinal_parcial . '/' . count($all_parcials) .
+                              '] [Pedido ' . $init_data['order']['nro_pedido'] . ']',
             'init_data' => $init_data,
             'parcial_taxes' => $parcialTaxes->getTaxes(),
             'prorrateos' => $prorrateos,
@@ -176,9 +180,6 @@ class Impuestos extends MY_Controller
             'user' => $this->modelUser->get($init_data['parcial']['id_user']),
         ]));
     }
-
-
- 
 
     
     /**
@@ -749,7 +750,6 @@ class Impuestos extends MY_Controller
     private function responseHttp($config)
     {
         return ($this->twig->display($this->template, array_merge($config, [
-            'title' => 'Impuestos Aduana',
             'base_url' => base_url(),
             'rute_url' => base_url() . 'index.php/',
             'controller' => $this->controller,

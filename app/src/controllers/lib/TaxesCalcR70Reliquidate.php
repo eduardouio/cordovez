@@ -123,11 +123,12 @@ class parcialTaxesReliquidate {
             - $this->parcial['ice_advalorem_pagado']
             );
         
+        
         $diferencia_ice_especifico = (
             $this->parcial['ice_especifico']
             - $this->parcial['ice_especifico_pagado']
             );
-        
+                     
         #todos los productos pagan ice especifico
         $all_products = count($taxes);
         #solo buscamos los items que tienen ice advalorem
@@ -143,7 +144,7 @@ class parcialTaxesReliquidate {
         
         foreach ( $taxes as $idx => $tax){
             if($tax['ice_advalorem'] > 0){
-                if($this->parcial['bg_have_etiquetas_fiscales']){
+                if($this->parcial['bg_have_tasa_control']){
                     $tax['ice_advalorem_pagado'] = (
                         $tax['ice_advalorem_sin_etiquetas']
                         - ( $diferencia/$num_products )
@@ -458,9 +459,7 @@ class parcialTaxesReliquidate {
 
             $prorrateo_detail = $this->prorrateo['prorrateo_detail'];
             $fobs_parcial = $this->init_data['fobs_parcial'];
-
-            $tasa_control = $this->getTSA($product, $product['percent']);           
-
+            
             $prorrateo_item_producto = [];            
             $prorrateo_gastos_iniciales = [];
             
@@ -505,13 +504,11 @@ class parcialTaxesReliquidate {
                 'flete' => $flete,
                 'gasto_origen' => ($this->gastos_origen * $product['percent']),
                 'otros' =>  $this->parcial['otros'] * $fob_percent,
-                'tasa_control' => $tasa_control,
-
+                'tasa_control' => $detail_info_invoice['tasa_control'],
                 'prorrateo_parcial' => $valor_prorrateos_parcial,
                 'prorrateo_pedido' => $valor_prorrateos_gastos_iniciales,
                 'prorrateos_total' => $valor_prorrateos_gastos_iniciales + $valor_prorrateos_parcial,
-            ];            
-            
+            ];
 
             $prorrateo_item ['cif'] = (
                 (
@@ -524,69 +521,7 @@ class parcialTaxesReliquidate {
             return  $prorrateo_item;
     }
     
-    
-    
-    
-    
-    /**
-     * Calcula la tasa de control para el producto
-     * @param array $product
-     * @return float
-     */
-    private function getTSA($product, $fob_percent):float{      
         
-        $tasa_control_provision = 0.0;
-        $tasa_control_general = 0.0;
-        $cajas_totales = 0.0;
-        
-        foreach ($this->init_data['init_expenses'] as $k => $expense){
-            if($expense['concepto'] == 'TASA DE CONTROL ADUANERO'){
-                $tasa_control_provision = $expense['valor_provisionado'];
-            }
-        }
-        
-        #si no se halla la tasa de conrol retorna cero, indica que no esta
-        #provisionada
-        if($tasa_control_provision == 0){
-            return 0;
-        }
-        
-        foreach ($this->init_data['order_invoice_detail'] as $k => $item){
-            #aqui cambiar el costo de tasa
-            $tasa = $item['peso'] * 0.05;
-            $cajas_totales = $item['nro_cajas'];
-            if($tasa > 700){
-                $tasa_control_general += 700;
-            }else{
-                $tasa_control_general += $tasa;
-            }
-        }
-        
-        #los pesos corresponden a las tasas
-        if($tasa_control_general == $tasa_control_provision){
-            $tasa_caja = $tasa_control_general/$cajas_totales;
-            return ($tasa_caja * $product['nro_cajas']);
-        }
-        
-        
-        $porcentaje_parcial = 0;
-        
-        if(isset($this->prorrateo['prorrateo'][0])){
-            $porcentaje_parcial =  $this->prorrateo['prorrateo'][0]['porcentaje_parcial'];
-        }else{
-            $porcentaje_parcial = $this->prorrateo['prorrateo']['porcentaje_parcial'];
-            }
-                      
-        #accion para los pesos que no coinciden
-        $tasa_prorrateo_parcial = (
-            $tasa_control_provision
-            * $porcentaje_parcial
-            );
-        
-        return ($tasa_prorrateo_parcial *  $fob_percent);
-    }
-    
-    
     /**
      * Retorna los impuestos que se aplica al producto
      *

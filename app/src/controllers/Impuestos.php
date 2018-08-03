@@ -3,7 +3,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 require 'lib/TaxesCalcR70.php';
 require 'lib/TaxesCalcR10.php';
-require 'lib/Prorrateo.php';
 
 /**
  * Controller encargado del calculo de impuestos
@@ -127,8 +126,17 @@ class Impuestos extends MY_Controller
         }
         
         $init_data = $this->getOrderDataR70($id_parcial);
-        $prorrateoParams = new Prorrateo($init_data);
-        $prorrateo_values = $prorrateoParams->getValues();
+        $this->load->library('Prorrateos', $init_data);
+        $prorrateo_values = $this->prorrateos->getValues();
+        #seteamos la tasa de control en el producto
+        if($this->prorrateos->have_tasa && $parcial['bg_isliquidated'] == 0){
+            $this->updateTasaDetail(
+                            $this->prorrateos->tasa_parcial, 
+                            $init_data,
+                            $this->prorrateos->tase_base_peso
+                );
+        }        
+        
         $init_data['fobs_parcial'] = $prorrateo_values['fobs_parcial'];
         $init_data['warenhouses'] = $prorrateo_values['warenhouses'];
 
@@ -179,6 +187,42 @@ class Impuestos extends MY_Controller
             'regimen' => 'R70',
             'user' => $this->modelUser->get($init_data['parcial']['id_user']),
         ]));
+    }
+    
+    
+    /**
+     * Actualiza la tasa en los productos de la factura informativa
+     */
+    private function updateTasaDetail($tasa_parcial, $init_data, $peso = false){
+        if ($peso){        
+            foreach ($init_data['products'] as $i => $dt){
+                foreach ($tasa_parcial as  $tp){
+                    if($tp['detalle_pedido_factura'] == $dt['detalle_pedido_factura']){
+                        $dt['tasa_control'] = $tp['tasa_parcial'];
+                        $this->modelInfoInvoiceDetail->update($dt);
+                        break;
+                    }
+                }
+            }
+            return true;
+        }
+       
+        $total_info_invoices = 0.0;       
+        
+        foreach ($init_data['info_invoices'] as $i => $inv){
+            $total_info_invoices += $inv['valor'];
+        }
+        
+        foreach ($init_data['products'] as $i => $dt){
+            foreach ($tasa_parcial as  $tp){
+                if($tp['detalle_pedido_factura'] == $dt['detalle_pedido_factura']){
+                    $dt['tasa_control'] = $tp['tasa_parcial'] * ($tp['costo_item']/$total_info_invoices);
+                    $this->modelInfoInvoiceDetail->update($dt);
+                    break;
+                }
+            }
+        }        
+        
     }
 
     
@@ -266,7 +310,6 @@ class Impuestos extends MY_Controller
                                                           $id_parcial
                 ), 
         ]);       
-        
     }
     
     
@@ -622,6 +665,7 @@ class Impuestos extends MY_Controller
         $this->modelLog->errorLog("El impuesto  $taxeName solicitado no Existe");
         return false;
     }
+    
     
     /**
      * Registra y/o actualiza los valores prorrateados del parcial

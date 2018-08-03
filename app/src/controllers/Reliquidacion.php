@@ -4,7 +4,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
 require_once 'lib/TaxesCalcR70Reliquidate.php';
 require_once 'lib/TaxesCalcR10Reliquidate.php';
 require_once 'lib/StockOrder.php';
-require_once 'lib/Prorrateo.php';
 
 /**
  * Controller encargado del calculo de impuestos
@@ -132,8 +131,8 @@ class Reliquidacion extends MY_Controller
         }
         
         $init_data = $this->getOrderDataR70($id_parcial);
-        $prorrateoParams = new Prorrateo($init_data);
-        $prorrateo_values = $prorrateoParams->getValues();
+        $this->load->library('Prorrateos', $init_data);
+        $prorrateo_values = $this->prorrateos->getValues();
         $init_data['fobs_parcial'] = $prorrateo_values['fobs_parcial'];
         $init_data['warenhouses'] = $prorrateo_values['warenhouses'];       
 

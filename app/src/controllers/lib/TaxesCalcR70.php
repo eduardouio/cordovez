@@ -337,9 +337,7 @@ class parcialTaxes {
             }
         }      
         
-        $fob_percent = ( $product['percent']);
-        
-        $tasa_control = $this->getTSA($detail_info_invoice, $fob_percent);
+        $fob_percent = ( $product['percent']);       
         
         $prorrateo_item = [
             'fob_percent' => $fob_percent,
@@ -350,7 +348,7 @@ class parcialTaxes {
                                 * $fob_percent
                 ) * $this->type_change_parcial,
             'otros' =>  $this->parcial['otros'] * $fob_percent,
-            'tasa_control' => $tasa_control,
+            'tasa_control' => $detail_info_invoice['tasa_control'],
             'prorrateo_parcial' => $prorrateos_parcial * $fob_percent,
             'prorrateo_pedido' => $prorrateos_pedido * $fob_percent,
             'prorrateos_total' => (
@@ -369,60 +367,7 @@ class parcialTaxes {
         return  $prorrateo_item;
     }
     
-    
-    /**
-     * Calcula la tasa de control para el producto
-     * @param array $product
-     * @return float
-     */
-    private function getTSA($product, $fob_percent):float{
-        if($this->parcial['bg_have_tasa_control'] == 0){
-            return 0;
-        }
-        
-        $tasa_control_provision = 0.0;
-        $tasa_control_general = 0.0;
-        $cajas_totales = 0.0;
-        
-        foreach ($this->init_data['init_expenses'] as $k => $expense){
-            if($expense['concepto'] == 'TASA DE CONTROL ADUANERO'){
-                $tasa_control_provision = $expense['valor_provisionado'];
-            }
-        }
-        
-        #si no se halla la tasa de conrol retorna cero, indica que no esta
-        #provisionada
-        if($tasa_control_provision == 0){
-            return 0;
-        }
-        
-        foreach ($this->init_data['order_invoice_detail'] as $k => $item){
-            #aqui cambiar el costo de tasa
-            $tasa = $item['peso'] * 0.05;
-            $cajas_totales = $item['nro_cajas'];
-            if($tasa > 700){
-                $tasa_control_general += 700;
-            }else{
-                $tasa_control_general += $tasa;
-            }
-        }
                
-        #los pesos corresponden a las tasas
-        if($tasa_control_general == $tasa_control_provision){
-            $tasa_caja = $tasa_control_general/$cajas_totales;           
-            return ($tasa_caja * $product['nro_cajas']);
-        }       
-        
-        #accion para los pesos que no coinciden
-        $tasa_prorrateo_parcial = (
-            $tasa_control_provision 
-            * $this->prorrateo['prorrateo']['porcentaje_parcial']
-            );
-                      
-        return ($tasa_prorrateo_parcial *  $fob_percent);
-    }
-    
-    
     /**
      * Retorna los impuestos que se aplica al producto
      * 

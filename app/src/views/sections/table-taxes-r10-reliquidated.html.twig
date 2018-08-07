@@ -140,7 +140,9 @@
            	{% endif %}
             <td class="text-right">{{ tax.fodinfa | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.etiquetas_fiscales | number_format(2,',','.') }}</td>
+            {% if order_taxes.sums.tasa_control > 0 %}
             <td class="text-right">{{ tax.tasa_control | number_format(2,',','.') }}</td>
+            {% endif %}           
             <td class="text-right">{{ tax.ex_aduana_unitario | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.base_advalorem | number_format(2,',','.') }}</td>
             <td class="text-right">{{ tax.capacidad_ml | number_format(2,',','.') }}</td>

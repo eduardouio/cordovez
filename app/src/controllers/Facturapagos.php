@@ -296,7 +296,7 @@ class Facturapagos extends MY_Controller
         }
         
         $this->responseHttp([
-            'title' => 'Facrura #' . $document['nro_factura'] . ' ' . $document['supplier']['nombre'],
+            'title' => 'Factura #' . $document['nro_factura'] . ' ' . $document['supplier']['nombre'],
             'titleContent' => 'Detalle Documento De Pago [' . 
                                   $document['nro_factura']. '] <small>'. 
                                   $document['supplier']['nombre'] . '</small>',

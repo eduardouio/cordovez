@@ -260,15 +260,23 @@ class Modelpaiddetail extends \CI_Model
      */
     public function getPaidsDetailsFromInitExpense(int $id_init_expense)
     {
-        $details = $this->modelBase->get_table([
-            'table' => $this->table,
-            'where' => [
-                'id_gastos_nacionalizacion' => $id_init_expense,
-            ],
-            'order_by' => [
-                'id_gastos_nacionalizacion' => 'DESC',
-            ],
-        ]);
+        $sql = "SELECT 
+                ddp.id_gastos_nacionalizacion, 
+                ddp.valor, 
+                ddp.date_create ,
+                pro.nombre as proveedor,
+                dp.*,
+                usr.nombres
+                FROM
+                detalle_documento_pago AS ddp
+                left join documento_pago as dp on (ddp.id_documento_pago = dp.id_documento_pago)
+                left join proveedor as pro on(dp.identificacion_proveedor = pro.identificacion_proveedor)
+                left join usuario as usr on(ddp.id_user = usr.id_user)
+                where 
+                id_gastos_nacionalizacion = $id_init_expense;
+                ";
+        
+        $details = $this->modelBase->runQuery($sql);        
         
         if ($details == False){
             $this->modelLog->warningLog(

@@ -141,10 +141,11 @@ class Pedido extends MY_Controller
         if($all_orders){
             foreach ($all_orders as $idx => $order){
                 $order['info'] = $this->modelBasicOrderInfo->getInfoOrder($order['nro_pedido']);
+                array_push($init_data, $order);
                 if($order['bg_isclosed'] == 1){
                     $orders_closed ++;
                 }else{
-                    array_push($init_data, $order);
+                    #array_push($init_data, $order);
                     $orders_open ++;
                 }
             }    

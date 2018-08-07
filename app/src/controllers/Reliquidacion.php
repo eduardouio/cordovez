@@ -821,6 +821,8 @@ class Reliquidacion extends MY_Controller
      * @return boolean             cieerra un pedido si es el ultimo parcial
      */
     public function closeOrder(string $nro_order){
+        
+        return true;
         $this->modelLog->warningLog
         (
             'Inicia comprobacion previo al cierre de un pedido'

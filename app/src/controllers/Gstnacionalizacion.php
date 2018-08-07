@@ -6,6 +6,7 @@ $libraries_url = str_replace('controllers', 'libraries/', $libraries_url);
 require_once ( $libraries_url . 'warenHouseParcial.php' );
 require_once ( $libraries_url . 'checkerPartial.php' );
 require_once ( $libraries_url . 'resumeOrder.php' );
+require_once ( $libraries_url . 'Checkexpense.php' );
 
 /**
  * Modulo encargado de Gestionar los gastos de nacionaliacion para
@@ -277,48 +278,84 @@ class Gstnacionalizacion extends MY_Controller
             'user' => $this->modelUser->get($parcial['id_user']),
         ]));
     }
-        
+       
+    
     
     /**
-     * Pesenta la informacion completa del rgistro de gasto inicial
+     * Presenta la informacion completa del rgistro de gasto inicial
      *
      * @param (int) $idInitExpense
      * @return array
      */
     public function presentar(int $idInitExpense)
     {
-        $initExpense = $this->modelExpenses->getExpense($idInitExpense);
+        $init_expense = $this->modelExpenses->getExpense($idInitExpense);
+        $is_parcial = False;
+        $order = [];
+        $parcial = [];
+        $id_record = '';
         
-        if ($initExpense == false) {
-            $this->modelLog->errorLog(
-                'Acceso a gasto nacionalizacion inexistente',
-                $this->db->last_query()
-                );
+        if ($init_expense == false) {            
             $this->redirectPage('ordersList');
             return false;
         }
         
-        $infoInvoice = $this->modelInfoInvoice->get($initExpense['id_parcial']);
+        $paids_detail = $this->modelPaidDetail->getPaidsDetailsFromInitExpense($idInitExpense);
         
-        $nroOrder = $this->modelParcial->getNroOrderByParcial(
-            $initExpense['id_parcial']
-            );
+        if(intval($init_expense['id_parcial']) > 0 ){
+            $is_parcial = True;
+            $id_record = $init_expense['id_parcial'];
+            $parcial = $this->modelParcial->get($init_expense['id_parcial']);
+            $order = $this->modelOrder->get($parcial['nro_pedido']);
+        }else{
+            $id_record = $init_expense['nro_pedido'];
+            $order = $this->modelOrder->get($init_expense['nro_pedido']);
+        }
         
-        $order = $this->modelOrder->get($nroOrder);
+        $title_content = 'Detalle de provisión Gasto ';
         
+        if($is_parcial){
+            $all_parcials = $this->modelParcial->getAllParcials($order['nro_pedido']);
+            $ordinal = ordinalNumberParcial($all_parcials, $parcial['id_parcial']);
+            
+            $title_content .= 'Gasto de parcial ' . $ordinal . ' de ' . count($all_parcials);
+        }else{
+            $title_content .= 'Gasto Inicial';
+            }
+
+            
+        $status = [
+            'provision' => $init_expense['valor_provisionado'],
+            'suma_facturas' => 0,  
+            'saldo' => $init_expense['valor_provisionado'],
+        ];
+        
+        if($paids_detail){
+            foreach ($paids_detail as $i => $pdt){
+                $status['suma_facturas'] += $pdt['valor'];
+            }
+        }       
+        $status['saldo'] = $status['provision'] - $status['suma_facturas'];
+        
+        $nro_facturas = 0;
+        
+        if($paids_detail){
+            $nro_facturas = count($paids_detail);
+        }
+               
+            
         $this->responseHttp([
-            'infoInvoice' => $infoInvoice,
-            'initExpense' => $initExpense,
-            'supplier' => $this->modelSupplier->get(
-                        $initExpense['identificacion_proveedor']
-                    ),
-            'user' => $this->modelUser->get($infoInvoice['id_user']),
-            'titleContent' => 'Descripción De Gasto Nacionalización Pedido:' . 
-                                $order['nro_pedido'] . 
-                                ' Factura Informativa [' . 
-                                $infoInvoice['nro_factura_informativa'] . ']',
+            'title' => 'Detalle de Provisión ',
+            'init_expense' => $init_expense,
+            'nro_facturas' => $nro_facturas,
+            'paids' => $paids_detail,            
+            'user' => $this->modelUser->get($init_expense['id_user']),
+            'titleContent' => $title_content . ' Pedido ' . $order['nro_pedido']  . ' [' . $order['incoterm'] . '] ',                                
             'show' => true,
+            'is_parcial' => $is_parcial,
             'order' => $order,
+            'id_record' => $id_record,
+            'status' => $status,
         ]);
     }
 

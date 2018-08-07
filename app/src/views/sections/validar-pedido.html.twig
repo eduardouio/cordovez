@@ -184,11 +184,11 @@
     						<small class="label label-success">Justificado</small>           		
 		               {% endif %}
 	               {% endif %}
-	               {% for invoice in expense.invoices %}
-	               		<a href="{{ rute_url }}facturapagos/presentar/{{ invoice }}">
+	               
+	               		<a href="{{ rute_url }}gstnacionalizacion/presentar/{{ expense.id_gastos_nacionalizacion }}">
 							<span class="fa fa-eye"></span> 
 	               		</a>
-	               {% endfor %}
+	               [{{ expense.invoices | length }} F]
                {% endif %}
                {{ expense.concepto }}
                </td>
@@ -247,7 +247,7 @@
          {% if  invoices_order.values_isok == true %}
          	{%  if init_expenses.all_ok == true %}
          		{% if order.regimen == '70'%}
-         			{% if have_parcial == False %}
+         			{% if have_parcial == False and order.bg_isclosed == 0 %}
                          <button data-toggle="modal" data-target="#myModal" class="btn btn-success btn-sm pull-right">
                          <span class="fa fa-file fa-fw"></span>
                          Generar Nuevo Parcial [{{order.nro_pedido}}]

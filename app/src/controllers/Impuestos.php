@@ -1,8 +1,11 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-require 'lib/TaxesCalcR70.php';
-require 'lib/TaxesCalcR10.php';
+$libraries_url = realpath(dirname(__FILE__));
+$libraries_url = str_replace('controllers', 'libraries/', $libraries_url);
+
+require_once ( $libraries_url . 'TaxesCalcR70.php' );
+require_once ( $libraries_url . 'TaxesCalcR10.php' );
 
 /**
  * Controller encargado del calculo de impuestos
@@ -193,7 +196,7 @@ class Impuestos extends MY_Controller
     /**
      * Actualiza la tasa en los productos de la factura informativa
      */
-    private function updateTasaDetail($tasa_parcial, $init_data, $peso = false){
+    private function updateTasaDetail($tasa_parcial, $init_data, $peso = false){        
         if ($peso){        
             foreach ($init_data['products'] as $i => $dt){
                 foreach ($tasa_parcial as  $tp){

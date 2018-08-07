@@ -1,9 +1,12 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-require_once 'lib/TaxesCalcR70Reliquidate.php';
-require_once 'lib/TaxesCalcR10Reliquidate.php';
-require_once 'lib/StockOrder.php';
+$libraries_url = realpath(dirname(__FILE__));
+$libraries_url = str_replace('controllers', 'libraries/', $libraries_url);
+
+require_once ( $libraries_url . 'TaxesCalcR70Reliquidate.php' );
+require_once ( $libraries_url . 'TaxesCalcR10Reliquidate.php' );
+require_once ( $libraries_url . 'StockOrder.php' );
 
 /**
  * Controller encargado del calculo de impuestos
@@ -230,9 +233,13 @@ class Reliquidacion extends MY_Controller
             }
         }
         
+        $all_parcials = $this->modelParcial->getAllParcials($parcial['nro_pedido']);
+        $ordnial_parcial = ordinalNumberParcial($all_parcials, $id_parcial);
+        
         return ($this->responseHttp([
-            'titleContent' => 'Resumen de Impuestos Liquidación Aduana del Pedido ' .
-                $init_data['order']['nro_pedido'] . ' R['. $init_data['order']['regimen'] 
+            'titleContent' => 'Resumen de Impuestos Liquidación Aduana Parcial ' . 
+                                $ordnial_parcial 
+                                .  ' del Pedido ' . $init_data['order']['nro_pedido'] . ' R['. $init_data['order']['regimen'] 
                 .'] ' . $init_data['order']['incoterm'],
             'init_data' => $init_data,
             'parcial_taxes' => $product_taxes,
@@ -803,8 +810,8 @@ class Reliquidacion extends MY_Controller
             'prorrateo' => $prorrateo,
             'prorrateo_detail' => $prorrateo_detail,
         ];
-        
     }
+    
     
     /**
      * Comprueba si es el ultimo parcual de un pedido, en caso de que lo sea 
@@ -820,38 +827,55 @@ class Reliquidacion extends MY_Controller
         );       
         $order = $this->modelOrder->get($nro_order);
         
-        if($order == false){
-            $this->modelLog->errorLog(
-                'El pedido no existe',
-                $this->db->last_query()
-                );
-            return False;
+        if ($order == false) {
+            return($this->index());
+        }
+        $this->load->model('ModelOrderReport');
+        $modelOrderReport = new ModelOrderReport();
+        $reportCompleteOrder = new ReportCompleteOrder($params);
+        $params = $modelOrderReport->getOrderData($order);
+        
+        $order_report = new ReportCompleteOrder($params);
+        $stock = [];
+        $detail_order_invoices = [];
+        $detail_info_invoices = [];
+        
+        if($params['order_invoices']){
+            foreach ($params['order_invoices'] as $idx => $invoice){
+                if($invoice['detail']){
+                    foreach ($invoice['detail'] as $k => $v){
+                        $v['product'] = $this->modelProduct->get($v['cod_contable']);
+                        array_push($detail_order_invoices, $v);
+                    }
+                }
+            }
         }
         
-        if (intval($order['regimen'] == 10 )){
-            return False;
-        }       
         
-        $this->load->model('ModelStockOrder');
-        $modelOrderStock = new ModelStockOrder();
+        $info_invoices = $this->modelInfoInvoice->getByOrder($nro_order);
         
-        $dataStock = $modelOrderStock->getData($order);
+        if($info_invoices){
+            foreach ($info_invoices as $idx => $invoice){
+                $details = $this->modelInfoInvoiceDetail->getByFacInformative(
+                    $invoice['id_factura_informativa']
+                    );
+                if ($details){
+                    foreach ($details as $k => $v){
+                        array_push($detail_info_invoices, $v);
+                    }
+                }
+            }
+        }
         
-        print '<pre>';
-        print_r($dataStock);
-        print '</pre>';
-        
-        $stockOrder = new StockOrder(
-            $order, 
-            $dataStock['detail_order_invoices'], 
-            $dataStock['detail_info_invoices']
+        $stock_order = new StockOrder(
+            $order,
+            $detail_order_invoices,
+            $detail_info_invoices
             );
         
-        print '<pre>';
-        print_r($stockOrder->getCurrentOrderStock());
-        print '</pre>';
-        
-        return false;
+        $stock['current'] = $stock_order->getCurrentOrderStock();
+        $stock['initial'] = $stock_order->getInitStockProducts();
+        $stock['global'] = $stock_order->getGlobalValues();    
     }
 
 

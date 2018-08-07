@@ -1,9 +1,13 @@
 <?php
-require 'lib/StockOrder.php';
-require 'lib/ReportCompleteOrder.php';
-require_once 'lib/checkerOrder.php';
-
 defined('BASEPATH') or exit('No direct script access allowed');
+
+$libraries_url = realpath(dirname(__FILE__));
+$libraries_url = str_replace('controllers', 'libraries/', $libraries_url);
+
+require_once ( $libraries_url . 'StockOrder.php' );
+require_once ( $libraries_url . 'ReportCompleteOrder.php' );
+require_once ( $libraries_url . 'checkerOrder.php' );
+
 /**
  * Modulo encargado de manejar los pedidos, CRUD y validaciones
  *

@@ -1,8 +1,12 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
 
-require_once 'lib/warenHouseParcial.php';
-require_once 'lib/checkerPartial.php';
-require_once 'lib/resumeOrder.php';
+$libraries_url = realpath(dirname(__FILE__));
+$libraries_url = str_replace('controllers', 'libraries/', $libraries_url);
+
+require_once ( $libraries_url . 'warenHouseParcial.php' );
+require_once ( $libraries_url . 'checkerPartial.php' );
+require_once ( $libraries_url . 'resumeOrder.php' );
+
 /**
  * Modulo encargado de Gestionar los gastos de nacionaliacion para
  * regimn 70 (parciales) y 10

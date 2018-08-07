@@ -222,14 +222,18 @@
       </div>
 <hr />
 <div class="row">
-   <div class="col-md-2">
+   <div class="col-md-4">
       {% if parcial.bg_isliquidated == 1 and parcial.bg_isclosed == 0  %}
          <a class="btn btn-sm btn-primary" href="{{ rute_url }}impuestos/reverso/pc/{{parcial.id_parcial}}">
             <span class="fa fa-refresh"></span> Reingreso Liquidación
          </a>
       {% endif %}
-   </div>
-   <div class="col-md-4"></div>
+      <a href="{{ rute_url }}parcial/presentar/{{ parcial.id_parcial }}" class="btn btn-sm btn-default">
+      <span class="fa fa-list"></span>
+      Volver al Parcial
+      </a>
+   </div>  
+   <div class="col-md-2"></div>
    <div class="col-md-6 text-right">
       <a href="{{ rute_url }}pedido/presentar/{{ order.nro_pedido }}" class="btn btn-sm btn-default"> 
       <span class="fa fa-check"></span>Volver al Pedido </a>

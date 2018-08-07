@@ -21,7 +21,6 @@ class parcialTaxesReliquidate {
     private $total_items = 0;
     private $incoterm;
     private $gastos_origen = 0.0;
-    private $etiquetas_fiscales_valor = 0.0;
     private $id_factura_informativa;
     private $nro_factura_informativa;    
     private $type_change_invoice = 0.0;
@@ -236,9 +235,9 @@ class parcialTaxesReliquidate {
         
         $this->incoterm = $this->init_data['order']['incoterm'];
         
-        foreach ($this->init_data['info_invoices'] as $idx => $inv){
-            $this->gastos_origen += $inv['gasto_origen'];
-        }           
+        foreach ($this->init_data['info_invoices'] as $idx => $invoice){
+            $this->gastos_origen += $invoice['gasto_origen'];
+        }
         
                
     }
@@ -394,9 +393,8 @@ class parcialTaxesReliquidate {
             $fob = (
                 (   $detail_info_invoice['nro_cajas']
                     * $detail_order_invoice['costo_caja']
-                    )
-                + ($this->gastos_origen * $percent)
-                ) * $this->type_change_parcial;
+                    ) * $this->type_change_parcial
+                );               
                 
                 $gasto_origen =
                 ($this->gastos_origen * $percent)
@@ -407,11 +405,12 @@ class parcialTaxesReliquidate {
                 (   $detail_info_invoice['nro_cajas']
                     * $detail_order_invoice['costo_caja']
                     )
-                ) * $this->type_change_parcial;
+                ) * $this->type_change_parcial
+                + ($this->gastos_origen * $percent);
                 
                 $gasto_origen = ($this->gastos_origen * $percent);
         }
-
+               
         return ([
             'nombre'=> $product_base['nombre'],
             'id_factura_informativa_detalle' => $detail_info_invoice['id_factura_informativa_detalle'],
@@ -491,6 +490,7 @@ class parcialTaxesReliquidate {
             }
 
             $fob_percent = ($product['percent']);
+            
                         
             $prorrateo_item = [
                 'fob_percent' => $fob_percent,
@@ -502,22 +502,27 @@ class parcialTaxesReliquidate {
                     ) * $this->type_change_parcial,
                 'seguro' => $seguro,
                 'flete' => $flete,
-                'gasto_origen' => ($this->gastos_origen * $product['percent']),
+                'gasto_origen' => ($this->gastos_origen * $product['percent'] * $this->type_change_parcial),
                 'otros' =>  $this->parcial['otros'] * $fob_percent,
                 'tasa_control' => $detail_info_invoice['tasa_control'],
                 'prorrateo_parcial' => $valor_prorrateos_parcial,
                 'prorrateo_pedido' => $valor_prorrateos_gastos_iniciales,
                 'prorrateos_total' => $valor_prorrateos_gastos_iniciales + $valor_prorrateos_parcial,
             ];
+            
+            if($this->incoterm == 'FOB'){
+                $prorrateo_item['prorrateos_total'] +=  $prorrateo_item['gasto_origen'];
+            }
 
             $prorrateo_item ['cif'] = (
                 (
                     $product['fob']
                     + $prorrateo_item['seguro_aduana']
                     + $prorrateo_item['flete_aduana']
-                    + ($this->gastos_origen * $product['percent'])
+                    + ($this->gastos_origen * $product['percent'] * $this->type_change_parcial)
                     )
-                );
+                );      
+                        
             return  $prorrateo_item;
     }
     
@@ -592,9 +597,7 @@ class parcialTaxesReliquidate {
                     )
                 * $product['unidades']
                 );
-            
-            $ice_especifico_unitario =  ($ice_especifico / $product['unidades']);
-            
+                        
             $exaduana = (
                 $fodinfa
                 + $etiquetas_fiscales
@@ -604,7 +607,7 @@ class parcialTaxesReliquidate {
                 + $arancel_especifico_pagar
                 + $arancel_advalorem_pagar
                 );
-            
+                                  
             $exaduana_sin_etiquetas = (
                 $fodinfa
                 + $prorrateos['cif']
@@ -662,7 +665,8 @@ class parcialTaxesReliquidate {
             
             $iva = $iva_total = (
                 $this->parcial['iva_pagado'] * $prorrateos['fob_percent']
-                );                    
+                );   
+                       
                     
             return ([
                 'fodinfa' => $fodinfa,

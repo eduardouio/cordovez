@@ -128,6 +128,7 @@ class parcialTaxes {
     }
     
     
+    
     /**
      * Retorna los impuestos para un producto
      * 
@@ -249,7 +250,9 @@ class parcialTaxes {
                 )
             / $total_invoices
             );
+            
         
+            
             if ($this->incoterm == 'CFR'){
                 #si en algun momento hay varias facturas no va a funcionar tienes
                 # se debe calcular en base a las facturas adicionales que existan
@@ -337,18 +340,23 @@ class parcialTaxes {
             }
         }      
         
-        $fob_percent = ( $product['percent']);       
+        $fob_percent = ( $product['percent']);
+        $tasa_control = 0.0;
+        
+        if($this->parcial['bg_have_tasa_control']){
+            $tasa_control = $detail_info_invoice['tasa_control'];
+        }
         
         $prorrateo_item = [
             'fob_percent' => $fob_percent,
             'seguro_aduana' => ($fobs_parcial['prorrateo_seguro_aduana']
-                                * $fob_percent) * $this->type_change_parcial ,
+                                * $fob_percent) * $this->type_change_parcial,
             'flete_aduana' => (
                                 $fobs_parcial['prorrateo_flete_aduana']
                                 * $fob_percent
                 ) * $this->type_change_parcial,
             'otros' =>  $this->parcial['otros'] * $fob_percent,
-            'tasa_control' => $detail_info_invoice['tasa_control'],
+            'tasa_control' => $tasa_control,
             'prorrateo_parcial' => $prorrateos_parcial * $fob_percent,
             'prorrateo_pedido' => $prorrateos_pedido * $fob_percent,
             'prorrateos_total' => (
@@ -359,7 +367,7 @@ class parcialTaxes {
         $prorrateo_item ['cif'] = (
                             (
                             $product['fob']
-                            + $prorrateo_item['seguro_aduana'] 
+                            + $prorrateo_item['seguro_aduana']
                             + $prorrateo_item['flete_aduana']
                             )
             );               

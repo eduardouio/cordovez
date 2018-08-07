@@ -139,9 +139,9 @@ class Prorrateos
                 
             }
         }
-        
+               
         #si cinciden las tasa calculamo el prorrateo por item de la FI
-        if(round($tasa_base_peso,1) == round($tasa_provision,1)){
+        if(round($tasa_base_peso,1) == round($tasa_provision,1)){          
             $this->tase_base_peso = True;
             
             foreach ($tasa_general as $item){
@@ -156,7 +156,7 @@ class Prorrateos
                     }
                 }
             }
-            $this->tasa_parcial = $tasa_parcial;
+            $this->tasa_parcial = $tasa_parcial;           
             return $total_tasa_parcial;
         }
         

@@ -329,6 +329,7 @@ class Gstnacionalizacion extends MY_Controller
             'suma_facturas' => 0,  
             'saldo' => $init_expense['valor_provisionado'],
         ];
+                
         
         if($paids_detail){
             foreach ($paids_detail as $i => $pdt){
@@ -354,6 +355,7 @@ class Gstnacionalizacion extends MY_Controller
             'show' => true,
             'is_parcial' => $is_parcial,
             'order' => $order,
+            'parcial' => $parcial,
             'id_record' => $id_record,
             'status' => $status,
         ]);

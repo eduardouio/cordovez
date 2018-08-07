@@ -118,11 +118,12 @@
     						<small class="label label-success">Justificado</small>           		
 		               {% endif %}           		
 	               {% endif %}
-	               {% for invoice in expense.invoices %}
-	               		<a href="{{ rute_url }}facturapagos/presentar/{{ invoice }}">
+	               
+               		<a href="{{ rute_url }}gstnacionalizacion/presentar/{{ expense.id_gastos_nacionalizacion }}">
 							<span class="fa fa-eye"></span> 
 	               		</a>
-	               {% endfor %}
+	               
+	               [x{{ expense.invoices | length }}]
                {% endif %}
                {{expense.concepto }}
                </td>

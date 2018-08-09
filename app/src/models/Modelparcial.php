@@ -56,11 +56,7 @@ class Modelparcial extends CI_Model
         ]);
         
         if( (is_array($parcial)) && (!empty($parcial)) )
-        {
-            $this->modelLog->generalLog(
-                'parcial recuperado'
-                );
-            
+        {        
             return $parcial[0];
         }
         
@@ -410,4 +406,35 @@ class Modelparcial extends CI_Model
     }
     
     
+    /**
+     * Comprueba si un pedido esta cerrado
+     *
+     * @param int $id_parcial
+     */
+    public function idClosed(int $id_parcial): bool{
+         $parcial = $this->get($nro_pedido);
+        
+        if($parcial){
+            return boolval($parcial['bg_isclosed']);
+        }
+        
+        return False;
+    }
+    
+    
+    /**
+     * Cierra un pedido en el sistema
+     *
+     * @param int $id_parcial
+     * @return bool
+     */
+    public function close(int $id_parcial): bool{
+        $parcial = $this->get($nro_pedido);
+        if($parcial){
+            $parcial['bg_isclosed'] = 1;
+            return $this->update($parcial);
+        }
+        
+        return False;
+        }
 }

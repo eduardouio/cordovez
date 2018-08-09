@@ -68,7 +68,7 @@ class parcialTaxesReliquidate {
             'data_general' => [],
         ];
         
-        foreach ($this->init_data['products'] as $item => $product){
+        foreach ($this->init_data['products'] as $i => $product){
             array_push($taxes['taxes'], $this->getTaxesProduct($product));
         }
         
@@ -121,7 +121,7 @@ class parcialTaxesReliquidate {
             $this->parcial['ice_advalorem']
             - $this->parcial['ice_advalorem_pagado']
             );
-        
+               
         
         $diferencia_ice_especifico = (
             $this->parcial['ice_especifico']
@@ -138,12 +138,15 @@ class parcialTaxesReliquidate {
                 $num_products ++;
             }
         }        
+        
 
         $reliquidate_taxes = [];
         
         foreach ( $taxes as $idx => $tax){
             if($tax['ice_advalorem'] > 0){
                 if($this->parcial['bg_have_tasa_control']){
+                    print 'entramos a tasa';
+                    
                     $tax['ice_advalorem_pagado'] = (
                         $tax['ice_advalorem_sin_etiquetas']
                         - ( $diferencia/$num_products )
@@ -153,9 +156,7 @@ class parcialTaxesReliquidate {
                         $tax['ice_advalorem']
                         - $tax['ice_advalorem_pagado']
                         );
-                    #$tax['exaduana_antes'] = $tax['exaduana_sin_etiquetas'];
-                }else{
-
+                }else{                   
                     $tax['ice_advalorem_pagado'] = (
                         $tax['ice_advalorem_sin_tasa']
                         - ( $diferencia/$num_products )
@@ -165,7 +166,6 @@ class parcialTaxesReliquidate {
                         $tax['ice_advalorem']
                         - $tax['ice_advalorem_pagado']
                         );
-                    #$tax['exaduana_antes'] = $tax['exaduana_sin_tasa'];
                 }
             }else{
                 $tax['ice_advalorem_pagado'] = 0;
@@ -173,6 +173,7 @@ class parcialTaxesReliquidate {
 
             }
             
+                                  
             $tax['ice_especifico'] = (
                 $tax['ice_especifico']
                 - ( $diferencia_ice_especifico/$all_products)
@@ -186,7 +187,6 @@ class parcialTaxesReliquidate {
             + $tax['total_ice']
             + $tax['fodinfa']
             + $tax['prorrateos_total']
-            #+ $tax['gasto_origen']
                 );
             
 
@@ -197,7 +197,7 @@ class parcialTaxesReliquidate {
             + $tax['fodinfa']
             + $tax['prorrateos_total']
             + $tax['fob']
-            #+ $tax['gasto_origen']
+            - $tax['gasto_origen']
 
             );
 
@@ -519,9 +519,17 @@ class parcialTaxesReliquidate {
                     $product['fob']
                     + $prorrateo_item['seguro_aduana']
                     + $prorrateo_item['flete_aduana']
-                    + ($this->gastos_origen * $product['percent'] * $this->type_change_parcial)
                     )
                 );      
+            
+            if ($this->incoterm != 'CFR'){
+                $prorrateo_item ['cif'] += (
+                    $this->gastos_origen 
+                    * $product['percent'] 
+                    * $this->type_change_parcial
+                    );
+            }
+            
                         
             return  $prorrateo_item;
     }

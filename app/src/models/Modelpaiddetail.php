@@ -259,10 +259,10 @@ class Modelpaiddetail extends \CI_Model
      * @return array | bool
      */
     public function getPaidsDetailsFromInitExpense(int $id_init_expense)
-    {
+    {     
         $sql = "SELECT 
                 ddp.id_gastos_nacionalizacion, 
-                ddp.valor, 
+                ddp.valor as justificacion, 
                 ddp.date_create ,
                 pro.nombre as proveedor,
                 dp.*,

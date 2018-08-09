@@ -333,9 +333,10 @@ class Gstnacionalizacion extends MY_Controller
         
         if($paids_detail){
             foreach ($paids_detail as $i => $pdt){
-                $status['suma_facturas'] += $pdt['valor'];
+                $status['suma_facturas'] += $pdt['justificacion'];
             }
         }       
+        
         $status['saldo'] = $status['provision'] - $status['suma_facturas'];
         
         $nro_facturas = 0;

@@ -4,7 +4,7 @@
 <div class="col-md-3">Justificado: $ {{ status.suma_facturas }}</div>
 <div class="col-md-3">Saldo: $ {{ status.saldo }}</div>
 <div class="col-md-3">Nro Facturas: {{ nro_facturas }} </div>
-</div>
+</div>				
 <div class="row">
 	<div class="col-md-3">Pedido: {{ order.nro_pedido }} </div>
 	<div class="col-md-3">F Registro: {{ init_expense.date_create }} </div>
@@ -12,7 +12,6 @@
 	<div class="col-md-3">Registro: {{ user.nombres }} </div>
 </div>
 </div>
-
 {% if status.saldo == 0 %}
 	<label class="label label-success">Justificada</label>
 {% elseif status.saldo == status.provision %}
@@ -20,7 +19,6 @@
 {% else %}
 	<label class="label label-warning">Justificación Parcial</label>
 {% endif %}
-
 <ul class="nav nav-tabs">
   <li class="active"><a data-toggle="tab" href="#home">Detalle de Justificaciones</a></li>
   <li><a data-toggle="tab" href="#menu1">Detalle de Provisión</a></li>
@@ -37,7 +35,8 @@
             <th>Nro Factura</th>
             <th>Fecha Emision</th>
             <th>Usuario</th>
-            <th>Valor</th>
+            <th>Valor Factura</th>
+            <th>Valor Justificación</th>
           </tr>
         </thead>
         {% for detail in paids %}
@@ -52,15 +51,21 @@
         <td> {{ detail.fecha_emision | date('d/m/Y') }} </td>
         <td> {{ detail.nombres }} </td>
         <td class="text-right"> {{ detail.valor | number_format(3,'.',',') }} </td>
+        <td class="text-right">
+        <strong>
+        $ {{ detail.justificacion }}
+        </strong>
+        </td>
         </tr>
         {% endfor %}
         <tr style="background-color: #e1e1e1;">
-        <td colspan="5"><strong>SUMAS:</strong></td>
+        <td colspan="6"><strong>SUMAS:</strong></td>
         <td class="text-right">
         <strong> 
         $ {{ status.suma_facturas | number_format(3,'	.',',') }}
         </strong> 
         </td>
+        
         </tr>
     </table>
   </div>
@@ -102,7 +107,7 @@
             {{ init_expense.nro_pedido }} 
                 </span>
             </a>
-          </td>
+          </td>         
           </tr>
           {% endif %}
 

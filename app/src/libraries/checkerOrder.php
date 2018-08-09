@@ -71,6 +71,7 @@ class checkerOrder
         ]);
     }
 
+    
     /**
      * Comprueba los gastos iniciales del pedido, los gastos inciales
      * tienen los pagos registrados

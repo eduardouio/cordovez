@@ -608,4 +608,34 @@ class Modelorder extends CI_Model
     }
     
     
+    /**
+     * Comprueba si un pedido esta cerrado
+     * 
+     * @param string $nro_pedido
+     */
+    public function idClosed(string $nro_pedido): bool{
+       $order = $this->get($nro_pedido);
+       
+       if($order){
+           return boolval($order['bg_isclosed']);
+       }
+    }
+    
+   
+    /**
+     * Cierra un pedido en el sistema
+     *
+     * @param string $nro_pedido
+     * @return bool
+     */
+    public function close(string $nro_pedido): bool{
+        $order = $this->get($nro_pedido);
+        if($order){
+            $order['bg_isclosed'] = 1;
+            return $this->update($order);
+        }
+        
+    }
+    
+    
 }

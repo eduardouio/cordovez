@@ -7,6 +7,7 @@ $libraries_url = str_replace('controllers', 'libraries/', $libraries_url);
 require_once ( $libraries_url . 'TaxesCalcR70Reliquidate.php' );
 require_once ( $libraries_url . 'TaxesCalcR10Reliquidate.php' );
 require_once ( $libraries_url . 'StockOrder.php' );
+require_once ( $libraries_url . 'ReportCompleteOrder.php' );
 
 /**
  * Controller encargado del calculo de impuestos
@@ -39,6 +40,7 @@ class Reliquidacion extends MY_Controller
     private $ratesValues;
     private $modelProrrateo;
     private $modelProrrateoDetail;
+    private $modelOrderReport;
     
 
     /**
@@ -75,6 +77,8 @@ class Reliquidacion extends MY_Controller
         $this->load->model('Modelrateexpenses');
         $this->load->model('Modelprorrateo');
         $this->load->model('Modelprorrateodetail');
+        $this->load->model('ModelOrderReport');
+        $this->modelOrderReport = new ModelOrderReport();
         $this->modelInitExpenses = new Modelinitexpenses();
         $this->modelOrder = new Modelorder();
         $this->ModelOrderInvoiceDetail = new Modelorderinvoicedetail();
@@ -638,6 +642,8 @@ class Reliquidacion extends MY_Controller
         }
 
         if($this->modelParcial->update($record)){
+            $this->closeOrder($record['nro_pedido']);
+            
             $this->modelLog->susessLog(
                 'El parcial ' . $_POST['id'] . ' fue cerrado'
             );
@@ -822,21 +828,24 @@ class Reliquidacion extends MY_Controller
      */
     public function closeOrder(string $nro_order){
         
-        return true;
-        $this->modelLog->warningLog
-        (
-            'Inicia comprobacion previo al cierre de un pedido'
-        );       
+        $this->modelLog->susessLog(
+            'Inicio de prueba de cierre de pedido ' . $nro_order
+            );
+        
         $order = $this->modelOrder->get($nro_order);
         
         if ($order == false) {
             return($this->index());
         }
-        $this->load->model('ModelOrderReport');
-        $modelOrderReport = new ModelOrderReport();
-        $reportCompleteOrder = new ReportCompleteOrder($params);
-        $params = $modelOrderReport->getOrderData($order);
         
+        if(intval($order['bg_isclosed']) == 1 ){
+            $this->modelLog->warningLog(
+                'El pedido ya esta cerrado, y no se puede cerrar'
+                );
+            return False;
+        }
+        
+        $params  = $this->modelOrderReport->getOrderData($order);
         $order_report = new ReportCompleteOrder($params);
         $stock = [];
         $detail_order_invoices = [];
@@ -846,7 +855,7 @@ class Reliquidacion extends MY_Controller
             foreach ($params['order_invoices'] as $idx => $invoice){
                 if($invoice['detail']){
                     foreach ($invoice['detail'] as $k => $v){
-                        $v['product'] = $this->modelProduct->get($v['cod_contable']);
+                        $v['product'] = $this->modelProducts->get($v['cod_contable']);
                         array_push($detail_order_invoices, $v);
                     }
                 }
@@ -876,8 +885,26 @@ class Reliquidacion extends MY_Controller
             );
         
         $stock['current'] = $stock_order->getCurrentOrderStock();
-        $stock['initial'] = $stock_order->getInitStockProducts();
-        $stock['global'] = $stock_order->getGlobalValues();    
+                    
+        $close = True;
+        
+        foreach ($stock['current'] as $i => $item){
+            if(intval($item['stock']) > 0){
+                $close  = False;
+            }
+        }
+        
+        if($close){
+            $this->modelLog->susessLog('Pedido Cerrado ' . $nro_order);
+            return $this->modelOrder->close($nro_order);
+        }
+        
+        $this->modelLog->warningLog(
+            'El pedido ' . $nro_order . ' No puede ser cerrado, tiene saldo'
+            );
+        
+        return False;
+    
     }
 
 

@@ -44,9 +44,12 @@ class Pedido extends MY_Controller
     private $modelOrderInvoice;
     private $modelOrderInvoiceDetail;
     private $modelPaidDetail;
+    private $modelPaid;
     private $modelParcial;    
     private $modelOrderReport;
     private $modelOrderInfo;
+    private $modelProrrateo;
+    private $modelProrrateoDetalle;
     /**
      * constructor de la clase
      */
@@ -81,6 +84,12 @@ class Pedido extends MY_Controller
         $this->load->model('ModelOrderReport');
         $this->load->model('ModelOrderInfo');
         $this->load->model('ModelBasicOrderInfo');
+        $this->load->model('Modelprorrateo');
+        $this->load->model('Modelprorrateodetail');
+        $this->load->model('Modelpaid');
+        $this->modelPaid = new Modelpaid();
+        $this->modelProrrateo = new Modelprorrateo();
+        $this->modelProrrateoDetalle = new Modelprorrateodetail();
         $this->modelBasicOrderInfo = new ModelBasicOrderInfo();
         $this->modelOrderInfo =  new ModelOrderInfo();
         $this->modelOrderReport = new ModelOrderReport();
@@ -331,6 +340,16 @@ class Pedido extends MY_Controller
     }
     
     
+    /**
+     * Elimna todo un pedido del sistema, presenta lo que se va a eliminar 
+     * y solicita confirmacion
+     */
+    public function forceDelete(string $nro_pedido, $confirmation = false){
+        print '<pre>';
+        print_r( $this->getAllDataOrder($nro_pedido));
+        print '</pre>';
+    }
+    
     
     /**
      * elimina un pedido de la tabla, solo lo elimina sino tiene parciales
@@ -348,7 +367,7 @@ class Pedido extends MY_Controller
             return($this->responseHttp([
                 'order' => $nroOrder,
                 'viewMessage' => true,
-                'message' => 'El pedido no puede ser Eliminado!',
+                'message' => 'El pedido no puede ser Eliminado, tiene dependencias',
             ]));
         }        
     }
@@ -474,34 +493,98 @@ class Pedido extends MY_Controller
     }
     
     
-    
-    
     /**
-     * retorna el saldo de productos en un pedido, el pedido no tiene
-     * producto registrado retorna False
-     *
-     * @param array $order
-     * @return array | bool
+     * Retorna todos los registros relacionados a un pedido
+     * para poder eliminar
+     * 
+     * @param string $nro_pedido
+     * @return array
      */
-    private function getStock($order)
-    {
-        $stockOrder = new StockOrder();
-        $infoInvoicesDetail = [];
-        $orderInvoicesDetail = [];
+    private function getAllDataOrder(string $nro_pedido):array{
+        $order = $this->modelOrder->get($nro_pedido);
         
-        $order_invoices = $this->modelOrderInvoice->getbyOrder(
-            $order['nro_pedido']
-            );
-        
-        if($order_invoices == False){
-            $this->modelLog->warningLog(
-                'El pedido no tiene facturas de pedido'
+        $order_invoices = $this->modelOrderInvoice->getbyOrder($nro_pedido);
+        $order_invoice_detail = [];       
+        foreach ($order_invoices as $i => $invoice) {
+            array_push(
+                $order_invoice_detail, 
+                $this->modelOrderInvoiceDetail->getByOrderInvoice(
+                                            $invoice['id_pedido_factura'])
                 );
-            #si no hay facturas de pedidos se termina la funcion
-            return False;
         }
+        
+        $init_expense = $this->modelExpenses->get($nro_pedido);      
+        
+        $detail_paids = [];
+        $documents_paids = [];
+        
+        foreach ($init_expense as $k => $expense){
+            array_push(
+                    $detail_paids, 
+                    $this->modelPaidDetail->getByExpense(
+                                        $expense['id_gastos_nacionalizacion'])
+                );           
+        }
+        
+        foreach ($detail_paids as $k => $dp){           
+            array_push(
+                $detail_paids,
+                $this->modelPaid->get($dp[0]['id_documento_pago'])
+                );
+        }
+        
+        $prorrateos = [];
+        $prorrateos_detail = [];
+                     
+        $parcials = $this->modelParcial->getByOrder($nro_pedido);
+        
+        if($parcials){
+            foreach ($parcials as $k => $parcial){
+                $prorrateo = $this->modelProrrateo->getProrrateoByParcial(
+                    $parcial['id_parcial']
+                    );
+                
+                array_push($prorrateos, $prorrateo);
+                
+                array_push(
+                        $prorrateos_detail, 
+                        $this->modelProrrateoDetalle->getAllDetailProrrateo(
+                                                        $prorrateo['id_prorrateo'])
+                    );
+            }
+        }
+        
+       $info_invoices = $this->modelInfoInvoice->getByOrder($nro_pedido);
+       $info_invoices_detail = [];
+       if($info_invoices){
+           foreach ($info_invoices as $k => $invoice){
+               array_push(
+                   $info_invoices_detail,
+                   $this->modelInfoInvoiceDetail->getByFacInformative(
+                                                $invoice['id_factura_informativa'])
+                   );
+           }
+       }
+             
+                   
+       return ([
+           'order' => $order,
+           'pedido_factura' => $order_invoices,
+           'pedido_factura_detalle' => $order_invoice_detail,
+           'gastos_nacionalizacion' => $init_expense, 
+           'parciales' => $parcials,
+           'prorrateo' => $prorrateos,
+           'prorrate_detalle' => $prorrateos_detail,
+           'facturas_informativas' => $info_invoices,
+           'factura_informativa_detalle' => $info_invoices_detail,
+           'detalle_docuento_pago' => $detail_paids, 
+           'documento_pago' => $documents_paids,
+       ]);
+       
+       
     }
     
+   
     
     /**
      * se validan los datos que deben estar para que la consulta no falle

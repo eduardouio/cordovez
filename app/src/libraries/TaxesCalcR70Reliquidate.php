@@ -545,8 +545,8 @@ class parcialTaxesReliquidate {
             $prorrateo_item ['cif'] = (
                 (
                     $product['fob']
-                    + $prorrateo_item['seguro_aduana']
-                    + $prorrateo_item['flete_aduana']
+                    + $prorrateo_item['seguro_aduana'] * $this->type_change_parcial
+                    + $prorrateo_item['flete_aduana'] * $this->type_change_parcial
                     )
                 );                             
             return  $prorrateo_item;

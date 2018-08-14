@@ -24,8 +24,30 @@
 		{% endif %}
 
 		{% if duplicateRow %}
+			<table class="table table-hover table-striped table-condensed">
+			<tr>
+			<th>Detalle</th>
+			<th>Valor</th>
+			</tr>			
+			<tr>
+			<td>Nro Factura</td>
+			<td>{{ info_invoice.nro_factura_informativa }}</td>
+			</tr>
+			<tr>
+			<td>Fecha</td>
+			<td>{{ info_invoice.fecha_emision | date('d/m/Y' ) }}</td>
+			</tr>		
+			<tr>
+			<td>Moneda</td>
+			<td>{{ info_invoice.moneda }}</td>
+			</tr>
+			<tr>
+			<td>Valor</td>
+			<td>{{ info_invoice.valor }}</td>
+			</tr>					
+			</table>
 			<a href="{{rute_url}}facinformativa/presentar/{{idInfoInvoice}}" class="btn btn-warning btn-sm">
-				<span class="fa fa-eye"></span> &nbsp;Ver Registro {{idInfoInvoice}}
+				<span class="fa fa-eye"></span> &nbsp; Ver Factura Informativa
 			</a>
 		{% endif %}
 			<!-- Si se elimina una factura informativa vuelve al pedido  -->

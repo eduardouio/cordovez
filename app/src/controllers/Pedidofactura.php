@@ -237,13 +237,17 @@ class Pedidofactura extends MY_Controller
         
         $orderInvoice = $this->input->post();
         
-        if($orderInvoice['fecha_emision'] == ''){
+        if($orderInvoice['fecha_emision'] == '' || $orderInvoice['fecha_emision'] == null){
             unset($orderInvoice['fecha_emision']);
         }else{
-            $orderInvoice['fecha_emision'] = str_replace( '/', '-', $orderInvoice['fecha_emision']);
-            $orderInvoice['fecha_emision'] = date('Y-m-d', strtotime($orderInvoice['fecha_emision']));
+            $orderInvoice['fecha_emision'] = str_replace( 
+                '/', '-', $orderInvoice['fecha_emision']
+                );
+            $orderInvoice['fecha_emision'] = date(
+                'Y-m-d', strtotime($orderInvoice['fecha_emision'])
+                );
         }
-   
+                 
      
         if($orderInvoice['vencimiento_pago'] == ''){
             unset($orderInvoice['vencimiento_pago']);

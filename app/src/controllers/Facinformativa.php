@@ -1,6 +1,5 @@
 <?php 
-
-#defined('BASEPATH') or exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 $libraries_url = realpath(dirname(__FILE__));
 $libraries_url = str_replace('controllers', 'libraries/', $libraries_url);
@@ -344,18 +343,17 @@ class Facinformativa extends MY_Controller
             ($this->modelInfoInvoice->existRow($infoInvoice) == true) && 
             (! isset($infoInvoice['id_factura_informativa']))
             ){
-            
-                
-            return ($this->responseHttp([
+
+            $info_invoice = $this->modelInfoInvoice->getByNroInvoice($infoInvoice['nro_factura_informativa']);
+               return ($this->responseHttp([
                 'titleContent' => 'La Factura Informativa [' . 
                                     $infoInvoice['nro_factura_informativa'] . 
                                    '] ya se ecuentra Registrada!.',
                 'viewMessage' => true,
                 'message' => 'EL Registro que intenta ingresar ya Existe.',
                 'duplicateRow' => true,
-                'idInfoInvoice' => $this->modelInfoInvoice->existRow(
-                                                                $infoInvoice
-                    ),
+                'info_invoice' => $info_invoice,
+                'idInfoInvoice' => $info_invoice['id_factura_informativa'],
             ]));
         }
         

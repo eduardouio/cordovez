@@ -184,6 +184,7 @@ class Gstnacionalizacion extends MY_Controller
         
         $index = count($warenhouse_post['periodo']) -1 ;
         
+        
         $dataParcial = [
             'id_parcial' => $idParcial,
             'fecha_salida_almacenera' => $dateExitWarenhouseParcial,
@@ -500,6 +501,7 @@ class Gstnacionalizacion extends MY_Controller
         $values_order = $resumeOrder->getValuesOrder();
         
         $bodegaje = ($values_order['cif_actual']['cif'] * 4/1000);
+        
         if($bodegaje < 165 ) {
             $bodegaje = 165.00;
         }
@@ -525,6 +527,22 @@ class Gstnacionalizacion extends MY_Controller
             'order' => $order,
             'values' => $values_order,
         ]));
+    }
+    
+    /**
+     * Coloca la fecha de entrada a alamagro cuando no lo tiene en la factura
+     * @param string $order
+     */
+    private function setStartWarenhouseOrder(string $nro_order)
+    {
+        $order = $this->modelOrder->get($nro_order);
+        
+        if($order['fecha_salida_almacenera'] == null || $order['fecha_salida_almacenera'] == ''){
+            #$warenhouses = $this->modelExpenses->get    
+        }
+        
+        #Ya esiste el dato
+        return true;
     }
       
     

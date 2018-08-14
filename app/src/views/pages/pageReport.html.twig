@@ -5,10 +5,14 @@
 
 {%  if dashboard == true %}
     {% include 'sections/report_dashboard.html.twig'  %}
-
-{% else %}
+{% endif %}
+{% if provisiones == true %}
 	{% include 'forms/frm-reporte-provisiones.html.twig' %}
 	{% include 'sections/subsections/table_report.html.twig' %}
+{% endif %}
+	
+{% if saldos == true %}
+	{% include 'sections/subsections/saldos_report.html.twig' %}
 {% endif %}
 
 {% include 'base/content_close.html.twig' %}

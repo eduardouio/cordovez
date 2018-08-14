@@ -113,6 +113,34 @@ class Modelinfoinvoice extends CI_Model
     
     
     /**
+     * Obtiene una factura informativa desde un numero de factura
+     * @param string $nro_invoice
+     */
+    public function getByNroInvoice($nro_invoice ){
+        $info_invoice = $this->modelBase->get_table([
+            'table' => $this->table,
+            'where' => [
+                'nro_factura_informativa' => $nro_invoice
+            ],
+        ]);
+        
+        if($info_invoice){
+            $this->modelLog->susessLog(
+                'Factura infromativa Recuperada desde Nro'
+                );           
+            return $info_invoice[0];
+        }
+        
+        $this->modelLog->warningLog(
+            'No se puede encontrar la factura informativa',
+            $this->db->last_query()
+            );
+        
+        return False;
+    }
+    
+    
+    /**
      * Retorna las facturas informativas de un pedido
      * 
      * @param string $nro_order

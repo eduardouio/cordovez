@@ -124,8 +124,36 @@ class Modelorder extends CI_Model
         }
         return false;
     }
-       
     
+       
+    /**
+     * Obtiene un listado de todos los pedidos abiertos R70
+     */
+    public function getOpenOrdersR70(){
+        $query = "SELECT *, SUBSTRING(nro_pedido, -2) AS anio
+                FROM pedido
+                WHERE nro_pedido != '000-00'
+                AND bg_isclosed = 0
+                AND regimen = '70'
+                ORDER BY anio DESC,
+                nro_pedido DESC;";
+        
+        $result = $this->modelBase->runQuery($query);       
+        
+        if($result) {
+            $this->modelLog->susessLog(
+                'Devolucion de lista completa de pedidos R70'
+                );
+            return $result;
+        }
+        
+        $this->modelLog->warningLog(
+            'La lista de pedidos esta vacia',
+            $this->db->last_query()
+            );
+        
+        return [];
+    }
     
 
     /**

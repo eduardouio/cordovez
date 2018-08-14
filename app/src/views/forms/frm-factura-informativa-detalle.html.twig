@@ -29,6 +29,7 @@
             <th>Producto</th>
             <th>Gr. Alc.</th>
             <th>Nro Cajas</th>
+            <th>Cant Caja</th>
             <th>Botellas</th>
             <th>Costo</th>
             <th>Agregar</th>
@@ -43,6 +44,7 @@
             <td>{{product.producto}}</td>
             <td class="text-right">{{product.grado_alcoholico}}</td>
             <td class="text-right">{{product.stock}}</td>
+            <td class="text-right">{{product.cantidad_x_caja}}</td>
             <td class="text-right">{{ product.stock * product.cantidad_x_caja}}</td>
             <td class="text-right"
               id="costo_caja_{{product.detalle_pedido_factura}}">{{product.costo_caja | number_format(3,".",",")}}</td>

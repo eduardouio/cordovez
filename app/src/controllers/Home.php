@@ -44,8 +44,11 @@ class Home extends MY_Controller {
 	* Muestra el formulario de inicio de sesion
 	*/
 	public function index(){
-		$config['title'] = 'Inicio';
-		$this->responseHttp($config);
+		$this->modelLog->errorLog(
+            'Acceso por url directo al Index del Home, se redirecciona',
+            current_url()
+            );
+        return $this->redirectPage('ordersList');
 	}
 
 

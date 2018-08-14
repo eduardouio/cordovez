@@ -28,7 +28,7 @@ class MY_Controller extends CI_Controller
      * sesiones de usuarios
      */
     private function init(){
-        #$this->_checkSession();
+        $this->_checkSession();
         $this->load->model('modelbase');
         $this->load->model('Modellog');
         $this->modelBase = new ModelBase();

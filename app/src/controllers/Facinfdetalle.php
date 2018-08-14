@@ -364,7 +364,6 @@ class Facinfdetalle extends MY_Controller
             }
         }
         
-        
         $params['parcial_percent'] = (
                                         $params['val_parcial'] 
                                         / $params['val_total']
@@ -375,8 +374,11 @@ class Facinfdetalle extends MY_Controller
                 * $params['origin_expenses']
             );
         
-        if (count($current_parcial['info_invoices']) == 1){
-                $current_info_invoice = $current_parcial['info_invoices'][0]; 
+        if (count($current_parcial['info_invoices']) == 1){               
+                $current_info_invoice = $current_parcial['info_invoices'][0];
+                
+                $current_info_invoice['seguro_aduana'] = $order['seguro_aduana'] * $params['parcial_percent']; 
+                $current_info_invoice['flete_aduana'] = $order['flete_aduana'] * $params['parcial_percent'];               
                 $current_info_invoice['gasto_origen'] = $params['parcial_origen_expenses'];
                 $current_info_invoice['valor'] = $params['val_parcial'];
                 $current_info_invoice['moneda'] = $params['money'];

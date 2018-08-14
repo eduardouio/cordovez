@@ -1,5 +1,6 @@
-<?php defined('BASEPATH') or exit('No direct script access allowed');
+<?php 
 
+#defined('BASEPATH') or exit('No direct script access allowed');
 
 $libraries_url = realpath(dirname(__FILE__));
 $libraries_url = str_replace('controllers', 'libraries/', $libraries_url);
@@ -305,6 +306,7 @@ class Facinformativa extends MY_Controller
         ]);
     }
     
+    
     /**
      * Valida y gusrada una factura informativa si no existe redirecciona a pedidos
      *
@@ -313,10 +315,7 @@ class Facinformativa extends MY_Controller
      */
     public function validar()
     {
-        if (! $_POST) {
-            $this->modelLog->redirectLog(
-                    $this->controller . ',validar,' . current_url()
-                );
+        if (! $_POST) {           
             $this->redirectPage('ordersList');
             return true;
         }
@@ -346,11 +345,7 @@ class Facinformativa extends MY_Controller
             (! isset($infoInvoice['id_factura_informativa']))
             ){
             
-            $this->modelLog->errorLog(
-                'Registro Duplicado ' . 
-                current_url()
-                );
-            
+                
             return ($this->responseHttp([
                 'titleContent' => 'La Factura Informativa [' . 
                                     $infoInvoice['nro_factura_informativa'] . 

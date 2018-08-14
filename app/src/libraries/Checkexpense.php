@@ -1,5 +1,5 @@
 <?php
-defined('BASEPATH') or exit('No direct script access allowed');
+#defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
  * Comprueba un gasto de nacionalizacion y sus pagos
@@ -14,27 +14,13 @@ class Checkexpense
 {
     private $espense;
     private $paids;
-
-    /**
-     * Inicia la clase con la provision y pagos
-     * @param array $expense
-     * @param array $paids
-     */
-    function __construct(array $expense, $paids){
-        $this->expsense = $expense;
-        $this->paids = $paids;
-    }
     
     
     /**
      * Retorna el arreglo con la informacion de la provision
      */
     public function getData(){
-        
-        
-        return ([
-            'expense' => $this->espense,    
-        ]);
+        return 5;
     }
     
 }

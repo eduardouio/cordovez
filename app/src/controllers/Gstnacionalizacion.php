@@ -323,7 +323,6 @@ class Gstnacionalizacion extends MY_Controller
             $title_content .= 'Gasto Inicial';
             }
 
-            
         $status = [
             'provision' => $init_expense['valor_provisionado'],
             'suma_facturas' => 0,  
@@ -345,7 +344,6 @@ class Gstnacionalizacion extends MY_Controller
             $nro_facturas = count($paids_detail);
         }
                
-            
         $this->responseHttp([
             'title' => 'Detalle de Provisión ',
             'init_expense' => $init_expense,

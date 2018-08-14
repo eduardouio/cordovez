@@ -28,7 +28,7 @@ class MY_Controller extends CI_Controller
      * sesiones de usuarios
      */
     private function init(){
-        $this->_checkSession();
+        #$this->_checkSession();
         $this->load->model('modelbase');
         $this->load->model('Modellog');
         $this->modelBase = new ModelBase();
@@ -41,7 +41,8 @@ class MY_Controller extends CI_Controller
      * redirecciona al formulario de autenticacion
      */
     public function _checkSession()
-    {
+    {         
+        
         if (array_key_exists('id_user', $_SESSION) == False) {
             if (current_url() != base_url() . 'index.php') {
                 return $this->redirectPage('loginForm');

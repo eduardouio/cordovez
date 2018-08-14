@@ -401,10 +401,7 @@ class parcialTaxes {
         ];
         
         #PAra validar cuando un producto tiene mas de un litro
-        $limite_capacidad = 1000;
-        if($product['capacidad_ml'] > 1000){
-            $limite_capacidad = 2000;
-        }
+        $limite_capacidad = 1000;    
         
         
         $base_fodinfa = $prorrateos['cif'];  

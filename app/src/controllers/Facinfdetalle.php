@@ -178,9 +178,11 @@ class Facinfdetalle extends MY_Controller
         
         $activeStock = $this->modelOrderInvoiceDetail->getActiveStokProductsByOrder($parcial['nro_pedido']);
         $productStock = 0;
-        foreach($activeStock as $item => $val){
-            if ($val['detalle_pedido_factura'] == $infoInvoiceDetail['detalle_pedido_factura']){
-                $productStock = $val['stock'] + $infoInvoiceDetail['nro_cajas'];
+        if($activeStock){
+            foreach($activeStock as $item => $val){
+                if ($val['detalle_pedido_factura'] == $infoInvoiceDetail['detalle_pedido_factura']){
+                    $productStock = $val['stock'] + $infoInvoiceDetail['nro_cajas'];
+                }
             }
         }
         

@@ -12,9 +12,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @since Version 1.0.0
  * @filesource
  */
-class Proveedor extends MY_Controller
+class Proveedor extends \MY_Controller
 {
-
     private $listPerPage = 20;
     private $controller = "proveedor";
     private $template = '/pages/pageProveedor.html';
@@ -31,6 +30,10 @@ class Proveedor extends MY_Controller
         $this->init();
     }
 
+    public function suma(){
+        return 5;
+    }
+    
     /**
      * Inicia todos los modelos necesarios
      */

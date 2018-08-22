@@ -4,7 +4,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
 $libraries_url = realpath(dirname(__FILE__));
 $libraries_url = str_replace('controllers', 'libraries/', $libraries_url);
 
-require_once ( $libraries_url . 'TributesCalc.php' );
+require_once ( $libraries_url . 'TaxesCalcR70.php' );
+require_once ( $libraries_url . 'TaxesCalcR10.php' );
 
 /**
  * Controller encargado del calculo de impuestos
@@ -116,7 +117,7 @@ class Impuestos extends MY_Controller
     {        
         $parcial = $this->modelParcial->get($id_parcial);
         
-        if ($parcial == False){
+        if ($parcial == False){   
             $this->modelLog->warningLog(
                 'No se puedo continuar si el parcial no existe'
                 );
@@ -133,32 +134,28 @@ class Impuestos extends MY_Controller
         #seteamos la tasa de control en el producto
         if($this->prorrateos->have_tasa && $parcial['bg_isliquidated'] == 0){
             $this->updateTasaDetail(
-                $this->prorrateos->tasa_parcial,
-                $init_data,
-                $this->prorrateos->tase_base_peso
+                            $this->prorrateos->tasa_parcial, 
+                            $init_data,
+                            $this->prorrateos->tase_base_peso
                 );
-        }
+        }        
         
         $init_data['fobs_parcial'] = $prorrateo_values['fobs_parcial'];
         $init_data['warenhouses'] = $prorrateo_values['warenhouses'];
-        
+
         $prorrateos = $this->updateProrrateoParcial(
-            $prorrateo_values,
-            $parcial
+                                                $prorrateo_values,
+                                                $parcial
             );
+                
+        $param_taxes = $this->modelRatesExpenses->getTaxesParams();
         
-        
-                  
-        $parcialTaxes =  new TributesCalc(
-                [],
-                $init_data['parcial'],
-                $init_data['info_invoices'][0],
-                $init_data['products'],
-                $this->modelRatesExpenses->getTaxesParams(),
-                $init_data['products_base'],
-                $init_data['apportionment'],
-                False
-            );
+        $parcialTaxes =  new parcialTaxes(
+                                        $init_data, 
+                                        $prorrateos,  
+                                        $param_taxes, 
+                                        $parcial
+            );        
         
         
         if(checkTASAControl($init_data)){
@@ -179,12 +176,12 @@ class Impuestos extends MY_Controller
         
         $all_parcials = $this->modelParcial->getAllParcials($parcial['nro_pedido']);
         $ordinal_parcial = ordinalNumberParcial($all_parcials, $parcial['id_parcial']);
-        
+
         return ($this->responseHttp([
             'title' => 'Impuesto Parcial ' . $ordinal_parcial . '/' . count($all_parcials),
-            'titleContent' => 'Resumen de Impuestos Liquidación Aduana [Parcial ' .
-            $ordinal_parcial . '/' . count($all_parcials) .
-            '] [Pedido ' . $init_data['order']['nro_pedido'] . ']',
+            'titleContent' => 'Resumen de Impuestos Liquidación Aduana [Parcial ' . 
+                              $ordinal_parcial . '/' . count($all_parcials) .
+                              '] [Pedido ' . $init_data['order']['nro_pedido'] . ']',
             'init_data' => $init_data,
             'parcial_taxes' => $parcialTaxes->getTaxes(),
             'prorrateos' => $prorrateos,
@@ -193,7 +190,6 @@ class Impuestos extends MY_Controller
             'regimen' => 'R70',
             'user' => $this->modelUser->get($init_data['parcial']['id_user']),
         ]));
-        
     }
     
     
@@ -298,17 +294,6 @@ class Impuestos extends MY_Controller
             }
         }
         
-        $apportionment = [
-            'flete_aduana' => $order['flete_aduana'],
-            'seguro_aduana' => $order['seguro_aduana'],
-            'gasto_origen' => 0,
-            'tipo_cambio_gasto_origen' => 1,
-            'tipo_cambio_seguro_flete' => 1,
-            'tasa_control' => 0,
-            'tasa_base_fob' => False,
-        ];
-        
-        
         return([
             'order' => $order,
             'order_invoices' => $order_invoices,
@@ -327,7 +312,6 @@ class Impuestos extends MY_Controller
             'last_prorrateo' => $this->modelProrrateo->getLastProrrateo(
                                                           $id_parcial
                 ), 
-            'apportionment' => $apportionment,
         ]);       
     }
     
@@ -359,7 +343,14 @@ class Impuestos extends MY_Controller
             return $this->redirectPage('showTaxesOrderLiquidate', $nroOrder);
         }
         
-        $init_data = $this->getOrderDataR10($nroOrder);        
+        $init_data = $this->getOrderDataR10($nroOrder);
+        $param_taxes = $this->modelRatesExpenses->getTaxesParams();
+        
+        $orderTaxes =  new orderTaxes(
+            $init_data,
+            $param_taxes,
+            $order
+            );
         
         if(checkTASAControl($init_data)){
             $weigth = False;
@@ -376,40 +367,22 @@ class Impuestos extends MY_Controller
                 return $this->redirectPage('insertWeigth', $init_data['order_invoices'][0]['id_pedido_factura']);
             }
         }
-                  
-        
-        $orderTaxes =  new TributesCalc(
-            $init_data['order'],
-            [],
-            $init_data['order_invoices'][0],
-            $init_data['order_invoice_detail'],
-            $this->modelRatesExpenses->getTaxesParams(),
-            $init_data['products_base'],
-            $init_data['apportionment'],
-            True,
-            [],
-            []
-            );        
-        
-        #formulario actualizacion
-        $frm_params = [
-            'tipo_cambio' => $order['tipo_cambio_impuestosR10'],
-            'bg_have_tasa_control' => $order['bg_have_tasa_control'],
-            'moneda' => $init_data['order_invoices'][0]['moneda'],
-            'exoneracion_arancel' => $order['exoneracion_arancel'],
-        ];
+                    
+        $order_taxes = $orderTaxes->getTaxes();
        
+        
         return ($this->responseHttp([
             'titleContent' => 'Resumen de Impuestos Liquidación Aduana del Pedido ' .
                                               $init_data['order']['nro_pedido'] . 
                                             ' [ ' . $order['incoterm'] . ' Régimen' . 
-                                            $order['regimen'] .  ' ]' ,            
-            'taxes' => $orderTaxes->getTaxes(),
+                                            $order['regimen'] .  ' ]' ,
+            'init_data' => $init_data,
+            'order_taxes' => $order_taxes,
+            'regimen' => 'R10',
             'title' => 'Impuestos R10 ' . $order['nro_pedido'],
             'order' => $order,
-            'invoice' => $init_data['order_invoices'][0], 
-            'is_order' => true,
-            'frm_params' => $frm_params,
+            'etiquetas_fiscales' => $order_taxes['sums']['unidades'] * 0.13,
+            'user' => $this->modelUser->get($init_data['order']['id_user']),
         ]));
     }
     
@@ -447,67 +420,32 @@ class Impuestos extends MY_Controller
                 $invoice['id_pedido_factura']
                 );
             
-            if($detail){
-                foreach ($detail as $idx => $dt){
-                    $dt['cajas_importadas'] = $dt['nro_cajas'];
-                    array_push($order_invoice_detail, $dt);
-                    
-                    $product =  $this->modelProducts->get(
-                        $dt['cod_contable']
-                        );
-                    
-                    $product['detalle_pedido_factura'] = $dt['detalle_pedido_factura'];
-                    
-                    array_push($products_base, $product);
-                }
-           }
-        }
-
-        $apportionment = [
-            'flete_aduana' => $order['flete_aduana'],
-            'seguro_aduana' => $order['seguro_aduana'],
-            'gasto_origen' => 0,
-            'tipo_cambio_gasto_origen' => 1,
-            'tipo_cambio_seguro_flete' => 1,
-            'tasa_control' => 0,
-            'tasa_base_fob' => False,
-        ];
-        
-        $init_expenses = $this->modelInitExpenses->getAll($order);
-        
-        if($order['incoterm'] == 'FOB' || $order['incoterm'] == 'CFR'){
-            $apportionment['gasto_origen'] = $order['gasto_origen'];
-            $apportionment['tipo_cambio_gasto_origen'] = $order['tipo_cambio_impuestosR10'];
-        }
-        
-        if($order['incoterm'] == 'CFR' || $order['incoterm'] == 'FCA'){
-            foreach ($init_expenses as $k => $exp){
-                if($exp['concepto'] == 'GASTO ORIGEN'){
-                    $apportionment['gasto_origen'] = $exp['valor_provisionado'];
-                }
-
-                if($exp['concepto'] == 'TASA DE CONTROL ADUANERO' && $order['bg_have_tasa_control']){
-                    $apportionment['tasa_control'] = $exp['valor_provisionado'];
-                    if( 
-                        floatval($exp['valor_provisionado']) == 700.0 
-                        || floatval($exp['valor_provisionado']) == 40.0){
-                        $apportionment['tasa_base_fob'] = True;
-                    }
-                }
+            foreach ($detail as $idx => $dt){
+                array_push($order_invoice_detail, $dt);
+                
+                $product =  $this->modelProducts->get(
+                    $dt['cod_contable']
+                    );
+                
+                $product['detalle_pedido_factura'] = $dt['detalle_pedido_factura'];
+                
+                array_push($products_base, $product);
+                
+                
+                
             }
-        }                
-               
+        }
+        
         return([
             'order' => $order,
             'order_invoices' => $order_invoices,
             'order_invoice_detail' => $order_invoice_detail,
             'products_base' => $products_base,
-            'init_expenses' => $init_expenses,    
-            'apportionment' => $apportionment,
+            'init_expenses' => $this->modelInitExpenses->getAll($order),
         ]);
         
     }
-       
+    
     
     
     /**
@@ -554,44 +492,68 @@ class Impuestos extends MY_Controller
      * @return string redirect
      */
     public function actualizar()
-    {        
+    {
+        
+        $paramsParcial = [
+            'id_parcial' => $_POST['id_parcial'],
+            'bg_have_tasa_control' => 0,           
+            'tipo_cambio' => $_POST['tipo_cambio'],
+            'exoneracion_arancel' => $_POST['exoneracion_arancel'],
+        ];
+        
+        if (isset($_POST['bg_have_tasa_control']) && 
+            $_POST['bg_have_tasa_control'] == 'on') 
+        {
+            $paramsParcial['bg_have_tasa_control'] = 1;
+        }
+        
+       $this->modelParcial->update($paramsParcial);      
+           
+        return ($this->redirectPage('showTaxesParcial', $_POST['id_parcial']));
+    }
+    
+    
+    /**
+     * Actualiza los parametros de calculo de impuestos para 
+     * Regimen 10
+     * @parms array $params
+     * @return $redirect
+     */
+    public function actualizarR10()
+    {   
         if (! $_POST){
             return $this->index();
         }
-
         
-        $have_tasa = 0;
-               
-        if ($_POST['bg_have_tasa_control'] == 'on'){
-            $have_tasa = 1;
+        $order = $_POST;
+        
+        if (isset($order['have_etiquetas_fiscales']) && $order['have_etiquetas_fiscales'] == 'on'){
+            $order['have_etiquetas_fiscales'] = 1;
+        }else{
+            $order['have_etiquetas_fiscales'] = 0;
         }
         
+        if (isset($order['bg_have_tasa_control']) && $order['bg_have_tasa_control'] == 'on'){
+            $order['bg_have_tasa_control'] = 1;
+        }else{
+            $order['bg_have_tasa_control'] = 0;
+        }
+        if($order['exoneracion_arancel'] > 100){
+            $order['exoneracion_arancel'] = 100;
+        }
         
-        if(boolval($_POST['is_order']) == True){
-            $order = [
-                'nro_pedido' => $_POST['nro_pedido'],
-                'bg_have_tasa_control' => $have_tasa,
-                'tipo_cambio_impuestosR10' => $_POST['tipo_cambio'],
-                'exoneracion_arancel' => $_POST['exoneracion_arancel']
-            ];
-            $this->modelOrder->update($order);
-                  
+        if ($this->modelOrder->update($order)){
+            $this->modelLog->susessLog(
+                'Se ha actualizado correctamente los parameros de impuestos'
+                );
             return $this->redirectPage('showTaxesOrder', $_POST['nro_pedido']); 
             
+        }else{
+            $this->modelLog->errorLog(
+                'No se pueden actualizar los parametros de impuestos'
+                );
         }
-        
-        $parcial = [
-            'id_parcial' => $_POST['id_parcial'],
-            'bg_have_tasa_control' => $have_tasa,
-            'tipo_cambio_impuestosR10' => $_POST['tipo_cambio'],
-            'exoneracion_arancel' => $_POST['exoneracion_arancel']
-        ];
-        
-        $this->modelParcial->update($parcial);
-           
-        return ($this->redirectPage('showTaxesParcial', $_POST['id_parcial']));               
     }
-    
     
     /**
      * Marca un pedido como liquidado

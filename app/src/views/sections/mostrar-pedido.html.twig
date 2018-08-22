@@ -156,10 +156,10 @@
       <!-- Tab Facturas Saldos -->
       <div role="tabpanel" class="tab-pane" id="saldos">
       <div class="row">
-      	<div class="col-md-6">
+      	<div class="col-md-8">
       	<canvas id="chart"></canvas>
       	</div>
-      	<div class="col-md-6">
+      	<div class="col-md-4">
       	<div class="text-tittle">Saldo de Productos</div>
             <table class="table table-bordered table-hover table-condensed table-striped ">
             <thead>
@@ -172,6 +172,7 @@
             </tr>
             </thead>
             <tbody>
+            <tr>
             {% set totalItems = 0 %}
             {% set totalUnds = 0 %}
             
@@ -198,54 +199,6 @@
             </table>      	
       	</div>
       	
-      </div>
-      <div class="row">
-      <div class="col-md-12">
-      <div class="text-tittle">Detalle de moviemientos del pedido</div>
-             <table class="table table-bordered table-hover table-condensed table-striped ">
-            <thead>
-            <tr>
-        	<th>Producto</th>
-        	<th>Imp</th>
-        	<td>Par 1</td>
-	        <td>Par 2</td>
-	        <td>Par 3</td>
-	        <td>Par 4</td>
-        	<th>Nac</th>
-        	<th>Stock C</th>
-        	<th>Stock U</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% set totalItems = 0 %}
-            {% set totalUnds = 0 %}
-            
-            {% for product in stock_order.current %}
-            {% set totalItems = totalItems + product.stock  %}
-            {% set totalUnds = totalUnds + (product.stock * product.cantidad_x_caja)  %}
-            
-            <tr>
-		        <td>{{ product.nombre }} (x {{ product.cantidad_x_caja }})</td>
-		        <td class="text-right">{{ product.nro_cajas }}</td>
-		        <td class="text-right">{{ product.nationalized }}</td>
-		        <td>Par 1</td>
-		        <td>Par 2</td>
-		        <td>Par 3</td>
-		        <td>Par 4</td>
-		        <td class="text-right success"> <strong class="text-success">{{ product.stock }} </strong></td>
-		        <td class="text-right success"> <strong class="text-success">{{ product.stock * product.cantidad_x_caja }} </strong></td>
-		     </tr>
-            {% endfor %}
-            </tr>
-            
-            <tr style="background-color:#2E86C1; color:#fff; font-weight:bold;">
-            <td colspan="7" class="text-right">SUMAS: &nbsp;&nbsp;&nbsp;&nbsp;</td>
-            <td class="text-right">{{ totalItems }}</td>
-            <td class="text-right">{{ totalUnds }}</td>            
-          </tr>
-            </tbody>
-            </table>      	
-      </div>      
       </div>      
       </div>
       <!-- /Tab Facturas Servicios -->

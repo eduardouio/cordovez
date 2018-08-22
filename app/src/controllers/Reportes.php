@@ -216,22 +216,19 @@ class Reportes extends MY_Controller
             $ord['stock_current'] = $stock_order->getCurrentOrderStock();
             $ord['stock_initial'] = $stock_order->getInitStockProducts();
             $ord['stock_global'] = $stock_order->getGlobalValues();
-            
-            
+                        
             foreach ($ord['stock_current'] as $idx => $stock){
                 $suplier = $this->modelSupplier->get($stock['identificacion_proveedor']);
-                if($stock['stock'] != 0 ){                   
-                    array_push($report_orders, [
-                        'Pedido' => $ord['nro_pedido'],
-                        'Proveedor' => $suplier['nombre'],
-                        'Ingreso Almacenera' => $ord['fecha_ingreso_almacenera'],
-                        'Producto' => $stock['nombre'],                
-                        'Grado' => $stock['grado_alcoholico'],
-                        'Stock Cajas' => $stock['stock'],
-                        'C X C ' => $stock['cantidad_x_caja'],
-                        'Stock Unids' => $stock['cantidad_x_caja'] * $stock['stock'], 
-                    ]);                            
-                }
+                array_push($report_orders, [
+                    'Pedido' => $ord['nro_pedido'],
+                    'Proveedor' => $suplier['nombre'],
+                    'Ingreso Almacenera' => $ord['fecha_ingreso_almacenera'],
+                    'Producto' => $stock['nombre'],                
+                    'Grado' => $stock['grado_alcoholico'],
+                    'Stock Cajas' => $stock['nro_cajas'],
+                    'C X C ' => $stock['cantidad_x_caja'],
+                    'Stock Unids' => $stock['unities'], 
+                ]);                            
             }          
         }
         

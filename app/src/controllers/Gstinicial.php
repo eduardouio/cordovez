@@ -192,8 +192,10 @@ class Gstinicial extends MY_Controller
         if ($initExpense['concepto'] == 'GASTO ORIGEN'){
             $order = $this->modelOrder->get($initExpense['nro_pedido']);
             $order['tipo_cambio_go'] = $initExpense['tipo_cambio_go'];
-            $order['gasto_origen'] = $initExpense['valor_provisionado'];
+            #se evita actualozar la ordern para que no cambie la provision inicial de GO
+            #$order['gasto_origen'] = $initExpense['valor_provisionado'];
             $this->modelOrder->update($order);
+            
             $initExpense['valor_provisionado'] = (
                 $initExpense['valor_provisionado']
                 * $initExpense['tipo_cambio_go']

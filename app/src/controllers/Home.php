@@ -40,15 +40,13 @@ class Home extends MY_Controller {
 	    $this->modelLog->generalLog('Acceso al Home');
 	}
 
+	
 	/**	
-	* Muestra el formulario de inicio de sesion
+	* Muestra la pantalla de inicio
 	*/
-	public function index(){
-		$this->modelLog->errorLog(
-            'Acceso por url directo al Index del Home, se redirecciona',
-            current_url()
-            );
-        return $this->redirectPage('ordersList');
+	public function index(){	    
+	    $this->modelLog->errorLog('Acceso al panel del sistem');
+	    return $this->responseHttp(['title' => 'Inicio']);
 	}
 
 

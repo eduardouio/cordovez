@@ -1,5 +1,6 @@
-<?php defined('BASEPATH') or exit('No direct script access allowed');
+<?php 
 
+defined('BASEPATH') or exit('No direct script access allowed');
 /**
  * Controller encargado de manejar los parciales de los pedidos
  *
@@ -19,6 +20,11 @@ class Report extends MY_Controller{
     private $modelOrder;
     private $modelParcial;
     private $template = '/reports/report_init_expenses.html';
+    
+    
+    /**
+     * Construcor de la clase
+     */
     function __construct(){
         parent::__construct();
         $this->init();

@@ -1,6 +1,6 @@
 <div class="row">
    <div class="col-md-4">
-      <div class="text-tittle">Par&aacute;metros compatidos por el parcial </div>
+      <div class="text-tittle">Pametros para el cálculo de Tributos</div>
       <table class="table table-condensed table-bordered table-hover">
          <thead>
             <tr>
@@ -8,69 +8,39 @@
                <th>Valor</th>
             </tr>
          </thead>
-         <tbody>
-            <tr>
-               <td class="text-right brackground-gray"><strong>Nro Facturas </strong></td>
-               <td class="text-right">{{ init_data.order_invoices | length  }}</td>
-            </tr>
+         <tbody>           
             <tr>
                <td class="text-right brackground-gray"><strong>Moneda</strong></td>
-               <td class="text-right"> {{ init_data.order_invoices.0.moneda }} </td>
+               <td class="text-right"> {{ invoice.moneda  }} </td>
             </tr>
             <tr>
                <td class="text-right brackground-gray"><strong>Tipo de Cambio Factura</strong></td>
-               <td class="text-right">{{ parcial_taxes.data_general.tipo_cambio_factura | number_format(6,',','.') }}</td>
+               <td class="text-right">{{ invoice.tipo_cambio | number_format(5,',','.') }}</td>
             </tr>
             <tr>
-               <td class="text-right brackground-gray"><strong>Tipo de Cambio Parcial</strong></td>
-               <td class="text-right">{{ parcial_taxes.data_general.tipo_cambio_parcial | number_format(6,',','.') }}</td>
+               <td class="text-right brackground-gray"><strong>Tipo de Cambio Oficial</strong></td>
+               <td class="text-right">{{ order.tipo_cambio_impuestosR10 | number_format(6,',','.') }}</td>
             </tr>
             <tr>
                <td class="text-right brackground-gray"><strong>Gasto Origen</strong></td>
-               <td class="text-right">{{ parcial_taxes.sums.gasto_origen | number_format(3,',','.') }}</td>
+               <td class="text-right">{{ taxes.sums.gasto_origen | number_format(3,',','.') }}</td>
             </tr>
             <tr>
                <td class="text-right brackground-gray"><strong>FOB</strong></td>
-               <td class="text-right">{{ (parcial_taxes.sums.fob) | number_format(3,',','.') }}</td>
+               <td class="text-right">{{ (taxes.sums.fob) | number_format(3,',','.') }}</td>
             </tr>
             <tr>
                <td class="text-right brackground-gray"><strong>Porcentaje</strong></td>
-               <td class="text-right">{{ init_data.fobs_parcial.fob_parcial_razon_inicial | number_format(5,',','.') }}</td>
+               <td class="text-right">{{ taxes.sums.porcentaje | number_format(5,',','.') }}</td>
             </tr>
             <tr>
                <td class="text-right brackground-gray"><strong> Etiquetas Fiscales</strong></td>              
                <td class="text-right">
                   <span class="text-primary">
-                  $ {{ etiquetas_fiscales | number_format(3,',','.') }}
+                  $ {{ taxes.sums.etiquetas_fiscales | number_format(3,',','.') }}
                   </span>
                </td>
-            </tr>
-            <tr>
-               <td class="text-right brackground-gray"><strong> Tasa de Servicio Aduanero</strong></td>
-                {% if parcial.bg_have_tasa_control == 1 %}
-               <td class="text-right">
-                  <span class="text-success">
-                  <span class="fa fa-check"></span>
-                  Incluido
-                  </span>
-               </td>
-               {% else %}
-               <td class="text-right">
-                  <span class="text-danger">
-                  <span class="fa fa-ban"></span>
-                  No Incluido
-                  </span>
-               </td>
-               {% endif %}
-            </tr>
-            <tr>
-               <td class="text-right brackground-gray"><strong>Base Arancel Específico</strong></td>
-               <td class="text-right">{{ parcial_taxes.data_general.base_arancel_especifico | number_format(2, ',', '.') }}</td>
-            </tr>
-            <tr>
-               <td class="text-right brackground-gray"><strong>Base Advalorem</strong></td>
-               <td class="text-right">{{ parcial_taxes.data_general.base_advalorem | number_format(2, ',', '.') }}</td>
-            </tr>
+            </tr>                    
          </tbody>
       </table>
    </div>
@@ -81,7 +51,7 @@
       <div class="row">
          <div class="col-md-1"></div>
          <div class="col-md-10">
-            {% include '/sections/subsections/tabs_container_taxes_params.html.twig' %}
+           {%  include 'forms/frm_params_taxes.html.twig'  %}
          </div>
          <div class="col-md-1"></div>
       </div>
@@ -111,81 +81,81 @@
                      <td>1</td>
                      <td>ARANCEL ADVALOREM</td>
                      <td>DERECHO ARANCELARIO</td>
-                     <td>{{ parcial_taxes.sums.arancel_advalorem | number_format(3,'.',',') }}</td>
-                     <td class="text-primary" >{{ parcial_taxes.sums.arancel_advalorem_liberado | number_format(3,'.',',') }}</td>
-                     <td class="text-success" >{{ parcial_taxes.sums.arancel_advalorem_pagar | number_format(3,'.',',') }}</td>
+                     <td>{{ taxes.sums.arancel_advalorem | number_format(3,'.',',') }}</td>
+                     <td class="text-primary" >{{ taxes.sums.arancel_advalorem_liberado | number_format(3,'.',',') }}</td>
+                     <td class="text-success" >{{ taxes.sums.arancel_advalorem_pagar | number_format(3,'.',',') }}</td>
                   </tr>
                   <tr class="text-right">
                      <td>2</td>
                      <td>ARANCEL ESPECÍFICO</td>
                      <td>DERECHO ARANCELARIO</td>
-                     <td>{{ parcial_taxes.sums.arancel_especifico | number_format(3,'.',',') }}</td>
-                     <td class="text-primary" >{{ parcial_taxes.sums.arancel_especifico_liberado | number_format(3,'.',',') }}</td>
-                     <td class="text-success" >{{ parcial_taxes.sums.arancel_especifico_pagar | number_format(3,'.',',') }}</td>
+                     <td>{{ taxes.sums.arancel_especifico | number_format(3,'.',',') }}</td>
+                     <td class="text-primary" >{{ taxes.sums.arancel_especifico_liberado | number_format(3,'.',',') }}</td>
+                     <td class="text-success" >{{ taxes.sums.arancel_especifico_pagar | number_format(3,'.',',') }}</td>
                   </tr>
                   <tr class="text-right">
                      <td>3</td>
                      <td>FODINFA</td>
                      <td>IMPUESTO</td>
-                     <td>{{ parcial_taxes.sums.fodinfa | number_format(3,'.',',') }}</td>
+                     <td>{{ taxes.sums.fodinfa | number_format(3,'.',',') }}</td>
                      <td class="text-primary" >0.000</td>
-                     <td class="text-success" >{{ parcial_taxes.sums.fodinfa | number_format(3,'.',',') }}</td>
+                     <td class="text-success" >{{ taxes.sums.fodinfa | number_format(3,'.',',') }}</td>
                   </tr>
                   <tr class="text-right">
                      <td>4</td>
                      <td>ICE ADVALOREM</td>
                      <td>IMPUESTO</td>
-                     <td>{{ parcial_taxes.sums.ice_advalorem | number_format(3,'.',',') }}</td>
+                     <td>{{ taxes.sums.ice_advalorem | number_format(3,'.',',') }}</td>
                      <td class="text-primary" >0.000</td>
-                     <td class="text-success" >{{ parcial_taxes.sums.ice_advalorem | number_format(3,'.',',') }}</td>
+                     <td class="text-success" >{{ taxes.sums.ice_advalorem | number_format(3,'.',',') }}</td>
                   </tr>
                   <tr class="text-right">
                      <td>5</td>
                      <td>ICE ESPECÍFICO</td>
                      <td>IMPUESTO</td>
-                     <td>{{ parcial_taxes.sums.ice_especifico | number_format(3,'.',',') }}</td>
+                     <td>{{ taxes.sums.ice_especifico | number_format(3,'.',',') }}</td>
                      <td class="text-primary" >0.000</td>
-                     <td class="text-success" >{{ parcial_taxes.sums.ice_especifico | number_format(3,'.',',') }}</td>
+                     <td class="text-success" >{{ taxes.sums.ice_especifico | number_format(3,'.',',') }}</td>
                   </tr>
                   <tr class="text-right">
                      <td>6</td>
                      <td>IVA</td>
                      <td>IMPUESTO</td>
-                     <td>{{ parcial_taxes.sums.iva_total | number_format(3,'.',',') }}</td>
-                     <td class="text-primary" >{{ (parcial_taxes.sums.iva_total - parcial_taxes.sums.iva) | number_format(2,'.',',') }}</td>
-                     <td class="text-success" >{{ parcial_taxes.sums.iva | number_format(3,'.',',') }}</td>
+                     <td>{{ taxes.sums.iva | number_format(3,'.',',') }}</td>
+                     <td> {{ ( taxes.sums.iva_liberado ) | number_format(3,'.',',') }} </td>
+                     <td class="text-success" >{{ taxes.sums.iva_pagar | number_format(3,'.',',') }}</td>
                   </tr>
                   <tr style="background-color:#2E86C1; color:#fff; font-weight:bold;" class="text-right">
                      <td colspan="3">TOTAL:</td>
-                     <td>
-                        {{ (
-                        parcial_taxes.sums.iva_total 
-                        + parcial_taxes.sums.ice_advalorem 
-                        + parcial_taxes.sums.ice_especifico 
-                        + parcial_taxes.sums.fodinfa
-                        + parcial_taxes.sums.arancel_advalorem 
-                        + parcial_taxes.sums.arancel_especifico
-                        ) | number_format(3,'.',',') 
-                        }}
-                     </td>
-                     <td>         
-                        {{ (   (parcial_taxes.sums.iva_total - parcial_taxes.sums.iva)
-                        + parcial_taxes.sums.arancel_advalorem_liberado
-                        + parcial_taxes.sums.arancel_especifico_liberado
-                        ) | number_format(3,'.',',') 
-                        }}
-                     </td>
-                     <td>
-                        {{ (
-                        parcial_taxes.sums.iva_total - (parcial_taxes.sums.iva_total - parcial_taxes.sums.iva) 
-                        + parcial_taxes.sums.ice_advalorem 
-                        + parcial_taxes.sums.ice_especifico 
-                        + parcial_taxes.sums.fodinfa
-                        + parcial_taxes.sums.arancel_advalorem_pagar 
-                        + parcial_taxes.sums.arancel_especifico_pagar
-                        ) | number_format(3,'.',',') 
-                        }}
-                     </td>
+                  <td>
+                   {{ (
+                           taxes.sums.iva 
+                           + taxes.sums.ice_advalorem 
+                           + taxes.sums.ice_especifico 
+                           + taxes.sums.fodinfa
+                           + taxes.sums.arancel_advalorem 
+                           + taxes.sums.arancel_especifico
+                       ) | number_format(3,'.',',') 
+                    }}
+               </td> 
+               <td>
+                   {{ (
+                           taxes.sums.iva_liberado 
+                           + taxes.sums.arancel_advalorem_liberado 
+                           + taxes.sums.arancel_especifico_liberado
+                       ) | number_format(3,'.',',') 
+                    }}
+               </td> 
+                  <td>
+                   {{ (taxes.sums.iva_pagar 
+                           + taxes.sums.ice_advalorem 
+                           + taxes.sums.ice_especifico 
+                           + taxes.sums.fodinfa
+                           + taxes.sums.arancel_advalorem_pagar 
+                           + taxes.sums.arancel_especifico_pagar
+                       ) | number_format(3,'.',',') 
+                    }}
+               </td>                
                   </tr>
                </tbody>
             </table>
@@ -197,6 +167,7 @@
                      <th>#</th>
                      <th>Producto</th>
                      <th>Cajas</th>
+                     <th>CxC</th>
                      <th>Unds</th>
                      <th>Cap ml</th>
                      <th>% Alch</th>                    
@@ -204,29 +175,29 @@
                      <th>Seguro A</th>
                      <th>Flete A</th>
                      <th>CIF</th>
-                     {% if parcial_taxes.sums.arancel_advalorem_pagar > 0 %}
+                     {% if taxes.sums.arancel_advalorem_pagar > 0 %}
                     	 <th>Arancel Advalorem</th>
                      {% endif %}
-                     {% if parcial_taxes.sums.arancel_especifico_pagar > 0 %}
+                     {% if taxes.sums.arancel_especifico_pagar > 0 %}
                      <th>Arancel Especifico</th>
                      {% endif %}
                      <th>Fodinfa</th>
-                     {% if parcial_taxes.sums.tasa_control > 0 %}
+                     {% if taxes.sums.tasa_control > 0 %}
                      	<th>Tasa Control</th>
                      {% endif %}
                      <th>Exaduana U</th>
-                     <th>B Advalorem</th>                     
                      <th>ICE Especifico</th>
                      <th>ICE Avalorem</th>
                      <th>Total ICE</th>
                      <th>IVA</th>
-                     <th>Total T.</th>
+                     <th>Total</th>
                   </tr>
-                  {% for tax in parcial_taxes['taxes'] %}
+                  {% for tax in taxes['taxes'] %}
                   <tr>
                      <td> {{ loop.index }} </td>
-                     <td nowrap>{{ tax.product }}</td>
-                     <td class="text-right"> {{ tax.cajas }} </td>
+                     <td nowrap>{{ tax.nombre }}</td>
+                     <td class="text-right"> {{ tax.nro_cajas }} </td>
+                     <td class="text-right"> {{ tax.cantidad_x_caja }} </td>
                      <td class="text-right">{{ tax.unidades }}</td>
                      <td class="text-right">{{ tax.capacidad_ml | number_format(2,',','.') }}</td>
                      <td class="text-right">{{ tax.grado_alcoholico | number_format(2,',','.') }}</td>
@@ -234,52 +205,70 @@
                      <td class="text-right">{{ tax.seguro_aduana | number_format(2,',','.') }}</td>                    
                      <td class="text-right">{{ tax.flete_aduana | number_format(2,',','.') }}</td>
                      <td class="text-right">{{ tax.cif | number_format(2,',','.') }}</td>
-                     {% if parcial_taxes.sums.arancel_advalorem_pagar > 0 %}
+                     {% if taxes.sums.arancel_advalorem_pagar > 0 %}
                      	<td class="text-right">{{ tax.arancel_advalorem_pagar | number_format(2,',','.') }}</td>
                      {% endif %}
-                     {% if parcial_taxes.sums.arancel_especifico_pagar > 0 %}
+                     {% if taxes.sums.arancel_especifico_pagar > 0 %}
                      <td class="text-right">{{ tax.arancel_especifico_pagar | number_format(2,',','.') }}</td>
                      {% endif %}
                      <td class="text-right">{{ tax.fodinfa | number_format(2,',','.') }}</td>
-                     {% if parcial_taxes.sums.tasa_control > 0 %}
+                     {% if taxes.sums.tasa_control > 0 %}
                      	<td class="text-right">{{ tax.tasa_control | number_format(2,',','.') }}</td>
                      {% endif %}
-                     <td class="text-right">{{ tax.ex_aduana_unitario | number_format(2,',','.') }}</td>
-                     <td class="text-right">{{ tax.base_advalorem | number_format(2,',','.') }}</td>                     
+                     <td class="text-right">{{ tax.exaduana_unitario | number_format(2,',','.') }}</td>
                      <td class="text-right">{{ tax.ice_especifico | number_format(2,',','.') }}</td>
                      <td class="text-right">{{ tax.ice_advalorem | number_format(2,',','.') }}</td>
                      <td class="text-right">{{ tax.total_ice | number_format(2,',','.') }}</td>
-                     <td class="text-right">{{ tax.iva | number_format(2,',','.') }}</td>
-                     <td class="text-right">{{ tax.indirectos | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ tax.iva_pagar | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ 
+                     (
+                         + tax.iva_pagar
+                         + tax.ice_especifico
+                         + tax.ice_advalorem
+                         + tax.fodinfa
+                         + tax.arancel_advalorem_pagar
+                         + tax.arancel_especifico_pagar
+                     ) 
+                         | number_format(2,',','.') }}</td>
                   </tr>
                   {% endfor %}
                   <tr style="background-color:#2E86C1; color:#fff; font-weight:bold;">
                      <td colspan="2">Sumas:</td>
-                     <td class="text-right">{{ parcial_taxes.sums.cajas }}</td>
-                     <td class="text-right">{{ parcial_taxes.sums.unidades }}</td>
+                     <td class="text-right">{{ taxes.sums.nro_cajas }}</td>
+                     <td class="text-center">--</td>
+                     <td class="text-right">{{ taxes.sums.unidades }}</td>
                      <td class="text-center">--</td>
                      <td class="text-center">--</td>
-                     <td class="text-right">{{ parcial_taxes.sums.fob | number_format(2,',','.') }}</td>
-                     <td class="text-right">{{ parcial_taxes.sums.seguro_aduana | number_format(2,',','.')}}</td>
-                     <td class="text-right">{{ parcial_taxes.sums.flete_aduana | number_format(2,',','.') }}</td>
-                     <td class="text-right">{{ parcial_taxes.sums.cif | number_format(2,',','.') }}</td>
-                     {% if parcial_taxes.sums.arancel_advalorem_pagar > 0 %}
-                    	 <td class="text-right">{{ parcial_taxes.sums.arancel_advalorem_pagar | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ taxes.sums.fob | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ taxes.sums.seguro_aduana | number_format(2,',','.')}}</td>
+                     <td class="text-right">{{ taxes.sums.flete_aduana | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ taxes.sums.cif | number_format(2,',','.') }}</td>
+                     {% if taxes.sums.arancel_advalorem_pagar > 0 %}
+                    	 <td class="text-right">{{ taxes.sums.arancel_advalorem_pagar | number_format(2,',','.') }}</td>
                      {% endif %}
-                     {% if parcial_taxes.sums.arancel_especifico_pagar > 0 %}
-                     	<td class="text-right">{{ parcial_taxes.sums.arancel_especifico_pagar | number_format(2,',','.') }}</td>
+                     {% if taxes.sums.arancel_especifico_pagar > 0 %}
+                     	<td class="text-right">{{ taxes.sums.arancel_especifico_pagar | number_format(2,',','.') }}</td>
                      {% endif %}
-                     <td class="text-right">{{ parcial_taxes.sums.fodinfa | number_format(2,',','.') }}</td>
-                     {% if parcial_taxes.sums.tasa_control > 0 %}
-                     <td class="text-right">{{ parcial_taxes.sums.tasa_control | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ taxes.sums.fodinfa | number_format(2,',','.') }}</td>
+                     {% if taxes.sums.tasa_control > 0 %}
+                     <td class="text-right">{{ taxes.sums.tasa_control | number_format(2,',','.') }}</td>
                      {% endif %}
                      <td class="text-center">--</td>
-                     <td class="text-center">--</td>
-                     <td class="text-right">{{ parcial_taxes.sums.ice_especifico | number_format(2,',','.') }}</td>
-                     <td class="text-right">{{ parcial_taxes.sums.ice_advalorem | number_format(2,',','.') }}</td>
-                     <td class="text-right">{{ parcial_taxes.sums.total_ice | number_format(2,',','.') }}</td>
-                     <td class="text-right">{{ parcial_taxes.sums.iva | number_format(2,',','.') }}</td>
-                     <td class="text-right">{{ parcial_taxes.sums.indirectos | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ taxes.sums.ice_especifico | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ taxes.sums.ice_advalorem | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ taxes.sums.total_ice | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ taxes.sums.iva | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ 
+                         ( 
+                         + taxes.sums.iva_pagar
+                         + taxes.sums.ice_especifico
+                         + taxes.sums.ice_advalorem
+                         + taxes.sums.fodinfa
+                         + taxes.sums.arancel_advalorem_pagar
+                         + taxes.sums.arancel_especifico_pagar
+                         ) 
+                         | number_format(2,',','.') 
+                     }}</td>
                   </tr>
                </table>
             </div>
@@ -307,14 +296,14 @@
 <!-- Modal -->
 <form action="{{rute_url}}impuestos/liquidarIvaParcial/" method="post">
    <input type="hidden" name="id_parcial" value="{{ parcial.id_parcial }}">
-   <input type="hidden" name="base_fodinfa" value="{{ parcial_taxes.data_general.base_aranceles.base_fodinfa }}">
-   <input type="hidden" name="base_arancel_advalorem" value="{{ parcial_taxes.data_general.base_aranceles.base_arancel_advalorem }}">
-   <input type="hidden" name="base_arancel_especifico" value="{{ parcial_taxes.data_general.base_aranceles.base_arancel_especifico }}">
-   <input type="hidden" name="base_ice_especifico" value="{{ parcial_taxes.data_general.base_aranceles.base_ice_especifico }}">
-   <input type="hidden" name="base_ice_advalorem" value="{{ parcial_taxes.data_general.base_aranceles.base_ice_advalorem }}">
-   <input type="hidden" name="porcentaje_ice_advalorem" value="{{ parcial_taxes.data_general.base_aranceles.porcentaje_ice_advalorem }}">
-   <input type="hidden" name="base_iva" value="{{ parcial_taxes.data_general.base_aranceles.base_iva }}">
-   <input type="hidden" name="base_etiquetas" value="{{ parcial_taxes.data_general.base_aranceles.base_etiquetas }}">
+   <input type="hidden" name="base_fodinfa" value="{{ taxes.data_general.base_aranceles.base_fodinfa }}">
+   <input type="hidden" name="base_arancel_advalorem" value="{{ taxes.data_general.base_aranceles.base_arancel_advalorem }}">
+   <input type="hidden" name="base_arancel_especifico" value="{{ taxes.data_general.base_aranceles.base_arancel_especifico }}">
+   <input type="hidden" name="base_ice_especifico" value="{{ taxes.data_general.base_aranceles.base_ice_especifico }}">
+   <input type="hidden" name="base_ice_advalorem" value="{{ taxes.data_general.base_aranceles.base_ice_advalorem }}">
+   <input type="hidden" name="porcentaje_ice_advalorem" value="{{ taxes.data_general.base_aranceles.porcentaje_ice_advalorem }}">
+   <input type="hidden" name="base_iva" value="{{ taxes.data_general.base_aranceles.base_iva }}">
+   <input type="hidden" name="base_etiquetas" value="{{ taxes.data_general.base_aranceles.base_etiquetas }}">
    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog" role="document">
          <div class="modal-content">
@@ -340,7 +329,7 @@
                         <input 
                            type="number" 
                            name="arancel_advalorem_pagar"  
-                           value="{{ parcial_taxes.sums.arancel_advalorem_pagar | number_format(3,'.','')}}" readonly="readonly" 
+                           value="{{ taxes.sums.arancel_advalorem_pagar | number_format(3,'.','')}}" readonly="readonly" 
                            step="0.001"
                            class="number"
                            />
@@ -353,7 +342,7 @@
                            type="number" 
                            name="arancel_advalorem_pagar_pagado" 
                            id="arancel_advalorem_pagar_pagado"  
-                           value="{{ parcial_taxes.sums.arancel_advalorem_pagar | number_format(3,'.','') }}" required="required" 
+                           value="{{ taxes.sums.arancel_advalorem_pagar | number_format(3,'.','') }}" required="required" 
                            step="0.001"
                            class="number"
                            />
@@ -381,7 +370,7 @@
                            type="number" 
                            name="arancel_especifico_pagar"  
                            class="number"
-                           value="{{ parcial_taxes.sums.arancel_especifico_pagar | number_format(3,'.','')}}" readonly="readonly" 
+                           value="{{ taxes.sums.arancel_especifico_pagar | number_format(3,'.','')}}" readonly="readonly" 
                            step="0.001"
                            />
                      </div>
@@ -394,7 +383,7 @@
                            name="arancel_especifico_pagar_pagado" 
                            id="arancel_especifico_pagar_pagado"  
                            class="number"
-                           value="{{ parcial_taxes.sums.arancel_especifico_pagar | number_format(3,'.','') }}" 
+                           value="{{ taxes.sums.arancel_especifico_pagar | number_format(3,'.','') }}" 
                            required="required" 
                            step="0.001"
                            />
@@ -421,7 +410,7 @@
                         <input 
                            type="number" 
                            name="fodinfa" 
-                           value="{{ parcial_taxes.sums.fodinfa | number_format(3,'.','')}}" 
+                           value="{{ taxes.sums.fodinfa | number_format(3,'.','')}}" 
                            readonly="readonly" 
                            class="number"
                            step="0.001"
@@ -436,7 +425,7 @@
                            name="fodinfa_pagado" 
                            id="fodinfa_pagado"  
                            class="number"
-                           value="{{ parcial_taxes.sums.fodinfa | number_format(3,'.','') }}" 
+                           value="{{ taxes.sums.fodinfa | number_format(3,'.','') }}" 
                            required="required" 
                            step="0.001"
                            />
@@ -462,7 +451,7 @@
                         <label>ICE Advalorem</label>
                         <input 
                            type="number"  
-                           value="{{ parcial_taxes.sums.ice_advalorem | number_format(3,'.','') }}" 
+                           value="{{ taxes.sums.ice_advalorem | number_format(3,'.','') }}" 
                            readonly="readonly" 
                            class="number"
                            name="ice_advalorem" 
@@ -475,7 +464,7 @@
                         <label>ICE Advalorem Pagado </label>
                         <input 
                            type="number"  
-                           value="{{ parcial_taxes.sums.ice_advalorem | number_format(3,'.','') }}" 
+                           value="{{ taxes.sums.ice_advalorem | number_format(3,'.','') }}" 
                            name="ice_advalorem_pagado" 
                            class="number"
                            id="ice_advalorem_pagado" 
@@ -504,7 +493,7 @@
                         <label>ICE Específico</label>
                         <input 
                            type="number"  
-                           value="{{ parcial_taxes.sums.ice_especifico | number_format(3,'.','') }}" 
+                           value="{{ taxes.sums.ice_especifico | number_format(3,'.','') }}" 
                            readonly="readonly" 
                            name="ice_especifico" 
                            class="number"
@@ -517,7 +506,7 @@
                         <label>ICE Específico Pagado </label>
                         <input 
                            type="number"  
-                           value="{{ parcial_taxes.sums.ice_especifico | number_format(3,'.','') }}" 
+                           value="{{ taxes.sums.ice_especifico | number_format(3,'.','') }}" 
                            name="ice_especifico_pagado" 
                            id="ice_especifico_pagado" 
                            required="required" 
@@ -546,7 +535,7 @@
                         <label>IVA </label>
                         <input 
                            type="number"  
-                           value="{{ parcial_taxes.sums.iva | number_format(3,'.','') }}" 
+                           value="{{ taxes.sums.iva | number_format(3,'.','') }}" 
                            readonly="readonly" 
                            class="number"
                            name="iva" 
@@ -560,7 +549,7 @@
                         <input 
                            type="number" 
                            class="number" 
-                           value="{{ parcial_taxes.sums.iva | number_format(3,'.','') }}" 
+                           value="{{ taxes.sums.iva | number_format(3,'.','') }}" 
                            name="iva_pagado" 
                            id="iva_pagado" 
                            required= "required" 
@@ -590,12 +579,12 @@
                            type="text" 
                            class="text-primary number" 
                            value="{{ (
-                        parcial_taxes.sums.iva_total - (parcial_taxes.sums.iva_total - parcial_taxes.sums.iva) 
-                        + parcial_taxes.sums.ice_advalorem 
-                        + parcial_taxes.sums.ice_especifico 
-                        + parcial_taxes.sums.fodinfa
-                        + parcial_taxes.sums.arancel_advalorem_pagar 
-                        + parcial_taxes.sums.arancel_especifico_pagar
+                        taxes.sums.iva_total - (taxes.sums.iva_total - taxes.sums.iva) 
+                        + taxes.sums.ice_advalorem 
+                        + taxes.sums.ice_especifico 
+                        + taxes.sums.fodinfa
+                        + taxes.sums.arancel_advalorem_pagar 
+                        + taxes.sums.arancel_especifico_pagar
                         ) | number_format(3,'.',',') 
                         }}" readonly="readonly"
                            />
@@ -608,12 +597,12 @@
                            type="text" 
                            class="number text-success"
                            value="{{ (
-                        parcial_taxes.sums.iva_total - (parcial_taxes.sums.iva_total - parcial_taxes.sums.iva) 
-                        + parcial_taxes.sums.ice_advalorem 
-                        + parcial_taxes.sums.ice_especifico 
-                        + parcial_taxes.sums.fodinfa
-                        + parcial_taxes.sums.arancel_advalorem_pagar 
-                        + parcial_taxes.sums.arancel_especifico_pagar
+                        taxes.sums.iva_total - (taxes.sums.iva_total - taxes.sums.iva) 
+                        + taxes.sums.ice_advalorem 
+                        + taxes.sums.ice_especifico 
+                        + taxes.sums.fodinfa
+                        + taxes.sums.arancel_advalorem_pagar 
+                        + taxes.sums.arancel_especifico_pagar
                         ) | number_format(3,'.',',') 
                         }}" readonly="readonly" 
                            id="autoliquidacion"
@@ -675,33 +664,33 @@
 <!-- /Modal -->
 <script>
   $('#arancel_advalorem_pagar_pagado').keyup(function(){
-    var val_inicial = {{ parcial_taxes.sums.arancel_advalorem_pagar | number_format (3, '.','') }};
+    var val_inicial = {{ taxes.sums.arancel_advalorem_pagar | number_format (3, '.','') }};
     actualizarImpuesto('arancel_advalorem_pagar_pagado', val_inicial );
   });
 
   $('#arancel_especifico_pagar_pagado').keyup(function(){
-    var val_inicial = {{ parcial_taxes.sums.arancel_especifico_pagar | number_format (3, '.','') }};
+    var val_inicial = {{ taxes.sums.arancel_especifico_pagar | number_format (3, '.','') }};
     actualizarImpuesto('arancel_especifico_pagar_pagado', val_inicial );
   });
 
     $('#fodinfa_pagado').keyup(function(){
-    var val_inicial = {{ parcial_taxes.sums.fodinfa | number_format (3, '.','') }};
+    var val_inicial = {{ taxes.sums.fodinfa | number_format (3, '.','') }};
     actualizarImpuesto('fodinfa_pagado', val_inicial );
   });
 
    $('#ice_especifico_pagado').keyup(function(){
-    var val_inicial = {{ parcial_taxes.sums.ice_especifico | number_format (3, '.','') }};
+    var val_inicial = {{ taxes.sums.ice_especifico | number_format (3, '.','') }};
     actualizarImpuesto('ice_especifico_pagado', val_inicial );
   });
 
   $('#ice_advalorem_pagado').keyup(function(){
-    var val_inicial = {{ parcial_taxes.sums.ice_advalorem | number_format (3, '.','') }};
+    var val_inicial = {{ taxes.sums.ice_advalorem | number_format (3, '.','') }};
     console.dir(val_inicial);
     actualizarImpuesto('ice_advalorem_pagado', val_inicial );
   });
 
   $('#iva_pagado').keyup(function(){
-    var val_inicial = {{ parcial_taxes.sums.iva | number_format (3, '.','') }};
+    var val_inicial = {{ taxes.sums.iva | number_format (3, '.','') }};
     actualizarImpuesto('iva_pagado', val_inicial );
   });
 
@@ -714,12 +703,12 @@
 
   function actualizarTotales(){
       var total_liquidacion =  {{ (
-                        parcial_taxes.sums.iva_total - (parcial_taxes.sums.iva_total - parcial_taxes.sums.iva) 
-                        + parcial_taxes.sums.ice_advalorem 
-                        + parcial_taxes.sums.ice_especifico 
-                        + parcial_taxes.sums.fodinfa
-                        + parcial_taxes.sums.arancel_advalorem_pagar 
-                        + parcial_taxes.sums.arancel_especifico_pagar
+                        taxes.sums.iva_total - (taxes.sums.iva_total - taxes.sums.iva) 
+                        + taxes.sums.ice_advalorem 
+                        + taxes.sums.ice_especifico 
+                        + taxes.sums.fodinfa
+                        + taxes.sums.arancel_advalorem_pagar 
+                        + taxes.sums.arancel_especifico_pagar
                         ) | number_format(3,'.','') 
                         }};
 

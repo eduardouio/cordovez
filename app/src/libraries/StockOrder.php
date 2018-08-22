@@ -46,24 +46,18 @@ class StockOrder
      */
     public function getCurrentOrderStock() 
     {
-        
-        if(empty($this->orderInvoicesDetail)){
+        if ( empty($this->orderInvoicesDetail) ){
             return [];
         }
         
         $initial_stock = $this->getInitStockProducts();
-        $nationalized_stock = $this->getNationalizedStock();
-        $current_stock = $this->getCurrentStock(
-                                    $initial_stock, 
-                                    $nationalized_stock
-            );
+        $nationalized_stock = $this->getNationalizedStock();        
                
         return($this->getCurrentStock(  
                             $initial_stock, 
                             $nationalized_stock
                     )
         );            
-
     }
     
     

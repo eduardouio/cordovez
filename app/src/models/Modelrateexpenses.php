@@ -182,13 +182,20 @@ class Modelrateexpenses extends CI_Model {
     public  function getTaxesParams():array
     {
         $rates = $this->modelBase->get_table([
+            'select' => [
+                'id_tarifa_gastos',
+                'regimen',
+                'tipo_gasto',
+                'concepto',
+                'valor',
+                'porcentaje'
+            ],
             'table' => $this->table,
             'where' => [
                 'tipo_gasto' => 'IMPUESTO',
                 'estado' => 1,
             ],
         ]);
-        
         
         return $rates;
     }

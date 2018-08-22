@@ -482,8 +482,6 @@ class parcialTaxesReliquidate {
                         $prorrateo_gastos_iniciales, 
                         $valor_proporcional_item
                     );
-                  
-                    
                     
                     if ($gst_prorrateo['concepto'] == 'FLETE') {
                         $flete = $valor_proporcional_item;

@@ -34,23 +34,33 @@
                <td class="text-right brackground-gray"><strong>FOB</strong></td>
                <td class="text-right">{{ order_taxes.sums.fob | number_format(3,',','.') }}</td>
             </tr>
-            <tr>
-               <td class="text-right brackground-gray"><strong> Etiquetas Fiscales</strong></td>
+               <tr>
+               <td class="text-right brackground-gray"><strong> Liquidacion Inicial Con TASA</strong></td>            
                		<td class="text-right">
                		<span class="text-success">
-               		<span class="fa fa-check"></span>
-               		Incluido
+						{% if order.bg_have_tasa_control  == 1%}
+							<span class="fa fa-check"></span> SI	
+						{% else %}
+							<span class="fa fa-ban"></span> NO
+						{% endif %}
                		</span>
-					</td>              
+					</td>               
             </tr>
             <tr>
-               <td class="text-right brackground-gray"><strong> Tasa de Servicio Aduanero</strong></td>
+               <td class="text-right brackground-gray"><strong> Fecha Pago Liquidacion Inicial:</strong></td>
                		<td class="text-right">
+               		{% if order.fecha_liquidacion %}
                		<span class="text-success">
-               		<span class="fa fa-check"></span>
-               		Incluido
+               			<span class="fa fa-check"></span>
+               			{{ order.fecha_liquidacion | date('d/m/Y') }}
                		</span>
-               		</td>              
+               		{% else %}
+               		<span class="text-danger">
+               		<span class="fa fa-ban"></span>
+               			Sin Fecha
+               		</span>
+               		{% endif %}
+               		</td>           
             </tr>
             <tr>
             <td class="text-right brackground-gray"><strong>Base Arancel Específico</strong></td>

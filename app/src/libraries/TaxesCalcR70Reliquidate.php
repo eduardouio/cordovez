@@ -181,8 +181,15 @@ class parcialTaxesReliquidate {
             #FOB + GO ok
             #FOB ok
             # FCA
+            #print '<h4>' . $tax['arancel_advalorem_pagar'] . '</h4>';
+            #print '<h4>' . $tax['arancel_especifico_pagar'] . '</h4>';
+            #print '<h4>' . $tax['total_ice'] . '</h4>';
+            #print '<h4>' . $tax['fodinfa'] . '</h4>';
+            #print '<h4>' . $tax['prorrateos_total'] . '</h4>';
+            #print '<h4>' . $tax['gasto_origen_tasa_trimestral'] . '</h4>';
+            
             $tax['indirectos'] = (
-            + $tax['arancel_advalorem']
+            + $tax['arancel_advalorem_pagar']
             + $tax['arancel_especifico_pagar']
             + $tax['total_ice']
             + $tax['fodinfa']
@@ -195,7 +202,7 @@ class parcialTaxesReliquidate {
             # FCA
             $costo_total = (
             $tax['total_ice']
-            + $tax['arancel_advalorem']
+            + $tax['arancel_advalorem_pagar']
             + $tax['arancel_especifico_pagar']
             + $tax['fodinfa']
             + $tax['prorrateos_total']
@@ -400,7 +407,7 @@ class parcialTaxesReliquidate {
             
         }elseif ($this->incoterm == 'FOB'){
             $gasto_origen = ($this->gastos_origen * $percent) 
-                            * $this->type_change_parcial;
+                            * $this->type_change_parcial;            
             $fob = $product_value + $gasto_origen; 
                 
         }elseif($this->incoterm == 'EXW' || $this->incoterm == 'FCA'){
@@ -539,12 +546,13 @@ class parcialTaxesReliquidate {
                 'prorrateo_pedido' => $valor_prorrateos_gastos_iniciales,
                 'prorrateos_total' => $valor_prorrateos_gastos_iniciales + $valor_prorrateos_parcial,
             ];
-                       
+                    
+            #print $prorrateo_item['seguro_aduana'] * $this->type_change_parcial;
             $prorrateo_item ['cif'] = (
                 (
                     $product['fob']
-                    + $prorrateo_item['seguro_aduana'] * $this->type_change_parcial
-                    + $prorrateo_item['flete_aduana'] * $this->type_change_parcial
+                    + $prorrateo_item['seguro_aduana']
+                    + $prorrateo_item['flete_aduana'] 
                     )
                 );                             
             return  $prorrateo_item;

@@ -15,7 +15,11 @@
             </tr>
             <tr>
                <td class="text-right brackground-gray"><strong>Moneda</strong></td>
-               <td class="text-right"> {{ init_data.order_invoices.0.moneda }} </td>
+               <td class="text-right"> {{ init_data.order_invoices.0.moneda }}
+               {% if init_data.order_invoices.0.moneda == 'EUROS' or init_data.order_invoices.0.moneda == 'EURO'%}
+               		<a href="{{ rute_url }}checkeuro/" target="_blank"> <span class="fa fa-eye"></span> </a>
+                {% endif %}   
+               </td>
             </tr>
             <tr>
                <td class="text-right brackground-gray"><strong>Tipo de Cambio Factura</strong></td>

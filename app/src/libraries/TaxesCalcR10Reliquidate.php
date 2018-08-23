@@ -173,18 +173,17 @@ class orderTaxesReliquidate {
                 );
             
             $tax['total_ice'] = $tax['ice_especifico'] + $tax['ice_advalorem'];
-
+            
+            
             $tax['indirectos'] = (
-              $tax['total_ice']
-            + $tax['fodinfa']
             + $tax['arancel_advalorem_pagar']
             + $tax['arancel_especifico_pagar']
+            + $tax['total_ice']
+            + $tax['fodinfa']
             + $tax['prorrateos_total']
-            + $tax['gasto_origen']
+            + $tax['gasto_origen_tasa_trimestral']
                 );
-
-
-
+            
             $costo_total = (
                 $tax['total_ice']
                 + $tax['arancel_advalorem_pagar']
@@ -192,9 +191,17 @@ class orderTaxesReliquidate {
                 + $tax['fodinfa']
                 + $tax['prorrateos_total']
                 + $tax['fob']
-                + $tax['gasto_origen']
+                + $tax['gasto_origen_tasa_trimestral']
             );
-
+            #xavierquilismal1987
+            #|| 'CFR'
+            if($this->incoterm == 'FOB' ){
+                $costo_total  = (
+                    $costo_total - $tax['fob']) 
+                    + $tax['fob_tasa_trimestral'];
+                    + $tax['gasto_origen_tasa_trimestral'];
+            }
+           
             $tax['costo_total'] = $costo_total;
             $tax['costo_caja_final']  = $costo_total/$tax['cajas'];
             $tax['costo_botella'] = $costo_total/$tax['unidades'];
@@ -236,6 +243,7 @@ class orderTaxesReliquidate {
                 $this->gastos_origen = $exp['valor_provisionado'];
             }                   
         }
+            
         
         #si los gastos de origen no estan en la lista de GI estan en el pedido
         # verificar si trabaja bien con los incoterms mencionados. los GO estan
@@ -255,7 +263,8 @@ class orderTaxesReliquidate {
      *
      */
     private function getTaxesProduct(array $detail_invoice): array
-    {
+    {           
+        
         $product = $this->getProductData($detail_invoice);
         $prorrateo_item = $this->getProrrateoItem(
             $detail_invoice,
@@ -280,12 +289,14 @@ class orderTaxesReliquidate {
             'capacidad_ml'=> $product['capacidad_ml'],
             'grado_alcoholico'=> $product['grado_alcoholico'],
             'fob' => $product['fob'],
+            'fob_tasa_trimestral' => $product['fob_tasa_trimestral'],
             'fob_percent' => $prorrateo_item['fob_percent'],
             'seguro_aduana' => $prorrateo_item['seguro_aduana'],
             'flete_aduana' =>$prorrateo_item['flete_aduana'],
             'seguro' => $prorrateo_item['seguro'],
             'flete' =>$prorrateo_item['flete'],
             'gasto_origen' => $product['gasto_origen'],
+            'gasto_origen_tasa_trimestral' => $product['gasto_origen_tasa_trimestral'],
             'cif' => $prorrateo_item ['cif'],
             'fecha_liquidacion' => $this->order['fecha_liquidacion'],
             'nro_pedido' => $this->order['nro_pedido'],
@@ -366,53 +377,56 @@ class orderTaxesReliquidate {
         
         $fob = 0.0;
         $total_invoices = 0.0;
+        $fob_tasa_trimestral = 0.0;
         $gasto_origen = 0.0;
+        $gasto_origen_tasa_trimestral = 0.0;
+              
+        $total_invoices = $this->init_data['order_invoices'][0]['valor'];
         
-        foreach ($this->init_data['order_invoices'] as $idx => $invoice){
-            $total_invoices += $invoice['valor'];
-        }
         
-        $percent = (
+        $percent = round((
             ($detail_invoice['nro_cajas']* $detail_order_invoice['costo_caja']) 
-            / $total_invoices);
+            / $total_invoices)
+            ,3);
+        
+        $product_value = (
+            ($detail_invoice['nro_cajas'] * $detail_invoice['costo_caja'])
+            * $this->type_change_order
+            );
+        
+        $gasto_origen_tasa_trimestral = (
+            ($this->gastos_origen * $this->type_change_invoice)
+            * $percent
+            );
+        
+        $fob_tasa_trimestral = (
+            ($product_value / $this->type_change_order) 
+        * $this->type_change_invoice
+            );         
             
         if ($this->incoterm == 'CFR'){
-            #si en algun momento hay varias facturas no va a funcionar tienes
-            # se debe calcular en base a las facturas adicionales que existan
-            $fob = (
-                (
-                    $detail_invoice['nro_cajas']
-                    * $detail_order_invoice['costo_caja']
-                    )
+            $fob = $product_value;
+        }elseif ($this->incoterm == 'FOB'){
+            $gasto_origen = (
+                ($this->gastos_origen * $percent)
                 * $this->type_change_order
                 );
             
-        }elseif ($this->incoterm == 'FOB'){
-            $fob = (
-                (   $detail_invoice['nro_cajas']
-                    * $detail_order_invoice['costo_caja']
-                    )
-                + ($this->gastos_origen * $percent)
-                ) * $this->type_change_order;
+            $fob = $product_value + $gasto_origen;
                 
-                $gasto_origen =
-                ($this->gastos_origen * $percent)
-                * $this->type_change_order;
-                
-        }else{
-            $fob = (
-                ($detail_invoice['nro_cajas']* $detail_order_invoice['costo_caja'])
-                 * $this->type_change_order );
-                
-                $gasto_origen = ($this->gastos_origen * $percent);
+        }elseif($this->incoterm == 'EXW' || $this->incoterm == 'FCA'){
+            $gasto_origen = $this->gastos_origen * $percent;
+            $gasto_origen_tasa_trimestral = 0.0;
+            $fob = $product_value + $gasto_origen;
         }
-            
+        
             return ([
                 'nombre'=> $product_base['nombre'],
                 'detalle_pedido_factura' => $product['detalle_pedido_factura'],
                 'cod_contable' => $product['cod_contable'],
                 'cajas_importadas' => $detail_order_invoice['nro_cajas'],
                 'gasto_origen' => $gasto_origen,
+                'gasto_origen_tasa_trimestral' => $gasto_origen_tasa_trimestral,
                 'cantidad_x_caja' => $product_base['cantidad_x_caja'],
                 'unidades_importadas' => (
                     $detail_order_invoice['nro_cajas']
@@ -433,6 +447,7 @@ class orderTaxesReliquidate {
                 'percent' => $percent,
                 'grado_alcoholico' => $detail_order_invoice['grado_alcoholico'],
                 'fob' => $fob,
+                'fob_tasa_trimestral' => $fob_tasa_trimestral
             ]);
     }
     

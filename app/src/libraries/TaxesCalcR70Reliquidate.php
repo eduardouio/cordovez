@@ -108,8 +108,7 @@ class parcialTaxesReliquidate {
      */
     private function calDiferenceICEAdvalorem(array $taxes) : array{
         
-        $ice_advalorem_tasa = 0.0;
-        $ice_advalorem_tasa = 0.0;
+        $ice_advalorem_tasa = 0.0;        
         
         foreach ( $taxes as $item => $tax ){
             $ice_advalorem_tasa += $tax['ice_advalorem_sin_etiquetas'];
@@ -405,7 +404,6 @@ class parcialTaxesReliquidate {
             $fob = $product_value + $gasto_origen; 
                 
         }elseif($this->incoterm == 'EXW' || $this->incoterm == 'FCA'){
-            #el prorrateo se hace desde los gastos Iniciales
             $gasto_origen = $this->gastos_origen * $percent;           
             $gasto_origen_tasa_trimestral = 0.0;
             $fob = $product_value + $gasto_origen;

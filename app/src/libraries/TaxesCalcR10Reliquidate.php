@@ -181,7 +181,7 @@ class orderTaxesReliquidate {
             + $tax['total_ice']
             + $tax['fodinfa']
             + $tax['prorrateos_total']
-            + $tax['gasto_origen_tasa_trimestral']
+            + $tax['gasto_origen_tasa_trimestral']            
                 );
             
             $costo_total = (
@@ -193,6 +193,8 @@ class orderTaxesReliquidate {
                 + $tax['fob']
                 + $tax['gasto_origen_tasa_trimestral']
             );
+            
+            #$tax['prorrateo_pedido'] += ($tax['etiquetas_fiscales'] + $tax['tasa_control']);
             #xavierquilismal1987
             #|| 'CFR'
             if($this->incoterm == 'FOB' ){
@@ -272,7 +274,7 @@ class orderTaxesReliquidate {
             );
         
         $taxes_product = $this->getDetailTaxesProduct($product, $prorrateo_item);
-        
+       
         return([
             'product' => $product['nombre'],
             'cod_contable' => $product['cod_contable'],
@@ -303,14 +305,15 @@ class orderTaxesReliquidate {
             'id_parcial' => 0,
             'otros' =>  $prorrateo_item['otros'],
             'prorrateo_parcial' => 0,
-            'prorrateo_pedido' => $prorrateo_item['prorrateo_pedido'],
-            'prorrateos_total' => $prorrateo_item['prorrateo_pedido'],
+            'prorrateo_pedido' => ($prorrateo_item['prorrateo_pedido'] + $taxes_product['etiquetas_fiscales'] + $prorrateo_item['tasa_control'] ),
+            'prorrateos_total' => ($prorrateo_item['prorrateo_pedido'] + $taxes_product['etiquetas_fiscales'] + $prorrateo_item['tasa_control'] ),
             'tasa_control' => $prorrateo_item['tasa_control'],
             'fodinfa' => $taxes_product['fodinfa'],
             'iva' => $taxes_product['iva'],
             'iva_unidad' => $taxes_product['iva_unidad'],
             'iva_total' => $taxes_product['iva_total'],
             'ex_aduana' => $taxes_product['ex_aduana'],
+            'exaduana_antes' => $taxes_product['exaduana_sin_tasa'],
             'ex_aduana_unitario' => $taxes_product['ex_aduana_unitario'],
             'exaduana_sin_etiquetas' => $taxes_product['exaduana_sin_etiquetas'],
             'exaduana_sin_tasa' => $taxes_product['exaduana_sin_tasa'],
@@ -364,6 +367,7 @@ class orderTaxesReliquidate {
             }
         }
         
+        
         foreach ($this->init_data['order_invoice_detail'] as $item => $dt){
             if(
                 $dt['detalle_pedido_factura']
@@ -387,7 +391,10 @@ class orderTaxesReliquidate {
         $percent = round((
             ($detail_invoice['nro_cajas']* $detail_order_invoice['costo_caja']) 
             / $total_invoices)
-            ,3);
+            ,6);
+        
+        $percent = ($percent * 1000000) -1;
+        $percent = $percent/1000000;
         
         $product_value = (
             ($detail_invoice['nro_cajas'] * $detail_invoice['costo_caja'])
@@ -443,7 +450,7 @@ class orderTaxesReliquidate {
                     / $product_base['cantidad_x_caja']
                     ),
                 'capacidad_ml' =>  $product_base['capacidad_ml'] ,
-                'peso' => $product_base['peso'] ,
+                'peso' => $detail_invoice['peso'] ,
                 'percent' => $percent,
                 'grado_alcoholico' => $detail_order_invoice['grado_alcoholico'],
                 'fob' => $fob,
@@ -464,8 +471,10 @@ class orderTaxesReliquidate {
             $flete = 0.0;
             $prorrateos_pedido = 0.0;
             
-            foreach($this->init_data['init_expenses'] as $idx => $gst_prorrateo){
-                $prorrateos_pedido += $gst_prorrateo['valor_provisionado'];
+            foreach($this->init_data['init_expenses'] as $idx => $gst_prorrateo){                
+                if($gst_prorrateo['concepto'] != 'ETIQUETAS FISCALES' && $gst_prorrateo['concepto'] != 'TASA DE CONTROL ADUANERO'){                    
+                    $prorrateos_pedido += $gst_prorrateo['valor_provisionado'];
+                }                
                  if($gst_prorrateo['concepto'] == 'FLETE'){
                             #la primera opcion muestra el Flete sin GO
                             #segunda suma los dos para mostrarlos en el display
@@ -477,22 +486,20 @@ class orderTaxesReliquidate {
                             $seguro = $gst_prorrateo['valor_provisionado'] * $product['percent'];
                         }
             }
-            
-            $fob_percent = ($product['percent']);
-                                  
-            $tasa_control = $this->getTSA($product, $product['percent']);       
+                        
+            $tasa_control = $this->getTSA($product, $product['percent']);
             
             $prorrateo_item = [
-                'fob_percent' => $fob_percent,
+                'fob_percent' => $product['percent'],
                 'product' => $product,
-                'seguro_aduana' => $this->order['seguro_aduana'] * $fob_percent,
-                'flete_aduana' => $this->order['flete_aduana'] * $fob_percent,
+                'seguro_aduana' => round(($this->order['seguro_aduana'] * $product['percent']), 5),
+                'flete_aduana' => round(($this->order['flete_aduana'] * $product['percent']), 5),
                 'seguro' => $seguro,
                 'flete' => $flete,
-                'gasto_origen' => $this->gastos_origen * $fob_percent,
-                'otros' =>  $this->order['otros'] * $fob_percent,
+                'gasto_origen' => $this->gastos_origen * $product['percent'],
+                'otros' =>  $this->order['otros'] * $product['percent'],
                 'tasa_control' => $tasa_control,
-                'prorrateo_pedido' => $prorrateos_pedido * $fob_percent,
+                'prorrateo_pedido' => $prorrateos_pedido * $product['percent'],
             ];
             
             $prorrateo_item ['cif'] = (
@@ -541,7 +548,7 @@ class orderTaxesReliquidate {
         }
         
         #los pesos corresponden a las tasas
-        if($tasa_control_general == $tasa_control_provision){
+        if(round($tasa_control_general,3) == round($tasa_control_provision,3)){
             $tasa_item = $product['peso'] * 0.05;
             if($tasa > 700){
                 return 700;

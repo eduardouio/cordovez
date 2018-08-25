@@ -252,7 +252,6 @@ class parcialTaxes {
             );
             
         
-            
             if ($this->incoterm == 'CFR'){
                 #si en algun momento hay varias facturas no va a funcionar tienes
                 # se debe calcular en base a las facturas adicionales que existan
@@ -280,9 +279,9 @@ class parcialTaxes {
                 $fob = (
                     (   $detail_info_invoice['nro_cajas']
                         * $detail_order_invoice['costo_caja']
-                        )
-                    ) * $this->type_change_parcial
-                    + ($this->gastos_origen * $percent);
+                    ) 
+                    + ($this->gastos_origen * $percent)
+                    ) * $this->type_change_parcial;
                     
                     $gasto_origen = ($this->gastos_origen * $percent);
             }

@@ -28,7 +28,7 @@
 	<td>{{ item.nro_cahas }}</td>
 	<td>{{ item.unidades }}</td>
 	<td>{{ item.grado_alcoholico | number_format(2, ',','.')}}</td>
-	<td><input type="number" name="{{ item.detalle_pedido_factura }}" value = "{{ item.peso }}" required /></td>
+	<td><input type="number" name="{{ item.detalle_pedido_factura }}" value = "{{ item.peso }}" required step="0.01"/></td>
 	</tr>
 	{% endfor %}
 </table>

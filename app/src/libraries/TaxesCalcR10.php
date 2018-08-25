@@ -147,7 +147,7 @@ class orderTaxes {
             + $taxes_product['arancel_especifico_pagar']
             + $taxes_product['iva']
             );
-        
+                
         return([
             'product' => $product['nombre'],
             'cod_contable' => $product['cod_contable'],
@@ -398,7 +398,7 @@ class orderTaxes {
         }
             
         #los pesos corresponden a las tasas
-        if($tasa_control_general == $tasa_control_provision){           
+        if(round($tasa_control_general,3) == round($tasa_control_provision,3)){
             $tasa_item = $product['peso'] * 0.05;
             if($tasa_item > 700){
                 return 700;

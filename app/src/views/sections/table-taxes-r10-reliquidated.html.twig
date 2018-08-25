@@ -89,7 +89,7 @@
    
 <div class="row">
    <div class="col-md-12">
-      <div class="table-responsive" style="height: 250px;">
+      <div class="table-responsive" style="height: 310px;">
       
       
        <table class="table table-condensed table-bordered table-hover table-striped">
@@ -134,7 +134,8 @@
             </tr>
             {% for tax in order_taxes['taxes'] %}
             <tr>
-            <td> {{ loop.index }} </td>
+                      
+          	<td> {{ loop.index }} </td>
             <td nowrap>{{ tax.cod_contable }}</td>
             <td nowrap>{{ tax.product }}</td>
             <td class="text-right"> {{ tax.cajas }} </td>

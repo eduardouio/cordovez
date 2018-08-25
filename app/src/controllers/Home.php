@@ -48,7 +48,10 @@ class Home extends MY_Controller {
             'Acceso por url directo al Index del Home, se redirecciona',
             current_url()
             );
-        return $this->redirectPage('ordersList');
+		
+        return $this->responseHttp([
+            'title' => 'Inicio',
+        ]);
 	}
 
 

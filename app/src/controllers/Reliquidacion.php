@@ -412,6 +412,7 @@ class Reliquidacion extends MY_Controller
         $product_taxes = $orderTaxes->getTaxes();
         
         #actualizamos los productos de la lista de la factura del pedido
+        
         if ($order['bg_isclosed'] == 0){
             foreach ($product_taxes['taxes'] as $idx => $tax_product){
                 $product = [
@@ -423,7 +424,6 @@ class Reliquidacion extends MY_Controller
                     'unidades_importadas' => $tax_product['unidades_importadas'],
                     'unidades' => $tax_product['unidades'],
                     'costo_unidad' => $tax_product['costo_unidad'],
-                    'peso' => $tax_product['peso'],
                     'capacidad_ml' => $tax_product['capacidad_ml'],
                     'fob' => $tax_product['fob'],
                     'fob_percent' => $tax_product['fob_percent'],

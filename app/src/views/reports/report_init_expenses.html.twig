@@ -1,4 +1,4 @@
-z<span style="font-size: 14px;text-align: center"> <strong> Reporte {{  title_report }} Pedido {{order.nro_pedido}} </strong> </span>
+<span style="font-size: 14px;text-align: center"> <strong> Reporte {{  title_report }} Pedido {{order.nro_pedido}} </strong> </span>
 <br />
 <div style="font-size: 12px">
 <br />
@@ -8,7 +8,7 @@ Impreso Por:  <span style="color: #333; font-weight: bold;"> {{ user.nombres }} 
 <br />
 Pedido: <span style="color: #333; font-weight: bold;"> {{ order.nro_pedido }} </span>
 <br />
-Regimen: <span style="color: #333; font-weight: bold;"> {{ order.regimen }} </span>
+Regimen: <span style="color: #333; font-weight: bold;"> {{ order.regimen }}  [<strong>{{ order.incoterm }}</strong>]</span>
 </div>
 <br />
 <table border="1">

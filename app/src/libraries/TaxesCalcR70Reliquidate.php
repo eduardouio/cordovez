@@ -301,7 +301,7 @@ class parcialTaxesReliquidate {
             'id_parcial' => $this->parcial['id_parcial'],
             'otros' =>  $prorrateo_item['otros'],
             'prorrateo_parcial' => $prorrateo_item['prorrateo_parcial'],
-            'prorrateo_pedido' => $prorrateo_item['prorrateo_pedido'],
+            'prorrateo_pedido' => $prorrateo_item['prorrateo_pedido'] + $taxes_product['etiquetas_fiscales'],
             'prorrateos_total' => $prorrateo_item['prorrateos_total'] + $taxes_product['etiquetas_fiscales'],
             'tasa_control' => $prorrateo_item['tasa_control'],
             'fodinfa' => $taxes_product['fodinfa'],
@@ -390,7 +390,12 @@ class parcialTaxesReliquidate {
                 * $detail_info_invoice['nro_cajas']
                 )
             / $total_invoices
-            ),3);
+            ),6);
+        
+                
+        $percent = ($percent * 1000000) -1;
+        $percent = $percent/1000000;
+        
         
         #solo funciona para la primera FI
         $product_value = ($detail_info_invoice['nro_cajas'] 

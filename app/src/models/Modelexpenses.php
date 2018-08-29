@@ -105,7 +105,7 @@ class Modelexpenses extends CI_Model
     }
     
     /**
-     * Retorna todos los gastos de un pedido
+     * Retorna los gastos iniciales de uin pedido
      * @param (string) $nroOrder
      * @return array | boolean
      */
@@ -363,7 +363,7 @@ class Modelexpenses extends CI_Model
                 $this->db->last_query()
             );
         return false;
-    }
+    }   
     
     
     /**
@@ -374,11 +374,55 @@ class Modelexpenses extends CI_Model
     public function delete(int $idExpense): bool{
         $this->db->where('id_gastos_nacionalizacion', $idExpense);
         if($this->db->delete($this->table)){
+            $this->modelLog->susessLog(
+                'Gasto de nacionalizacion eliminado correctamente'
+                );
+            
             return true;
         }
-        $this->modelLog->errorLog('No se puede eliminar un gasto de nacionalizacion ' . current_url());
-        $this->modelLog->errorLog($this->db->last_query());
+        
+        $this->modelLog->errorLog(
+            'No se puede eliminar un gasto de nacionalizacion ', 
+            $this->db->last_query()
+            );
+        
         return false;
     }
+    
+    
+    /**
+     * Elimina todos los gastos iniciales de un pedido
+     * @param string $nro_order
+     * @return bool
+     */
+    public  function deleteInitExenses(string $nro_order):bool{
+        $query = "
+                DELETE FROM gastos_nacionalizacion 
+                WHERE nro_pedido = '$nro_order';
+                ";
+        
+        #validamos al usuario que hace la elimnacion        
+        if($this->session->userdata('id_user') != 1){
+            $this->modelLog->errorLog(
+                'El usuario que accede a la funcion no puede realizar esta accion',
+                $this->session->userdata('id_user')
+                );
+            return False;
+        }
+        
+        if($this->modelBase->runQuery($query)){
+            $this->modelLog->susessLog(
+                'Se han eliminado todos los gastos iniciales del pedido'
+                );
+            return true;
+        }
+        
+        $this->modelLog->errorLog(
+            'No se pueden eliminar los gastos del pedido',
+            $this->db->last_query()
+            );
+        
+        return false;
 }
 
+}

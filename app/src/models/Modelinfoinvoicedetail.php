@@ -175,6 +175,26 @@ class Modelinfoinvoicedetail extends CI_Model
         }
         return false;
     }
+    
+    /**
+     * Elimina una factura informativa de la db
+     *
+     * @param int $idinfoInvoiceDetail
+     *            identificador registro db
+     * @return bool
+     */
+    public function deleteDetailFromInvoice(int $id_info_invoice): bool
+    {
+        $this->db->where('id_factura_informativa', $id_info_invoice);
+        if ($this->db->delete($this->table)) {
+            $this->modelLog->susessLog(
+                'Se eliman todos los registros de una factura informativa'
+                );
+            return true;
+        }
+        return false;
+    }
+    
 
     /**
      * Comprueba si un item que se va a insertar ya esta registrado

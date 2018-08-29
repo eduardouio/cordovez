@@ -354,22 +354,64 @@ class Pedido extends MY_Controller
     /**
      * elimina un pedido de la tabla, solo lo elimina sino tiene parciales
      */
-    public function eliminar($nroOrder)
-    {
-        if($this->modelOrder->delete($nroOrder)){
+    public function eliminar($nroOrder, $confirm = False)
+    {          
+        if(intval($this->session->userdata('id_user')) != 1){
             return($this->responseHttp([
-                'order' => $nroOrder,
-                'viewMessage' => true,
-                'deleted' => true,
-                'message' => 'El Pedido fue eliminado Exitosamente!',
-            ]));
-        }else{
+                'title' => 'Acceso Restringido',
+                'titleContent' => 'Acceso Restringido',
+                'delete_order' => True,
+                'autorizado' => False,
+            ]));     
+        }
+        
+        if($confirm == False){
+            $order = $this->modelOrder->get($nroOrder);
+            
+            if($order == False){
+                return $this->index();
+            }
+            
+            $order_invoices =  $this->modelOrderInvoice->getbyOrder($nroOrder);
+            $suplier = [];
+            
+            if($order_invoices){
+                $suplier = $this->modelSupplier->get($order_invoices[0]['identificacion_proveedor']);
+            }
+            
             return($this->responseHttp([
-                'order' => $nroOrder,
-                'viewMessage' => true,
-                'message' => 'El pedido no puede ser Eliminado, tiene dependencias',
-            ]));
-        }        
+                'title' => 'Eliminar Pedido' . $nroOrder,
+                'titleContent' => 'Eliminar Pedido ' . $nroOrder,
+                'delete_order' => True,
+                'order' => $this->modelOrder->get($nroOrder),
+                'order_invoice' => $order_invoices[0],
+                'supplier' => $suplier,
+                'autorizado' => True,
+            ]));     
+        }
+                
+       $this->load->model('Modeldeleteallorder');
+       $modelDelteOrder = new Modeldeleteallorder();
+       
+       if($modelDelteOrder->deleteAllOrder($nroOrder)){
+           return($this->responseHttp([
+               'title' => 'Elimnado',
+               'titleContent' => 'El pedido se eliminó correctamente',
+               'success_delete_order' => True,
+               'autorizado' => True,
+           ]));     
+       };
+       
+       return($this->responseHttp([
+           'title' => 'Error',
+           'titleContent' => 'El pedido no se puede eliminar',
+           'delete_order' => True,
+           'fail_delete' => True,
+           'autorizado' => True,
+       ]));     
+       
+       
+       
     }
     
     /**

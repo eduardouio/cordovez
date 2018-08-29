@@ -78,36 +78,32 @@ class Modelprorrateo extends CI_Model
                                    );
         return false;
     }
-
     
     /**
-     * Retorna una lista de prorrateos para un parcial 
-     * 
-     * @param int $idParcial
+     * retorna los prorrateos por parcial
+     *
+     * @param (int) id_parcial
      * @return array| bool
      */
-    public function getProrrateoByParcial(int $idParcial)
+    public function getProrrateoByParcial(int $id_parcial)
     {
-        $prorrateos = $this->modelBase->get_table([
-           'table' => $this->table,
-           'where' => [
-                'id_parcial' => $idParcial,
-            ],
+        $prorrateo = $this->modelBase->get_table([
+            'table' => $this->table,
+            'where' => [
+                'id_parcial' => $id_parcial,
+            ]
         ]);
         
-        
-        if (is_array($prorrateos) && !empty($prorrateos))
+        if(is_array($prorrateo) && !empty($prorrateo))
         {
-            return $prorrateos;
+            return $prorrateo[0];
         }
         
         $this->modelLog->warningLog(
-            'El parcial ' . $idParcial . ' No tiene valores de prorrateo',
-             $this->db->last_query()
+            'No existe el prorrato solicitado',
+            $this->db->last_query()
             );
-        
         return false;
-        
     }
     
     
@@ -213,6 +209,7 @@ class Modelprorrateo extends CI_Model
      * @return bool
      */
     public function deleteProrrateoByParcial(int $id_parcial):bool{
+        
         $prorrateo = $this->getProrrateoByParcial($id_parcial);
         
         if($prorrateo){

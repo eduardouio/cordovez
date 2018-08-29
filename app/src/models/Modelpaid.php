@@ -191,7 +191,6 @@ class Modelpaid extends CI_Model{
     }
     
     
-    
     /**
      * Retorna la informacion de tabla de un documento 
      * @param int $idDocument
@@ -209,6 +208,37 @@ class Modelpaid extends CI_Model{
         }
         return false;
     }    
+    
+    
+    /**
+     * Recupera el documento pago de una justificacion, recupera un arreglo de documentos o nada
+     * 
+     * @param int $paid_detail
+     */
+    public function getDocumentFromDetail(int $id_init_expense){
+        $documents = [];
+        
+        $paid_details = $this->modelPaidDetail->getByExpense($id_init_expense);
+        
+        if($paid_details){
+            foreach ($paid_details as $k => $paid_detail){
+                $document = $this->get($paid_detail['id_documento_pago']);
+                array_push($documents, $document);
+            }
+            
+            $this->modelLog->susessLog(
+                'Se recuperan los documentos de la justificacion'
+                );
+            
+            return $documents;
+        }
+         
+        return False;
+    }
+    
+    
+    
+    
     
     
     /**
@@ -272,8 +302,7 @@ class Modelpaid extends CI_Model{
             
         return False;
     }        
-    
-    
+      
     /**
      * Actualiza un comprobante de pago
      */
@@ -295,6 +324,27 @@ class Modelpaid extends CI_Model{
            $this->db->last_query()
            );
         return False; 
+    }
+    
+    
+    /**
+     * Elimina un documento pago
+     * @param int $id_documento_pago
+     */
+    public function delete(int $id_documento_pago){
+        $this->db->where('id_documento_pago', $id_documento_pago);
+        if($this->db->delete($this->table)){
+            $this->modelLog->susessLog(
+                'Documento Pago eliminado Correctamente'
+                );
+            
+            return True;
+        }
+        $this->modelLog->errorLog(
+            'No se puede elimar el documento de la base de datos tiene dependencias'
+            );
+        
+        return False;
     }
     
 };

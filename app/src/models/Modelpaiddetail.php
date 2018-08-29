@@ -228,6 +228,27 @@ class Modelpaiddetail extends \CI_Model
     }
     
     
+    /**
+     * Elimina un pago detalle del sustema
+     * @param int $idPaidDetail
+     * @return bool
+     */
+    public function deletePaidDetailFromExpense(int $id_expense):bool
+    {
+        $this->db->where('id_gastos_nacionalizacion', $id_expense);
+        if($this->db->delete($this->table)){
+            return True;
+        }
+        
+        $this->modelLog->errorLog(
+            'No se puede eliminar el detalle documento pago',
+            $this->db->last_query()
+            );
+        
+        return false;
+    }
+    
+    
     
     /**
      * Actualiza del detalle de un pago

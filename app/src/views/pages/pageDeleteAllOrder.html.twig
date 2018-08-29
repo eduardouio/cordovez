@@ -1,0 +1,14 @@
+{% include 'base/header.html.twig' %}
+{% include 'base/navbarheader.html.twig' %}
+{% include 'base/navbarleft.html.twig' %}
+{% include 'base/content.html.twig' %}
+
+{% if id_user == 1 %}
+        {% include 'sections/mostrar-pedido-completo.html.twig' %}
+{% else %}
+    <h1 class="text-danger">Estimado usuario sus privilegios no son sufucientes para acceder a este contenido</h1>
+{% endif %}
+
+{% include 'base/content_close.html.twig' %}
+{% include 'base/signaturefoot.html.twig' %}
+{% include 'base/footer.html.twig' %}

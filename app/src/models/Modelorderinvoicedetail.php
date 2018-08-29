@@ -115,7 +115,21 @@ class Modelorderinvoicedetail extends CI_Model
         }
         return false;
     }
-      
+     
+    /**
+     * Elimina todos detalle de una factura
+     * @param int $idorderInvoiceDetail
+     * @return bool
+     */
+    public function deleteFromOrderInvoice(int $id_order_invoice): bool
+    {
+        $this->db->where('id_pedido_factura', $id_order_invoice);
+        if($this->db->delete($this->table)){
+            return true;
+        }
+        return false;
+    }
+   
     
     
     /**

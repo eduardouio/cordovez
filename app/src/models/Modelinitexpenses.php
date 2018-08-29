@@ -52,38 +52,6 @@ class Modelinitexpenses extends CI_Model
         
         return $initExpenses;
             
-    }
-    
-    
-    /**
-     * Retorna los gastos en origen parade una order si no tiene retortna cero
-     * @param array $order
-     * @return float
-     */
-    public function getOriginExpenses(array $order) : float
-    {
-        
-        if($order['incoterm'] == 'FOB' || $order['incoterm'] == 'CFR'){
-            return 0;
-        }
-                
-        $originExpenses = $this->modelBase->get_table([
-            'table' => $this->table,
-            'where' => [
-                'nro_pedido' => $order['nro_pedido'],
-                'concepto' => 'GASTO ORIGEN',
-            ],
-        ]);
-        
-        
-        if((gettype($originExpenses) == 'array' )&&(!empty($originExpenses))){
-            return floatval($originExpenses[0]['valor_provisionado']);
-        }
-        $this->modelLog->errorLog('El pedido ' . $order['nro_pedido'] . 
-                                            'no tiene Gasto Origen' ,
-                                                         $this->db->last_query()
-                                  );
-        return 0;
-    }
+    } 
 }
 

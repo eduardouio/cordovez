@@ -787,7 +787,7 @@ class Impuestos extends MY_Controller
      * Redenderiza la informacion y la envia al navegador
      * @param array $config informacion de la plantilla
      */
-    private function responseHttp($config)
+    private function responseHttp(array $config)
     {
         return ($this->twig->display($this->template, array_merge($config, [
             'base_url' => base_url(),

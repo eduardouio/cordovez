@@ -18,6 +18,7 @@ class Modelinfoinvoice extends CI_Model
     private $modelBase;
     private $modelSupplier;
     private $modelproducto;
+    private $modelInfoInvoiceDetail;
     private $modelOrderInvoice;
     private $modelLog;
     private $modelOrder;
@@ -45,6 +46,8 @@ class Modelinfoinvoice extends CI_Model
         $this->load->model('modelorderinvoice');
         $this->load->model('modellog');
         $this->load->model('Modelorder');
+        $this->load->model('Modelinfoinvoicedetail');
+        $this->modelInfoInvoiceDetail = new Modelinfoinvoicedetail();
         $this->modelBase = new ModelBase();
         $this->modelSupplier = new Modelsupplier();
         $this->modelproducto = new Modelproduct();
@@ -200,6 +203,11 @@ class Modelinfoinvoice extends CI_Model
      * @return boolean
      */
     public function delete($idFactInformative){
+        
+        $this->modelInfoInvoiceDetail->deleteDetailFromInvoice(
+            $idFactInformative
+            );
+        
         $this->db->where('id_factura_informativa', $idFactInformative);
         if($this->db->delete($this->table)){
             return true;

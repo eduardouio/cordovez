@@ -5,6 +5,7 @@ class Modelorderinvoice extends CI_Model
     private $modelBase;
     private $modelLog;
     private $modelOrder;
+    private $modelOrderInvoiceDetail;
 
     /**
      * contrctor de la clase
@@ -23,6 +24,8 @@ class Modelorderinvoice extends CI_Model
         $this->load->model('modelbase');
         $this->load->model('modellog');
         $this->load->model('modelorder');
+        $this->load->model('Modelorderinvoicedetail');
+        $this->modelOrderInvoiceDetail = new Modelorderinvoicedetail();
         $this->modelBase = new ModelBase();
         $this->modelLog = new Modellog();
         $this->modelOrder = new Modelorder();
@@ -246,6 +249,8 @@ class Modelorderinvoice extends CI_Model
      */
     public function delete ($idInvoiceOrder):bool
     {
+        $this->modelOrderInvoiceDetail->deleteFromOrderInvoice($idInvoiceOrder);
+        
         $this->db->where('id_pedido_factura',$idInvoiceOrder);
         if($this->db->delete($this->table)){
             $this->modelLog->queryUpdateLog($this->db->last_query());

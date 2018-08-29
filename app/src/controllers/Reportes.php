@@ -241,7 +241,7 @@ class Reportes extends MY_Controller
         ]);
                
     }
-
+     
 
     /*
      * Redenderiza la informacion y la envia al navegador

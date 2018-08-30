@@ -154,7 +154,6 @@ class Pedido extends MY_Controller
                 if($order['bg_isclosed'] == 1){
                     $orders_closed ++;
                 }else{
-                    #array_push($init_data, $order);
                     $orders_open ++;
                 }
             }    

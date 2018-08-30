@@ -55,7 +55,8 @@ class Modelorder extends CI_Model
     {
         $query = "SELECT *, SUBSTRING(nro_pedido, -2) AS anio 
                 FROM pedido 
-                WHERE nro_pedido != '000-00' 
+                WHERE nro_pedido != '000-00'
+                AND bg_isclosed = 0
                 ORDER BY anio DESC, 
                 nro_pedido DESC;";
         return ($this->modelBase->runQuery($query));            

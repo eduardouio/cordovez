@@ -809,7 +809,7 @@ class Reliquidacion extends MY_Controller
             );
         
         $prorrateo_detail = $this->modelProrrateoDetail->getAllDetailProrrateo(
-            $prorrateo[0]['id_prorrateo']
+            $prorrateo['id_prorrateo']
             );
         
         return [

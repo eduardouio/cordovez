@@ -51,7 +51,7 @@ class Report extends MY_Controller{
      */
     public function gastosiniciales($nro_order){
         $data = $this->modelReportExpenses->getExpenses($nro_order);
-        $order = $this->modelOrder->get($nro_order);
+        $order = $this->modelOrder->get($nro_order);            
         
         $report_data = [
             'data' => $data,

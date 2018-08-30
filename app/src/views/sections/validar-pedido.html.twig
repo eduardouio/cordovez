@@ -124,7 +124,8 @@
                    </td>
                    {% else %}
                    <td>{{ invoices_order.fob_total | number_format(2,',','.') }}</td>
-                   <td class="success"><span class="fa fa-check text-success"></span></td>
+                   <td class="success"><span class="fa fa-check text-success"></span>                  
+                   </td>
                    {% endif %}
                {% endif %}
             </tr>
@@ -165,14 +166,26 @@
             {% set sumExpenses = sumExpenses + expense.valor_provisionado %}
             <tr>
                <td>
+                <input type="checkbox" 
+                	name="{{ expense.id_gastos_nacionalizacion }}" 
+                	id="{{ expense.id_gastos_nacionalizacion }}"  
+                	onclick="contabilizar({{ expense.id_gastos_nacionalizacion }})"
+                	{%  if expense.bg_iscontabilizado == 1 %}
+                		checked="chequed"
+                	{% endif %}
+                	/> 
                {% if expense.paids == False %}
                		{% if expense.concepto == 'ISD' or (expense.concepto == 'FLETE' and order.incoterm == 'CFR')  %}
-               		
-               				<small class="label label-success">Justificado</small>
+               		<small class="label label-success">Justificado</small>
+               			{% if expense.concepto == 'FLETE' %}
+							<a href="{{ rute_url }}pedidofactura/presentar/{{ invoices_order.invoices.0.id_pedido_factura }}">
+							<span class="fa fa-eye"></span> 
+	               		</a>               			
+	               		<label class="label label-primary">{{ invoices_order.invoices.0.id_factura_proveedor }}</label>
+           				{% endif %}
                		{% else %}
                        		<small class="label label-danger"> &nbsp;Provisión&nbsp;</small>
                		{% endif %}
-               		
                		
                {%  else %}
                		{% if expense.bg_closed == 0 %}
@@ -188,7 +201,13 @@
 	               		<a href="{{ rute_url }}gstnacionalizacion/presentar/{{ expense.id_gastos_nacionalizacion }}">
 							<span class="fa fa-eye"></span> 
 	               		</a>
-	               [x {{ expense.invoices | length }}]
+	               		
+	               		{% for paid in expense.paids %}
+	               		<a href="{{ rute_url }}facturapagos/presentar/{{ paid.id_documento_pago  }}">
+	               				<label class="label label-primary">{{ paid.nro_factura }}</label>
+	               		</a>
+	               		{% endfor %}
+	               
                {% endif %}
                {{ expense.concepto }}
                </td>
@@ -330,3 +349,11 @@
       </div>
    </div>
 </div>
+
+<script type="text/javascript">
+function contabilizar(idgst_inicial){	
+	$.get("{{rute_url}}gstinicial/contabilizar/" + idgst_inicial, function(){
+		console.dir('Se contabiliza un gasto de nacionalizaicon');
+		});
+	}
+</script>

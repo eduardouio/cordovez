@@ -320,7 +320,7 @@ class Gstinicial extends MY_Controller
             $order_invoices,
             $paids_init_expenses 
             );
-        
+              
         return ($this->responseHttp([
             'validateExpenses' => True,
             'titleContent' => 'Generar Gastos Iniciales Pedido: [' . 
@@ -725,7 +725,41 @@ class Gstinicial extends MY_Controller
         );
         return $this->_checkColumnsData($columnsLen, $data);
     }
-
+    
+    
+    /**
+     * Marca y desmarca un gasto inicial como contabilizado
+     */
+    public function contabilizar(int $id_expense){
+        $this->load->library('Rest');
+        $rest = new Rest();
+        
+        $expense = $this->modelExpenses->getExpense($id_expense);
+        $bg_iscontabilizado = 0;
+        
+        if($expense == False){
+            $this->modelLog->errorLog(
+                'El gasto que intenta contabilizar no existe'
+                );
+            return false; 
+        }
+        
+        if($expense['bg_iscontabilizado'] == 0){
+            $bg_iscontabilizado = 1;
+        }
+        
+        
+        if($this->modelExpenses->update([
+            'id_gastos_nacionalizacion' => $id_expense,
+            'bg_iscontabilizado' => $bg_iscontabilizado,
+            'bg_iscontabilizado_por' => $this->session->userdata('id_user')
+        ])){
+            return $rest->_responseHttp(['status' => 'success'],200);
+        }
+        
+        return $rest->_responseHttp(['status' => 'deleted'],202);
+    }
+    
     /*
      * Envia la respuestas html al navegador
      */

@@ -624,7 +624,8 @@ class Reliquidacion extends MY_Controller
         $_POST['fecha_cierre'] = str_replace('/', '-', $_POST['fecha_cierre']);
         $record['bg_isclosed'] = 1;
         $record['fecha_cierre'] = date('Y-m-d', strtotime($_POST['fecha_cierre']));
-        $record['id_user_cierre'] = $this->session->userdata('id_user');       
+        $record['id_user_cierre'] = $this->session->userdata('id_user');
+        $record['notas_cierre'] =  strtoupper($_POST['notas_cierre']);
         
         if($_POST['tipo'] == 'orden'){
             if($this->modelOrder->update($record)){

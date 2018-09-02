@@ -252,8 +252,17 @@
          </tbody>
       </table>
       <a href="{{ rute_url }}report/gastosiniciales/{{ order.nro_pedido }}" target="_blank" class="btn btn-sm btn-primary">
-     <span class="fa fa-file-o"></span> Reporte GI
+     	<span class="fa fa-file-o"></span> Reporte GI
       </a>
+      {% if order.regimen == 10 %}
+      <span class="pull-right">Fecha de LLegada Del Producto:
+      {% if order.fecha_llegada_cliente != null %} 
+      	<strong class="text-success">{{ order.fecha_llegada_cliente | date('Y/m/d')}}</strong>
+      	{% else %}
+      	<string class="text-danger">Sin Registrar</string>
+      	{% endif %}
+      </span>
+      {% endif %}
       <br/>
       <br/>
       {% include 'sections/subsections/table-order-info.html.twig' %}   

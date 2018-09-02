@@ -119,6 +119,26 @@ class Gstnacionalizacion extends MY_Controller
         
         $expenses_post = $this->input->post();
         
+        #se verifica si el formulario tiene la  fecha de llegada
+        if(isset($expenses_post['fecha_llegada_cliente']) && $expenses_post['fecha_llegada_cliente'] != ''){
+            $parcial = [
+                'id_parcial' => $expenses_post['id_parcial'],
+                'fecha_llegada_cliente' => date(
+                    'Y-m-d',
+                    strtotime(
+                        str_replace('/', '-', $expenses_post['fecha_llegada_cliente'])
+                        )
+                    )
+            ];
+           
+            if($this->modelParcial->update($parcial)){
+                $this->modelLog->susessLog(
+                    'La fecha de llegada de la mercaderia se ha establecido'
+                    );
+            };
+        }
+        
+        
         $id_parcial = $expenses_post['id_parcial'];
         unset($expenses_post['id_parcial']);
         $expense_added = [];
@@ -368,8 +388,8 @@ class Gstnacionalizacion extends MY_Controller
      *            identificacion degasto nacionalizacion
      * @return string template
      */
-    public function editar($idExpense)
-    {
+    public function editar(int $idExpense)
+    {       
         $expense = $this->modelExpenses->getExpense($idExpense);
         if ($expense == false) {
             return ($this->index());
@@ -444,15 +464,23 @@ class Gstnacionalizacion extends MY_Controller
                                                  $expense['valor_provisionado']
                                                 );
         $expense['last_update'] = date('Y-m-d H:m:s');        
-        
-        if ($this->modelExpenses->update($expense)) {
+        $old_expense = $this->modelExpenses->getExpense($expense['id_gastos_nacionalizacion']);
+        if(floatval($old_expense['valor_provisionado']) != floatval($expense['valor_provisionado'])){            
+            $this->modelLog->warningLog(
+                'Se actualiza el valor del gasto en origen'
+                );
+            
+            $expense['bg_closed'] = 0;
+            $this->modelExpenses->update($expense);
             return ($this->redirectPage('parcial', $expense['id_parcial']));
-        }
-        
-        $this->modelLog->errorLog(
-            'Error en la base de datos', 
-            $this->db->last_query()
-            );
+            
+        }else{
+            $this->modelLog->warningLog(
+                'El gasto de nacionalizacion es identico no se hace el cambio'
+                );
+            return ($this->redirectPage('parcial', $expense['id_parcial']));
+        }        
+       
         
         $this->index();
     }

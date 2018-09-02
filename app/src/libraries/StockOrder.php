@@ -34,6 +34,7 @@ class StockOrder
         
     }
     
+    
     /**
      * Retorna el stock que tiene un prducto en la bodega
      * @return array => [
@@ -46,17 +47,13 @@ class StockOrder
      */
     public function getCurrentOrderStock() 
     {
-        
+       
         if(empty($this->orderInvoicesDetail)){
             return [];
         }
         
         $initial_stock = $this->getInitStockProducts();
         $nationalized_stock = $this->getNationalizedStock();
-        $current_stock = $this->getCurrentStock(
-                                    $initial_stock, 
-                                    $nationalized_stock
-            );
                
         return($this->getCurrentStock(  
                             $initial_stock, 
@@ -165,10 +162,17 @@ class StockOrder
                         $nationalized_stock,
                         $product['detalle_pedido_factura']
                 ); 
-            $product['stock'] = ($product['nro_cajas'] - $product['nationalized']);
+            
+            if(intval($this->order['regimen']) == 10 && intval($this->order['bg_isclosed']) == 1){
+                $product['stock'] = 0;
+            }else{
+                $product['stock'] = ($product['nro_cajas'] - $product['nationalized']);
+            }
+            
             
             array_push($current_stock, $product);
         }
+               
         
         return $current_stock;
         

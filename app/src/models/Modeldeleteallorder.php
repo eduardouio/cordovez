@@ -161,8 +161,8 @@ class Modeldeleteallorder extends CI_Model{
         }
         
         if($documents){
-            foreach ($documents as $k => $doc){
-                $this->modelPaid->delete($doc['id_documento_pago']);
+            foreach ($documents as $k => $doc){                
+                $this->modelPaid->delete($doc[0]['id_documento_pago']);
             }
         }
         

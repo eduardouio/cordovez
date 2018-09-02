@@ -1,7 +1,8 @@
 {% if parcial.bg_isclosed == 1 %}    
    <span style="background-color:#d41; float:right;color:#fff;padding:2px;border-radius:4px;">
       Parcial Liquidado y Cerrado
-   </span>
+   </span>   
+   <span style="background-color:#444; float:right;color:#fff;padding:2px;border-radius:4px;">{{ parcial.notas_cierre }}</span>
 {% endif %}
 <div class="row">
    <div class="col-md-4">
@@ -259,4 +260,3 @@
 </div>
 </div>
 {% include 'forms/frm-cierre-pedido.html.twig'  %}
-

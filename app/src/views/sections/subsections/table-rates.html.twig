@@ -15,7 +15,14 @@
             <td>PROVISION ALMACENAJE INICIAL</td>
             <td>--</td>
             <td class="text-center">
-               <a href="{{rute_url}}gstinicial/validarbodegainicial/{{order.nro_pedido}}">
+               <a href="
+               {% if order.bg_isclosed == 1 %}
+					#
+				{% else %}	
+               {{rute_url}}gstinicial/validarbodegainicial/{{order.nro_pedido}}
+               {% endif %}
+               "
+               >
     <button class="text-primary">Provisionar</button>
    </a>
             </td>
@@ -59,7 +66,36 @@
             </td>
          </tr>
          {% endfor %}
-         
+         {% if order.regimen == 10 %}
+         <tr style="height: 40px;"><td colspan="4">
+         <br />
+         <strong class="text-primary">FECHA DE LLEGADA BODEGA EMPRESA</strong></td>
+         </tr>
+         <tr>
+         <td colspan="2">
+         {% if order.fecha_llegada_cliente != Null %}
+             <strong  class="text-success">{{ order.fecha_llegada_cliente | date('d/m/Y')}}</strong>
+         {% else %}
+         	<strong class="text-danger">SIN FECHA DE LLEGADA</strong>
+         {% endif %}
+         </td>
+         <td colspan="2">         
+            <input 
+            	type="text" 
+            	class="form-control fecha" 
+            	autocomplete="off" 
+            	name="fecha_llegada_cliente" 
+            	placeholder="dd/mm/yyyy"
+            	   {% if order.fecha_llegada_cliente != Null %}
+            	value="{{ order.fecha_llegada_cliente | date('d/m/Y')}}"
+                 {% endif %}
+            	{% if order.bg_isclosed == 1 %}
+				disabled = "disabled"
+				{% endif %} 
+            	>            	
+           </td>
+         </tr>
+         {% endif %}
       </tbody>
    </table>
    <button

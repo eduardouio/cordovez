@@ -421,6 +421,27 @@ class Modelparcial extends CI_Model
         return False;
     }
     
+    /**
+     * Obtiene el almacenaje del primer parcial
+     * @param int $id_parcial
+     */
+    public function getFirstParcial(string $nro_order){
+        $sql = "
+                SELECT *
+                FROM parcial
+                WHERE  nro_pedido = '$nro_order'
+                ORDER BY id_parcial ASC
+                LIMIT 10
+                ";
+        
+        $result  = $this->modelBase->runQuery($sql);
+        
+        if($result){
+            return  $result[0];
+        }
+        
+        return False;
+    }
     
     /**
      * Cierra un pedido en el sistema

@@ -190,10 +190,13 @@ class Gstinicial extends MY_Controller
         }
         
         if ($initExpense['concepto'] == 'GASTO ORIGEN'){
+            
             $order = $this->modelOrder->get($initExpense['nro_pedido']);
             $order['tipo_cambio_go'] = $initExpense['tipo_cambio_go'];
             $order['gasto_origen'] = $initExpense['valor_provisionado'];
-            $this->modelOrder->update($order);
+            #Evitamos que se actualize los gastos en origen del pedido
+            #$this->modelOrder->update($order);
+            
             $initExpense['valor_provisionado'] = (
                 $initExpense['valor_provisionado']
                 * $initExpense['tipo_cambio_go']
@@ -226,14 +229,28 @@ class Gstinicial extends MY_Controller
             } else {
                 $initExpense['last_update'] = date('Y-m-d H:i:s');
                 
-                $this->db->where(
-                    'id_gastos_nacionalizacion', 
-                    $initExpense['id_gastos_nacionalizacion']
-                    );
-                
-                $this->db->update($this->controller, $initExpense);
-                $this->redirectPage('validargi', $initExpense['nro_pedido']);
-                return true;
+                if($this->modelExpenses->update($initExpense)){
+                    $old_init_expense = $this->modelExpenses->getExpense(
+                        $initExpense['id_gastos_nacionalizacion']
+                        );
+                    
+                    if(floatval($initExpense['valor_provisionado']) != floatval($old_init_expense['valor_provisionado'])){
+                        $initExpense['bg_closed'] = 0;
+                        $this->modelExpenses->update($initExpense);
+                        $this->modelLog->susessLog(
+                            'La provision ha cambiado de valor'
+                            );
+                        
+                        return($this->redirectPage('validargi', $initExpense['nro_pedido']));
+                    }else{
+                        $this->modelLog->warningLog(
+                            'La provision mantiene el mismo valor no es modificada'
+                            );
+                        return($this->redirectPage('validargi', $initExpense['nro_pedido']));
+                    }
+                    
+                }
+                                
             }
         } else {
             $this->responseHttp([
@@ -458,9 +475,31 @@ class Gstinicial extends MY_Controller
             return ($this->redirectPage('ordersList'));
         }
         
-        $init_expenses_post = $this->input->post();        
+        $init_expenses_post = $this->input->post();
+        
+        #se verifica si el formulario tiene la  fecha de llegada
+        if(isset($init_expenses_post['fecha_llegada_cliente']) && $init_expenses_post['fecha_llegada_cliente'] != ''){          
+            $order = [
+                'nro_pedido' => $init_expenses_post['nro_pedido'],
+                'fecha_llegada_cliente' => date(
+                    'Y-m-d',
+                    strtotime(
+                        str_replace('/', '-', $init_expenses_post['fecha_llegada_cliente'])
+                        )
+                    )
+            ];
+            
+            if($this->modelOrder->update($order)){
+                $this->modelLog->susessLog(
+                    'La fecha de llegada de la mercaderia se ha establecido'
+                    );
+            };
+        }
+        
         $nro_order = $init_expenses_post['nro_pedido'];
         $order = $this->modelOrder->get($nro_order);
+        
+        
         unset($init_expenses_post['nro_pedido']);
         $expense_added = [];
         
@@ -500,7 +539,8 @@ class Gstinicial extends MY_Controller
     
     
     /**
-     * recupera el ultimo parcial del pedido y comprueba que este cerrado
+     * recupera el ultimo parcial del pedido y comprueba que este cerrado,
+     * tambien verifica que no tenga saldo
      * 
      * @param array $order
      * @return bool
@@ -509,14 +549,11 @@ class Gstinicial extends MY_Controller
         if($order['regimen'] == 10){
             return False;
         }
+        
         $parcials = $this->modelParcial->getByOrder($order['nro_pedido']);
         
         if ($parcials){
-            foreach ($parcials as $idx => $par){
-                if($par['bg_isclosed'] == 0){
                     return True;
-                }
-            }
         }
         
         return False;

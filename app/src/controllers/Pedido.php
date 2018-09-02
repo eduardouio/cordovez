@@ -181,7 +181,7 @@ class Pedido extends MY_Controller
      * @return void
      */
     public function presentar($nroOrder)
-    {
+    {       
         if (! isset($nroOrder)) {
             $this->modelLog->warningLog(
                 'La url no tiene el numero del pedido'
@@ -189,12 +189,15 @@ class Pedido extends MY_Controller
             return($this->index());
         }
         
+        
         $order = $this->modelOrder->get($nroOrder);
         
         if ($order == false) {
             return($this->index());
         }
                 
+        $this->verifyInitDateWarenhouse($order);
+        
         $params = $this->modelOrderReport->getOrderData($order);
         $order_report = new ReportCompleteOrder($params);
         $stock = [];
@@ -236,7 +239,7 @@ class Pedido extends MY_Controller
         
         $stock['current'] = $stock_order->getCurrentOrderStock();
         $stock['initial'] = $stock_order->getInitStockProducts();
-        $stock['global'] = $stock_order->getGlobalValues();    
+        $stock['global'] = $stock_order->getGlobalValues();
         
         return($this->responseHttp([
             'show_order' => true,
@@ -252,6 +255,7 @@ class Pedido extends MY_Controller
             'titleContent' => 'Detalle De Pedido [ ' . $nroOrder . '] [' . $order['incoterm'] . '] [Regimen ' . $order['regimen'] . ']'
         ]));
     }
+        
     
     
     /**
@@ -644,6 +648,65 @@ class Pedido extends MY_Controller
             'id_user' => 1
         ], $pedido));
     }
+    
+    
+    /**
+     * Verifica la fecha de inicio de periodo de un pedido, si la fecha es 
+     * diferente a la del primer almacenaje la actualiza en el pedido
+     * @param array $order
+     * @return boolean|void
+     */
+    private function verifyInitDateWarenhouse(array $order){        
+        if(intval($order['regimen']) == 10){
+            return False;
+        }
+        
+        $first_parcial  =  $this->modelParcial->getFirstParcial(
+            $order['nro_pedido']
+            );
+        
+        if($first_parcial == False){
+            $this->modelLog->warningLog(
+                'El pedido no tiene un parcial'
+                );
+            return False;
+        }
+        
+        $first_warenhouse = $this->modelExpenses->getFirstWarenhousesParcial(
+            $first_parcial['id_parcial']
+            );
+        
+        
+        if($first_warenhouse == False){
+            $this->modelLog->warningLog(
+                'El pedido no tiene un bodegaje'
+                );
+            return False;
+        }
+        
+        if($order['fecha_ingreso_almacenera'] != $first_warenhouse['fecha']){
+            if ($this->modelOrder->update([
+                'nro_pedido' => $order['nro_pedido'],
+                'fecha_ingreso_almacenera' => $first_warenhouse['fecha']
+            ])){
+                $this->modelLog->susessLog(
+                    'Fecha de ingreso almacenera actualizada'
+                    );
+                return(
+                    $this->redirectPage('presentOrder', $order['nro_pedido'])
+                    );
+            }
+
+            $this->modelLog->errorLog(
+                'No se puede actualizar la fecha de entrada a la almacenera',
+                $this->db->last_query()
+                );
+        }
+        
+        return False;
+        
+    }
+    
     
     /*
      * Redenderiza la informacion y la envia al navegador

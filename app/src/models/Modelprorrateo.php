@@ -213,7 +213,7 @@ class Modelprorrateo extends CI_Model
         $prorrateo = $this->getProrrateoByParcial($id_parcial);
         
         if($prorrateo){
-            $prorrateo = $prorrateo[0];
+            $prorrateo = $prorrateo;
             if($this->deleteProrrateo($prorrateo['id_prorrateo'])){
                 return True;
             }

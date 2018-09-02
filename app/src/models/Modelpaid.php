@@ -65,10 +65,7 @@ class Modelpaid extends CI_Model{
             $invoice['supplier'] = $this->modelSupplier->get(
                                         $invoice['identificacion_proveedor']);
             $invoice['invoiceDetails'] = $this->modelPaidDetail->get(
-                                                $invoice['id_documento_pago']);
-            $this->modelLog->susessLog(
-                'Documento de pago listado correctamente'
-                );
+                                                $invoice['id_documento_pago']);            
             
             $invoice['saldo'] = round($invoice['valor'], 2) - round($invoice['invoiceDetails']['sums'],2);
             

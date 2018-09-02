@@ -262,27 +262,26 @@ class Facturapagos extends MY_Controller
     }      
         
     
-    
     /**
      * Recupera la informacion completa de una factura
      * @param $idInvoice
      * @return array | bool
      */
-    public function presentar($nroDocument)
-    {
+    public function presentar($nroDocument){
         if(!isset($nroDocument)){
             $this->redirectPage('paidsList');
             return false;
         }        
         
         $document = $this->modelPaid->get($nroDocument);
+        
         if ($document == false){
             $this->redirectPage('paidsList');
             return false;
         }
         
         $activeOrders =  $this->modelOrder->getAll();
-        $this->modelLog->generalLog($this->db->last_query());
+        
         if(is_array($activeOrders)){
             foreach ($activeOrders as $item => $order){
                 if($order['regimen'] = 70 ){
@@ -294,6 +293,7 @@ class Facturapagos extends MY_Controller
                 $activeOrders[$item] = $order;
             }
         }
+        
         
         $this->responseHttp([
             'title' => 'Factura #' . $document['nro_factura'] . ' ' . $document['supplier']['nombre'],

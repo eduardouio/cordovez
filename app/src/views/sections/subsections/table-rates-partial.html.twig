@@ -13,8 +13,15 @@
             <td>0</td>
             <td>ALMACENAJE PARCIAL</td>
             <td>--</td>
-            <td class="text-right"><a href="{{rute_url}}gstnacionalizacion/validarbodegaparcial/{{ parcial.id_parcial }}" >
-   <button class="text-primary">Provisionar</button>
+            <td class="text-right">
+            <a href="
+             {% if parcial.bg_isclosed == 1 %}
+					#
+				{% else %}				
+                    {{rute_url}}gstnacionalizacion/validarbodegaparcial/{{ parcial.id_parcial }}
+				{% endif %} 
+            " >
+   			<button class="text-primary">Provisionar</button>
    </a></td>
          </tr>
          <form action="{{rute_url}}gstnacionalizacion/putExpenses/" method="post">
@@ -42,12 +49,41 @@
                   value="{{rateExpense.id_tarifa_gastos}}"
                   id= '{{rateExpense.id_tarifa_gastos}}'
                   onclick="check({{rateExpense.id_tarifa_gastos}})"
+                  {% if parcial.bg_isclosed == 1 %}
+				disabled = "disabled"
+				{% endif %} 
                   >
                   <div class="control_indicator"></div>
                </label>
             </td>
          </tr>
          {% endfor %}
+         <tr style="height: 40px;"><td colspan="4">
+         <br />
+         <strong class="text-primary">FECHA DE LLEGADA BODEGA EMPRESA</strong></td>
+         </tr>
+         <tr>
+         <td colspan="2">
+         {% if parcial.fecha_llegada_cliente != Null %}
+             <strong  class="text-success">{{ parcial.fecha_llegada_cliente | date('d/m/Y')}}</strong>
+         {% else %}
+         	<strong class="text-danger">SIN FECHA DE LLEGADA</strong>
+         {% endif %}
+         </td>
+         <td colspan="2">         
+            <input 
+            	type="text" 
+            	class="form-control fecha" 
+            	autocomplete="off" 
+            	name="fecha_llegada_cliente" 
+            	placeholder="dd/mm/yyyy"
+            	   {% if parcial.fecha_llegada_cliente != Null %}
+            	value="{{ parcial.fecha_llegada_cliente | date('d/m/Y')}}"
+                 {% endif %}
+                  {% if parcial.bg_isclosed == 1 %}
+				disabled = "disabled"
+				{% endif %} 
+                 >
       </tbody>
    </table>
    <button

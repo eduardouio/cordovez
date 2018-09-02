@@ -148,8 +148,7 @@ class Impuestos extends MY_Controller
                                                 $parcial
             );
                 
-        $param_taxes = $this->modelRatesExpenses->getTaxesParams();
-        
+        $param_taxes = $this->modelRatesExpenses->getTaxesParams();    
         $parcialTaxes =  new parcialTaxes(
                                         $init_data, 
                                         $prorrateos,  

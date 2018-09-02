@@ -29,7 +29,7 @@ class Modelexpenses extends CI_Model
      */
     public function init(){
         $this->load->model('modelbase');
-        $this->load->model('modellog');
+        $this->load->model('modellog');        
         $this->modelBase = new ModelBase();
         $this->modelLog = new Modellog();
     }
@@ -230,6 +230,7 @@ class Modelexpenses extends CI_Model
         return $expenses;
     }
     
+    
     /**
      * Obtiene una Provision completa
      * @param int $idExpense
@@ -242,8 +243,17 @@ class Modelexpenses extends CI_Model
                 'id_gastos_nacionalizacion' => $idExpense,
             ],
         ]);
+        
         if(gettype($expense) == 'array' && count($expense) > 0){
-             return $expense[0]; 
+            if($expense[0]['nro_pedido'] == '000-00'){
+              $this->load->model('Modelparcial');
+              $modelParcial = new Modelparcial();
+              
+              $parcial = $modelParcial->get($expense[0]['id_parcial']);
+              $expense[0]['nro_pedido'] = $parcial['nro_pedido'];
+            }
+            
+            return $expense[0]; 
         }
         return false;
     }
@@ -387,6 +397,31 @@ class Modelexpenses extends CI_Model
             );
         
         return false;
+    }
+    
+    
+    /**
+     * Obtiene el almacenaje del primer parcial
+     * @param int $id_parcial
+     */
+    public function getFirstWarenhousesParcial(int $id_parcial){
+        $sql = "
+                SELECT * 
+                FROM gastos_nacionalizacion 
+                WHERE  concepto 
+                LIKE 'DEPOSITO%'  
+                AND  id_parcial = $id_parcial
+                ORDER BY fecha ASC
+                LIMIT 1
+                ";
+
+        $result  = $this->modelBase->runQuery($sql);
+        
+        if($result){
+           return  $result[0];            
+        }
+        
+        return False;
     }
     
     

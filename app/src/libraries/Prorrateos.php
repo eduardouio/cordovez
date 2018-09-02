@@ -39,7 +39,6 @@ class Prorrateos
         $fobsParcial = $this->getFobParcialAndFobOrder();
         $warenhoses = $this->getWarenhouses($fobsParcial);
         $prorrateos = $this->getProrrateoDetail($fobsParcial, $warenhoses);
-        
         return([
             'fobs_parcial' => $fobsParcial,
             'warenhouses' => $warenhoses,
@@ -233,8 +232,7 @@ class Prorrateos
         
         if($this->init_data['last_prorrateo']){
             $last_prorrateo = end($this->init_data['last_prorrateo']);
-            $warenhouse['almacenaje_anterior'] =
-            $last_prorrateo['almacenaje_proximo_parcial'];
+            $warenhouse['almacenaje_anterior'] = ($last_prorrateo['almacenaje_proximo_parcial']) ? $last_prorrateo['almacenaje_proximo_parcial'] : 0;            
         }
         
         $warenhouse['almacenaje_total_parcial'] = (
@@ -277,6 +275,8 @@ class Prorrateos
             'prorrateo_flete_aduana' => 0.0,
         ];
         
+        
+        
         if (
             $this->init_data['order_invoices'] == False
             ){
@@ -289,9 +289,9 @@ class Prorrateos
         }
         
         
-        if ($this->init_data['last_prorrateo']){
+        if ($this->init_data['last_prorrateo']){            
             $last_prorrateo = end($this->init_data['last_prorrateo']);
-            $fobs['fob_saldo'] =  $last_prorrateo['fob_proximo_parcial'];
+            $fobs['fob_saldo'] =  ($last_prorrateo['fob_proximo_parcial']) ? $last_prorrateo['fob_proximo_parcial'] : 0;
         }else{
             $fobs['fob_saldo'] = $fobs['fob_inicial'];
         }
@@ -310,10 +310,10 @@ class Prorrateos
             $fobs['fob_parcial']  / $fobs['fob_inicial']
             );
         
-        $fobs['fob_parcial_razon_saldo'] = (
-            $fobs['fob_parcial']
-            /$fobs['fob_saldo']
-            );
+        $fobs['fob_parcial_razon_saldo'] = 0;
+        #    $fobs['fob_parcial']
+        #    /$fobs['fob_saldo']
+            #);
         
         return $fobs;
     }

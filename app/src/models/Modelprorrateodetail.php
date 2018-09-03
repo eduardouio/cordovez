@@ -82,6 +82,35 @@ class Modelprorrateodetail extends CI_Model
     }
     
     
+    /**
+     * obtiene el detalle de prorrateos en base a un paecual 
+     * 
+     * @param int $id_parcial
+     */
+    public function getProrrateoFromParcial(int $id_parcial){
+        $prorrateo = $this->modelBase->get_table([
+            'table' => 'prorrateo',
+            'where' => [
+                'id_parcial' => $id_parcial
+            ]
+        ]);
+        
+        if($prorrateo){
+            $prorrateo = $prorrateo[0];
+            $prorrateo['detalle_prorrateo'] = $this->getAllDetailProrrateo($prorrateo['id_prorrateo']);
+            return $prorrateo;
+        }
+        
+        $this->modelLog->errorLog(
+            'No se puede encontrar el prrateo'
+            , $this->db->last_query()
+            );
+        
+        return False;
+    }
+    
+
+        
     
     /***
      * Crea una registro
@@ -179,6 +208,8 @@ class Modelprorrateodetail extends CI_Model
         
         return false;
     }
+    
+    
     
     
 }

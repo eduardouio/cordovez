@@ -127,6 +127,39 @@ class Modelexpenses extends CI_Model
     }
     
     
+    /**
+     * Retorna los gastos iniciales de uin pedido
+     * @param (string) $nroOrder
+     * @return array | boolean
+     */
+    public function getByParcial(int $id_parcial)
+    {
+        $expenses = $this->modelBase->get_table([
+            'table' => $this->table,
+            'where' => [
+                'id_parcial' => $id_parcial,
+            ],
+            'orderby' => [
+                'fecha' => 'DESC',
+            ],
+        ]);
+        
+        if ($expenses == false) {
+            return false;
+        }
+        
+        foreach ($expenses as $k => $exp){
+            $expenses[$k]['pagos'] = $this->modelBase->get_table([
+                'table' => 'detalle_documento_pago',
+                'where' => [
+                    'id_gastos_nacionalizacion' => $exp['id_gastos_nacionalizacion']
+                ],
+            ]);
+            
+        }
+        
+        return $expenses;
+    }
     
     /**
      * retorna el valor de un gasto incicial 

@@ -8,6 +8,7 @@ require_once ( $libraries_url . 'TaxesCalcR70Reliquidate.php' );
 require_once ( $libraries_url . 'TaxesCalcR10Reliquidate.php' );
 require_once ( $libraries_url . 'StockOrder.php' );
 require_once ( $libraries_url . 'ReportCompleteOrder.php' );
+require_once ( $libraries_url . 'MayorOrder.php' );
 
 /**
  * Controller encargado del calculo de impuestos
@@ -141,7 +142,7 @@ class Reliquidacion extends MY_Controller
         $this->load->library('Prorrateos', $init_data);
         $prorrateo_values = $this->prorrateos->getValues();
         $init_data['fobs_parcial'] = $prorrateo_values['fobs_parcial'];
-        $init_data['warenhouses'] = $prorrateo_values['warenhouses'];       
+        $init_data['warenhouses'] = $prorrateo_values['warenhouses'];    
 
         $prorrateos = $this->updateProrrateoParcial(
             $prorrateo_values,
@@ -158,7 +159,7 @@ class Reliquidacion extends MY_Controller
             );
         
         $product_taxes = $parcialTaxes->getTaxes();
-
+        
         #actualizamos los productos de la lista de la factura del pedido
         #solo si el parcial no ha cerrado
         if ($parcial['bg_isclosed'] == 0){
@@ -254,6 +255,7 @@ class Reliquidacion extends MY_Controller
             'id' => $parcial['id_parcial'],
             'warenhouses' => $init_data['warenhouses'],
             'bg_have_etiquetas' => 1,
+            'mayor' => $this->getMayor($init_data),
             'bg_hava_tasa_control' => 1,
             'regimen' => 'R70',
             'current_date' => date('d-m-Y') ,
@@ -907,8 +909,71 @@ class Reliquidacion extends MY_Controller
         return False;
     
     }
+    
+    /**
+     * Obtiene el cuadre con el moayor contable
+     * 
+     * @param array $order
+     * @return array
+     */
+    private function getMayor(array $init_data) :array{          
+        $order_invoices = $init_data['order_invoices'][0];
+        $order_invoices['order_invoice_detail'] = $init_data['order_invoice_detail'];
+        $after_parcials = [];
+        $current_parcial = $init_data['parcial'];
+        
+        $current_parcial['info_invoices'] = $this->modelInfoInvoice->getByParcial($current_parcial['id_parcial']);
+        $current_parcial['expenses'] = $this->modelExpenses->getByParcial($current_parcial['id_parcial']);
+        $current_parcial['prorrateos'] = $this->modelProrrateoDetail->getProrrateoFromParcial($current_parcial['id_parcial']);
+        
+        foreach ($init_data['all_parcials'] as $k => $parcial){
+            if($parcial['id_parcial'] == $current_parcial['id_parcial']){
+                break;
+            }
+            array_push($after_parcials, $parcial);
+        }
+        
+        #recuperamos los gastos y facturas informativas del los parciales
+        if($after_parcials){
+            foreach ($after_parcials as $k => $par){
+                $after_parcials[$k]['info_invoices'] = $this->modelInfoInvoice->getByParcial($par['id_parcial']);
+                $after_parcials[$k]['expenses'] = $this->modelExpenses->getByParcial($par['id_parcial']);
+                $after_parcials[$k]['prorrateos'] = $this->modelProrrateoDetail->getProrrateoFromParcial($par['id_parcial']);
+            }
+        }
+        
+        array_push($after_parcials, $current_parcial);
+        
+        $mayor = new MayorOrder(
+            $init_data['order'], 
+            $order_invoices, 
+            $init_data['init_expenses'], 
+            $after_parcials
+            );
+        
+        $mayor = $mayor->get();
+        $sums = [
+            'valor_inicial' => 0.0,
+            'valor_distribuido' => 0.0,
+            'valor_por_distribuir' => 0.0,
+        ];
+        
+        
+        #suma los valores de los impuestos en una sola linea
+        foreach ($mayor as $dx){
+            $sums['valor_inicial'] += $dx['valor_inicial'];
+            $sums['valor_distribuido'] += $dx['valor_distribuido'];
+            $sums['valor_por_distribuir'] += $dx['valor_por_distribuir'];            
+        }
+                
+        
+        return([
+            'mayor' => $mayor,
+            'sums' => $sums,
+        ]);
+    }
 
-
+    
     /*
      * Redenderiza la informacion y la envia al navegador
      * @param array $config informacion de la plantilla

@@ -133,7 +133,7 @@ class Impuestos extends MY_Controller
         $prorrateo_values = $this->prorrateos->getValues();
         #seteamos la tasa de control en el producto
         if($this->prorrateos->have_tasa && $parcial['bg_isliquidated'] == 0){
-            $this->updateTasaDetail(
+            @$this->updateTasaDetail(
                             $this->prorrateos->tasa_parcial, 
                             $init_data,
                             $this->prorrateos->tase_base_peso
@@ -182,7 +182,7 @@ class Impuestos extends MY_Controller
                               $ordinal_parcial . '/' . count($all_parcials) .
                               '] [Pedido ' . $init_data['order']['nro_pedido'] . ']',
             'init_data' => $init_data,
-            'parcial_taxes' => $parcialTaxes->getTaxes(),
+            'parcial_taxes' => @$parcialTaxes->getTaxes(),
             'prorrateos' => $prorrateos,
             'parcial' => $parcial,
             'warenhouses' => $init_data['warenhouses'],

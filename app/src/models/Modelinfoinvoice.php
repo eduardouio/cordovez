@@ -79,6 +79,10 @@ class Modelinfoinvoice extends CI_Model
                 'Lista de facturas informativas de un paricial'
                 );
             
+            foreach ($invoices as $k => $inv){
+                $invoices[$k]['info_invoices_detail'] = $this->modelInfoInvoiceDetail->getByFacInformative($inv['id_factura_informativa']); 
+            }
+            
             return $invoices;
         }
         $this->modelLog->warningLog(
@@ -244,6 +248,11 @@ class Modelinfoinvoice extends CI_Model
      * @return bool
      */
     public function update(array $infoInvoice):bool{
+        if(isset($infoInvoice['info_invoices_detail']))
+        {
+            unset($infoInvoice['info_invoices_detail']);
+        }
+        
         $this->db->where(
             'id_factura_informativa', 
             $infoInvoice['id_factura_informativa']

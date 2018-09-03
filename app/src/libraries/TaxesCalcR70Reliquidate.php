@@ -66,10 +66,9 @@ class parcialTaxesReliquidate {
             'sums' => [],
             'data_general' => [],
         ];
-        
-        foreach ($this->init_data['products'] as $i => $product){
-            array_push($taxes['taxes'], $this->getTaxesProduct($product));
-        }
+            foreach ($this->init_data['products'] as $i => $product){
+                array_push($taxes['taxes'], $this->getTaxesProduct($product));
+            }
         
         $taxes['taxes'] = $this->calDiferenceICEAdvalorem($taxes['taxes']);
                

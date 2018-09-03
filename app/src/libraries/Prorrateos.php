@@ -45,7 +45,7 @@ class Prorrateos
             'prorrateos' => $prorrateos,
         ]);
     }
-             
+    
     /**
      * Calcula los prorrateos para el pedido, tanto iniciales como parciales
      *
@@ -92,7 +92,7 @@ class Prorrateos
     /**
      * * Obtiene el valor de la tasa para el parcial
      * @param $global_value float valor inicial de la provision
-     * 
+     *
      * @param float $tasa_provision
      * @param float $fob_parcial_razon_inicial
      * @param boolean $onlyvalue => si especifica solo retorna el valor
@@ -119,8 +119,8 @@ class Prorrateos
             
             $tasa_base_peso += $tasa;
             $unidad_caja = $this->getUnitiesProduct(
-                                                $prod['detalle_pedido_factura']
-                        );
+                $prod['detalle_pedido_factura']
+                );
             
             if($unidad_caja){
                 $peso_unidad = $prod['peso'] /  ($unidad_caja * $prod['nro_cajas']);
@@ -138,9 +138,9 @@ class Prorrateos
                 
             }
         }
-               
+        
         #si cinciden las tasa calculamo el prorrateo por item de la FI
-        if(round($tasa_base_peso,1) == round($tasa_provision,1)){          
+        if(round($tasa_base_peso,1) == round($tasa_provision,1)){
             $this->tase_base_peso = True;
             
             foreach ($tasa_general as $item){
@@ -155,7 +155,7 @@ class Prorrateos
                     }
                 }
             }
-            $this->tasa_parcial = $tasa_parcial;           
+            $this->tasa_parcial = $tasa_parcial;
             return $total_tasa_parcial;
         }
         
@@ -169,22 +169,22 @@ class Prorrateos
                     break;
                 }
             }
-        }       
+        }
         
         $this->tasa_parcial = $tasa_parcial;
-        return ($tasa_provision * $fob_parcial_razon_inicial);      
+        return ($tasa_provision * $fob_parcial_razon_inicial);
         
     }
     
     
     /**
      * Retorna la cantidad de unidades en la factura
-     * 
+     *
      * @param int $detalle_pedido_factura detalle de pedido factura
      * @param bool $info_invoice => Factura infomativa o de Pedido
      * @return int
      */
-    private function getUnitiesProduct( int $detalle_pedido_factura):int{       
+    private function getUnitiesProduct( int $detalle_pedido_factura):int{
         
         foreach ($this->init_data['order_invoice_detail'] as $k => $prod){
             if(intval($prod['detalle_pedido_factura']) == $detalle_pedido_factura){
@@ -231,8 +231,9 @@ class Prorrateos
         }
         
         if($this->init_data['last_prorrateo']){
-            $last_prorrateo = end($this->init_data['last_prorrateo']);
-            $warenhouse['almacenaje_anterior'] = ($last_prorrateo['almacenaje_proximo_parcial']) ? $last_prorrateo['almacenaje_proximo_parcial'] : 0;            
+            $last_prorrateo = $this->init_data['last_prorrateo'];
+            
+            $warenhouse['almacenaje_anterior'] = ($last_prorrateo['almacenaje_proximo_parcial']) ? $last_prorrateo['almacenaje_proximo_parcial'] : 0;
         }
         
         $warenhouse['almacenaje_total_parcial'] = (
@@ -242,8 +243,9 @@ class Prorrateos
         
         $warenhouse['almacenaje_aplicado'] = (
             $fobs['fob_parcial_razon_saldo']
-            * $warenhouse['almacenaje_total_parcial']
+            * ($warenhouse['almacenaje_total_parcial'] )
             );
+        
         
         $warenhouse['almacenaje_proximo_parcial'] = (
             $warenhouse['almacenaje_total_parcial']
@@ -289,8 +291,8 @@ class Prorrateos
         }
         
         
-        if ($this->init_data['last_prorrateo']){            
-            $last_prorrateo = end($this->init_data['last_prorrateo']);
+        if ($this->init_data['last_prorrateo']){
+            $last_prorrateo = $this->init_data['last_prorrateo'];
             $fobs['fob_saldo'] =  ($last_prorrateo['fob_proximo_parcial']) ? $last_prorrateo['fob_proximo_parcial'] : 0;
         }else{
             $fobs['fob_saldo'] = $fobs['fob_inicial'];
@@ -310,14 +312,20 @@ class Prorrateos
             $fobs['fob_parcial']  / $fobs['fob_inicial']
             );
         
-        $fobs['fob_parcial_razon_saldo'] = 0;
-        #    $fobs['fob_parcial']
-        #    /$fobs['fob_saldo']
-            #);
+        
+        if($fobs['fob_saldo'] == 0){
+            $fobs['fob_parcial_razon_saldo'] = 1;
+        }else{
+            $fobs['fob_parcial_razon_saldo'] = (
+                $fobs['fob_parcial']
+                /$fobs['fob_saldo']
+                );
+        }
         
         return $fobs;
     }
-           
+    
+    
     /**
      * Coloca el tipo de cambio que le corresponde al pedido
      */

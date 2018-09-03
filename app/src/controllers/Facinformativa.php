@@ -141,7 +141,7 @@ class Facinformativa extends MY_Controller
                                                             $invoiceOrderDetail;
             }
         }
-                
+        
         $this->responseHttp([
             'show' => true,
             'titleContent' => 'Pedido [' . $order['nro_pedido'] . '] ' . 

@@ -27,6 +27,7 @@ class Reliquidacion extends MY_Controller
     private $template = '/pages/pageReliquidacion.html';
     private $modelOrder;
     private $modelParcial;
+    private $modelPaidDetail;
     private $ModelOrderInvoiceDetail;
     private $modelSupplier;
     private $modelOrderInvoice;
@@ -63,22 +64,31 @@ class Reliquidacion extends MY_Controller
             exit(0);
         }
         
-        $this->load->model('Modelorder');
-        $this->load->model('Modelorderinvoicedetail');
-        $this->load->model('Modelsupplier');
-        $this->load->model('Modelparcial');
-        $this->load->model('Modelorderinvoice');
-        $this->load->model('Modelexpenses');
-        $this->load->model('Modelproduct');
-        $this->load->model('Modeluser');
-        $this->load->model('Modellog');
-        $this->load->model('Modelinfoinvoice');
-        $this->load->model('Modelinfoinvoicedetail');
-        $this->load->model('Modelinitexpenses');
-        $this->load->model('Modelrateexpenses');
-        $this->load->model('Modelprorrateo');
-        $this->load->model('Modelprorrateodetail');
-        $this->load->model('ModelOrderReport');
+        $models = [
+            'Modelorder',
+            'Modelorderinvoicedetail',
+            'Modelsupplier',
+            'Modelparcial',
+            'Modelorderinvoice',
+            'Modelexpenses',
+            'Modelproduct',
+            'Modeluser',
+            'Modellog',
+            'Modelinfoinvoice',
+            'Modelinfoinvoicedetail',
+            'Modelinitexpenses',
+            'Modelrateexpenses',
+            'Modelprorrateo',
+            'Modelprorrateodetail',
+            'ModelOrderReport',
+            'Modelpaiddetail',
+        ];
+        
+        foreach ($models as $model){
+            $this->load->model($model);
+        }
+        
+        $this->modelPaidDetail = new Modelpaiddetail();
         $this->modelOrderReport = new ModelOrderReport();
         $this->modelInitExpenses = new Modelinitexpenses();
         $this->modelOrder = new Modelorder();
@@ -413,6 +423,8 @@ class Reliquidacion extends MY_Controller
         
         $product_taxes = $orderTaxes->getTaxes();
         
+        
+        
         #actualizamos los productos de la lista de la factura del pedido
         
         if ($order['bg_isclosed'] == 0){
@@ -504,6 +516,7 @@ class Reliquidacion extends MY_Controller
             'id' => $nroOrder,
             'current_date' => date('d-m-Y') ,
             'order' => $order,
+            'mayor' => $this->getMayor($init_data),
             'current_user' => $this->modelUser->get(
                             $this->session->userdata('id_user')
                 ),
@@ -916,33 +929,44 @@ class Reliquidacion extends MY_Controller
      * @param array $order
      * @return array
      */
-    private function getMayor(array $init_data) :array{          
+    private function getMayor(array $init_data) :array{
+        
         $order_invoices = $init_data['order_invoices'][0];
         $order_invoices['order_invoice_detail'] = $init_data['order_invoice_detail'];
         $after_parcials = [];
-        $current_parcial = $init_data['parcial'];
+        $current_parcial = [];
         
-        $current_parcial['info_invoices'] = $this->modelInfoInvoice->getByParcial($current_parcial['id_parcial']);
-        $current_parcial['expenses'] = $this->modelExpenses->getByParcial($current_parcial['id_parcial']);
-        $current_parcial['prorrateos'] = $this->modelProrrateoDetail->getProrrateoFromParcial($current_parcial['id_parcial']);
-        
-        foreach ($init_data['all_parcials'] as $k => $parcial){
-            if($parcial['id_parcial'] == $current_parcial['id_parcial']){
-                break;
+        if (intval($init_data['order']['regimen']) != 10){
+            $current_parcial = $init_data['parcial'];
+            $current_parcial['info_invoices'] = $this->modelInfoInvoice->getByParcial($current_parcial['id_parcial']);
+            $current_parcial['expenses'] = $this->modelExpenses->getByParcial($current_parcial['id_parcial']);
+            $current_parcial['prorrateos'] = $this->modelProrrateoDetail->getProrrateoFromParcial($current_parcial['id_parcial']);
+            
+            foreach ($init_data['all_parcials'] as $k => $parcial){
+                if($parcial['id_parcial'] == $current_parcial['id_parcial']){
+                    break;
+                }
+                
+                array_push($after_parcials, $parcial);
             }
-            array_push($after_parcials, $parcial);
-        }
-        
-        #recuperamos los gastos y facturas informativas del los parciales
-        if($after_parcials){
-            foreach ($after_parcials as $k => $par){
-                $after_parcials[$k]['info_invoices'] = $this->modelInfoInvoice->getByParcial($par['id_parcial']);
-                $after_parcials[$k]['expenses'] = $this->modelExpenses->getByParcial($par['id_parcial']);
-                $after_parcials[$k]['prorrateos'] = $this->modelProrrateoDetail->getProrrateoFromParcial($par['id_parcial']);
+            
+            #recuperamos los gastos y facturas informativas del los parciales
+            if($after_parcials){
+                foreach ($after_parcials as $k => $par){
+                    $after_parcials[$k]['info_invoices'] = $this->modelInfoInvoice->getByParcial($par['id_parcial']);
+                    $after_parcials[$k]['expenses'] = $this->modelExpenses->getByParcial($par['id_parcial']);
+                    $after_parcials[$k]['prorrateos'] = $this->modelProrrateoDetail->getProrrateoFromParcial($par['id_parcial']);
+                }
             }
+            
+            array_push($after_parcials, $current_parcial);
+            
         }
-        
-        array_push($after_parcials, $current_parcial);
+                       
+        #adjuntamos las facturas a los GI
+        foreach ($init_data['init_expenses'] as $k => $iexp){
+            $init_data['init_expenses'][$k]['paids'] = $this->modelPaidDetail->getByExpense($iexp['id_gastos_nacionalizacion']);
+        }
         
         $mayor = new MayorOrder(
             $init_data['order'], 
@@ -952,24 +976,54 @@ class Reliquidacion extends MY_Controller
             );
         
         $mayor = $mayor->get();
+        
         $sums = [
             'valor_inicial' => 0.0,
+            'valor_inicial_facturado' => 0.0,
+            'saldo_valor_inicial_facturado' =>0.0,
             'valor_distribuido' => 0.0,
             'valor_por_distribuir' => 0.0,
         ];
         
-        
         #suma los valores de los impuestos en una sola linea
         foreach ($mayor as $dx){
             $sums['valor_inicial'] += $dx['valor_inicial'];
+            $sums['valor_inicial_facturado'] += $dx['valor_inicial_facturado'];
             $sums['valor_distribuido'] += $dx['valor_distribuido'];
-            $sums['valor_por_distribuir'] += $dx['valor_por_distribuir'];            
+            $sums['valor_por_distribuir'] += $dx['valor_por_distribuir'];
         }
                 
+        $sums['saldo_valor_inicial_facturado'] = (
+                $sums['valor_inicial'] 
+                - $sums['valor_inicial_facturado']
+            );
+        
+        $cuadre_mayor = [
+            'provisiones' => 0.0,
+            'facturado' => 0.0,
+            'saldo' => 0.0,
+            'cuadre_mayor' => 0.0,
+        ];
+        
+        
+        foreach ($mayor as $m){
+            $cuadre_mayor['provisiones'] += $m['valor_inicial'];
+            $cuadre_mayor['facturado'] += $m['valor_inicial_facturado'];
+        }
+        
+        $cuadre_mayor['saldo'] = (
+                $cuadre_mayor['provisiones'] 
+                - $cuadre_mayor['facturado']
+            );
+        
+        $cuadre_mayor['cuadre_mayor'] = ( 
+            $cuadre_mayor['provisiones'] - ($sums['valor_distribuido'] + $sums['valor_por_distribuir'])
+        );
         
         return([
             'mayor' => $mayor,
             'sums' => $sums,
+            'cuadre' => $cuadre_mayor,
         ]);
     }
 

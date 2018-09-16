@@ -510,7 +510,6 @@ class orderTaxes {
             
             $ice_advalorem_unitario =  $ice_advalorem / $product['unidades'];
             
-            
             $iva = (
                 $prorrateos['cif']
                 + $fodinfa 

@@ -112,6 +112,7 @@ class MayorOrder {
      * @return array
      */
     private function getMayorInitExpenses():array{
+        
        $mayor_init_expenses = [
            'tipo' => 'MAYOR GASTOS INICIALES',
            'valor_inicial' => 0.0,
@@ -126,6 +127,9 @@ class MayorOrder {
        foreach ($this->init_expenses as $k => $iexp){
            $mayor_init_expenses['valor_inicial'] += $iexp['valor_provisionado'];
            $mayor_init_expenses['valor_inicial_facturado'] += $iexp['paids']['sums'];
+           if ($iexp['concepto'] == 'ISD') {
+               $mayor_init_expenses['valor_inicial_facturado'] += $iexp['valor_provisionado'];
+           }
        }
        
        if(intval($this->order['regimen']) == 10){
@@ -141,7 +145,6 @@ class MayorOrder {
                }
            }
        }
-       
        
        $mayor_init_expenses['valor_por_distribuir'] = (
            $mayor_init_expenses['valor_inicial'] 
@@ -279,7 +282,6 @@ class MayorOrder {
             'valor_por_distribuir' => 0.0,
         ];
         
-                
         if(intval($this->order['regimen']) == 10){
             $tributos = [
                 'fodinfa' => $this->order['fodinfa_pagado'],
@@ -292,7 +294,6 @@ class MayorOrder {
             ];
             
             #para todos primero recorrer los parciales sobre este codigo
-            
             if($this->order_invoices){
                 foreach ($this->order_invoices['order_invoice_detail'] as $i => $detalle) {
                     $tributos['ice_advalorem'] =+ $detalle['ice_advalorem'];
@@ -312,16 +313,15 @@ class MayorOrder {
             
             #para todos primero recorrer los parciales sobre este codigo
             if($current_parcial['info_invoices']){
-                foreach ($current_parcial['info_invoices'] as $k => $infoinvoice){
+                foreach ($current_parcial['info_invoices'] as $k => $infoinvoice){                    
                     foreach ($infoinvoice['info_invoices_detail'] as $i => $detalle) {
-                        $tributos['ice_advalorem'] =+ $detalle['ice_advalorem'];
+                        $tributos['ice_advalorem'] += $detalle['ice_advalorem'];
                     }
                 }
             }
         }
         
-        
-        $tributos['ice_advalorem_reliquidado'] = ($tributos['ice_advalorem'] - $tributos['ice_advalorem_pagado']);
+        $tributos['ice_advalorem_reliquidado'] = ($tributos['ice_advalorem'] - $tributos['ice_advalorem_pagado']);        
         
         $mayor_tributos['valor_inicial'] = $mayor_tributos['valor_distribuido'] += (
             $tributos['fodinfa'] 
@@ -334,7 +334,6 @@ class MayorOrder {
         
         $mayor_tributos['valor_inicial_facturado'] = $mayor_tributos['valor_distribuido_facturado'] = (
                 $mayor_tributos['valor_inicial'] 
-                - $tributos['ice_advalorem_reliquidado']
             );
         
         $mayor_tributos['saldo_inicial_facturado'] = $mayor_tributos['saldo_distribuido_facturado'] = (

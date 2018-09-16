@@ -421,6 +421,49 @@ class Modelparcial extends CI_Model
         return False;
     }
     
+    
+    
+    /**
+     * Obtiene una lista de pedidos que han llegado a la bodega
+     * dentro de un mes solo R10
+     *
+     * @param int $year
+     * @param int $month
+     */
+    public function getArrivedCellarByDate(int $year, int $month) : array{
+        
+        $f_inicio = $year . '-' . $month . '-01';
+        $f_fin = $year . '-' . $month . '-31';
+        
+        if($month < 10){
+            $f_inicio = $year . '-0' . $month . '-01';
+            $f_fin = $year . '-0' . $month . '-31';
+        }
+        
+        $query = "  SELECT p.*, pd.pais_origen
+                    FROM parcial as p
+                    LEFT JOIN pedido as pd on (p.nro_pedido = pd.nro_pedido)
+                    WHERE p.fecha_llegada_cliente >= '$f_inicio'
+                    AND p.fecha_llegada_cliente <= '$f_fin'
+                 ";
+        $result = $this->modelBase->runQuery($query);
+        
+        if($result){
+            $this->modelLog->susessLog(
+                'Parciales con fecha de llegada bodega oficina listados'
+                );            
+            return  $result;
+        }
+        
+        $this->modelLog->warningLog(
+            'No existen parciales con fecha de llegada oficina para lisar'
+            );
+        
+        return [];
+    }
+    
+    
+    
     /**
      * Obtiene el almacenaje del primer parcial
      * @param int $id_parcial

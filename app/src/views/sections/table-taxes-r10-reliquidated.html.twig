@@ -1,9 +1,28 @@
-{% if order.bg_isclosed == 1 %}    
-   <span style="background-color:#d41; float:right;color:#fff;padding:2px;border-radius:4px;">
-      Pedido Liquidado y Cerrado
+{% if order.bg_isclosed == 1 %}       
+   <span style="background-color:#d11; float:right;color:#fff;padding:2px;border-radius:4px;">
+      Liquidado por: <label for="" class="label label-danger">{{ user_liquidacion.nombres }}</label>
+      <label class="label label-danger">
+      {{ order.fecha_cierre | date('d/m/Y')}}
+      </label>
+   </span>   
+   <span style="background-color:#f1f1f1;padding:2px;border-radius:2px;">
+	Observaciones:  <small class="text-danger"> {{ order.notas_cierre }}</small>
    </span>
-   <span style="background-color:#444; float:right;color:#fff;padding:2px;border-radius:4px;">{{ order.notas_cierre }}</span>
 {% endif %}
+
+
+{% if parcial.bg_isclosed == 1 %}    
+   <span style="background-color:#d41; float:right;color:#fff;padding:2px;border-radius:4px;">
+      <label for="" class="label label-danger">{{ user_liquidacion.nombres }}</label>
+      <label class="label label-danger">
+      {{ parcial.fecha_cierre | date('d/m/Y')}}
+      </label>
+   </span>   
+   <span style="background-color:#f1f1f1; float:right;padding:2px;border-radius:2px;">
+	Observaciones:  <span class="text-danger"> {{ parcial.notas_cierre }}</span>
+   </span>
+{% endif %}
+
 <div class="row">
    <div class="col-md-4">
       <div class="text-tittle">Par&aacute;metros compatidos por el pedido {{ init_data.order.nro_pedido }} </div>
@@ -240,6 +259,9 @@
             <span class="fa fa-refresh"></span> Reingreso Liquidación
          </a>
       {% endif %}
+      <a href="{{ rute_url }}gstinicial/validargi/{{ order.nro_pedido }}" class="btn btn-primary btn-sm">
+				<span class="fa fa-gear"></span> Gastos Iniciales
+		</a>
    </div>
    <div class="col-md-4"></div>
    <div class="col-md-6 text-right">

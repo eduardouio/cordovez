@@ -248,6 +248,49 @@ class Modelorder extends CI_Model
     }
     
     
+    
+    /**
+     * Obtiene una lista de pedidos que han llegado a la bodega 
+     * dentro de un mes solo R10
+     * 
+     * @param int $year
+     * @param int $month
+     */
+    public function getArrivedCellarByDate(int $year, int $month) : array{
+        
+        $f_inicio = $year . '-' . $month . '-01';
+        $f_fin = $year . '-' . $month . '-31';   
+        
+        if($month < 10){
+            $f_inicio = $year . '-0' . $month . '-01';
+            $f_fin = $year . '-0' . $month . '-31';   
+        }
+        
+        $query = "
+                    SELECT * 
+                    FROM pedido 
+                    WHERE fecha_llegada_cliente >= '$f_inicio' 
+                    AND fecha_llegada_cliente <= '$f_fin' 
+                    AND regimen = '10'";
+        
+        $result = $this->modelBase->runQuery($query);
+        
+        if($result){
+            $this->modelLog->susessLog(
+                'Pedidos con fecha de llegada bodega oficina listados'
+                );
+            return  $result;
+        }
+        
+        $this->modelLog->warningLog(
+            'No existen pedidos con fecha de llegada oficina para lisar'
+            );
+        
+        return [];
+    }
+    
+    
+    
     /**
      * Lista las facturas pedido por proveedor
      * @param (string) $suplierId
@@ -608,7 +651,7 @@ class Modelorder extends CI_Model
     {           
         $this->db->where('nro_pedido', $order['nro_pedido']);
         if($this->db->update($this->table, $order)){
-            $this->modelLog->queryUpdateLog($this->db->last_query());
+            $this->modelLog->queryUpdateLog($this->db->last_query());            
             return true;
         }
         $this->modelLog->errorLog(

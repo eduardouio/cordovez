@@ -43,6 +43,7 @@ class Reliquidacion extends MY_Controller
     private $modelProrrateo;
     private $modelProrrateoDetail;
     private $modelOrderReport;
+    private $modelMayor;
     
 
     /**
@@ -82,6 +83,7 @@ class Reliquidacion extends MY_Controller
             'Modelprorrateodetail',
             'ModelOrderReport',
             'Modelpaiddetail',
+            'ModelMayor',
         ];
         
         foreach ($models as $model){
@@ -106,6 +108,7 @@ class Reliquidacion extends MY_Controller
         $this->modelProrrateo = new Modelprorrateo();
         $this->modelProrrateoDetail = new Modelprorrateodetail();
         $this->ratesValues = $this->modelRatesExpenses->getParcialRates();
+        $this->modelMayor = new ModelMayor();
     }
     
     
@@ -248,6 +251,12 @@ class Reliquidacion extends MY_Controller
             }
         }
         
+        $mayor_congelado = sumsMayor(formatMayor($this->modelMayor->get([
+            'type' => 'parcial',
+            'id' => $parcial['id_parcial']
+        ])));
+               
+        
         $all_parcials = $this->modelParcial->getAllParcials($parcial['nro_pedido']);
         $ordnial_parcial = ordinalNumberParcial($all_parcials, $id_parcial);
         
@@ -266,9 +275,11 @@ class Reliquidacion extends MY_Controller
             'warenhouses' => $init_data['warenhouses'],
             'bg_have_etiquetas' => 1,
             'mayor' => $this->getMayor($init_data),
+            'mayor_congelado' => $mayor_congelado,
             'bg_hava_tasa_control' => 1,
             'regimen' => 'R70',
             'current_date' => date('d-m-Y') ,
+            'user_liquidacion' => $this->modelUser->get($parcial['id_user_cierre']),
             'current_user' => $this->modelUser->get(
                 $this->session->userdata('id_user')
                 ),
@@ -502,6 +513,12 @@ class Reliquidacion extends MY_Controller
             }
         }
         
+        $mayor_congelado = formatMayor( $this->modelMayor->get(
+            ['id' => $order['nro_pedido'] , 'type' => 'order']
+            ));
+        
+        
+        
         return ($this->responseHttp([
             'titleContent' => 'Resumen de Reliquidación ICE Pedido ' .
                                 $init_data['order']['nro_pedido'] . 
@@ -513,10 +530,12 @@ class Reliquidacion extends MY_Controller
             'tipo' => 'orden',
             'bg_have_etiquetas' => 1,
             'bg_hava_tasa_control' => 1,
+            'user_liquidacion' => $this->modelUser->get($order['id_user_cierre']),
             'id' => $nroOrder,
             'current_date' => date('d-m-Y') ,
             'order' => $order,
             'mayor' => $this->getMayor($init_data),
+            'mayor_congelado' => sumsMayor($mayor_congelado),
             'current_user' => $this->modelUser->get(
                             $this->session->userdata('id_user')
                 ),
@@ -929,8 +948,7 @@ class Reliquidacion extends MY_Controller
      * @param array $order
      * @return array
      */
-    private function getMayor(array $init_data) :array{
-        
+    private function getMayor(array $init_data) :array{        
         $order_invoices = $init_data['order_invoices'][0];
         $order_invoices['order_invoice_detail'] = $init_data['order_invoice_detail'];
         $after_parcials = [];
@@ -975,56 +993,27 @@ class Reliquidacion extends MY_Controller
             $after_parcials
             );
         
-        $mayor = $mayor->get();
+        $mayor = $mayor->get();        
         
-        $sums = [
-            'valor_inicial' => 0.0,
-            'valor_inicial_facturado' => 0.0,
-            'saldo_valor_inicial_facturado' =>0.0,
-            'valor_distribuido' => 0.0,
-            'valor_por_distribuir' => 0.0,
-        ];
-        
-        #suma los valores de los impuestos en una sola linea
-        foreach ($mayor as $dx){
-            $sums['valor_inicial'] += $dx['valor_inicial'];
-            $sums['valor_inicial_facturado'] += $dx['valor_inicial_facturado'];
-            $sums['valor_distribuido'] += $dx['valor_distribuido'];
-            $sums['valor_por_distribuir'] += $dx['valor_por_distribuir'];
-        }
-                
-        $sums['saldo_valor_inicial_facturado'] = (
-                $sums['valor_inicial'] 
-                - $sums['valor_inicial_facturado']
-            );
-        
-        $cuadre_mayor = [
-            'provisiones' => 0.0,
-            'facturado' => 0.0,
-            'saldo' => 0.0,
-            'cuadre_mayor' => 0.0,
-        ];
-        
-        
-        foreach ($mayor as $m){
-            $cuadre_mayor['provisiones'] += $m['valor_inicial'];
-            $cuadre_mayor['facturado'] += $m['valor_inicial_facturado'];
+        #Actualizamos para el parcial sino para el pedido 
+        if($current_parcial){
+            if(intval($current_parcial['bg_isclosed']) == 0){
+                $this->modelMayor->putMayor(
+                    $mayor, 
+                    ['type' => 'parcial' , 'id' => $current_parcial['id_parcial']]
+                    );                
+            }
+        }else{
+            if(intval($init_data['order']['bg_isclosed']) == 0){
+                $this->modelMayor->putMayor(
+                    $mayor,
+                    ['type' => 'order' , 'id' => $init_data['order']['nro_pedido']]
+                    );
+            }
         }
         
-        $cuadre_mayor['saldo'] = (
-                $cuadre_mayor['provisiones'] 
-                - $cuadre_mayor['facturado']
-            );
-        
-        $cuadre_mayor['cuadre_mayor'] = ( 
-            $cuadre_mayor['provisiones'] - ($sums['valor_distribuido'] + $sums['valor_por_distribuir'])
-        );
-        
-        return([
-            'mayor' => $mayor,
-            'sums' => $sums,
-            'cuadre' => $cuadre_mayor,
-        ]);
+        return sumsMayor($mayor);
+       
     }
 
     

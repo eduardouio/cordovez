@@ -2846,14 +2846,6 @@
 	display: inline-block
 }
 
-body {
-	margin: 0 0 40px;
-	padding: 0;
-	overflow-y: scroll;
-	overflow-x: hidden;
-	font-size: 14px
-}
-
 ol ul {
 	list-style: disc;
 	padding-left: 13px

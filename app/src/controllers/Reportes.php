@@ -5,6 +5,7 @@ $libraries_url = realpath(dirname(__FILE__));
 $libraries_url = str_replace('controllers', 'libraries/', $libraries_url);
 
 require_once ( $libraries_url . 'StockOrder.php' );
+require_once ( $libraries_url . 'ReportICE.php' );
 require_once ( $libraries_url . 'ReportCompleteOrder.php' );
 
 /**
@@ -19,7 +20,7 @@ require_once ( $libraries_url . 'ReportCompleteOrder.php' );
  */
 class Reportes extends MY_Controller
 {
-    private $modelReportProvisiones;
+    private $modelReportProvisi;
     private $modelReportPagos;
     private $modelOrder;
     private $modelSupplier;
@@ -27,6 +28,7 @@ class Reportes extends MY_Controller
     private $modelProduct;
     private $modelInfoInvoiceDetail;
     private $modelInfoInvoice;
+    private $modelReporICE;
     private $controller = "reportes";
     private $template = '/pages/pageReport.html';
     
@@ -43,14 +45,24 @@ class Reportes extends MY_Controller
             exit(0);
         }
         
-        $this->load->model('ModelReportProvisiones');
-        $this->load->model('ModelReportPagos');
-        $this->load->model('Modelorder');
-        $this->load->model('ModelOrderReport');      
-        $this->load->model('Modelinfoinvoice');
-        $this->load->model('Modelinfoinvoicedetail');
-        $this->load->model('Modelproduct');
-        $this->load->model('Modelsupplier');        
+        
+        $models = [
+            'ModelReportProvisiones',
+            'ModelReportPagos',
+            'Modelorder',
+            'ModelOrderReport' ,
+            'Modelinfoinvoice',
+            'Modelinfoinvoicedetail',
+            'Modelproduct',
+            'Modelsupplier',
+            'ModelReportICE',
+        ];  
+        
+        foreach ($models as $model){
+            $this->load->model($model);
+        }
+        
+        $this->modelReporICE = new ModelReportICE();
         $this->modelSupplier = new Modelsupplier();
         $this->modelInfoInvoice = new Modelinfoinvoice();
         $this->modelInfoInvoiceDetail = new Modelinfoinvoicedetail();
@@ -241,7 +253,70 @@ class Reportes extends MY_Controller
         ]);
                
     }
+    
+    
+    /**
+    * Presenta un Reporte mensual del ICE
+    */
+    public function reporteice(){
+        $mes = [
+            'Enero',
+            'Febrero',
+            'Marzo',
+            'Abril',
+            'Mayo',
+            'Junio',
+            'Julio',
+            'Agosto',
+            'Septiembre',
+            'Octubre',
+            'Noviembre',
+            'Diciembre',
+        ];
+        
+        if($_GET){            
+            $repor_ice = new ReportICE(
+                $this->modelReporICE->getData($_GET['anio'], $_GET['mes'])
+                );            
+            
+            $data_report = $repor_ice->getReport();
+            $have_unclosed_items = False;
+            
+            if($data_report['errors']['orders'] || $data_report['errors']['parcials']){
+                $have_unclosed_items   = True;
+            }
+            
+            return $this->responseHttp([
+                'titleContent' => 'Reporte de ICE de ' . $mes[$_GET['mes'] - 1] . ' del ' . $_GET['anio'] ,
+                'report' => $data_report['report'],
+                'errors' => $data_report['errors'],
+                'have_unclosed_items' => $have_unclosed_items,
+                'reporte_ice' => true,
+            ]);
+            
+        }else{
+            return $this->responseHttp([
+                'titleContent' => 'Reporte de ICE',
+                'orders_list' => $this->modelOrder->getAll(),
+                'reporte_ice' => true,
+            ]);
+        }
+        
+    }
      
+    
+    
+    
+    /**
+     * Buesca un producto nombre
+     */
+    public function saldosProducto(){
+        return $this->responseHttp([
+            'titleContent' => 'Reporte de Saldos Por Productos',
+            'reporte_saldo_producto' => true
+        ]);
+    }
+    
 
     /*
      * Redenderiza la informacion y la envia al navegador

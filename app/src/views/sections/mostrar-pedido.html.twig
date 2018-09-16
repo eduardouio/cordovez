@@ -117,12 +117,12 @@
          </a>
       </li>
       
-      <li role="presentation" class="active" >
+      <li role="presentation" {% if order.regimen == 10 %} class="active" {% endif %}>
       	<a href="#facturas" role="tab" data-toggle="tab" aria-controls="facturas">
       	<span class="fa fa-file"></span> Facturas Productos</a>
       </li>
-      <li>
       {% if order.regimen == '70' %}
+      <li role="presentation" class="active">
       	<a href="#facturas-informativas" role="tab" data-toggle="tab" aria-controls="facturas-informativas">
       		<span class="fa fa-list-ol"></span> Parciales del Pedido
       	</a>
@@ -142,13 +142,13 @@
       </div>
       <!-- /tabPedidoDetalle-->
       <!-- tabFacturas-->
-      <div role="tabpanel" class="tab-pane active" id="facturas">
+      <div role="tabpanel" class="tab-pane{% if order.regimen == 10 %} active {% endif %}" id="facturas">
          {% include 'sections/subsections/tab-facturas-productos-pedido.html.twig' %}            
       </div>
       <!-- /Tab Facturas-->      
        {% if order.regimen == 70 %}
      <!-- factura Informativas -->
-      <div role="tabpanel" class="tab-pane" id="facturas-informativas">
+      <div role="tabpanel" class="tab-pane active" id="facturas-informativas">
          {% include 'sections/subsections/tab-facturas-informativas.html.twig' %}            
       </div>
       <!-- /factura Informativas -->
@@ -201,9 +201,10 @@
       	
       </div>      
       </div>
+      {% if id_user == 1 %}
       <a class="btn btn-sm btn-danger" href="{{ rute_url }}pedido/eliminar/{{ order.nro_pedido }}"> <span class="fa fa-warning"></span> Eliminar Pedido</a>
       <!-- /Tab Facturas Servicios -->
-
+	{%  endif %}
    </div>
 </div>
 <!--/tabs-->

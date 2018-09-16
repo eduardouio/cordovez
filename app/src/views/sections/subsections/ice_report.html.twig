@@ -1,0 +1,125 @@
+<div class="row">
+   <form class="form-inline" action="" method="get">
+      <div class="col-md-6" style="background-color: #eee; padding: 12px; border-radius: 5px;" >
+         <div class="form-group">
+            <label for="anio">Año:</label>
+            <select name="anio" id="anio" class="form-control">
+               <option selected="selected" disabled="disabled">Seleccione...</option>
+               <option value="2018">2018</option>
+            </select>
+         </div>
+         &nbsp;
+         &nbsp;
+         &nbsp;
+         <div class="form-group">
+            <label for="mes">Mes:</label>
+            <select name="mes" id="mes" class="form-control">
+               <option selected="selected" disabled="disabled">Seleccione...</option>
+               <option value="1">Enero</option>
+               <option value="2">Febrero</option>
+               <option value="3">Marzo</option>
+               <option value="4">Abril</option>
+               <option value="5">Mayo</option>
+               <option value="6">Junio</option>
+               <option value="7">Julio</option>
+               <option value="8">Agosto</option>
+               <option value="9">Septiembre</option>
+               <option value="11">Octubre</option>
+               <option value="11">Noviembre</option>
+               <option value="12">Diciembre</option>
+            </select>
+         </div>
+         <button type="submit" class="btn btn-primary btn-sm pull-right"> <span class="fa fa-table"></span> Generar Reporte</button>
+      </div>
+   </form>
+</div>
+<hr />
+<div class="row">
+   <div class="col-md-12">
+      <div class="table-responsive" style="height: 500px">
+         <table class="table table-condensed table-striped table-hover table-bordered">
+            <thead>
+               <tr>
+                  <th colspan="12">INFORMACIÓN BASE</th>
+                  <th colspan="6" class="backgroud-gray">LIQUIDACIÓN INICIAL</th>
+                  <th colspan="4" class="backgroud-gray">REFERENDO</th>
+                  <th colspan="10">RELIQUIDACION ICE ADVALOREM</th>
+               </tr>
+               <tr>
+               	  <th>#</th>
+                  <th>Producto</th>
+                  <th>Código ICE </th>
+                  <th>Pedido</th>
+                  <th>R</th>
+                  <th>Pais</th>
+                  <th>Fecha</th>
+                  <th>Cajas</th>
+                  <th>Unds</th>
+                  <th>FOB</th>
+                  <th>CAP ML</th>
+                  <th>G Alc</th>
+                  <th class="backgroud-gray">Ex Aduana</th>
+                  <th class="backgroud-gray">Base ADV</th>
+                  <th class="backgroud-gray">ICE ESP U</th>
+                  <th class="backgroud-gray">ICE ADV U</th>
+                  <th class="backgroud-gray">ICE U</th>
+                  <th class="backgroud-gray">ICE PAGADO</th>
+                  <th class="backgroud-gray">Dig</th>
+                  <th class="backgroud-gray">AÑO</th>
+                  <th class="backgroud-gray">REG</th>
+                  <th class="backgroud-gray">SEC</th>
+                  
+                  <th>Ex Aduana</th>
+                  <th>ICE ESP U</th>
+                  <th>Volumen Br. Tot. ICE ESP</th>
+                  <th>ICE Esp Total</th>
+                  <th>Base Advalorem Legal</th>
+                  <th>Base Advalorem Reliq</th>
+                  <th>ICE Advalorem U</th>
+                  <th>ICE Advalorem T</th>
+                  <th>ICE TOTAL ESP+ADV</th>
+                  <th>Valor a Reliquidar</th>
+               </tr>
+            </thead>
+            <tbody>
+               {% for item in report %}
+               <tr>
+               <td>{{ loop.index }}</td>
+               <td nowrap="nowrap">{{ item.product }}</td>
+               <td nowrap="nowrap">{{ item.cod_ice }} </td>
+               <td class="text-right"> <a href="{{ rute_url }}pedido/presentar/{{ item.pedido }}" target="_blank">{{ item.pedido }}</a></td>
+               <td class="text-right">{{ item.regimen }}</td>
+               <td>{{ item.pais_origen }}</td>
+               <td class="text-right" nowrap="nowrap">{{ item.fecha_llegada_cliente }}</td>               
+               <td class="text-right">{{ item.nro_cajas }}</td>
+               <td class="text-right">{{ item.unidades | number_format(0, ',' , '.') }}</td>
+               <td class="text-right">{{ (item.costo_caja * item.nro_cajas) | number_format(2,',','.')}}</td>
+               <td class="text-right">{{ item.capacidad_ml | number_format(0,',','.')}}</td>
+               <td class="text-right">{{ item.grado_alcoholico | number_format(2,',','.')}}</td>
+               <td class="text-right">{{ (item.ex_aduana / item.unidades) | number_format(2,',','.')}}</td>
+               <td class="text-right">{{ item.base_advalorem | number_format(2,',','.')}}</td>
+               <td class="text-right">{{ (item.ice_especifico / item.unidades) | number_format(2,',','.')}}</td>
+               <td class="text-right">{{ (item.ice_advalorem_sin_tasa / item.unidades) | number_format(2,',','.')}}</td>
+               <td class="text-right">{{ (item.total_ice/item.unidades) | number_format(2,',','.')}}</td>
+               <td class="text-right">{{ item.total_ice | number_format(2,',','.')}}</td>
+               <td class="text-right">{{ item.nro_refrendo [:3]}}</td>
+               <td class="text-right">{{ item.nro_refrendo [4:4]}}</td>
+               <td class="text-right">{{ item.nro_refrendo [9:2]}}</td>
+               <td class="text-right">{{ item.nro_refrendo [12:]}}</td>
+               <td class="text-right">{{ item.ice_especifico | number_format(2,',','.')}}</td>
+               <td class="text-right">{{ item.ice_especifico | number_format(2,',','.')}}</td>
+               <td class="text-right">{{ item.ice_especifico | number_format(2,',','.')}}</td>
+               <td class="text-right">{{ item.base_advalorem | number_format(2,',','.')}}</td>
+               <td class="text-right">{{ item.base_advalorem | number_format(2,',','.')}}</td>
+               <td class="text-right">{{ item.base_advalorem | number_format(2,',','.')}}</td>
+               <td class="text-right">{{ item.base_advalorem | number_format(2,',','.')}}</td>
+               <td class="text-right">{{ item.base_advalorem | number_format(2,',','.')}}</td>
+               <td class="text-right">{{ item.base_advalorem | number_format(2,',','.')}}</td>
+               <td class="text-right">{{ item.base_advalorem | number_format(2,',','.')}}</td>
+               </tr>
+               {% endfor %}
+            </tbody>
+         </table>
+      </div>
+   </div>
+</div>

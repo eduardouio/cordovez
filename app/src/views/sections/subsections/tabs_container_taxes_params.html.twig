@@ -13,7 +13,12 @@
       </li>
       <li role="presentation" class="active" >
          <a href="#mayor" role="tab" data-toggle="tab" aria-controls="mayor">
-         <span class="fa fa-money"></span> Cuadre con Mayor de Pedido
+         <span class="fa fa-money"></span> Mayor A La Liquidación
+         </a>
+      </li>
+      <li role="presentation">
+         <a href="#mayor_actual" role="tab" data-toggle="tab" aria-controls="mayor">
+         <span class="fa fa-money"></span> Mayor Actual
          </a>
       </li>
    </ul>
@@ -130,7 +135,47 @@
    </div>
    <div role="mayor" id="mayor" class="tab-pane active">
    <div class="row">
-   	<div class="col-md-3"><div class="text-primary">Cuadre Mayor: {{ mayor.cuadre.cuadre_mayor | number_format(3,',','.') }}</div></div>
+   	<div class="col-md-3"><div class="text-primary">Saldo Mayor: {{ mayor_congelado.cuadre.cuadre_mayor | number_format(3,',','.') }}</div></div>
+   	<div class="col-md-3"><div class="text-primary">Provisiones: {{ mayor_congelado.cuadre.provisiones | number_format(3,',','.') }}</div></div>
+   	<div class="col-md-3"><div class="text-primary">Facturado: {{ mayor_congelado.cuadre.facturado | number_format(3,',','.') }}</div></div>
+   	<div class="col-md-3"><div class="text-primary">Saldo Sin Factura: {{ mayor_congelado.cuadre.saldo | number_format(3,',','.') }}</div></div>
+   </div>
+      <table class="table table-condensed table-striped table-hover" style="font-size:10px">
+         <thead>
+            <tr>
+               <th>Concepto</th>
+               <th>Inicial</th>
+               <th>Fac Inicial</th>
+               <th>Saldo In</th>
+               <th>Distribuido</th>               
+               <th>Por Distribuir</th>
+            </tr>
+         </thead>
+         <tbody>              
+         {% for mayor_detalle in mayor_congelado.mayor %}
+            <tr>
+            <td> {{ mayor_detalle.tipo | upper}} <small class="text-primary pull-right">$</small></td>
+            <td class="text-right">{{ mayor_detalle.valor_inicial | number_format('2',',','.')}}</td>
+            <td class="text-right">{{ mayor_detalle.valor_inicial_facturado | number_format('2',',','.')}}</td>
+            <td class="text-right">{{ mayor_detalle.saldo_inicial_facturado | number_format('2',',','.')}}</td>
+            <td class="text-right">{{ mayor_detalle.valor_distribuido | number_format('2',',','.')}}</td>
+            <td class="text-right text-primary"><strong>{{ mayor_detalle.valor_por_distribuir | number_format('2',',','.')}}</strong></td>           
+            </tr>
+         {% endfor %}
+            <tr style="background-color:#2E86C1; color:#fff; font-weight:bold;" class="text-right">
+               <td colspan="1">Totales</td>
+               <td>$ {{ mayor_congelado.sums.valor_inicial | number_format('2',',','.') }}</td>
+               <td>$ {{ mayor_congelado.sums.valor_inicial_facturado | number_format('2',',','.') }}</td>
+               <td>$ {{ mayor_congelado.sums.saldo_valor_inicial_facturado | number_format('2',',','.') }}</td>
+               <td>$ {{ mayor_congelado.sums.valor_distribuido | number_format('2',',','.') }}</td>               
+               <td>$ {{ mayor_congelado.sums.valor_por_distribuir | number_format('2',',','.') }}</td>
+            </tr>
+         </tbody>
+      </table>     
+   </div>
+   <div role="mayor_actual" id="mayor_actual" class="tab-pane">
+    <div class="row">
+   	<div class="col-md-3"><div class="text-primary">Saldo Mayor: {{ mayor.cuadre.cuadre_mayor | number_format(3,',','.') }}</div></div>
    	<div class="col-md-3"><div class="text-primary">Provisiones: {{ mayor.cuadre.provisiones | number_format(3,',','.') }}</div></div>
    	<div class="col-md-3"><div class="text-primary">Facturado: {{ mayor.cuadre.facturado | number_format(3,',','.') }}</div></div>
    	<div class="col-md-3"><div class="text-primary">Saldo Sin Factura: {{ mayor.cuadre.saldo | number_format(3,',','.') }}</div></div>

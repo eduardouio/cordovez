@@ -1,8 +1,13 @@
 {% if parcial.bg_isclosed == 1 %}    
-   <span style="background-color:#d41; float:right;color:#fff;padding:2px;border-radius:4px;">
-      Parcial Liquidado y Cerrado
+   <span style="background-color:#d11; float:right;color:#fff;padding:2px;border-radius:4px;">
+      Liquidado por: <label for="" class="label label-danger">{{ user_liquidacion.nombres }}</label>
+      <label class="label label-danger">
+      {{ parcial.fecha_cierre | date('d/m/Y')}}
+      </label>
    </span>   
-   <span style="background-color:#444; float:right;color:#fff;padding:2px;border-radius:4px;">{{ parcial.notas_cierre }}</span>
+   <span style="background-color:#f1f1f1;padding:2px;border-radius:2px;">
+	Observaciones:  <span class="text-danger"> {{ parcial.notas_cierre }}</span>
+   </span>
 {% endif %}
 <div class="row">
    <div class="col-md-4">
@@ -245,6 +250,9 @@
       <span class="fa fa-list"></span>
       Volver al Parcial
       </a>
+      <a href="{{ rute_url }}gstnacionalizacion/parcial/{{ parcial.id_parcial }}" class="btn btn-sm btn-primary">
+		<span class="fa fa-gear"></span> Gastos Parcial
+	</a>
    </div>  
    <div class="col-md-2"></div>
    <div class="col-md-6 text-right">

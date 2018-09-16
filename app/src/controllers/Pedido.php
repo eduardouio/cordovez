@@ -203,9 +203,11 @@ class Pedido extends MY_Controller
         $stock = [];
         $detail_order_invoices = [];
         $detail_info_invoices = [];
+        $supplier = [];
         
         if($params['order_invoices']){
             foreach ($params['order_invoices'] as $idx => $invoice){
+                $supplier = $this->modelSupplier->get($invoice['identificacion_proveedor']);
                 if($invoice['detail']){
                     foreach ($invoice['detail'] as $k => $v){
                         $v['product'] = $this->modelProduct->get($v['cod_contable']);
@@ -241,6 +243,9 @@ class Pedido extends MY_Controller
         $stock['initial'] = $stock_order->getInitStockProducts();
         $stock['global'] = $stock_order->getGlobalValues();
         
+        
+        
+        
         return($this->responseHttp([
             'show_order' => true,
             'order_info' => $order_report->getStatusData(),
@@ -249,9 +254,11 @@ class Pedido extends MY_Controller
                         $order['regimen'] . ']' ,
             'order_report' => $order_report->getStatusData(),
             'stock_order' => $stock, 
+            'supplier' => $supplier,
             'order_invoices' => $params['order_invoices'],
             'parcials' => $order_report->getPartialInfo(),
             'list_active' => 'class="active"',
+            'id_user' => $this->session->userdata('id_user'),
             'titleContent' => 'Detalle De Pedido [ ' . $nroOrder . '] [' . $order['incoterm'] . '] [Regimen ' . $order['regimen'] . ']'
         ]));
     }

@@ -51,7 +51,7 @@ if (!function_exists('selectCompany')) {
     function selectCompany(string $name): array{
         $empresas = [
             'imnac' => [                
-                'name' => 'IMNAC Importadora Nacional S.A.',
+                'name' => 'IMNAC Importadora Nacional CIA. LTDA.',
                 'ruc' => 'RUC: 1792324289001 DIR: Paul Rivet y James Orton',    
                 'address' => 'Paul Rivet y James Orton',
                 'logo' => base_url() . 'img/logo_imnac.jgp',
@@ -74,5 +74,91 @@ if (!function_exists('selectCompany')) {
         ];
         
         return $empresas[$name];
+    }
+}
+
+if(!function_exists('formatMayor')){
+    /**
+     * Formatea el mayor para que puda ser consumido por la vista
+     * @param array $mayor
+     * @return array
+     */
+    function formatMayor ($mayor) : array {
+        
+        if(gettype($mayor) == NULL ||gettype($mayor) == 'boolean'){
+            return [];
+        }
+        
+        $mayor_formated = [
+            'mayor_gastos_origen' => [],
+            'mayor_gastos_inciales' => [],
+            'mayor_parcial_expenses' => [],
+            'mayor_almacenaje' => [],
+            'mayor_tributos' => [],
+            'mayor_productos' => [],
+        ]; 
+        
+        foreach ($mayor as $k => $m){
+            $mayor_formated[$m['name']] = $m;
+        }
+        
+        return  $mayor_formated;
+    }
+}
+
+
+if(!function_exists('sumsMayor')){
+    function sumsMayor(array $mayor){
+        $sums = [
+            'valor_inicial' => 0.0,
+            'valor_inicial_facturado' => 0.0,
+            'saldo_valor_inicial_facturado' =>0.0,
+            'valor_distribuido' => 0.0,
+            'valor_por_distribuir' => 0.0,
+        ];
+        
+        #suma los valores de los impuestos en una sola linea
+        foreach ($mayor as $dx){
+            $sums['valor_inicial'] += $dx['valor_inicial'];
+            $sums['valor_inicial_facturado'] += $dx['valor_inicial_facturado'];
+            $sums['valor_distribuido'] += $dx['valor_distribuido'];
+            $sums['valor_por_distribuir'] += $dx['valor_por_distribuir'];
+        }
+        
+        $sums['saldo_valor_inicial_facturado'] = (
+            $sums['valor_inicial']
+            - $sums['valor_inicial_facturado']
+            );
+        
+        $cuadre_mayor = [
+            'provisiones' => 0.0,
+            'facturado' => 0.0,
+            'saldo' => 0.0,
+            'cuadre_mayor' => 0.0,
+        ];
+        
+        
+        foreach ($mayor as $m){
+            $cuadre_mayor['provisiones'] += $m['valor_inicial'];
+            $cuadre_mayor['facturado'] += $m['valor_inicial_facturado'];
+        }
+        
+        $cuadre_mayor['saldo'] = (
+            $cuadre_mayor['provisiones']
+            - $cuadre_mayor['facturado']
+            );
+        
+        $cuadre_mayor['cuadre_mayor'] = (
+            $cuadre_mayor['provisiones']
+            - $sums['valor_distribuido']
+            + $sums['valor_por_distribuir']
+            - $sums['saldo_valor_inicial_facturado']
+            );
+        
+        return([
+            'mayor' => $mayor,
+            'sums' => $sums,
+            'cuadre' => $cuadre_mayor,
+        ]);
     }
 }

@@ -82,7 +82,16 @@ class Modelinfoinvoicedetail extends CI_Model
                 'id_factura_informativa' => $idInfoDetail
             ]
         ]);
+                
         if (gettype($detailInfoInvoice) == 'array' && count($detailInfoInvoice) > 0) {
+            
+            foreach ($detailInfoInvoice as $k => $det){
+                $order_invoice_detail = $this->modelOrderInvoiceDetail->get($det['detalle_pedido_factura']);
+                $product = $this->modelProduct->get($order_invoice_detail['cod_contable']);
+                $detailInfoInvoice[$k]['cod_ice'] = $product['cod_ice'];
+            }
+                        
+            
             return $detailInfoInvoice;
         }
         return false;

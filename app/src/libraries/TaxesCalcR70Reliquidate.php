@@ -266,7 +266,7 @@ class parcialTaxesReliquidate {
             $detail_info_invoice,
             $product
             );
-        $taxes_product = $this->getDetailTaxesProduct($product, $prorrateo_item);   
+        $taxes_product = $this->getDetailTaxesProduct($product, $prorrateo_item);        
         
         return([
             'product' => $product['nombre'],

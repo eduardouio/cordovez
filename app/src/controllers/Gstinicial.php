@@ -196,7 +196,6 @@ class Gstinicial extends MY_Controller
             $order['gasto_origen'] = $initExpense['valor_provisionado'];
             #Evitamos que se actualize los gastos en origen del pedido
             #$this->modelOrder->update($order);
-            
             $initExpense['valor_provisionado'] = (
                 $initExpense['valor_provisionado']
                 * $initExpense['tipo_cambio_go']

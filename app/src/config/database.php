@@ -72,11 +72,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 
 $active_group = 'pruebas_cordovez';
-##$active_group = 'cordovez';
-#$active_group = 'pruebas_imnac';
-#$active_group = 'vid';
 
 $query_builder = TRUE;
+
 $db['pruebas_cordovez'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
@@ -97,50 +95,6 @@ $db['pruebas_cordovez'] = array(
 	'stricton' => FALSE,
 	'failover' => array(),
 	'save_queries' => TRUE
-);
-
-$db['pruebas_vid'] = array(
-    'dsn'	=> '',
-    'hostname' => 'localhost',
-    'username' => 'root',
-    'password' => 'elian.2011',
-    'database' => 'cordovezApp',
-    'dbdriver' => 'mysqli',
-    'dbprefix' => '',
-    'pconnect' => FALSE,
-    'db_debug' => FALSE,
-    'cache_on' => FALSE,
-    'cachedir' => '',
-    'char_set' => 'utf8',
-    'dbcollat' => 'utf8_general_ci',
-    'swap_pre' => '',
-    'encrypt' => FALSE,
-    'compress' => FALSE,
-    'stricton' => FALSE,
-    'failover' => array(),
-    'save_queries' => TRUE
-);
-
-$db['pruebas_imnac'] = array(
-    'dsn'	=> '',
-    'hostname' => 'localhost',
-    'username' => 'root',
-    'password' => 'elian.2011',
-    'database' => 'imnacApp',
-    'dbdriver' => 'mysqli',
-    'dbprefix' => '',
-    'pconnect' => FALSE,
-    'db_debug' => FALSE,
-    'cache_on' => FALSE,
-    'cachedir' => '',
-    'char_set' => 'utf8',
-    'dbcollat' => 'utf8_general_ci',
-    'swap_pre' => '',
-    'encrypt' => FALSE,
-    'compress' => FALSE,
-    'stricton' => FALSE,
-    'failover' => array(),
-    'save_queries' => TRUE
 );
 
 $db['cordovez'] = array(
@@ -189,7 +143,7 @@ $db['imnac'] = array(
 
 $db['vid'] = array(
         'dsn'   => '',
-        'hostname' => 'localhost',
+        'hostname' => 'localhost,3306',
         'username' => 'appCordovez',
         'password' => '\DBGfW<7;vBa5(LB',
         'database' => 'vidApp',
@@ -207,4 +161,28 @@ $db['vid'] = array(
         'stricton' => FALSE,
         'failover' => array(),
         'save_queries' => TRUE
+);
+
+# Bases de datos con conexion aSAP
+
+$db['cordovez_sap'] = array(
+    'dsn'   => '',
+    'hostname' => '192.168.0.189',
+    'username' => 'appimpor',
+    'password' => 'vinesa.2018',
+    'database' => 'DB_CORDOVEZ_PROD',
+    'dbdriver' => 'sqlsrv',
+    'dbprefix' => '',
+    'pconnect' => FALSE,
+    'db_debug' => TRUE,
+    'cache_on' => FALSE,
+    'cachedir' => '',
+    'char_set' => 'utf8',
+    'dbcollat' => 'utf8_general_ci',
+    'swap_pre' => '',
+    'encrypt' => FALSE,
+    'compress' => FALSE,
+    'stricton' => FALSE,
+    'failover' => array(),
+    'save_queries' => TRUE
 );

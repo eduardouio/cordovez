@@ -123,7 +123,7 @@
                       </a>
                    </td>
                    {% else %}
-                   <td>{{ invoices_order.fob_total | number_format(2,',','.') }}</td>
+                   <td>{{ (invoices_order.fob_total * invoices_order.tipo_cambio ) | number_format(2,',','.') }}</td>                   
                    <td class="success"><span class="fa fa-check text-success"></span>                  
                    </td>
                    {% endif %}

@@ -87,6 +87,11 @@ class MayorOrder {
             'valor_por_distribuir' => 0.0,
         ]; 
         
+        #Elimanos para cuando es CFR, por problemas con el ISD
+        if ($this->order['incoterm'] == 'CFR'){
+            $mayor_origin_expesnes['valor_inicial'] = 0;
+        }
+        
         foreach ($this->parcials as $k => $parcial){
             $mayor_origin_expesnes['valor_distribuido'] += (
                 $parcial['prorrateos']['porcentaje_parcial'] 

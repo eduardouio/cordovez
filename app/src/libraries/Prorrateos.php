@@ -118,12 +118,14 @@ class Prorrateos
             }
             
             $tasa_base_peso += $tasa;
+            
             $unidad_caja = $this->getUnitiesProduct(
                 $prod['detalle_pedido_factura']
                 );
             
+            
             if($unidad_caja){
-                $peso_unidad = $prod['peso'] /  ($unidad_caja * $prod['nro_cajas']);
+                $peso_unidad = $prod['peso']  /  ($unidad_caja * $prod['nro_cajas']);               
                 
                 array_push($tasa_general, [
                     'detalle_pedido_factura' => $prod['detalle_pedido_factura'],
@@ -137,26 +139,31 @@ class Prorrateos
                 ]);
                 
             }
-        }
+        }       
         
-        #si cinciden las tasa calculamo el prorrateo por item de la FI
-        if(round($tasa_base_peso,1) == round($tasa_provision,1)){
-            $this->tase_base_peso = True;
+        #verificamos que la tasa no sea 700 o 40 o diferente de los pesos
+        if(
+            floatval($tasa_general) != 700.00 
+            || floatval($tasa_general != 40.00) 
+            || (round($tasa_base_peso,1) == round($tasa_provision,1))
+            ){
             
-            foreach ($tasa_general as $item){
-                foreach ($this->init_data['products'] as $i => $dt){
-                    if($dt['detalle_pedido_factura'] == $item['detalle_pedido_factura']){
-                        $item['cajas_parcial'] = $dt['nro_cajas'];
-                        $item['peso_parcial'] = $dt['nro_cajas'] * $item['unidades_caja'] * $item['peso_unidad'];
-                        $item['tasa_parcial'] = $item['peso_parcial'] * 0.05;
-                        $total_tasa_parcial += $item['tasa_parcial'];
-                        array_push($tasa_parcial, $item);
-                        break;
+            #si cinciden las tasa calculamo el prorrateo por item de la FI
+                $this->tase_base_peso = True;
+                foreach ($tasa_general as $item){
+                    foreach ($this->init_data['products'] as $i => $dt){
+                        if($dt['detalle_pedido_factura'] == $item['detalle_pedido_factura']){
+                            $item['cajas_parcial'] = $dt['nro_cajas'];
+                            $item['unidades_parcial'] = ($dt['nro_cajas'] * $item['unidades_caja']);
+                            $item['peso_parcial'] = $item['unidades_parcial'] * $item['peso_unidad'];
+                            $item['tasa_parcial'] = $item['peso_parcial'] * 0.05;
+                            $total_tasa_parcial += $item['tasa_parcial'];
+                            break;
+                        }
                     }
                 }
-            }
-            $this->tasa_parcial = $tasa_parcial;
-            return $total_tasa_parcial;
+                $this->tasa_parcial = $tasa_parcial;
+                return $total_tasa_parcial;          
         }
         
         #retorna en porcentaje al fob

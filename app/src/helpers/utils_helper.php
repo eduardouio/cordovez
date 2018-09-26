@@ -150,9 +150,8 @@ if(!function_exists('sumsMayor')){
         
         $cuadre_mayor['cuadre_mayor'] = (
             $cuadre_mayor['provisiones']
-            - $sums['valor_distribuido']
-            + $sums['valor_por_distribuir']
             - $sums['saldo_valor_inicial_facturado']
+            + $sums['valor_por_distribuir']
             );
         
         return([

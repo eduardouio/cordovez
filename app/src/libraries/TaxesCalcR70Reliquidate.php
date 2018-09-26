@@ -195,9 +195,12 @@ class parcialTaxesReliquidate {
             + $tax['prorrateos_total']
             + $tax['gasto_origen_tasa_trimestral']
                 );           
-                   
+            
+            
+            
             #FOB + GO ok
             #FOB ok
+            #CFR ok
             # FCA
             $costo_total = (
             $tax['total_ice']
@@ -391,10 +394,8 @@ class parcialTaxesReliquidate {
             / $total_invoices
             ),6);
         
-                
         $percent = ($percent * 1000000) -1;
         $percent = $percent/1000000;
-        
         
         #solo funciona para la primera FI
         $product_value = ($detail_info_invoice['nro_cajas'] 
@@ -407,7 +408,9 @@ class parcialTaxesReliquidate {
         $fob_tasa_trimestral = ($product_value / $this->type_change_parcial) * $this->type_change_invoice;
 
         if ($this->incoterm == 'CFR'){
-            $fob = $product_value;           
+            #sujeto a revision chequear parciales anteriores
+            $gasto_origen_tasa_trimestral = 0.0;
+            $fob = $product_value;
             
         }elseif ($this->incoterm == 'FOB'){
             $gasto_origen = ($this->gastos_origen * $percent) 

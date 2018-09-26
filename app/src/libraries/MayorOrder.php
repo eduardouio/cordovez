@@ -77,7 +77,7 @@ class MayorOrder {
      */
     private function getMayorOriginExpenses():array{
         $mayor_origin_expesnes = [
-            'tipo' => 'Mayor Gastos Origen',
+            'tipo' => 'COSTOS EN ORIGEN',
             'valor_inicial' => $this->order['gasto_origen'] * $this->tipo_cambio_pedido,
             'valor_inicial_facturado' => 0.0,
             'saldo_inicial_facturado' => 0.0,
@@ -119,7 +119,7 @@ class MayorOrder {
     private function getMayorInitExpenses():array{
         
        $mayor_init_expenses = [
-           'tipo' => 'MAYOR GASTOS INICIALES',
+           'tipo' => 'COSTOS INICIALES',
            'valor_inicial' => 0.0,
            'valor_inicial_facturado' => 0.0,
            'saldo_inicial_facturado' => 0.0,
@@ -132,7 +132,12 @@ class MayorOrder {
        foreach ($this->init_expenses as $k => $iexp){
            $mayor_init_expenses['valor_inicial'] += $iexp['valor_provisionado'];
            $mayor_init_expenses['valor_inicial_facturado'] += $iexp['paids']['sums'];
+           #el isd no tiene facturas
            if ($iexp['concepto'] == 'ISD') {
+               $mayor_init_expenses['valor_inicial_facturado'] += $iexp['valor_provisionado'];
+           }
+           #el flete en CFR no tiene facrura
+           if ($this->order['incoterm'] == 'CFR' && $iexp['concepto'] == 'FLETE'){
                $mayor_init_expenses['valor_inicial_facturado'] += $iexp['valor_provisionado'];
            }
        }
@@ -160,7 +165,7 @@ class MayorOrder {
            $mayor_init_expenses['valor_inicial'] 
            - $mayor_init_expenses['valor_inicial_facturado']
            );       
-       
+             
        return $mayor_init_expenses;
     }
     
@@ -171,7 +176,7 @@ class MayorOrder {
      */
     private function getMayorParcialExpenses():array{
         $mayor_parcial_expenses = [
-            'tipo' => 'MAYOR GASTOS PARCIAL',
+            'tipo' => 'COSTOS PARCIAL',
             'valor_inicial' => 0.0,
             'valor_inicial_facturado' => 0.0,
             'saldo_inicial_facturado' => 0.0,
@@ -211,8 +216,7 @@ class MayorOrder {
             $mayor_parcial_expenses['valor_inicial'] 
             - $mayor_parcial_expenses['valor_distribuido']
             );
-         
-       
+                
         return $mayor_parcial_expenses;
     }
     
@@ -223,7 +227,7 @@ class MayorOrder {
      */
     private function getMayorAlmacenaje():array{
         $mayor_almacenaje = [
-            'tipo' => 'MAYOR ALAMACENAJE PARCIAL',
+            'tipo' => 'COSTOS ALAMACENAJE',
             'valor_inicial' => 0.0,
             'valor_inicial_facturado' => 0.0,
             'saldo_inicial_facturado' => 0.0,
@@ -277,7 +281,7 @@ class MayorOrder {
      */
     private function getMayorTributes():array{
         $mayor_tributos = [
-            'tipo' => 'Mayor Tributos',
+            'tipo' => 'Costos Tributos',
             'valor_inicial' => 0.0,
             'valor_inicial_facturado' => 0.0,
             'saldo_inicial_facturado' => 0.0,
@@ -337,15 +341,15 @@ class MayorOrder {
             + $tributos['ice_advalorem_reliquidado']
             );  
         
-        $mayor_tributos['valor_inicial_facturado'] = $mayor_tributos['valor_distribuido_facturado'] = (
-                $mayor_tributos['valor_inicial'] 
-            );
+        $mayor_tributos['valor_inicial_facturado'] = ($mayor_tributos['valor_inicial'] - $tributos['ice_advalorem_reliquidado']);
+        
+        $mayor_tributos['valor_distribuido_facturado'] = $mayor_tributos['valor_inicial_facturado'];
         
         $mayor_tributos['saldo_inicial_facturado'] = $mayor_tributos['saldo_distribuido_facturado'] = (
                 $mayor_tributos['valor_inicial'] 
                 - $mayor_tributos['valor_inicial_facturado']
             );
-        
+                
         return $mayor_tributos;
     }
     
@@ -356,7 +360,7 @@ class MayorOrder {
      */
     private function getMayorProduct():array{
         $mayor_producto = [
-            'tipo' => 'Mayor Productos',
+            'tipo' => 'COSTO Productos',
             'valor_inicial' => 0.0,
             'valor_inicial_facturado' => 0.0,
             'saldo_inicial_facturado' => 0.0,

@@ -1017,7 +1017,7 @@ class Reliquidacion extends MY_Controller
             
         }
                        
-        #adjuntamos las facturas a los GI
+        #adjuntamos las facturas a los GI cosro total mas loq ue falta distribuir mas producto - product
         foreach ($init_data['init_expenses'] as $k => $iexp){
             $init_data['init_expenses'][$k]['paids'] = $this->modelPaidDetail->getByExpense($iexp['id_gastos_nacionalizacion']);
         }

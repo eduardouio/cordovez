@@ -9,6 +9,7 @@ require_once ( $libraries_url . 'TaxesCalcR10Reliquidate.php' );
 require_once ( $libraries_url . 'StockOrder.php' );
 require_once ( $libraries_url . 'ReportCompleteOrder.php' );
 require_once ( $libraries_url . 'MayorOrder.php' );
+require_once ( $libraries_url . 'Prorrateos.php' );
 
 /**
  * Controller encargado del calculo de impuestos
@@ -44,6 +45,8 @@ class Reliquidacion extends MY_Controller
     private $modelProrrateoDetail;
     private $modelOrderReport;
     private $modelMayor;
+    private $modelStockOrder;
+    private $stockOrder;
     
 
     /**
@@ -84,12 +87,14 @@ class Reliquidacion extends MY_Controller
             'ModelOrderReport',
             'Modelpaiddetail',
             'ModelMayor',
+            'ModelStockOrder',
         ];
         
         foreach ($models as $model){
             $this->load->model($model);
         }
         
+        $this->modelStockOrder = new ModelStockOrder();
         $this->modelPaidDetail = new Modelpaiddetail();
         $this->modelOrderReport = new ModelOrderReport();
         $this->modelInitExpenses = new Modelinitexpenses();
@@ -152,8 +157,43 @@ class Reliquidacion extends MY_Controller
         }
         
         $init_data = $this->getOrderDataR70($id_parcial);
-        $this->load->library('Prorrateos', $init_data);
-        $prorrateo_values = $this->prorrateos->getValues();
+               
+        $detail_order_invoices = [];
+        $detail_info_invoices = [];
+        
+        $order_invoices = $this->modelOrderInvoice->getCompleteInvoiceByOrder($parcial['nro_pedido']);
+        
+        if($order_invoices){
+                    foreach ($order_invoices['detail'] as $k => $v){
+                        $v['product'] = $this->modelProducts->get($v['cod_contable']);
+                        array_push($detail_order_invoices, $v);
+                    }
+        }
+        
+        
+        $info_invoices = $this->modelInfoInvoice->getByOrder($parcial['nro_pedido']);
+        
+        if($info_invoices){
+            foreach ($info_invoices as $idx => $invoice){
+                $details = $this->modelInfoInvoiceDetail->getByFacInformative(
+                    $invoice['id_factura_informativa']
+                    );
+                if ($details){
+                    foreach ($details as $k => $v){
+                        array_push($detail_info_invoices, $v);
+                    }
+                }
+            }
+        }
+        
+        $stock_order = new StockOrder(
+            $init_data['order'],
+            $detail_order_invoices,
+            $detail_info_invoices
+            );
+                
+        $prorrateoLib = new Prorrateos($init_data, $stock_order->getCurrentOrderStock());        
+        $prorrateo_values = $prorrateoLib->getValues();
         $init_data['fobs_parcial'] = $prorrateo_values['fobs_parcial'];
         $init_data['warenhouses'] = $prorrateo_values['warenhouses'];    
 
@@ -863,17 +903,13 @@ class Reliquidacion extends MY_Controller
      */
     public function closeOrder(string $nro_order){
         
-        $this->modelLog->susessLog(
-            'Inicio de prueba de cierre de pedido ' . $nro_order
-            );
-        
         $order = $this->modelOrder->get($nro_order);
         
         if ($order == false) {
             return($this->index());
         }
         
-        if(intval($order['bg_isclosed']) == 1 ){
+        if(intval($order['bg_isclosed']) == 1 || boolval($order['fecha_'])){
             $this->modelLog->warningLog(
                 'El pedido ya esta cerrado, y no se puede cerrar'
                 );

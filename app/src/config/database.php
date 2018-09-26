@@ -162,27 +162,3 @@ $db['vid'] = array(
         'failover' => array(),
         'save_queries' => TRUE
 );
-
-# Bases de datos con conexion aSAP
-
-$db['cordovez_sap'] = array(
-    'dsn'   => '',
-    'hostname' => '192.168.0.189',
-    'username' => 'appimpor',
-    'password' => 'vinesa.2018',
-    'database' => 'DB_CORDOVEZ_PROD',
-    'dbdriver' => 'sqlsrv',
-    'dbprefix' => '',
-    'pconnect' => FALSE,
-    'db_debug' => TRUE,
-    'cache_on' => FALSE,
-    'cachedir' => '',
-    'char_set' => 'utf8',
-    'dbcollat' => 'utf8_general_ci',
-    'swap_pre' => '',
-    'encrypt' => FALSE,
-    'compress' => FALSE,
-    'stricton' => FALSE,
-    'failover' => array(),
-    'save_queries' => TRUE
-);

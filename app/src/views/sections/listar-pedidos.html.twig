@@ -63,7 +63,7 @@
                <th>FOB</th>
                <th>Nacionalizado</th>
                <th>Saldo</th>
-               <th>Observaciones</th>
+               <!--<th>Observaciones</th>-->
                <th>Acciones</th>
             </tr>
          </thead>
@@ -104,9 +104,11 @@
                <td class="text-right {{ text_class }}"> 
                    {{ order.info.stock | number_format(2, '.', ',') }}
                </td>
+               <!--  
                <td class="text-right">
                   {{ order.observaciones | upper }}
                </td>
+               -->
                <td>
                <small>
                	<a href="{{ rute_url }}pedido/presentar/{{ order.nro_pedido }}" class="text-primary">

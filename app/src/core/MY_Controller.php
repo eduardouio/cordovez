@@ -196,48 +196,4 @@ class MY_Controller extends CI_Controller
         return ( header('Location: ' . base_url() . $target[$page]));      
         exit(0);
     }
-    
-    /**
-     * Obtiene el tiempo en dias de un pedido en la bodega inicial
-     * si el pedido se encuentra nacionalizado o tiene una factura
-     * informativa retorna el tiempo que estubo en la bodega inicial
-     *
-     * @param array $order
-     *            pedido a evaluar
-     * @return int
-     */
-    protected function getWarenHouseDaysInitial(array $order): int
-    {     
-        if(
-            $order['fecha_arribo'] == Null ||
-            $order['fecha_arribo'] == '' ||
-            $order['fecha_arribo'] == null
-           )
-        {
-            $this->modelLog->errorLog(
-                'La fecha de arribo del pedido es nula o vacia',
-                $order['fecha_arribo']
-                );
-            
-            return 0;
-            
-        }
-        
-        if (gettype($order['fecha_salida_bodega_puerto']) == 'NULL') {
-            return (
-                    dateDiffInDays(
-                        $order['fecha_arribo'], 
-                        date('Y-m-d'))
-                    );
-        }
-        
-     
-        return (
-                dateDiffInDays(
-                    $order['fecha_arribo'], 
-                    $order['fecha_salida_bodega_puerto']
-                            )
-                );
-    }
-        
 }

@@ -18,14 +18,19 @@ class Prorrateos
     public $tase_base_peso = False;
     private $init_data;
     private $type_change_invoice;
+    private $stock_order;
+    private $current_parcial_is_last = True;
     
     /**
      * Funcion costructora de la case
      *
      */
-    function __construct($init_data){
+    function __construct($init_data, array $stock_order){
         $this->init_data = $init_data;
+        $this->stock_order = $stock_order;
         $this->setConfiguration();
+        $this->checkStockOrder();
+        
     }
     
     
@@ -35,7 +40,8 @@ class Prorrateos
      * @return array
      */
     public function getValues() : array
-    {
+    {       
+        
         $fobsParcial = $this->getFobParcialAndFobOrder();
         $warenhoses = $this->getWarenhouses($fobsParcial);
         $prorrateos = $this->getProrrateoDetail($fobsParcial, $warenhoses);
@@ -79,8 +85,9 @@ class Prorrateos
                     $expense['valor_provisionado'],
                     $fobs['fob_parcial_razon_inicial']
                     );
-                $this->have_tasa = True;
+                $this->have_tasa = True;                
             }
+            
             
             array_push( $prorrateos['prorrateo_pedido'], $expense);
         }
@@ -99,7 +106,16 @@ class Prorrateos
      * @return array|number
      */
     private function getTCAValue($tasa_provision, $fob_parcial_razon_inicial) {
+        if(count($this->init_data['products']) == 0){
+            print 'Factura Informativa sin productos';
+            exit();
+        }
         
+        #comprobamos el valor de la tasa
+        if(floatval($tasa_provision == 700.00) || floatval($tasa_provision == 40.00)){
+            return ($tasa_provision * $fob_parcial_razon_inicial);
+        }        
+       
         if(count($this->init_data['products']) == 0){
             print 'Factura Informativa sin productos';
             exit();
@@ -118,14 +134,12 @@ class Prorrateos
             }
             
             $tasa_base_peso += $tasa;
-            
             $unidad_caja = $this->getUnitiesProduct(
                 $prod['detalle_pedido_factura']
                 );
             
-            
             if($unidad_caja){
-                $peso_unidad = $prod['peso']  /  ($unidad_caja * $prod['nro_cajas']);               
+                $peso_unidad = $prod['peso'] /  ($unidad_caja * $prod['nro_cajas']);
                 
                 array_push($tasa_general, [
                     'detalle_pedido_factura' => $prod['detalle_pedido_factura'],
@@ -139,31 +153,26 @@ class Prorrateos
                 ]);
                 
             }
-        }       
+        }
         
-        #verificamos que la tasa no sea 700 o 40 o diferente de los pesos
-        if(
-            floatval($tasa_general) != 700.00 
-            || floatval($tasa_general != 40.00) 
-            || (round($tasa_base_peso,1) == round($tasa_provision,1))
-            ){
+        #si cinciden las tasa calculamo el prorrateo por item de la FI
+        if(round($tasa_base_peso,1) == round($tasa_provision,1)){
+            $this->tase_base_peso = True;
             
-            #si cinciden las tasa calculamo el prorrateo por item de la FI
-                $this->tase_base_peso = True;
-                foreach ($tasa_general as $item){
-                    foreach ($this->init_data['products'] as $i => $dt){
-                        if($dt['detalle_pedido_factura'] == $item['detalle_pedido_factura']){
-                            $item['cajas_parcial'] = $dt['nro_cajas'];
-                            $item['unidades_parcial'] = ($dt['nro_cajas'] * $item['unidades_caja']);
-                            $item['peso_parcial'] = $item['unidades_parcial'] * $item['peso_unidad'];
-                            $item['tasa_parcial'] = $item['peso_parcial'] * 0.05;
-                            $total_tasa_parcial += $item['tasa_parcial'];
-                            break;
-                        }
+            foreach ($tasa_general as $item){
+                foreach ($this->init_data['products'] as $i => $dt){
+                    if($dt['detalle_pedido_factura'] == $item['detalle_pedido_factura']){
+                        $item['cajas_parcial'] = $dt['nro_cajas'];
+                        $item['peso_parcial'] = $dt['nro_cajas'] * $item['unidades_caja'] * $item['peso_unidad'];
+                        $item['tasa_parcial'] = $item['peso_parcial'] * 0.05;
+                        $total_tasa_parcial += $item['tasa_parcial'];
+                        array_push($tasa_parcial, $item);
+                        break;
                     }
                 }
-                $this->tasa_parcial = $tasa_parcial;
-                return $total_tasa_parcial;          
+            }
+            $this->tasa_parcial = $tasa_parcial;
+            return $total_tasa_parcial;
         }
         
         #retorna en porcentaje al fob
@@ -180,6 +189,8 @@ class Prorrateos
         
         $this->tasa_parcial = $tasa_parcial;
         return ($tasa_provision * $fob_parcial_razon_inicial);
+        
+        
         
     }
     
@@ -253,11 +264,16 @@ class Prorrateos
             * ($warenhouse['almacenaje_total_parcial'] )
             );
         
-        
         $warenhouse['almacenaje_proximo_parcial'] = (
             $warenhouse['almacenaje_total_parcial']
             - $warenhouse['almacenaje_aplicado']
             );
+
+        #comprobamos si es el ultimo parcial si lo es asignamos todo el valor
+        if ($this->current_parcial_is_last){
+            $warenhouse['almacenaje_aplicado'] += $warenhouse['almacenaje_proximo_parcial'];
+            $warenhouse['almacenaje_proximo_parcial'] = 0;           
+        }
         
         return $warenhouse;
     }
@@ -347,6 +363,20 @@ class Prorrateos
         }
         
         return False;
+    }
+    
+    
+    /**
+     * Comprueba si el parcial que esta procesando es el ultimo
+     */
+    private function checkStockOrder(){        
+        if($this->stock_order){
+            foreach ($this->stock_order as $k => $item){
+                if(intval($item['stock']) > 0 ){
+                    return $this->current_parcial_is_last = False;
+                }
+            }
+        }
     }
     
 }

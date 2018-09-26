@@ -9,7 +9,10 @@ Impreso Por:  <span style="color: #333; font-weight: bold;"> {{ user.nombres }} 
 Pedido: <span style="color: #333; font-weight: bold;"> {{ order.nro_pedido }} </span>
 <br />
 Regimen: <span style="color: #333; font-weight: bold;"> {{ order.regimen }}  [<strong>{{ order.incoterm }}</strong>]</span>
+<br />
+Refrendo: <span style="color: #333; font-weight: bold;"> {{ order.nro_refrendo }}</span>
 </div>
+
 <br />
 <table border="1">
 <tr style="background-color: #eeeeee;">
@@ -73,6 +76,39 @@ Regimen: <span style="color: #333; font-weight: bold;"> {{ order.regimen }}  [<s
 	<td style="text-align: rigth; width: 80;">{{ taxes.ice_especifico | number_format(2,'.','') }}</td>
 	<td style="text-align: rigth; width: 80;">{{ taxes.iva | number_format(2,'.','') }}</td>
 	<td style="text-align: rigth; width: 80;"> <strong>${{ taxes.total | number_format(2,'.','') }}</strong></td>
+</tr>
+</table>
+<br />
+<br />
+<span style="font-size: 12px"> <strong>Detalle de Facturas Producto </strong> </span>
+<br />
+<table border="1">
+<tr style="background-color: #eeeeee;">
+	<td style="text-align: center; width: 75;"><strong>Nro Factura</strong></td>
+	<td style="text-align: center; width: 199;"><strong>Proveedor</strong></td>
+	<td style="text-align: center; width: 80;"><strong>F. Emisión</strong></td>
+	<td style="text-align: center; width: 80;"><strong>F. Vencimiento</strong></td>
+	<td style="text-align: center; width: 60;"><strong>Moneda</strong></td>
+	<td style="text-align: center; width: 80;"><strong>TC T</strong></td>
+	<td style="text-align: center; width: 80;"><strong>Valor T</strong></td>
+</tr>
+<tr>
+	<td style="text-align: rigth; width: 75;">{{ invoice.nro_factura }}</td>
+	<td style="text-align: rigth; width: 199;">{{ invoice.proveedor }}</td>
+	{% if invoice.fecha_emision != null %}
+	<td style="text-align: rigth; width: 80;">{{ invoice.fecha_emision | date('d/m/Y') }}</td>
+	{% else %}
+	<td style="text-align: rigth; width: 80;">--/--/----</td>
+	{% endif %}
+	{% if invoice.fecha_vencimiento != null %}
+	<td style="text-align: rigth; width: 80;">{{ invoice.fecha_vencimiento | date('d/m/Y') }}</td>
+	{% else %}
+	<td style="text-align: rigth; width: 80;">--/--/----</td>
+	{% endif %}
+	
+	<td style="text-align: rigth; width: 60;">{{ invoice.moneda }}</td>
+	<td style="text-align: rigth; width: 80;">{{ invoice.tipo_cambio | number_format(5,'.','') }}</td>
+	<td style="text-align: rigth; width: 80;">{{ invoice.valor | number_format(2,'.','') }}</td>	
 </tr>
 </table>
 {% endif %}

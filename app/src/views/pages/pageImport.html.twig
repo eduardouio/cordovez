@@ -1,0 +1,16 @@
+{% include 'base/header.html.twig' %}
+{% include 'base/navbarheader.html.twig' %}
+{% include 'base/navbarleft.html.twig' %}
+{% include 'base/content.html.twig' %}
+
+{% if assistent == true %}
+	{% include 'sections/asistente-importacion.html.twig' %}
+{% endif %}
+
+{%if list_orders == true  %}
+	{% include 'sections/lista-importaciones.html.twig' %}
+{% endif %}
+
+{% include 'base/content_close.html.twig' %}
+{% include 'base/signaturefoot.html.twig' %}
+{% include 'base/footer.html.twig' %}

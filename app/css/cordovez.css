@@ -125,6 +125,15 @@
 	
 }
 
+.title-importar {
+	background-color:  rgb(54, 42, 165) !important;
+	height: 45px;
+	color: #fff;
+	
+}
+
+
+
 .title-producto {
 	background-color: #04738B !important;
 	height: 45px;
@@ -225,6 +234,12 @@ body {
 	border-color: #8E44AD;
 	color: #fff;
     background-color: #8E44AD !important;
+}
+
+.panel-sap{
+	border-color: rgb(54, 42, 165);
+	color: #fff;
+    background-color:  rgb(54, 42, 165) !important;
 }
 
 .panel-footer {
@@ -338,6 +353,15 @@ body {
 .text-tittle {
 	width: 100%;
 	background-color: #337ab7;
+	color: #fff;
+	border-radius: 5px;
+	text-transform: uppercase;
+	text-align: center;
+}
+
+.text-tittle-alt {
+	width: 100%;
+	background-color: #444;
 	color: #fff;
 	border-radius: 5px;
 	text-transform: uppercase;

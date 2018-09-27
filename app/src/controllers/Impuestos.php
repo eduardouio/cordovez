@@ -6,6 +6,9 @@ $libraries_url = str_replace('controllers', 'libraries/', $libraries_url);
 
 require_once ( $libraries_url . 'TaxesCalcR70.php' );
 require_once ( $libraries_url . 'TaxesCalcR10.php' );
+require_once ( $libraries_url . 'StockOrder.php' );
+require_once ( $libraries_url . 'Prorrateos.php' );
+
 
 /**
  * Controller encargado del calculo de impuestos
@@ -129,14 +132,49 @@ class Impuestos extends MY_Controller
         }
         
         $init_data = $this->getOrderDataR70($id_parcial);
-        $this->load->library('Prorrateos', $init_data);
-        $prorrateo_values = $this->prorrateos->getValues();
+        
+        $detail_order_invoices = [];
+        $detail_info_invoices = [];
+        
+        $order_invoices = $this->modelOrderInvoice->getCompleteInvoiceByOrder($parcial['nro_pedido']);
+        
+        if($order_invoices){
+            foreach ($order_invoices['detail'] as $k => $v){
+                $v['product'] = $this->modelProducts->get($v['cod_contable']);
+                array_push($detail_order_invoices, $v);
+            }
+        }
+        
+        
+        $info_invoices = $this->modelInfoInvoice->getByOrder($parcial['nro_pedido']);
+        
+        if($info_invoices){
+            foreach ($info_invoices as $idx => $invoice){
+                $details = $this->modelInfoInvoiceDetail->getByFacInformative(
+                    $invoice['id_factura_informativa']
+                    );
+                if ($details){
+                    foreach ($details as $k => $v){
+                        array_push($detail_info_invoices, $v);
+                    }
+                }
+            }
+        }
+        
+        $stock_order = new StockOrder(
+            $init_data['order'],
+            $detail_order_invoices,
+            $detail_info_invoices
+            );
+        
+        $prorrateoLib = new Prorrateos($init_data, $stock_order->getCurrentOrderStock());
+        $prorrateo_values = $prorrateoLib->getValues();        
         #seteamos la tasa de control en el producto
-        if($this->prorrateos->have_tasa && $parcial['bg_isliquidated'] == 0){
+        if($prorrateoLib->have_tasa && $parcial['bg_isliquidated'] == 0){
             @$this->updateTasaDetail(
-                            $this->prorrateos->tasa_parcial, 
+                            $prorrateoLib->tasa_parcial, 
                             $init_data,
-                            $this->prorrateos->tase_base_peso
+                            $prorrateoLib->tase_base_peso
                 );
         }        
         

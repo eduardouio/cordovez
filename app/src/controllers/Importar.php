@@ -1,5 +1,4 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
-
 /**
  * Asistente de importacion de peduidos de SAP
  *
@@ -17,6 +16,9 @@ class Importar extends MY_Controller
     private $template = '/pages/pageImport.html';
     private $modelImportSAP;
     private $modelLog;
+    private $enterprise = 'cordovez';
+    #private $enterprise = 'vid';
+    #private $enterprise = 'imnac';
 
     function __construct(){
         parent::__construct();
@@ -46,37 +48,27 @@ class Importar extends MY_Controller
      * mostramos en asistente de importacion de pedido
      */
     public function index(){
-        $data = $this->modelImportSAP->getAllOrders(2018);
-        
-        return $this->responseHttp([
+      $data = $this->modelImportSAP->getAll();       
+      
+      return $this->responseHttp([
         	'titleContent' => 'Asistente de importación de pedidos desde SAP desde 2018',
         	'assistent' => True,
             'data' => $data,
+            'vue_app' => True,
         ]);
-       }
-
-
-    /**
-     * presenta la lista de pedid
-     * @return array [description]
-     */
-    public function ok(){
-    	return $this->responseHttp([
-    		'titleContent' => 'Lista de pedidos que no se importaron'
-    	]);
     }
-
+    
    /**
-    * Retorna la lista de pedidos que han sido importados exitosamente
-    * @return string
+    * Escanea los pedidos del servidor y los importa
     */
-    public function historico(){
-    	$this->responseHttp([
-    		'titleContent' => 'Histórico de pedidos importados Exitosamente',
-    		'list_orders' => True,
-    	]);
-    }
-
+   public function scan(){
+       $this->modelLog->generalLog(
+           'Inicio de escaneo Servidor'
+           );
+       $this->modelImportSAP->getOrdersSAP($this->enterprise, date('Y'));
+       $this->redirectPage('import_wizard');           
+   }
+   
     /*
      * Redenderiza la informacion y la envia al navegador
      * @param array $config informacion de la plantilla

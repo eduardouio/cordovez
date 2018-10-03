@@ -163,7 +163,8 @@ class MY_Controller extends CI_Controller
             'showTaxesOrder' => 'index.php/impuestos/pd',
             'showTaxesParcialLiquidate' => 'index.php/reliquidacion/pc',
             'showTaxesOrderLiquidate' => 'index.php/reliquidacion/pd',
-            'showParcial' => 'index.php/parcial/presentar'
+            'showParcial' => 'index.php/parcial/presentar',
+            'import_wizard' => 'index.php/importar/',
         ];
 
 

@@ -168,6 +168,7 @@ class Detallefacpago extends MY_Controller
                 }
             }
         }
+                
         $document = $this->modelPaid->get($nroDocument);
         $this->responseHttp([
             'titleContent' => 'Justificar Gasto [Factura #' . $document['nro_factura'] . ' ' . $document['supplier']['nombre'] . ']',

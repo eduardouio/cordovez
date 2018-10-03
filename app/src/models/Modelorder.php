@@ -639,7 +639,10 @@ class Modelorder extends CI_Model
                 'No se puede registrar el pedido en la base',
                 $this->db->last_query()
                 );
+            return False;
         }
+        
+        return False;
     }
     
     /**

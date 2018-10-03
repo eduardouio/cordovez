@@ -110,7 +110,6 @@ class ReportICE {
     }
     
     
-    
     /**
      * Verifica que los pedidos y los parciales se encuentren 
      * cerrados en el sistema
@@ -121,8 +120,8 @@ class ReportICE {
         $errors = [
             'orders' => [],
             'parcials' => [],
-        ];
-        
+        ];       
+        #print json_encode($this->product_data['parcials']);
         #comprobamos los pedidos estes
         foreach ($this->product_data['orders'] as $k => $order){
             if(intval($order['bg_isclosed']) == 0){

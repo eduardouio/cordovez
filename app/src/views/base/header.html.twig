@@ -38,7 +38,9 @@
   	<link href="{{ base_url}}css/kingtable.css" rel="stylesheet" type="text/css">
     <link href="{{ base_url}}css/kingtable.clear.css" rel="stylesheet" type="text/css">
     {% endif %}
-      
+    {% if vue_app == true %}
+    <script src="{{base_url}}vendor/vue/vue.js"></script>    
+    {% endif %}
     <script src="{{base_url}}vendor/jquery/jquery.min.js"></script>
     <script src="{{base_url}}js/jquery.maskedinput.js"></script>
     <script src="{{base_url}}vendor/jquery/jqueryui.min.js"></script>

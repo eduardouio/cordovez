@@ -1,292 +1,290 @@
-<div class="row">
-	<div class="col-md-5">	
-		<div class="text-tittle">
-                  Lista de Pedidos Disponibles a importar
+<div id="app">
+  <div v-if="ajaxRequest" class= "row">
+  <div class="col-md-4"></div>
+  <div class="col-md-4 text-center" >
+  <img src="{{ base_url }}img/tenor.gif" alt="Cargado..." height="150" width="250">
+  <h1>Actualizando...</h1>
+  </div>
+  <div class="col-md-4"></div>
+  </div>
+  <div v-else>
+   <div class="row">
+      <div class="col-md-5">
+         <div class="text-tittle">
+            Lista de Pedidos Disponibles a importar
+         </div>
+         <div class="row">
+            <div class="col-md-9">
+               <input placeholder="Buscar Pedido" class="form-control" style="margin-left: 09px;" v-model="search_query">
+            </div>
+            <div class="col-md-3">
+               <a href="{{ rute_url }}importar/scan/" class="btn btn-sm btn-default" @click="ajaxRequest=true">
+               <span class="fa fa-refresh"></span> 
+               Escanear SAP 
+               </a>
+            </div>
+         </div>
+         <table class="table table-condensed table-striped table-hover" style="margin-bottom: 0px;">
+            <thead>
+               <tr>
+                  <th>Nro Pedido</th>
+                  <th>Proveedor &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</th>
+                  <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbspValor</th>
+                  <th> Ped | Fac | Det </th>
+               </tr>
+            </thead>
+            </table>
+         <div class="table-responsive"  style="height:380px;">          
+            <table class="table table-condensed table-striped table-hover">
+            <tbody>
+               <tr v-for="order in data_filer" @dblclick="check_order(order.nro_pedido)">
+                  <td>
+                     <span class="fa fa-share"></span> 
+                     <input v-if="order.selected == true" checked="checked" type="checkbox" @click="check_order(order.nro_pedido)">
+                     <input v-else type="checkbox"  @click="check_order(order.nro_pedido)">
+                     <a v-on:click="select_order(order.nro_pedido)"><span class="fa fa-check"></span> ${ order.nro_pedido }</a> 
+                  </td>
+                  <td>${ order.proveedor }</td>
+                  <td class="text-right">
+                     ${ order.valor_factura }
+                  </td>
+                  <td class="text-right">                               
+                    <span class="fa fa-check text-success" v-if="order.bg_have_order_items ==1"></span>
+                    <span class="fa fa-ban text-danger" v-if="order.bg_have_order_items == 0"></span>
+                     &nbsp;&nbsp;
+                     <span class="fa fa-check text-success" v-if="order.bg_have_invoice == 1"></span>
+                    <span class="fa fa-ban text-danger" v-if="order.bg_have_invoice == 0"></span>
+                     &nbsp;&nbsp;
+                     <span class="fa fa-check text-success" v-if="order.bg_have_invoice_items == 1"></span>
+                    <span class="fa fa-ban text-danger" v-else="order.bg_have_invoice_items == 0"></span>
+                  </td>
+               </tr>
+            </tbody>
+            </table>
+         </div>
+         <br>
+         <!-- <button class="btn btn-sm btn-default" @click="select_all(data_filer)"><span class="fa fa-check"></span> Selec. Todos</button> -->
+         <button class="btn btn-sm btn-primary pull-right" @click="put_orders()"><span class="fa fa-share"></span> Importar Seleccionados</button>
+      </div>
+      <div class="col-md-7">
+         <div class="text-tittle-alt">
+            Detalle de pedido
+         </div>
+         <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+               <div class="well well-sm well-default">
+                  PEDIDO ${ current_order.nro_pedido } ${ current_order.proveedor }
+                  <div class="pull-right">
+                     <a href="{{ rute_url }}importar/pedido/" class="btn btn-sm btn-inverse">
+                     <span class="fa fa-share"></span> Importar ${ current_order.nro_pedido }
+                     </a>
+                  </div>
                </div>
-               <input type="" class="form-control" placeholder="Buscar Pedido">
-               <div class="table-responsive"  style="height:380px;">                
-		<table class="table table-condensed table-striped table-hover"
-			<thead>
-				<tr>
-					<th>Nro Pedido</th>
-					<th>Proveedor</th>
-					<th>Moneda</th>
-					<th>Valor</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr class="text-right">
-					<td><a href=""><span class="fa fa-eye"></span> 004-18</a> </td>
-					<td>Concha y Toro</td>
-					<td>Dolares</td>
-					<td>
-						3400.202,00 
-						<span class="fa fa-share"></span> <input type="checkbox" name=""> </td>
-				</tr><tr class="text-right">
-					<td><a href=""><span class="fa fa-eye"></span> 004-18</a> </td>
-					<td>Concha y Toro</td>
-					<td>Dolares</td>
-					<td>
-						3400.202,00 
-						<span class="fa fa-share"></span> <input type="checkbox" name=""> </td>
-				</tr><tr class="text-right">
-					<td><a href=""><span class="fa fa-eye"></span> 004-18</a> </td>
-					<td>Concha y Toro</td>
-					<td>Dolares</td>
-					<td>
-						3400.202,00 
-						<span class="fa fa-share"></span> <input type="checkbox" name=""> </td>
-				</tr><tr class="text-right">
-					<td><a href=""><span class="fa fa-eye"></span> 004-18</a> </td>
-					<td>Concha y Toro</td>
-					<td>Dolares</td>
-					<td>
-						3400.202,00 
-						<span class="fa fa-share"></span> <input type="checkbox" name=""> </td>
-				</tr><tr class="text-right">
-					<td><a href=""><span class="fa fa-eye"></span> 004-18</a> </td>
-					<td>Concha y Toro</td>
-					<td>Dolares</td>
-					<td>
-						3400.202,00 
-						<span class="fa fa-share"></span> <input type="checkbox" name=""> </td>
-				</tr><tr class="text-right">
-					<td><a href=""><span class="fa fa-eye"></span> 004-18</a> </td>
-					<td>Concha y Toro</td>
-					<td>Dolares</td>
-					<td>
-						3400.202,00 
-						<span class="fa fa-share"></span> <input type="checkbox" name=""> </td>
-				</tr><tr class="text-right">
-					<td><a href=""><span class="fa fa-eye"></span> 004-18</a> </td>
-					<td>Concha y Toro</td>
-					<td>Dolares</td>
-					<td>
-						3400.202,00 
-						<span class="fa fa-share"></span> <input type="checkbox" name=""> </td>
-				</tr><tr class="text-right">
-					<td><a href=""><span class="fa fa-eye"></span> 004-18</a> </td>
-					<td>Concha y Toro</td>
-					<td>Dolares</td>
-					<td>
-						3400.202,00 
-						<span class="fa fa-share"></span> <input type="checkbox" name=""> </td>
-				</tr><tr class="text-right">
-					<td><a href=""><span class="fa fa-eye"></span> 004-18</a> </td>
-					<td>Concha y Toro</td>
-					<td>Dolares</td>
-					<td>
-						3400.202,00 
-						<span class="fa fa-share"></span> <input type="checkbox" name=""> </td>
-				</tr><tr class="text-right">
-					<td><a href=""><span class="fa fa-eye"></span> 004-18</a> </td>
-					<td>Concha y Toro</td>
-					<td>Dolares</td>
-					<td>
-						3400.202,00 
-						<span class="fa fa-share"></span> <input type="checkbox" name=""> </td>
-				</tr><tr class="text-right">
-					<td><a href=""><span class="fa fa-eye"></span> 004-18</a> </td>
-					<td>Concha y Toro</td>
-					<td>Dolares</td>
-					<td>
-						3400.202,00 
-						<span class="fa fa-share"></span> <input type="checkbox" name=""> </td>
-				</tr><tr class="text-right">
-					<td><a href=""><span class="fa fa-eye"></span> 004-18</a> </td>
-					<td>Concha y Toro</td>
-					<td>Dolares</td>
-					<td>
-						3400.202,00 
-						<span class="fa fa-share"></span> <input type="checkbox" name=""> </td>
-				</tr><tr class="text-right">
-					<td><a href=""><span class="fa fa-eye"></span> 004-18</a> </td>
-					<td>Concha y Toro</td>
-					<td>Dolares</td>
-					<td>
-						3400.202,00 
-						<span class="fa fa-share"></span> <input type="checkbox" name=""> </td>
-				</tr><tr class="text-right">
-					<td><a href=""><span class="fa fa-eye"></span> 004-18</a> </td>
-					<td>Concha y Toro</td>
-					<td>Dolares</td>
-					<td>
-						3400.202,00 
-						<span class="fa fa-share"></span> <input type="checkbox" name=""> </td>
-				</tr><tr class="text-right">
-					<td><a href=""><span class="fa fa-eye"></span> 004-18</a> </td>
-					<td>Concha y Toro</td>
-					<td>Dolares</td>
-					<td>
-						3400.202,00 
-						<span class="fa fa-share"></span> <input type="checkbox" name=""> </td>
-				</tr><tr class="text-right">
-					<td><a href=""><span class="fa fa-eye"></span> 004-18</a> </td>
-					<td>Concha y Toro</td>
-					<td>Dolares</td>
-					<td>
-						3400.202,00 
-						<span class="fa fa-share"></span> <input type="checkbox" name=""> </td>
-				</tr><tr class="text-right">
-					<td><a href=""><span class="fa fa-eye"></span> 004-18</a> </td>
-					<td>Concha y Toro</td>
-					<td>Dolares</td>
-					<td>
-						3400.202,00 
-						<span class="fa fa-share"></span> <input type="checkbox" name=""> </td>
-				</tr><tr class="text-right">
-					<td><a href=""><span class="fa fa-eye"></span> 004-18</a> </td>
-					<td>Concha y Toro</td>
-					<td>Dolares</td>
-					<td>
-						3400.202,00 
-						<span class="fa fa-share"></span> <input type="checkbox" name=""> </td>
-				</tr><tr class="text-right">
-					<td><a href=""><span class="fa fa-eye"></span> 004-18</a> </td>
-					<td>Concha y Toro</td>
-					<td>Dolares</td>
-					<td>
-						3400.202,00 
-						<span class="fa fa-share"></span> <input type="checkbox" name=""> </td>
-				</tr>
-			</tbody>
-		</table>
-		</div>
-		<br>
-		<button class="btn btn-sm btn-default"><span class="fa fa-check"></span> Selec. Todos</button>
-		<button class="btn btn-sm btn-default"><span class="fa fa-list-ol"></span> Selec. Desde Último</button>
-		<button class="btn btn-sm btn-primary pull-right"><span class="fa fa-share"></span> Importar Seleccionados</button>
-	</div>
-	<div class="col-md-7">
-		<div class="text-tittle-alt">
-                  Detalle de pedido
-       </div>		
-       <div class="row">
-       	<div class="col-md-1"></div>
-       	<div class="col-md-10">      
-       	<div class="well well-sm well-default">PEDIDO 004-18 CONCHA Y TORO 
-       		<div class="pull-right">
-       			<a href="" class="btn btn-sm btn-inverse">
-       				<span class="fa fa-share"></span> Importar 004-18
-       			</a>
-       		</div>
-       		</div>		      	
-       	</div>
-       </div>
-       <div class="row">
-       	<div class="col-md-1"></div>
-       	<div class="col-md-10">      		      	
-       		<div class="row">
-       			<div class="col-md-3">
-       				<label>Pedido:</label>
-       				<input type="text" readonly="readonly" value="004-18">
-       			</div>
-       			<div class="col-md-3">
-       				<label>Regimen:</label>
-       				<input type="text" readonly="readonly" value="70">
-       			</div>
-       			<div class="col-md-3">
-       				<label>Pais:</label>
-       				<input type="text" readonly="readonly" value="Chile">
-       			</div>
-       			<div class="col-md-3">
-       				<label>Puerto:</label>
-       				<input type="text" readonly="readonly" value="Buena Aventura">
-       			</div>
-       		</div>
-       	</div>
-       	<div class="col-md-1"></div>
-       </div>
-       <div class="row">
-       	<div class="col-md-1"></div>
-       	<div class="col-md-10">      		      	
-       		<div class="row">
-       			<div class="col-md-3">
-       				<label>Incoterm:</label>
-       				<input type="text" readonly="readonly" value="FOB">
-       			</div>
-       			<div class="col-md-3">
-       				<label>Seguro Aduana:</label>
-       				<input type="text" readonly="readonly" value="4321.21">
-       			</div>
-       			<div class="col-md-3">
-       				<label>Flete Aduana:</label>
-       				<input type="text" readonly="readonly" value="32120.00">
-       			</div>
-       			<div class="col-md-3">
-       				<label>Moneda:</label>
-       				<input type="text" readonly="readonly" value="DOLARES">
-       			</div>
-       		</div>      		
-       	</div>
-       	<div class="col-md-1"></div>
-       </div>
-       <div class="row">
-       	<div class="col-md-1"></div>	
-       	<div class="col-md-10 text-primary" style="padding:5px; font-size:14px;">
-       		Productos del Pedido 004-18
-       	</div>	
-       	<div class="col-md-1"></div>	
-       </div>
-       	<div class="row">
-       		<div class="col-md-1"></div>
-       		<div class="col-md-10">
-       			<table class="table table-striped table-hover table-condensed table-bordered">
-       				<thead>
-       					<tr>
-       						<th>Porducto</th>
-       						<th>Cap</th>
-       						<th>G. Alc.</th>
-       						<th>Costo Caja</th>
-       						<th>Cajas</th>
-       						<th>Unds</th>
-       						<th>Total</th>
-       					</tr>
-       				</thead>
-       				<tbody>
-       					<tr>
-       						<td>Vino Maipo Carbernet Sauvignion</td>
-       						<td>750</td>
-       						<td>13.5</td>
-       						<td>300</td>
-       						<td>6000</td>
-       						<td>32.43</td>
-       						<td>98267.98</td>
-       					</tr>
-       					<tr style="background-color:#2E86C1; color:#fff; font-weight:bold;">
-            				<td colspan="4" class="text-right">SUMAS (DOLARES):&nbsp;</td>
-       						<td>6000</td>
-       						<td>32.43</td>
-       						<td>98267.98</td>
-       					</tr>
-       				</tbody>
-       			</table>
-       		</div>
-       		<div class="col-md-1"></div>      		
-       	</div>
-       	<div class="row">
-       		<div class="col-md-1"></div>
-       		<div class="col-md-10">
-       			<div class="pull-right">
-       			<a href="" class="btn btn-sm btn-primary">
-       				<span class="fa fa-share"></span> Importar 004-18
-       			</a>
-       		</div>
-       		</div>
-       		<div class="col-md-1"></div>
-       	</div>
-	</div>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+               <div class="row">
+                  <div class="col-md-3">
+                     <label>Pedido:</label>
+                     <span class="input">${current_order.nro_pedido}</span>
+                  </div>
+                  <div class="col-md-3">
+                     <label>Regimen:</label>
+                     <span>${current_order.regimen} </span>
+                  </div>
+                  <div class="col-md-3">
+                     <label>Pais:</label>
+                     <span>${current_order.pais_origen} </span>
+                  </div>
+                  <div class="col-md-3">
+                     <label>Puerto:</label>
+                     <span>${current_order.puerto_origen} </span>
+                  </div>
+               </div>
+            </div>
+            <div class="col-md-1"></div>
+         </div>
+         <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+               <div class="row">
+                  <div class="col-md-3">
+                     <label>Incoterm:</label>
+                     <span>${current_order.incoterm} </span>
+                  </div>
+                  <div class="col-md-3">
+                     <label>Seguro Aduana:</label>
+                     <span>${current_order.seguro_aduana} </span>
+                  </div>
+                  <div class="col-md-3">
+                     <label>Flete Aduana:</label>
+                     <span>${current_order.flete_aduana} </span>
+                  </div>
+                  <div class="col-md-3">
+                     <label>Moneda:</label>
+                     <span>${current_order.moneda } </span>
+                  </div>
+               </div>
+            </div>
+            <div class="col-md-1"></div>
+         </div>
+         <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10 text-primary" style="padding:5px; font-size:14px;">
+               Productos del Pedido ${current_order.nro_pedido}
+            </div>
+            <div class="col-md-1"></div>
+         </div>
+         <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+               <table class="table table-striped table-hover table-condensed table-bordered">
+                  <thead>
+                     <tr>
+                        <th>Porducto</th>
+                        <th>Cap</th>
+                        <th>G. Alc.</th>
+                        <th>Costo Caja</th>
+                        <th>Cajas</th>
+                        <th>Unds</th>
+                        <th>Total</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <tr v-for="item in current_order.detail">
+                        <td>${item.nombre}</td>                        
+                        <td>${item.capacidad_ml}</td>                        
+                        <td>${item.grado_alcoholico}</td>                        
+                        <td>${item.costo_caja}</td>                        
+                        <td>${item.nro_cajas}</td>                        
+                        <td>${item.nro_cajas * item.cantidad_x_caja}</td>                                             
+                        <td>${item.nro_cajas * item.costo_caja }</td>                                                
+                     </tr>
+                     <tr style="background-color:#2E86C1; color:#fff; font-weight:bold;">
+                        <td colspan="4" class="text-right">SUMAS </td>
+                        <td>${current_order.sums.boxes}</td>
+                        <td>${current_order.sums.unities}</td>
+                        <td>${current_order.sums.valor}</td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+            <div class="col-md-1"></div>
+         </div>
+         <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+               <div class="pull-right">
+                  <a href="{{ rute_url }}importar/pedido/" class="btn btn-sm btn-primary">
+                  <span class="fa fa-share"></span> Importar Pedido ${current_order.nro_pedido}
+                  </a>
+               </div>
+            </div>
+            <div class="col-md-1"></div>
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-md-5">
+      </div>
+      <div class="col-md-7 text-right">
+         <a href="{{ rute_url }}importar/historico/" class="btn btn-sm btn-default"> <span class="fa fa-list-ol"></span> Ver Historico</a>         
+      </div>
+   </div>
 </div>
-<div class="row">
-	<div class="col-md-5">
-	</div>	
-	<div class="col-md-7 text-right">
-		<a href="{{ rute_url }}importar/historico/" class="btn btn-sm btn-default"> <span class="fa fa-list-ol"></span> Ver Historico</a>
-		<a href="{{ rute_url }}importar/ok/" class="btn btn-sm btn-default"> <span class="fa fa-check"></span> Status Ok</a>
-		<a href="{{ rute_url }}importar/fallo/" class="btn btn-sm btn-default"> <span class="fa fa-warning"></span> Status Fail</a>
-	</div>
 </div>
+<script type="text/javascript">
+   var app = new Vue({
+   	  el: '#app',
+   	  delimiters: ['${', '}'],
+   	  data: {
+   	    orders: {{ data | json_encode() | raw }},
+        search_query: '',
+        current_order: {},
+        selected_orders : [],
+        ajaxRequest: false,
+   	  },
+      methods : {
+          select_order : function( nro_pedido ){
+            for(item in this.orders){
+              var order = this.orders[item];
+              if(order['nro_pedido'] === nro_pedido){                
+                this.current_order = order;
+              }
+            }
+          },         
 
-<script>
+          check_order : function(nro_order){            
+            for(item in this.orders){  
+               var order = this.orders[item];
+               if(order['nro_pedido'] === nro_order){
+                  this.orders[item]['selected'] = true;
+                  this.current_order = order
+                  if(this.selected_orders.length == 0){
+                    this.selected_orders.push(nro_order);
+                    return true;
+                  }
+                  var exist_in_selected = false
+                  for(selection in this.selected_orders){     
+                    if(this.selected_orders[selection] === nro_order){
+                      exist_in_selected = true
+                    }  
+                  } 
 
+                  if(exist_in_selected){
+                      var index = this.selected_orders.indexOf(nro_order);
+                      this.selected_orders.splice(index, 1);                                            
+                      return false;
+                    }
+                  else{
+                	  this.orders[item]['selected'] = false;
+                      this.selected_orders.push(nro_order);
+                      return true;
+                    }               
+
+                  return true;
+               }
+             }
+          },      
+
+         put_orders: function(){
+             console.dir(this.selected_orders);
+             
+         }
+      },
+   	  computed: {         
+         data_filer(){
+          var orders_filter = [];
+          
+           if(this.search_query == ''){
+             for(item in this.orders){  
+               var order = this.orders[item];
+               order['selected'] = false;
+               orders_filter.push(order);
+             }
+
+            this.current_order = orders_filter[0];
+            return orders_filter;
+           }
+
+          for(item in this.orders){  
+            var order = this.orders[item];
+            var re = new RegExp((this.search_query), "ig");
+            console.log(' ' +  order.proveedor);
+            var supplier = (' ' +  order.proveedor).search(re);
+            var nro_pedido = (' ' +  order.nro_pedido).search(re);
+            if(supplier > 0 || nro_pedido > 0){
+              order['selected'] = false;              
+              orders_filter.push(order);
+            }            
+          }
+          this.current_order = orders_filter[0];
+          return orders_filter;
+         }
+       },       
+   	})
+   
 </script>

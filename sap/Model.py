@@ -1,6 +1,5 @@
 from Con import Con
 
-
 class Model(object):
     def __init__(self, enterprise, year):
         self.con = Con(enterprise)
@@ -58,6 +57,9 @@ class Model(object):
                 'invoice' : self.get_invoice(row[1]),
                 'invoice_detail' : self.get_invoice_details(row[1]),
             }
+            print '=========================='
+            print new_row
+            print '=========================='
             orders_array.append(new_row)
 
         return orders_array
@@ -152,7 +154,7 @@ class Model(object):
             }
 
     def get_product(self, doc_num):
-        detail = self.get_invoice_details(doc_num, True)
+        detail = self.get_invoice_details(doc_num)
         query = '''
                 SELECT
                     ItemCode as 'cod_contable',
@@ -164,19 +166,24 @@ class Model(object):
                 FROM OITM
                 WHERE ItemCode = '{item_code}';
         '''
-        if len(detail) == 0 or detail['cod_contable'] is None:
-            return {}
-        query = query.replace('{item_code}', detail['cod_contable'])
-        product = self.con.run_query(query)
-        for row in product:
-            return {
-                'cod_contable': row[0],
-                'nombre': row[1].encode('utf-8'),
-                'cantidad_x_caja': str(row[0]),
-                'cod_ice': row[0],
-                'capacidad': str(row[0]),
-                'grado_alcoholico': str(row[0]),
-            }
+        if len(detail) == 0:
+            return []
+        product_array = []
+        for item in detail:
+            if item['cod_contable'] != None:
+                query = query.replace('{item_code}', item['cod_contable'])
+                product = self.con.run_query(query)
+                for row in product:
+                    product_array.append({
+                        'cod_contable': row[0],
+                        'nombre': row[1].encode('utf-8'),
+                        'cantidad_x_caja': str(row[2]),
+                        'cod_ice': row[3],
+                        'capacidad': str(row[4]),
+                        'grado_alcoholico': str(row[5]),
+                 })
+
+        return product_array
 
     def get_supplier(self, card_code):
         query = '''

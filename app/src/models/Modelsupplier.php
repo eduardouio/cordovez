@@ -248,6 +248,38 @@ class Modelsupplier extends CI_Model
 
     
     /**
+     * Obtiene una lista de proveedores por moneda
+     * 
+     * @param string $money
+     */
+    public function getSuplliersByMoney(string $money) :array{
+        $suppliers = $this->modelBase->get_table([
+            'table' => $this->table,
+            'select' => ['identificacion_proveedor'],
+            'where' => [
+                'moneda_transaccion' => $money,
+            ],
+        ]);        
+        
+        $this->modelLog->errorLog(
+            'Log de consulta proveedores', 
+            $this->db->last_query()
+            );
+        
+        if($suppliers == false){
+            $this->modelLog->errorLog(
+                'Log de consulta proveedores',
+                $this->db->last_query()
+                );
+            
+            return [];
+        }
+        
+        return $suppliers;
+    }
+    
+    
+    /**
      * Obtiene toda la informacion de un proveedor
      * Productos
      * Pedidos

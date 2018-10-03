@@ -1,8 +1,22 @@
+{% if data_empty == true %}
+<div class="row">
+<div class="col-md-10">
+	<h5>No tiene migraciones pendientes</h5> 
+</div>
+<div class="col-md-2">
+	<a href="{{ rute_url }}importar/scan/" class="btn btn-sm btn-default" @click="ajaxRequest=true">
+               <span class="fa fa-refresh"></span> 
+               Escanear SAP 
+               </a>
+</div>
+</div>
+{% endif %}
+
 <div id="app">
   <div v-if="ajaxRequest" class= "row">
   <div class="col-md-4"></div>
   <div class="col-md-4 text-center" >
-  <img src="{{ base_url }}img/tenor.gif" alt="Cargado..." height="150" width="250">
+  <img src="{{ base_url }}img/tenor.gif" alt="Cargado..." height="150" width="280">
   <h1>Actualizando...</h1>
   </div>
   <div class="col-md-4"></div>
@@ -76,7 +90,7 @@
                <div class="well well-sm well-default">
                   PEDIDO ${ current_order.nro_pedido } ${ current_order.proveedor }
                   <div class="pull-right">
-                     <a href="{{ rute_url }}importar/pedido/" class="btn btn-sm btn-inverse">
+                     <a @click="put_current_order()" class="btn btn-sm btn-inverse">
                      <span class="fa fa-share"></span> Importar ${ current_order.nro_pedido }
                      </a>
                   </div>
@@ -178,7 +192,7 @@
             <div class="col-md-1"></div>
             <div class="col-md-10">
                <div class="pull-right">
-                  <a href="{{ rute_url }}importar/pedido/" class="btn btn-sm btn-primary">
+                  <a @click="put_current_order()" class="btn btn-sm btn-primary">
                   <span class="fa fa-share"></span> Importar Pedido ${current_order.nro_pedido}
                   </a>
                </div>
@@ -187,6 +201,7 @@
          </div>
       </div>
    </div>
+   <br />
    <div class="row">
       <div class="col-md-5">
       </div>
@@ -197,94 +212,117 @@
 </div>
 </div>
 <script type="text/javascript">
-   var app = new Vue({
-   	  el: '#app',
-   	  delimiters: ['${', '}'],
-   	  data: {
-   	    orders: {{ data | json_encode() | raw }},
+var app = new Vue({
+    el: '#app',
+    delimiters: ['${', '}'],
+    data: {
+        orders: {{   data | json_encode() | raw }} ,
         search_query: '',
         current_order: {},
-        selected_orders : [],
+        selected_orders: [],
+        debug: true,
         ajaxRequest: false,
-   	  },
-      methods : {
-          select_order : function( nro_pedido ){
-            for(item in this.orders){
-              var order = this.orders[item];
-              if(order['nro_pedido'] === nro_pedido){                
-                this.current_order = order;
-              }
+        postResults: [],
+    },
+    methods: {
+        select_order: function(nro_pedido) {
+            for (item in this.orders) {
+                var order = this.orders[item];
+                if (order['nro_pedido'] === nro_pedido) {
+                    this.current_order = order;
+                }
             }
-          },         
+        },
 
-          check_order : function(nro_order){            
-            for(item in this.orders){  
-               var order = this.orders[item];
-               if(order['nro_pedido'] === nro_order){
-                  this.orders[item]['selected'] = true;
-                  this.current_order = order
-                  if(this.selected_orders.length == 0){
-                    this.selected_orders.push(nro_order);
-                    return true;
-                  }
-                  var exist_in_selected = false
-                  for(selection in this.selected_orders){     
-                    if(this.selected_orders[selection] === nro_order){
-                      exist_in_selected = true
-                    }  
-                  } 
-
-                  if(exist_in_selected){
-                      var index = this.selected_orders.indexOf(nro_order);
-                      this.selected_orders.splice(index, 1);                                            
-                      return false;
+        check_order: function(nro_order) {
+            for (item in this.orders) {
+                var order = this.orders[item];
+                if (order['nro_pedido'] === nro_order) {
+                    this.orders[item]['selected'] = true;
+                    this.current_order = order
+                    if (this.selected_orders.length == 0) {
+                        this.selected_orders.push(nro_order);
+                        return true;
                     }
-                  else{
-                	  this.orders[item]['selected'] = false;
-                      this.selected_orders.push(nro_order);
-                      return true;
-                    }               
+                    var exist_in_selected = false
+                    for (selection in this.selected_orders) {
+                        if (this.selected_orders[selection] === nro_order) {
+                            exist_in_selected = true
+                        }
+                    }
 
-                  return true;
-               }
-             }
-          },      
+                    if (exist_in_selected) {
+                        var index = this.selected_orders.indexOf(nro_order);
+                        this.selected_orders.splice(index, 1);
+                        return false;
+                    } else {
+                        this.orders[item]['selected'] = false;
+                        this.selected_orders.push(nro_order);
+                        return true;
+                    }
 
-         put_orders: function(){
-             console.dir(this.selected_orders);
-             
-         }
-      },
-   	  computed: {         
-         data_filer(){
-          var orders_filter = [];
-          
-           if(this.search_query == ''){
-             for(item in this.orders){  
-               var order = this.orders[item];
-               order['selected'] = false;
-               orders_filter.push(order);
-             }
+                    return true;
+                }
+            }
+        },
+        //se envia a importar todos los pedidos seleccionados
+        put_orders: function() {
+            this.ajaxRequest = true;
+        	this.$http.post('{{ rute_url }}importar/importList/', {data: this.selected_orders}).then(response => {
+     	 		console.dir(response)
+        	    this.someData = response.body;
+     	 		location.reload();
+     	 		this.ajaxRequest = false;
+        	  }, response => {
+        	    alert('Se produjo un error, por favor recargue la página');
+        	    console.dir(response);
+        	    this.ajaxRequest = false;
+        	  });
+        },
+        
+        //se envia a importar la seleccion actual
+        put_current_order: function() {
+         this.ajaxRequest = true;
+    	 this.$http.get('{{rute_url}}importar/importOrder/' + this.current_order.nro_pedido, {params: {}}).then(response => {
+    		    console.dir(response);
+    		    location.reload();
+    		 	this.ajaxRequest = false;
+    		  }, response => {
+    			  alert('Se produjo un error, por favor recargue la página');
+    			  console.dir(response);
+    			  this.ajaxRequest = false;
+    		  });
+    		}
+    },
+    computed: {
+        data_filer() {
+            var orders_filter = [];
 
+            if (this.search_query == '') {
+                for (item in this.orders) {
+                    var order = this.orders[item];
+                    order['selected'] = false;
+                    orders_filter.push(order);
+                }
+
+                this.current_order = orders_filter[0];
+                return orders_filter;
+            }
+
+            for (item in this.orders) {
+                var order = this.orders[item];
+                var re = new RegExp((this.search_query), "ig");
+                console.log(' ' + order.proveedor);
+                var supplier = (' ' + order.proveedor).search(re);
+                var nro_pedido = (' ' + order.nro_pedido).search(re);
+                if (supplier > 0 || nro_pedido > 0) {
+                    order['selected'] = false;
+                    orders_filter.push(order);
+                }
+            }
             this.current_order = orders_filter[0];
             return orders_filter;
-           }
-
-          for(item in this.orders){  
-            var order = this.orders[item];
-            var re = new RegExp((this.search_query), "ig");
-            console.log(' ' +  order.proveedor);
-            var supplier = (' ' +  order.proveedor).search(re);
-            var nro_pedido = (' ' +  order.nro_pedido).search(re);
-            if(supplier > 0 || nro_pedido > 0){
-              order['selected'] = false;              
-              orders_filter.push(order);
-            }            
-          }
-          this.current_order = orders_filter[0];
-          return orders_filter;
-         }
-       },       
-   	})
-   
+        }
+    },
+})
 </script>

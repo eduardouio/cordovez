@@ -14,6 +14,7 @@ class ModelImportSAP extends CI_Model{
     private $path_api_sap = '/var/www/html/sap/home.py';
     private $table = 'migracion';
     private $child_table = 'migracion_detalle';
+    private $tipo_cambio_trimestral = 1.25;
     private $modelLog;
     private $modelBase;
     private $modelSupplier;
@@ -76,8 +77,8 @@ class ModelImportSAP extends CI_Model{
 	    $this->year = $year;
         $data = (
             json_decode(
-                file_get_contents("/var/www/html/cordovezapp/app/src/test/mocks/data_sap.json"),
-                #file_get_contents("http://127.0.0.1:8000/$this->enterprise/$this->year/"),
+                #file_get_contents("/var/www/html/cordovezapp/app/src/test/mocks/data_sap.json"),
+                file_get_contents("http://192.168.0.198:8000/$this->enterprise/$this->year/"),
                 True
                 )  
             );
@@ -93,15 +94,30 @@ class ModelImportSAP extends CI_Model{
 	 * Obtiene todas las migraciones activas del sistema
 	 * @return array
 	 */
-	public function getAll():array{
-	    $all_migrations = $this->modelBase->get_table([	        
-	       'table' => $this->table,
-	        'where' => [
-	            'bg_has_imported' => 0,
-	        ],
-	    ]);
-	    
-	    
+	public function getAll($all_table = false):array{
+	    $all_migrations =[] ;
+	    if($all_table){
+	        $all_migrations = $this->modelBase->get_table([
+	            'table' => $this->table,	
+	            'orderby' => [
+	                'last_update' => 'DESC',
+	                'date_create' => 'DESC',
+	            ],
+	            'where' => [
+	                'bg_has_imported' => 1,
+	                'bg_exist_in_local' => 0,
+	            ],
+	        ]);
+	    }else{
+	        $all_migrations = $this->modelBase->get_table([
+	            'table' => $this->table,
+	            'where' => [
+	                'bg_has_imported' => 0,
+	                'bg_exist_in_local' => 0,
+	            ],
+	        ]);
+	    }
+	    	    
 	    if($all_migrations == False){
 	        $this->modelLog->warningLog(
 	            'No esisten migraciones en la base de datos',
@@ -244,8 +260,10 @@ class ModelImportSAP extends CI_Model{
 	    
 	    $this->modelLog->errorLog(
 	        'Problemas para migrar el pedido', 
-	        $this->db->last+_query()
+	        $this->db->last_query()
 	        );
+	    
+	    return false;
 	}
 	
 	
@@ -284,6 +302,10 @@ class ModelImportSAP extends CI_Model{
 	 * @return bool
 	 */
 	public function migrate(string $nro_order):bool{
+	    $this->modelLog->generalLog(
+	        'Inicio de migracion pedido ' . $nro_order
+	        );
+	    
 	    $db_keys_tables = [
 	        'pedido' => $nro_order,
 	        'pedido_factura' => '',	        
@@ -316,10 +338,7 @@ class ModelImportSAP extends CI_Model{
 	    if($this->modelOrder->create($order)){
 	        $migration['bg_migrated_order'] = True;
 	    }
-	    
-	    #regitrar la factura
-	    $id_order_invoice = 0;
-	    
+	    	    
 	    if($migration['bg_have_invoice']){
 	        $invoice = [
 	            'nro_pedido' => $migration['nro_pedido'],
@@ -349,25 +368,23 @@ class ModelImportSAP extends CI_Model{
                         	                       'nro_cajas' => $det['nro_cajas'],
                         	                       'costo_caja'=> $det['costo_caja'],
                         	                       'id_user' => $this->session->userdata('id_user'),
-                                                ]);
-	            if($detail_db == False){
-	                $migration['bg_migrated_order_invoice_detail'] == False;
-	            }else{
-	                $migration['bg_migrated_order_invoice_detail'] == False;
-	            }
+                                                ]);	        
 	        }
+	        
+	        $migration['bg_migrated_order_invoice_detail'] = True;
 	    }
-	    
+	       
 	    if( $migration['bg_migrated_order_invoice_detail'] 
 	        && $migration['bg_migrated_order_invoice'] 
 	        && $migration['bg_migrated_order']){
 	        $migration['bg_has_imported'] = True;
+	        $migration['import_status'] = 'OK';
 	        $this->update($migration);
 	        return True;
 	    }
         
-	    $migration['bg_has_imported'] = False;
-	    $this->modelDeleteOrder->deleteAllOrder($migration['nro_pedido']);
+	    $migration['bg_has_imported'] = True;
+	    $migration['import_status'] = 'INCOMPLETO';
 	    $this->update($migration);
 	    return False;
 	    
@@ -382,15 +399,17 @@ class ModelImportSAP extends CI_Model{
 	   $migration['last_update'] = date('Y-m-d h-m-s');
 	   $this->db->where('nro_pedido', $migration['nro_pedido']);
 	   unset($migration['nro_pedido']);
+	   
 	   if($this->db->update($this->table, $migration)){
 	       $this->modelLog->susessLog(
 	           'Migracion actualizada correctanente, luego de la importacion'
 	           );
+	       return true;
 	   }
 	   
 	   $this->modelLog->errorLog(
 	       'No se puede actualizar la migracion',
-	       $this->db->last-query()
+	       $this->db->last_query()
 	       );
 	   
 	   return False;
@@ -653,7 +672,7 @@ class ModelImportSAP extends CI_Model{
 	 * @param string $type [country|port] 
 	 * @return string [country|port] 
 	 */
-	private function getOrigin(string $input, string $type):string{
+	private function getOrigin($input, $type):string{
         #eliminamos los eqpaciuo
         $input =  strtoupper(trim($input));               
         
@@ -896,15 +915,13 @@ class ModelImportSAP extends CI_Model{
 	       return 0;    
 	    }
 	    
-	    $supplier_euro = [
-	        'P26010710',
-	        'PESA11605276'
-	    ];
+	    $supplier_euro = $this->modelSupplier->getSuplliersByMoney('EUROS');
+	    
 	    	    
 	    foreach ($supplier_euro as $k){
 	        if($k == $supplier['identificacion_proveedor']){
 	            if($type == 'type_change'){
-	                return 1.25;
+	                return $this->tipo_cambio_trimestral;
 	            }
 	            return 'EUROS';
 	        }

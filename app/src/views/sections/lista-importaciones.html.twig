@@ -7,6 +7,7 @@
 				<tr>
 					<th>#</th>
 					<th>Pedido</th>
+					<th>Incoterm</th>
 					<th>Regimen</th>
 					<th>Proveedor</th>
 					<th>Pais</th>
@@ -15,119 +16,42 @@
 					<th>Valor</th>
 					<th>Seg Aduana</th>
 					<th>Flete Aduana</th>		
-					<th>Status</th>		
+					<th>Usuario</th>		
+					<th>Fact</th>		
+					<th>Prod</th>		
 				</tr>
 			</thead>
 			<tbody>
+			{% for order in data %}
 				<tr>
-					<td>0</td>
-					<td>10</td>
-					<td>Concha y Toro</td>
-					<td>Italia</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-				</tr><tr>
-					<td>0</td>
-					<td>10</td>
-					<td>Concha y Toro</td>
-					<td>Italia</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-				</tr><tr>
-					<td>0</td>
-					<td>10</td>
-					<td>Concha y Toro</td>
-					<td>Italia</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-				</tr><tr>
-					<td>0</td>
-					<td>10</td>
-					<td>Concha y Toro</td>
-					<td>Italia</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-				</tr><tr>
-					<td>0</td>
-					<td>10</td>
-					<td>Concha y Toro</td>
-					<td>Italia</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-				</tr><tr>
-					<td>0</td>
-					<td>10</td>
-					<td>Concha y Toro</td>
-					<td>Italia</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-				</tr><tr>
-					<td>0</td>
-					<td>10</td>
-					<td>Concha y Toro</td>
-					<td>Italia</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-				</tr><tr>
-					<td>0</td>
-					<td>10</td>
-					<td>Concha y Toro</td>
-					<td>Italia</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-				</tr><tr>
-					<td>0</td>
-					<td>10</td>
-					<td>Concha y Toro</td>
-					<td>Italia</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
+				<td>{{ loop.index }}</td>
+				<td> <a href="{{ rute_url }}pedido/presentar/{{ order.nro_pedido }}">{{ order.nro_pedido }}</a></td>
+				<td>{{ order.incoterm }}</td>
+				<td>{{ order.regimen }}</td>
+				<td> <a href="{{ rute_url }}/proveedor/presentar/{{ order.identificacion_proveedor_factura }}">{{ order.proveedor }} </a></td>
+				<td>{{ order.pais_origen }}</td>
+				<td>{{ order.ciudad_origen }}</td>
+				<td>{{ order.moneda }}</td>
+				<td>{{ order.valor | number_format(3,',','.') }}</td>
+				<td>{{ order.seguro_aduana | number_format(3,',','.') }}</td>
+				<td>{{ order.felete_aduana | number_format(3,',','.') }}</td>
+				<td>{{ order.user.nombres}}</td>
+				<td>
+				{% if order.bg_migrated_order_invoice == true %}
+				<span class="fa fa-check text-success"></span>
+				{% else %}					
+				<span class="fa fa-ban text-danger"></span>
+				{% endif %}
+				</td>								
+				<td>
+				{% if order.bg_migrated_order_invoice_detail == true %}
+				<span class="fa fa-check text-success"></span>
+				{% else %}
+				<span class="fa fa-ban text-danger"></span>					
+				{% endif %}
+				</td>								
 				</tr>
+			{% endfor %}
 			</tbody>
 		</table>
 	</div>

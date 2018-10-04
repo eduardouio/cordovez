@@ -75,7 +75,7 @@ class Importar extends MY_Controller
     }
     
    /**
-    * Escanea los pedidos del servidor y los importa
+    * Escanea los pedidos del servidor scay los importa
     */
    public function scan(){
        $this->modelLog->generalLog(
@@ -84,7 +84,6 @@ class Importar extends MY_Controller
        $this->modelImportSAP->getOrdersSAP($this->enterprise, date('Y'));
        $this->redirectPage('import_wizard');           
    }
-   
    
    /**
     * Realiza una importacion de los pedidos basados en una lista
@@ -143,7 +142,7 @@ class Importar extends MY_Controller
            'La migracion del pedido ' . $nro_order . 'con fallo'
            );
        
-       return $this->_responsRest(['result' => 'error'] , 406);
+       return $this->_responsRest(['result' => 'error'] , 201);
    }
       
    

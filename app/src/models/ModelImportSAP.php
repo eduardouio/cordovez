@@ -77,8 +77,8 @@ class ModelImportSAP extends CI_Model{
 	    $this->year = $year;
         $data = (
             json_decode(
-                #file_get_contents("/var/www/html/cordovezapp/app/src/test/mocks/data_sap.json"),
-                file_get_contents("http://192.168.0.198:8000/$this->enterprise/$this->year/"),
+                file_get_contents("/var/www/html/cordovezapp/app/src/test/mocks/data_sap.json"),
+                #file_get_contents("http://192.168.0.198:8000/$this->enterprise/$this->year/"),
                 True
                 )  
             );
@@ -187,6 +187,7 @@ class ModelImportSAP extends CI_Model{
 	    $detail_migration = $formatted_migration['detalle_pedido'];
 	    unset($formatted_migration['detalle_pedido']);	 	    
 	    $local_migration = $this->get($formatted_migration['nro_pedido']);
+	    
 	    #registramos la migracion
 	    if($local_migration == False && $formatted_migration['bg_exist_in_local'] == False){        
 	        if($this->db->insert($this->table, $formatted_migration)){
@@ -318,7 +319,7 @@ class ModelImportSAP extends CI_Model{
 	            );
 	        return false;
 	    }
-	    
+	    	    
 	    $order = [	        
 	        'nro_pedido' => $migration['nro_pedido'],
 	        'regimen' => $migration['regimen'],
@@ -339,29 +340,50 @@ class ModelImportSAP extends CI_Model{
 	        $migration['bg_migrated_order'] = True;
 	    }
 	    	    
-	    if($migration['bg_have_invoice']){
+	    if($migration['bg_have_invoice'] || $migration['bg_have_order_items']){
+	        
+	        
+	        
 	        $invoice = [
 	            'nro_pedido' => $migration['nro_pedido'],
-	            'id_factura_proveedor' => $migration['id_factura_proveedor'],
-	            'identificacion_proveedor' => $migration['identificacion_proveedor_factura'],
-	            'fecha_emision' => $migration['fecha_emision_factura'],
-	            'valor' => $migration['valor_factura'],
-	            'moneda' => $migration['moneda'],
-	            'tipo_cambio' => $migration['tipo_cambio'],
-	            'vencimiento_pago' => $migration['fecha_vencimiento_factura'],
+	            'id_factura_proveedor' => 'SF-' . (rand(100,100000)*rand(7,19) + rand(100,10000)),
+	            'identificacion_proveedor' => $migration['identificacion_proveedor'],
+	            'fecha_emision' => null,
+	            'valor' => 0.00,
+	            'moneda' => 'DOLARES',
+	            'tipo_cambio' => 1,
+	            'vencimiento_pago' => null,
 	            'gasto_origen' => 0.00,
 	            'id_user' => $this->session->userdata('id_user'),
 	        ];
 	        
-	        $db_keys_tables['pedido_factura'] = $this->modelOrderInvoice->create($invoice);
+	        #si la factura existe tomamos los datos de la factura del proveedor
+	        if($migration['bg_have_invoice']){
+	            $invoice = [
+	                'id_factura_proveedor' => $migration['id_factura_proveedor'],
+	                'identificacion_proveedor' => $migration['identificacion_proveedor_factura'],
+	                'fecha_emision' => $migration['fecha_emision_factura'],
+	                'valor' => $migration['valor_factura'],
+	                'moneda' => $migration['moneda'],
+	                'tipo_cambio' => $migration['tipo_cambio'],
+	                'vencimiento_pago' => $migration['fecha_vencimiento_factura'],
+	                'gasto_origen' => 0.00,
+	                'id_user' => $this->session->userdata('id_user'),
+	            ];
+    	        $migration['bg_migrated_order_invoice'] = True;
+	        }
 	        
-	        $migration['bg_migrated_order_invoice'] = True;
+	        if($migration['bg_migrated_order_invoice'] == False && $migration['bg_have_order_items']){
+	            $migration['bg_migrated_order'] = True;
+	        }
+	        
+	        $db_keys_tables['pedido_factura'] = $this->modelOrderInvoice->create($invoice);
 	    }	    	    
 	    
 	    #registrar los detalles de la factura
 	    if($migration['bg_have_invoice_items']){     
 	        foreach ($migration['detail'] as $k => $det){
-	            $detail_db = $this->modelOrderInvoiceDetail->create([
+	            $this->modelOrderInvoiceDetail->create([
 	                                               'id_pedido_factura' => $db_keys_tables['pedido_factura'], 
 	                                               'cod_contable' => $det['cod_contable'],
                         	                       'grado_alcoholico' => $det['grado_alcoholico'],
@@ -372,8 +394,23 @@ class ModelImportSAP extends CI_Model{
 	        }
 	        
 	        $migration['bg_migrated_order_invoice_detail'] = True;
+	    }else{
+	        foreach ($migration['detail'] as $k => $det){
+	        $this->modelOrderInvoiceDetail->create([
+        	            'id_pedido_factura' => $db_keys_tables['pedido_factura'],
+        	            'cod_contable' => $det['cod_contable'],
+        	            'grado_alcoholico' => $det['grado_alcoholico'],
+        	            'nro_cajas' => $det['nro_cajas'],
+        	            'costo_caja'=> $det['costo_caja'],
+        	            'id_user' => $this->session->userdata('id_user'),
+	        ]);
+	        
+	        $migration['bg_migrated_order_detail'] = True;
+	        
+    	    }
 	    }
-	       
+	    	    
+	    
 	    if( $migration['bg_migrated_order_invoice_detail'] 
 	        && $migration['bg_migrated_order_invoice'] 
 	        && $migration['bg_migrated_order']){
@@ -558,11 +595,11 @@ class ModelImportSAP extends CI_Model{
 	    #comprobamos que la factura tenga detalles sino tomamos los del pedido
 	    $order_items_validated = [];
 	    
-	    if(boolval($formatted_migration['bg_have_invoice_items'])){
+	    if(boolval($formatted_migration['bg_have_invoice_items']) || boolval($formatted_migration['bg_have_order_items'])){
 	        $order_items_validated = $this->checkProduct($migration, $formatted_migration);    
 	    }  
 	    
-	    $formatted_migration['detalle_pedido'] = $order_items_validated;
+	    $formatted_migration['detalle_pedido'] = $order_items_validated;    	   
 	    
 	    return $formatted_migration;
 	}
@@ -612,55 +649,91 @@ class ModelImportSAP extends CI_Model{
 	 * @param bool $have_invoice
 	 * @return array
 	 */
-	private function checkProduct(array $migration, array $formatted_migration){	  
-	    if(gettype($migration['product']) != 'array' || count($migration) == 0){
-	        $this->modelLog->errorLog(
-	            'La lista de productos del pedido esta vacia o no existe'
-	            );
-	        return [];
-	    }
+	private function checkProduct(array $migration, array $formatted_migration){	    
 	    $products = [];
 	    
+	    if(boolval($formatted_migration['bg_have_invoice_items'])){
+	        foreach ($migration['product'] as $k => $product){
+	            if($product['cod_contable'] != Null || $product['cod_contable'] != ''){
+	                $product_valid = [
+	                    'cod_contable' => $product['cod_contable'],
+	                    'cod_ice' => $product['cod_ice'],
+	                    'nombre' => $product['nombre'],
+	                    'capacidad_ml' => intval($product['capacidad']),
+	                    'cantidad_x_caja' => intval($product['cantidad_x_caja']),
+	                    'grado_alcoholico' => $product['grado_alcoholico'],
+	                    'costo_caja' => '',
+	                    'bg_product_exist_in_local' => True,
+	                    'nro_cajas' => 0,
+	                    'id_user' => $this->session->userdata('id_user'),
+	                    'comentarios' => 'Data importada por assisten App Importaciones'
+	                ];
+	                
+	                $product_base = $this->modelProduct->get($product['cod_contable']);
+	                
+	                if($product_base == False){
+	                    $product_valid['bg_product_exist_in_local'] = False;
+	                }
+	                
+	                if($formatted_migration['bg_have_invoice_items']){
+	                    foreach ($migration['invoice_detail'] as $k => $det ){
+	                        if($det['cod_contable'] == $product['cod_contable']){
+	                            $product_valid['nro_cajas'] = intval($det['nro_cajas']);
+	                            if($formatted_migration['moneda'] == 'DOLARES'){
+	                                $product_valid['costo_caja'] = floatval($det['costo_caja']);
+	                            }else{
+	                                $product_valid['costo_caja'] = floatval($det['costo_caja']) / 1.25;
+	                            }
+	                        }
+	                    }
+	                }
+	                
+	                array_push($products, $product_valid);
+	                
+	            }
+	        }
+	    }  
+	    
+	    #sino buscamos en orders items
 	    foreach ($migration['product'] as $k => $product){
 	        if($product['cod_contable'] != Null || $product['cod_contable'] != ''){
 	            $product_valid = [
 	                'cod_contable' => $product['cod_contable'],
-                    'cod_ice' => $product['cod_ice'],
-                    'nombre' => $product['nombre'],
-                    'capacidad_ml' => intval($product['capacidad']),
-                    'cantidad_x_caja' => intval($product['cantidad_x_caja']),
-                    'grado_alcoholico' => $product['grado_alcoholico'],
-                    'costo_caja' => $product['cantidad_x_caja'],
-                    'bg_product_exist_in_local' => True,
+	                'cod_ice' => $product['cod_ice'],
+	                'nombre' => $product['nombre'],
+	                'capacidad_ml' => intval($product['capacidad']),
+	                'cantidad_x_caja' => intval($product['cantidad_x_caja']),
+	                'grado_alcoholico' => $product['grado_alcoholico'],
+	                'costo_caja' => '',
+	                'bg_product_exist_in_local' => True,
 	                'nro_cajas' => 0,
-                    'id_user' => $this->session->userdata('id_user'),
+	                'id_user' => $this->session->userdata('id_user'),
 	                'comentarios' => 'Data importada por assisten App Importaciones'
-	                ];
-	        
-	        $product_base = $this->modelProduct->get($product['cod_contable']);
-	        
-	        if($product_base == False){
-	            $product_valid['bg_product_exist_in_local'] = False;
-	        }
-	        
-	        if($formatted_migration['bg_have_invoice_items']){
-	            foreach ($migration['invoice_detail'] as $k => $det ){	                
-	                if($det['cod_contable'] == $product['cod_contable']){
-	                    $product_valid['nro_cajas'] = intval($det['nro_cajas']);
-	                    if($formatted_migration['moneda'] == 'DOLARES'){
-    	                    $product_valid['costo_caja'] = floatval($det['costo_caja']);                        
-	                    }else{
-	                        $product_valid['costo_caja'] = floatval($det['costo_caja']) / 1.25;
+	            ];
+	            
+	            $product_base = $this->modelProduct->get($product['cod_contable']);
+	            
+	            if($product_base == False){
+	                $product_valid['bg_product_exist_in_local'] = False;
+	            }
+	            
+	            if($formatted_migration['bg_have_order_items']){
+	                foreach ($migration['order_items'] as $k => $det ){
+	                    if($det['cod_contable'] == $product['cod_contable']){
+	                        $product_valid['nro_cajas'] = intval($det['nro_cajas']);
+	                        if($formatted_migration['moneda'] == 'DOLARES'){
+	                            $product_valid['costo_caja'] = floatval($det['costo_caja']);
+	                        }else{
+	                            $product_valid['costo_caja'] = floatval($det['costo_caja']) / 1.25;
+	                        }
 	                    }
 	                }
-	            }	            
-	        }
+	            }
 	            
-	        array_push($products, $product_valid);
-	        
+	            array_push($products, $product_valid);
 	        }
-	    }   
-	    
+	    }
+	    	    
 	    return $products;
 	}
 	

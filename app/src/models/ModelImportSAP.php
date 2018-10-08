@@ -67,7 +67,7 @@ class ModelImportSAP extends CI_Model{
 	}
 	
 	
-	/**
+	/**creae
 	 * Obtiene una lista completa de los pedidos desde SAP
 	 * @param  int    $year anio de los pedidos
 	 * @return array lista de pedidos del año
@@ -406,11 +406,12 @@ class ModelImportSAP extends CI_Model{
 	        ]);
 	        
 	        $migration['bg_migrated_order_detail'] = True;
-	        
     	    }
 	    }
-	    	    
 	    
+	    #actualizamos la fecha de migracion en el sistema
+	    $migration['fecha_importacion'] = date('Y-m-d h:m:s');
+	    	    
 	    if( $migration['bg_migrated_order_invoice_detail'] 
 	        && $migration['bg_migrated_order_invoice'] 
 	        && $migration['bg_migrated_order']){

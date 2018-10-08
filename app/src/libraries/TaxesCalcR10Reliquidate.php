@@ -249,8 +249,9 @@ class orderTaxesReliquidate {
         
         #si los gastos de origen no estan en la lista de GI estan en el pedido
         # verificar si trabaja bien con los incoterms mencionados. los GO estan
-        # en la moneda del pedido
-        if ($this->order['incoterm'] == 'FOB' || $this->order['incoterm'] == 'CFR'){
+        # en la moneda del pedido quitamos CFR porque no se necesita
+        #if ($this->order['incoterm'] == 'FOB' || $this->order['incoterm'] == 'CFR'){
+        if ($this->order['incoterm'] == 'FOB'){
             $this->gastos_origen = (
                 $this->order['gasto_origen']
                 );
@@ -401,10 +402,17 @@ class orderTaxesReliquidate {
             * $this->type_change_order
             );
         
-        $gasto_origen_tasa_trimestral = (
+        #se pone la validacion debido a facturas informatovas que no cuadran con Almagrp
+        #se debe colocar un GO negativo para llegar al CIF
+        $gasto_origen_tasa_trimestral = 0.0;
+        
+        if($this->gastos_origen > 0){
+            
+            $gasto_origen_tasa_trimestral = (
             ($this->gastos_origen * $this->type_change_invoice)
             * $percent
             );
+        }
         
         $fob_tasa_trimestral = (
             ($product_value / $this->type_change_order) 

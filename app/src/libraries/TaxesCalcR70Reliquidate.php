@@ -196,8 +196,9 @@ class parcialTaxesReliquidate {
             + $tax['gasto_origen_tasa_trimestral']
                 );           
             
-            
-            
+            #print '<pre>';
+            #print_r($tax['indirectos']);
+            #print '</pre>';
             #FOB + GO ok
             #FOB ok
             #CFR ok
@@ -249,9 +250,10 @@ class parcialTaxesReliquidate {
         $this->incoterm = $this->init_data['order']['incoterm'];
         
         foreach ($this->init_data['info_invoices'] as $idx => $invoice){
-            $this->gastos_origen += $invoice['gasto_origen'];
-        }
-        
+           
+                $this->gastos_origen += $invoice['gasto_origen'];
+                
+        }       
                
     }
     
@@ -401,9 +403,14 @@ class parcialTaxesReliquidate {
         $product_value = ($detail_info_invoice['nro_cajas'] 
                           * $detail_order_invoice['costo_caja'])
                           * $this->type_change_parcial;
+               
         
-        $gasto_origen_tasa_trimestral = ($this->gastos_origen * $percent) 
-        * $this->type_change_invoice;
+        $gasto_origen_tasa_trimestral = 0.0;
+        #se pone la validacion debido a facturas informatovas que no cuadran con Almagrp
+        #se debe colocar un GO negativo para llegar al CIF
+        if($this->gastos_origen > 0 ){
+            ($this->gastos_origen * $percent) * $this->type_change_invoice;        
+        }
 
         $fob_tasa_trimestral = ($product_value / $this->type_change_parcial) * $this->type_change_invoice;
 
@@ -413,8 +420,16 @@ class parcialTaxesReliquidate {
             $fob = $product_value;
             
         }elseif ($this->incoterm == 'FOB'){
-            $gasto_origen = ($this->gastos_origen * $percent) 
-                            * $this->type_change_parcial;            
+            $gasto_origen = ($this->gastos_origen * $percent) * $this->type_change_parcial;
+            #en el caso de que los gastos en origen sean negativos se distribuye en base al fob
+            
+            print '<pre>';
+            print_r($percent);
+            #print_r($this->init_data);
+            print '</pre>';
+            #print  '<br> GO => ' . $gasto_origen;
+            #print  '<br> GO => ' . $percent;
+            
             $fob = $product_value + $gasto_origen; 
                 
         }elseif($this->incoterm == 'EXW' || $this->incoterm == 'FCA'){
@@ -423,8 +438,7 @@ class parcialTaxesReliquidate {
             $gasto_origen_tasa_trimestral = 0.0;           
             $fob = $product_value + $gasto_origen;
         }              
-       
-        
+               
         return ([
             'nombre'=> $product_base['nombre'],
             'id_factura_informativa_detalle' => $detail_info_invoice['id_factura_informativa_detalle'],

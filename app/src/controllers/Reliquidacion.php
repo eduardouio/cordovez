@@ -1,4 +1,4 @@
-ge<?php
+<?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
 $libraries_url = realpath(dirname(__FILE__));
@@ -750,7 +750,7 @@ class Reliquidacion extends MY_Controller
         }
         elseif($tipo == 'parcial'){
             $record = $this->modelParcial->get(intval($id));
-            print_r($record);
+            #print_r($record);
         }
         
         if ($record){

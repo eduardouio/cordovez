@@ -75,13 +75,31 @@ class ModelImportSAP extends CI_Model{
 	public function getOrdersSAP(string $enterprise, int $year){
 	    $this->enterprise = $enterprise;
 	    $this->year = $year;
-        $data = (
-            json_decode(
-                file_get_contents("/var/www/html/cordovezapp/app/src/test/mocks/data_sap.json"),
-                #file_get_contents("http://192.168.0.198:8000/$this->enterprise/$this->year/"),
-                True
-                )  
+	    $url = "http://192.168.0.198:8000/$this->enterprise/$this->year/";
+        
+        #$data_mock = (
+        #   json_decode(
+        #        file_get_contents("/var/www/html/cordovezapp/app/src/test/mocks/data_sap.json"),                
+        #        True
+        #        )  
+        #    );
+       
+        $this->modelLog->generalLog(
+            'Se inicia la transferencia con el server'
             );
+        
+        $curl_handle = curl_init();       
+        curl_setopt($curl_handle, CURLOPT_URL, $url);
+        curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT , 2);
+        curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl_handle, CURLOPT_USERAGENT, 'APP-Importaciones');        
+        $data = json_decode(curl_exec($curl_handle),True);        
+        curl_close($curl_handle);
+        
+        $this->modelLog->generalLog(
+            'Se termina la transferencia con el server'
+            );
+                
         if($data){
             foreach ($data['data'] as $k => $migration){
                 $this->create($migration);
@@ -141,8 +159,7 @@ class ModelImportSAP extends CI_Model{
 	                'unities' => 0,
 	                'boxes' => 0,
 	                'valor' => 0.0,
-	            ];
-	            
+	            ];	            
 	            foreach ($detail as $k => $item){	              
 	                $m['sums']['unities'] += ($item['nro_cajas'] * $item['cantidad_x_caja']);
 	                $m['sums']['boxes'] += ($item['nro_cajas']);
@@ -153,7 +170,6 @@ class ModelImportSAP extends CI_Model{
 	                'La migracion no tiene iun detalle registrado',
 	                $this->db->last_query()
 	                );
-	            
 	            $m['detail'] = [];
 	            $m['sums'] = [
 	                'unities' => 0,
@@ -161,10 +177,8 @@ class ModelImportSAP extends CI_Model{
 	                'valor' => 0.0,
 	            ];
 	        }
-
 	        array_push($data, $m);
 	    }
-	    
 	       return $data;
 	}
 		
@@ -201,13 +215,11 @@ class ModelImportSAP extends CI_Model{
 	                        $this->db->last_query()
 	                        );
 	                }
-	            }
-	            
+	            }	        
 	            $this->modelLog->susessLog(
 	                'Migracion ingresada correctamente'
 	                );
 	        }
-	        
 	        return True;
 	    }
 	   
@@ -237,7 +249,7 @@ class ModelImportSAP extends CI_Model{
 	                $this->db->last_query()
 	                );
 	        }
-	        	        
+	        	 
 	        if($this->db->insert($this->table, $formatted_migration)){
 	            foreach ($detail_migration as $k => $det){
 	                $det['nro_pedido'] = $formatted_migration['nro_pedido'];
@@ -256,7 +268,6 @@ class ModelImportSAP extends CI_Model{
 	                );
     	         return true;
 	        }
-	        
 	    }
 	    
 	    $this->modelLog->errorLog(
@@ -285,14 +296,12 @@ class ModelImportSAP extends CI_Model{
 	    }
 	    
 	    $migration = $result[0];
-	    
 	    $migration['detail'] = $this->modelBase->get_table([
 	        'table' => $this->child_table,
 	        'where' => [
 	            'nro_pedido' => $migration['nro_pedido']
 	        ],
 	    ]);
-	    
 	    return $migration;
 	}
 	
@@ -311,7 +320,6 @@ class ModelImportSAP extends CI_Model{
 	        'pedido' => $nro_order,
 	        'pedido_factura' => '',	        
 	    ];
-	    
 	    $migration = $this->get($nro_order);
 	    if(boolval($migration['bg_has_imported']) == True){
 	        $this->modelLog->warningLog(
@@ -319,7 +327,6 @@ class ModelImportSAP extends CI_Model{
 	            );
 	        return false;
 	    }
-	    	    
 	    $order = [	        
 	        'nro_pedido' => $migration['nro_pedido'],
 	        'regimen' => $migration['regimen'],
@@ -341,9 +348,6 @@ class ModelImportSAP extends CI_Model{
 	    }
 	    	    
 	    if($migration['bg_have_invoice'] || $migration['bg_have_order_items']){
-	        
-	        
-	        
 	        $invoice = [
 	            'nro_pedido' => $migration['nro_pedido'],
 	            'id_factura_proveedor' => 'SF-' . (rand(100,100000)*rand(7,19) + rand(100,10000)),
@@ -376,7 +380,6 @@ class ModelImportSAP extends CI_Model{
 	        if($migration['bg_migrated_order_invoice'] == False && $migration['bg_have_order_items']){
 	            $migration['bg_migrated_order'] = True;
 	        }
-	        
 	        $db_keys_tables['pedido_factura'] = $this->modelOrderInvoice->create($invoice);
 	    }	    	    
 	    
@@ -392,7 +395,6 @@ class ModelImportSAP extends CI_Model{
                         	                       'id_user' => $this->session->userdata('id_user'),
                                                 ]);	        
 	        }
-	        
 	        $migration['bg_migrated_order_invoice_detail'] = True;
 	    }else{
 	        foreach ($migration['detail'] as $k => $det){
@@ -404,14 +406,11 @@ class ModelImportSAP extends CI_Model{
         	            'costo_caja'=> $det['costo_caja'],
         	            'id_user' => $this->session->userdata('id_user'),
 	        ]);
-	        
 	        $migration['bg_migrated_order_detail'] = True;
     	    }
 	    }
-	    
 	    #actualizamos la fecha de migracion en el sistema
-	    $migration['fecha_importacion'] = date('Y-m-d h:m:s');
-	    	    
+	    $migration['fecha_importacion'] = date('Y-m-d h:m:s');	    	   
 	    if( $migration['bg_migrated_order_invoice_detail'] 
 	        && $migration['bg_migrated_order_invoice'] 
 	        && $migration['bg_migrated_order']){
@@ -551,7 +550,7 @@ class ModelImportSAP extends CI_Model{
 	            str_replace('/','-', trim($migration['nro_pedido']))
 	            );
 	        return False;
-	    }
+	    }	   
 	    
 	    $formatted_migration['nro_pedido'] = $nro_order;    
 	    if($this->modelOrder->get($nro_order) != False){

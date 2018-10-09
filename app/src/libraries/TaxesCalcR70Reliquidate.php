@@ -423,10 +423,10 @@ class parcialTaxesReliquidate {
             $gasto_origen = ($this->gastos_origen * $percent) * $this->type_change_parcial;
             #en el caso de que los gastos en origen sean negativos se distribuye en base al fob
             
-            print '<pre>';
-            print_r($percent);
+            #print '<pre>';
+            #print_r($percent);
             #print_r($this->init_data);
-            print '</pre>';
+            #print '</pre>';
             #print  '<br> GO => ' . $gasto_origen;
             #print  '<br> GO => ' . $percent;
             

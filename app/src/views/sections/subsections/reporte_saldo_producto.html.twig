@@ -1,15 +1,24 @@
-<div class="row" style="background-color: #eee; padding: 5px; border-radius: 5px;>
+<div id="app">
+<div class="row" style="background-color: #eee; padding: 1px; border-radius: 1px; height: 30px;" >
    <form  action="" method="get">
    <div class="col-md-1">
    	<strong clas="pull-right">Producto:</strong>
    </div>
       <div class="col-md-5">
          <div class="form-group"  style="width: 100%">
-            <input type="text" class="form-control"/>
+            <input 
+            type="text" 
+            class="form-control"
+            placeholder="Ingrese Nombre Producto"
+            v-model="search_query"
+            />
          </div>         
       </div>
       <div class="col-md-1">
          <button type="submit" class="btn btn-primary btn-sm pull-left"> <span class="fa fa-search"></span></button>
+      </div>
+      <div class="col-md-5">
+			${selected_product.nombre}      
       </div>
    </form>
 </div>
@@ -115,3 +124,19 @@
 </table>
 </div>
 </div>
+</div>
+<script type="text/javascript">
+var app = new Vue({
+    el: '#app',
+    delimiters: ['${', '}'],
+    data: {
+        products: {{   products | json_encode() | raw }} ,
+        search_query: '',
+        selected_product: {},        
+    },
+    methods: {
+    },
+    computed: {
+    },
+})
+</script>

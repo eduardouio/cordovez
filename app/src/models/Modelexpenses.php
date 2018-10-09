@@ -15,7 +15,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Modelexpenses extends CI_Model
 {
     private $table = 'gastos_nacionalizacion';
-    private  $modelBase ;
+    private $modelBase ;
     private $modelLog;
 
     function __construct()

@@ -67,6 +67,26 @@ class Modelparcial extends CI_Model
         return false;
     }
     
+    /**
+     * Verifica que un pedido tenga un parcial cerrado
+     * @param array $nro_order
+     * @return bool
+     */
+    public function orderHaveCloseParcial(string $nro_order):bool{
+        $parcials = $this->getByOrder($nro_order);
+        
+        if ($parcials == False){
+            return False;
+        }
+        
+        foreach ($parcials as $k => $parc){
+            if($parc['bg_isclosed'] == 1){
+                return True;
+            }
+        }
+        
+        return False;
+    }
     
     
     /**

@@ -108,7 +108,8 @@ if(!function_exists('formatMayor')){
 
 
 if(!function_exists('sumsMayor')){
-    function sumsMayor(array $mayor){
+    function sumsMayor(array $mayor, float $costo_total = 0.0){
+        
         $sums = [
             'valor_inicial' => 0.0,
             'valor_inicial_facturado' => 0.0,
@@ -130,14 +131,17 @@ if(!function_exists('sumsMayor')){
             - $sums['valor_inicial_facturado']
             );
         
+        if($sums['valor_por_distribuir'] < 0.001){
+            $sums['valor_por_distribuir'] =0;
+        }
+        
         $cuadre_mayor = [
             'provisiones' => 0.0,
             'facturado' => 0.0,
             'saldo' => 0.0,
             'cuadre_mayor' => 0.0,
         ];
-        
-        
+                
         foreach ($mayor as $m){
             $cuadre_mayor['provisiones'] += $m['valor_inicial'];
             $cuadre_mayor['facturado'] += $m['valor_inicial_facturado'];
@@ -147,13 +151,13 @@ if(!function_exists('sumsMayor')){
             $cuadre_mayor['provisiones']
             - $cuadre_mayor['facturado']
             );
-        
-        $cuadre_mayor['cuadre_mayor'] = (
-            $cuadre_mayor['provisiones']
+
+         $cuadre_mayor['cuadre_mayor'] = (
+             $costo_total
             - $sums['saldo_valor_inicial_facturado']
-            + $sums['valor_por_distribuir']
+            - $sums['valor_por_distribuir']
             );
-        
+    
         return([
             'mayor' => $mayor,
             'sums' => $sums,

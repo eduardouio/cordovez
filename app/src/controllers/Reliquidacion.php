@@ -217,7 +217,6 @@ class Reliquidacion extends MY_Controller
         #solo si el parcial no ha cerrado
         if ($parcial['bg_isclosed'] == 0){
             foreach ($product_taxes['taxes'] as $idx => $tax_product){
-
                 $product = [
                     'id_factura_informativa_detalle' => $tax_product['id_factura_informativa_detalle'],
                     'product' => $tax_product['product'],
@@ -294,7 +293,7 @@ class Reliquidacion extends MY_Controller
         $mayor_congelado = sumsMayor(formatMayor($this->modelMayor->get([
             'type' => 'parcial',
             'id' => $parcial['id_parcial']
-        ])));
+        ])), $product_taxes['sums']['costo_total']);
                
         
         $all_parcials = $this->modelParcial->getAllParcials($parcial['nro_pedido']);
@@ -314,7 +313,7 @@ class Reliquidacion extends MY_Controller
             'id' => $parcial['id_parcial'],
             'warenhouses' => $init_data['warenhouses'],
             'bg_have_etiquetas' => 1,
-            'mayor' => $this->getMayor($init_data),
+            'mayor' => $this->getMayor($init_data, $product_taxes),
             'mayor_congelado' => $mayor_congelado,
             'bg_hava_tasa_control' => 1,
             'regimen' => 'R70',
@@ -472,9 +471,7 @@ class Reliquidacion extends MY_Controller
             $order
             );
         
-        $product_taxes = $orderTaxes->getTaxes();
-        
-        
+        $product_taxes = $orderTaxes->getTaxes();        
         
         #actualizamos los productos de la lista de la factura del pedido
         
@@ -555,9 +552,7 @@ class Reliquidacion extends MY_Controller
         
         $mayor_congelado = formatMayor( $this->modelMayor->get(
             ['id' => $order['nro_pedido'] , 'type' => 'order']
-            ));
-        
-        
+            ));             
         
         return ($this->responseHttp([
             'titleContent' => 'Resumen de Reliquidación ICE Pedido ' .
@@ -574,8 +569,8 @@ class Reliquidacion extends MY_Controller
             'id' => $nroOrder,
             'current_date' => date('d-m-Y') ,
             'order' => $order,
-            'mayor' => $this->getMayor($init_data),
-            'mayor_congelado' => sumsMayor($mayor_congelado),
+            'mayor' => $this->getMayor($init_data, $product_taxes),
+            'mayor_congelado' => sumsMayor($mayor_congelado, $product_taxes['sums']['costo_total']),
             'current_user' => $this->modelUser->get(
                             $this->session->userdata('id_user')
                 ),
@@ -984,7 +979,7 @@ class Reliquidacion extends MY_Controller
      * @param array $order
      * @return array
      */
-    private function getMayor(array $init_data) :array{        
+    private function getMayor(array $init_data, array $taxes = []) :array{        
         $order_invoices = $init_data['order_invoices'][0];
         $order_invoices['order_invoice_detail'] = $init_data['order_invoice_detail'];
         $after_parcials = [];
@@ -1046,9 +1041,9 @@ class Reliquidacion extends MY_Controller
                     ['type' => 'order' , 'id' => $init_data['order']['nro_pedido']]
                     );
             }
-        }
+        }        
         
-        return sumsMayor($mayor);
+        return sumsMayor($mayor, $taxes['sums']['costo_total']);
        
     }
 

@@ -353,7 +353,7 @@ class Gstinicial extends MY_Controller
             'initial_tributes' => $checked_order->getInitialTributes(),
             'init_expenses' => $checked_order->checkInitExpenses(),
             'unused_expenses' => $checked_order->getInitialTributes(),
-            'have_parcial' => $this->checkParcials($order),
+            'have_parcial' => $this->modelParcial->orderHaveCloseParcial($order['nro_pedido']),
             'user' => $this->modeluser->get($order['id_user']),
         ]));
     }
@@ -461,7 +461,6 @@ class Gstinicial extends MY_Controller
     }
 
     
-    
     /**
      * Elimina y Crea gastos iniciales, sin tomar en cuenta FLETE y GASTOS ORIGEN
      *
@@ -475,6 +474,10 @@ class Gstinicial extends MY_Controller
         }
         
         $init_expenses_post = $this->input->post();
+        $check_parcial = $this->modelParcial->orderHaveCloseParcial($init_expenses_post['nro_pedido']);
+        if($check_parcial){
+            return($this->redirectPage('validargi', $init_expenses_post['nro_pedido']));
+        }
         
         #se verifica si el formulario tiene la  fecha de llegada
         if(isset($init_expenses_post['fecha_llegada_cliente']) && $init_expenses_post['fecha_llegada_cliente'] != ''){          
@@ -545,6 +548,7 @@ class Gstinicial extends MY_Controller
      * @return bool
      */
     private function checkParcials(array $order):bool{
+        
         if($order['regimen'] == 10){
             return False;
         }

@@ -71,11 +71,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | the query builder class.
 */
 
-$active_group = 'pruebas_cordovez';
+$active_group = 'localhost';
 
 $query_builder = TRUE;
 
-$db['pruebas_cordovez'] = array(
+$db['localhost'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
 	'username' => 'root',
@@ -95,70 +95,4 @@ $db['pruebas_cordovez'] = array(
 	'stricton' => FALSE,
 	'failover' => array(),
 	'save_queries' => TRUE
-);
-
-$db['cordovez'] = array(
-        'dsn'   => '',
-        'hostname' => 'localhost',
-        'username' => 'appCordovez',
-        'password' => '\DBGfW<7;vBa5(LB',
-        'database' => 'cordovezApp',
-        'dbdriver' => 'mysqli',
-        'dbprefix' => '',
-        'pconnect' => FALSE,
-        'db_debug' => FALSE,
-        'cache_on' => FALSE,
-        'cachedir' => '',
-        'char_set' => 'utf8',
-        'dbcollat' => 'utf8_general_ci',
-        'swap_pre' => '',
-        'encrypt' => FALSE,
-        'compress' => FALSE,
-        'stricton' => FALSE,
-        'failover' => array(),
-        'save_queries' => TRUE
-);
-
-$db['imnac'] = array(
-        'dsn'   => '',
-        'hostname' => 'localhost',
-        'username' => 'appCordovez',
-        'password' => '\DBGfW<7;vBa5(LB',
-        'database' => 'imnacApp',
-        'dbdriver' => 'mysqli',
-        'dbprefix' => '',
-        'pconnect' => FALSE,
-        'db_debug' => FALSE,
-        'cache_on' => FALSE,
-        'cachedir' => '',
-        'char_set' => 'utf8',
-        'dbcollat' => 'utf8_general_ci',
-        'swap_pre' => '',
-        'encrypt' => FALSE,
-        'compress' => FALSE,
-        'stricton' => FALSE,
-        'failover' => array(),
-        'save_queries' => TRUE
-);
-
-$db['vid'] = array(
-        'dsn'   => '',
-        'hostname' => 'localhost,3306',
-        'username' => 'appCordovez',
-        'password' => '\DBGfW<7;vBa5(LB',
-        'database' => 'vidApp',
-        'dbdriver' => 'mysqli',
-        'dbprefix' => '',
-        'pconnect' => FALSE,
-        'db_debug' => FALSE,
-        'cache_on' => FALSE,
-        'cachedir' => '',
-        'char_set' => 'utf8',
-        'dbcollat' => 'utf8_general_ci',
-        'swap_pre' => '',
-        'encrypt' => FALSE,
-        'compress' => FALSE,
-        'stricton' => FALSE,
-        'failover' => array(),
-        'save_queries' => TRUE
 );

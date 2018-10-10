@@ -18,31 +18,12 @@ class Modelproduct extends CI_Model{
     private $modelLog;
     private $modelBase;
     private $myModel;
-    private $modelSupplier;
 
     function __construct(){
         parent::__construct();
-        $this->init();
-    }
-    
-    
-    /**
-     * Inicio de clases y functiones
-     */
-    private function init(){       
-        $models = [
-            'Modelbase',
-            'Mymodel',
-            'Modellog',
-            'Modelsupplier',           
-        ];
-        
-        foreach ($models as $model){
-            $this->load->model($model);
-        }
-        
-        
-        $this->modelSupplier = new Modelsupplier();
+        $this->load->model('Modelbase');
+        $this->load->model('Mymodel');
+        $this->load->model('Modellog');
         $this->modelLog = new Modellog();
         $this->modelBase = new  ModelBase();
         $this->myModel = new  Mymodel();
@@ -78,10 +59,7 @@ class Modelproduct extends CI_Model{
                 'nombre' => 'DESC',
             ],
         ]);
-        if((gettype($products) == 'array') && (count($products) > 0)){
-            foreach ($products as $k => $prod){
-                #$products[$k][$prod]['supplier'] = $this->modelSupplier->get($prod['identificacion_proveedor']);
-            }
+        if((gettype($product) == 'array') && (count($product) > 0)){
             return $products;
         }
         return false;

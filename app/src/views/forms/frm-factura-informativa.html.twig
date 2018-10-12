@@ -119,7 +119,8 @@
                class="form-control" 
                autofocus="autofocus" 
                required="required" 
-               value="{{ info_invoice.nro_factura_informativa }}" 
+               value="{{ info_invoice.nro_factura_informativa }}"
+               autocomplete="off" 
                >
          </div>
       </div>
@@ -157,6 +158,7 @@
                class="form-control" 
                maxlength="20" 
                value="{{info_invoice.nro_refrendo}}" 
+               autocomplete="off"
                >
          </div>
       </div>      
@@ -180,6 +182,7 @@
                {% if create_invoice == true %}
                 disabled="disabled"
                {% endif %}
+               autocomplete="off"
                >
          </div>
       </div>

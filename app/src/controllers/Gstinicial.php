@@ -354,6 +354,7 @@ class Gstinicial extends MY_Controller
             'init_expenses' => $checked_order->checkInitExpenses(),
             'unused_expenses' => $checked_order->getInitialTributes(),
             'have_parcial' => $this->modelParcial->orderHaveCloseParcial($order['nro_pedido']),
+            'exist_parcial' => $this->checkParcials($order),
             'user' => $this->modeluser->get($order['id_user']),
         ]));
     }

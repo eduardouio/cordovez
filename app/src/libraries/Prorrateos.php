@@ -74,7 +74,6 @@ class Prorrateos
         }
         
         foreach ($this->init_data['init_expenses'] as $idx => $expense){
-            
             $expense['valor_prorrateado'] =  (
                 $expense['valor_provisionado']
                 * $fobs['fob_parcial_razon_inicial']
@@ -87,11 +86,8 @@ class Prorrateos
                     );
                 $this->have_tasa = True;                
             }
-            
-            
             array_push( $prorrateos['prorrateo_pedido'], $expense);
         }
-        
         return $prorrateos;
     }
     
@@ -110,34 +106,29 @@ class Prorrateos
             print 'Factura Informativa sin productos';
             exit();
         }
-        
         #comprobamos el valor de la tasa
         if(floatval($tasa_provision == 700.00) || floatval($tasa_provision == 40.00)){
             return ($tasa_provision * $fob_parcial_razon_inicial);
-        }        
+        }
        
         if(count($this->init_data['products']) == 0){
             print 'Factura Informativa sin productos';
             exit();
         }
-        
         $tasa_general = [];
         $tasa_parcial = [];
         $total_tasa_parcial = 0.0;
         $tasa_base_peso = 0.0;
-        
         
         foreach ($this->init_data['order_invoice_detail'] as $k => $prod){
             $tasa = $prod['peso'] * 0.05;
             if($tasa > 700){
                 $tasa = 700;
             }
-            
             $tasa_base_peso += $tasa;
             $unidad_caja = $this->getUnitiesProduct(
                 $prod['detalle_pedido_factura']
-                );
-            
+                );            
             if($unidad_caja){
                 $peso_unidad = $prod['peso'] /  ($unidad_caja * $prod['nro_cajas']);
                 
@@ -150,15 +141,12 @@ class Prorrateos
                     'peso_unidad' => $peso_unidad,
                     'cod_contable' => $prod['cod_contable'],
                     'tasa_control' => $tasa,
-                ]);
-                
+                ]);        
             }
         }
-        
         #si cinciden las tasa calculamo el prorrateo por item de la FI
         if(round($tasa_base_peso,1) == round($tasa_provision,1)){
             $this->tase_base_peso = True;
-            
             foreach ($tasa_general as $item){
                 foreach ($this->init_data['products'] as $i => $dt){
                     if($dt['detalle_pedido_factura'] == $item['detalle_pedido_factura']){
@@ -174,7 +162,6 @@ class Prorrateos
             $this->tasa_parcial = $tasa_parcial;
             return $total_tasa_parcial;
         }
-        
         #retorna en porcentaje al fob
         foreach ($tasa_general as $item){
             foreach ($this->init_data['products'] as $i => $dt){
@@ -186,12 +173,8 @@ class Prorrateos
                 }
             }
         }
-        
         $this->tasa_parcial = $tasa_parcial;
         return ($tasa_provision * $fob_parcial_razon_inicial);
-        
-        
-        
     }
     
     
@@ -213,9 +196,9 @@ class Prorrateos
                 }
             }
         }
-        
         return 0;
     }
+    
     
     /**
      * Retorna el costo por bodegaje del parcial, y el saldo para el proximo
@@ -247,11 +230,10 @@ class Prorrateos
                 }
             }
         }
-        
         if($this->init_data['last_prorrateo']){
             $last_prorrateo = $this->init_data['last_prorrateo'];
-            
-            $warenhouse['almacenaje_anterior'] = ($last_prorrateo['almacenaje_proximo_parcial']) ? $last_prorrateo['almacenaje_proximo_parcial'] : 0;
+            $warenhouse['almacenaje_anterior'] = 
+                ($last_prorrateo['almacenaje_proximo_parcial']) ? $last_prorrateo['almacenaje_proximo_parcial'] : 0;
         }
         
         $warenhouse['almacenaje_total_parcial'] = (
@@ -268,13 +250,11 @@ class Prorrateos
             $warenhouse['almacenaje_total_parcial']
             - $warenhouse['almacenaje_aplicado']
             );
-
         #comprobamos si es el ultimo parcial si lo es asignamos todo el valor
         if ($this->current_parcial_is_last){
             $warenhouse['almacenaje_aplicado'] += $warenhouse['almacenaje_proximo_parcial'];
             $warenhouse['almacenaje_proximo_parcial'] = 0;           
-        }
-        
+        }    
         return $warenhouse;
     }
     
@@ -299,20 +279,16 @@ class Prorrateos
             'prorrateo_seguro_aduana' => 0.0,
             'prorrateo_flete_aduana' => 0.0,
         ];
-        
-        
-        
+                
         if (
             $this->init_data['order_invoices'] == False
             ){
                 return $fobs;
         }
         
-        
         foreach ($this->init_data['order_invoices'] as $idx => $invoice){
             $fobs['fob_inicial'] += $invoice['valor'];
         }
-        
         
         if ($this->init_data['last_prorrateo']){
             $last_prorrateo = $this->init_data['last_prorrateo'];
@@ -334,8 +310,7 @@ class Prorrateos
         $fobs['fob_parcial_razon_inicial'] = (
             $fobs['fob_parcial']  / $fobs['fob_inicial']
             );
-        
-        
+           
         if($fobs['fob_saldo'] == 0){
             $fobs['fob_parcial_razon_saldo'] = 1;
         }else{
@@ -343,8 +318,7 @@ class Prorrateos
                 $fobs['fob_parcial']
                 /$fobs['fob_saldo']
                 );
-        }
-        
+        }        
         return $fobs;
     }
     
@@ -361,7 +335,6 @@ class Prorrateos
                 break;
             }
         }
-        
         return False;
     }
     
@@ -369,7 +342,12 @@ class Prorrateos
     /**
      * Comprueba si el parcial que esta procesando es el ultimo
      */
-    private function checkStockOrder(){        
+    private function checkStockOrder(){
+        if($this->init_data['order']['nro_pedido'] == '191-17'){
+            return $this->current_parcial_is_last = False;
+        }
+            
+        $this->current_parcial_is_last = False;
         if($this->stock_order){
             foreach ($this->stock_order as $k => $item){
                 if(intval($item['stock']) > 0 ){
@@ -377,7 +355,5 @@ class Prorrateos
                 }
             }
         }
-    }
-    
+    }   
 }
-

@@ -203,7 +203,11 @@ class ModelImportSAP extends CI_Model{
 	    $local_migration = $this->get($formatted_migration['nro_pedido']);
 	    
 	    #registramos la migracion
-	    if($local_migration == False && $formatted_migration['bg_exist_in_local'] == False){        
+	    if(
+	        $local_migration == False 
+	        && $formatted_migration['bg_exist_in_local'] == False 
+	        && $formatted_migration['bg_has_imported'] == False
+	        ){        
 	        if($this->db->insert($this->table, $formatted_migration)){
 	            foreach ($detail_migration as $k => $det){
 	                $det['nro_pedido'] = $formatted_migration['nro_pedido']; 
@@ -223,33 +227,7 @@ class ModelImportSAP extends CI_Model{
 	        return True;
 	    }
 	   
-	    #actualizamos la migracion
-	    if(boolval($local_migration['bg_has_imported']) == False){
-	        #borramos el detalle de pedido
-	        $this->db->where('nro_pedido', $local_migration['nro_pedido']);
-	        if($this->db->delete($this->child_table)){
-	            $this->modelLog->susessLog(
-	                'Detalle de pedido eliminado'
-	                );
-	        }else{
-	            $this->modelLog->errorLog(
-	                'No se puede Eliminar el detalle', 
-	                $this->db->last_query()
-	                );
-	        }	        
-	        #borramos el pedido
-	        $this->db->where('nro_pedido', $local_migration['nro_pedido']);
-	        if($this->db->delete($this->table)){
-	            $this->modelLog->susessLog(
-	                'Pedido migracion eliminado'
-	                );
-	        }else{
-	            $this->modelLog->errorLog(
-	                'No se puede Eliminar el pedido migracion',
-	                $this->db->last_query()
-	                );
-	        }
-	        	 
+	    if($this->checkMigration($formatted_migration) == True){
 	        if($this->db->insert($this->table, $formatted_migration)){
 	            foreach ($detail_migration as $k => $det){
 	                $det['nro_pedido'] = $formatted_migration['nro_pedido'];
@@ -266,17 +244,48 @@ class ModelImportSAP extends CI_Model{
 	            $this->modelLog->susessLog(
 	                'Migracion ingresada correctamente'
 	                );
-    	         return true;
-	        }
+	            return true;
+	        }	        	         
 	    }
 	    
 	    $this->modelLog->errorLog(
-	        'Problemas para migrar el pedido', 
+	        'El pedido no puede ser migrado', 
 	        $this->db->last_query()
 	        );
 	    
 	    return false;
 	}
+	
+	
+	/**
+	 * Comprueba si un pedido se puede actualizar o no, si se puede actualizar
+	 * elimina el pedido y sus detalles,si no lo deja como un pedido que 
+	 * no se puede importar
+	 * 
+	 * @param string $nro_order pedido a comprobar
+	 * @return bool si se elimina
+	 */
+	private function checkMigration(array $formatted_migration):bool{
+	    if(
+	        boolval($formatted_migration['bg_has_imported']) 
+	        || boolval($formatted_migration['bg_exist_in_local'])
+	        ){
+	        $this->modelLog->generalLog(
+	            'La migracion no se modifica se respeta el registro en la tabla'
+	            );
+
+	        return False;
+	    }
+	    
+	    #eliminamos el pedido
+	    $this->db->where('nro_pedido', $formatted_migration['nro_pedido']);
+	    $this->db->delete($this->child_table);
+	    $this->db->where('nro_pedido', $formatted_migration['nro_pedido']);
+	    $this->db->delete($this->table);	    
+	    
+	    return True;
+	}
+	
 	
 	
 	/**
@@ -553,18 +562,26 @@ class ModelImportSAP extends CI_Model{
 	    }	   
 	    
 	    $formatted_migration['nro_pedido'] = $nro_order;    
+	    
 	    if($this->modelOrder->get($nro_order) != False){
 	        $formatted_migration['bg_exist_in_local'] = True;
+	    }
+	    
+	    if($this->get($nro_order) == False){
+	        $formatted_migration['bg_has_imported'] = True;
+	    }else{
+	        $formatted_migration['bg_has_imported'] = False;
 	    }
 	    	    	    
 	    if(gettype($supplier) == 'array'){
 	        $formatted_migration['proveedor'] = $supplier['nombre'];
 	        $formatted_migration['identificacion_proveedor'] = $supplier['identificacion_proveedor'];
+	        
 	        if($supplier['comentarios'] != null){
     	        $formatted_migration['observaciones_proveedor'] = $supplier['comentarios'];	            
 	        }
-	        $formatted_migration['bg_have_supplier'] = True;
 	        
+	        $formatted_migration['bg_have_supplier'] = True;	        
 	        $supplier_local = $this->modelSupplier->get($formatted_migration['identificacion_proveedor']);
 	        
 	        if(is_array($supplier_local)){
@@ -578,6 +595,7 @@ class ModelImportSAP extends CI_Model{
 	        $formatted_migration['fecha_emision_factura'] = $invoice['fecha_emision'];
 	        $formatted_migration['fecha_vencimiento_factura'] = $invoice['venciemiento_pago'];
 	        $formatted_migration['valor_factura'] = floatval($invoice['valor']);
+	        
 	        if($invoice['observacioes'] != null){
 	            $formatted_migration['observaciones_factura'] = $invoice['observacioes'];
 	        }        	        

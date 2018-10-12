@@ -86,11 +86,6 @@ class Importar extends MY_Controller
    }
    
    
-   public function php(){
-       print phpinfo();
-   }
-   
-   
    /**
     * Realiza una importacion de los pedidos basados en una lista
     * @param array post lista de pedidos

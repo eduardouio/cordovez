@@ -129,7 +129,7 @@ if(!function_exists('sumsMayor')){
         $sums['saldo_valor_inicial_facturado'] = (
             $sums['valor_inicial']
             - $sums['valor_inicial_facturado']
-            );
+            );        
         
         if($sums['valor_por_distribuir'] < 0.001){
             $sums['valor_por_distribuir'] =0;

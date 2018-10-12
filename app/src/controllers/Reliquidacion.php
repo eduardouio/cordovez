@@ -196,7 +196,7 @@ class Reliquidacion extends MY_Controller
         $prorrateo_values = $prorrateoLib->getValues();
         $init_data['fobs_parcial'] = $prorrateo_values['fobs_parcial'];
         $init_data['warenhouses'] = $prorrateo_values['warenhouses'];    
-
+        
         $prorrateos = $this->updateProrrateoParcial(
             $prorrateo_values,
             $parcial

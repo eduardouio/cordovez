@@ -285,6 +285,7 @@ $('#valor').keyup(function(){
 			class="form-control" 
 			id="concepto"
 			name="concepto"
+			autocomplete="off"
 			>
 			<option disabled="" selected="">Seleccione...</option>
 			{% for expense in unusedExpenses %}
@@ -303,6 +304,7 @@ $('#valor').keyup(function(){
                id="selector-fecha" 
                required="required" 
                name="fecha" 
+               autocomplete="off"
                class="bootstrap-datepicker" 
                >
             <div class="input-group-addon">

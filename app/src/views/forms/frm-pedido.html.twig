@@ -28,7 +28,9 @@
                         maxlength="3" 
                         minlength="1" 
                         required="required"
-                        autofocus="">
+                        autofocus=""
+                        autocomplete="off"
+                        >
                   </div>
             </div>
             <div class="col-md-2">
@@ -83,8 +85,9 @@
                         	placeholder="000-0000-00-000000" 
                         	class="form-control" 
                         	maxlength="20"
+                        	autocomplete="off" 
                         	value="{{ order.nro_refrendo }}"
-                        	>
+                        	/>
                   </div>
             </div>
       </div>
@@ -98,6 +101,7 @@
                         	id="fecha_arribo" 
                         	name="fecha_arribo"
                         	value="{{ order.fecha_arribo }}"
+                        	autocomplete="off"
                         	>
                   </div>
             </div>

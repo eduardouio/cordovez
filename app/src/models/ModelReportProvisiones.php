@@ -11,8 +11,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @filesource
  */
 
-class ModelReportProvisiones extends CI_Model
-{ 
+class ModelReportProvisiones extends CI_Model{ 
     private $modelBase;
     
     function __construct(){
@@ -77,7 +76,6 @@ class ModelReportProvisiones extends CI_Model
         if($result){
             $proviciones = $result;
         }
-        
         return $proviciones;
     }
     

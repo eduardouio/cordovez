@@ -1,114 +1,76 @@
 <div class="row">
-	<div class="col-sm-12">
-		<table class="table table-hover table-bordered table-striped">
-			<thead>
-				<tr>
-					<th>#</th>
-					<th>Nro Factura</th>
-					<th>F Emision</th>
-					<th>F Vencimiento</th>
-					<th>F Pago</th>
-					<th>Moneda</th>
-					<th>Valor</th>
-					<th>Retirado</th>
-					<th>Saldo</th>
-					<th>Acciones</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% set sumaFacturas = 0 %}
-				{% set sumaRetirado = 0 %}
-				{% set sumaSaldo = 0 %}
-
-				{% for orderInvoice in order_invoices %}
-
-				{% set sumaFacturas = sumaFacturas + orderInvoice.valor %}
-				{% set sumaRetirado = sumaRetirado + orderInvoice.valor %}
-				
-				<tr>
-					<td>{{loop.index}}</td>
-
-					<td><span class="fa fa-eye fa-fw"></span> <a
-						href="{{rute_url}}pedidofactura/presentar/{{orderInvoice.id_pedido_factura}}">
-							<small style="font-size: xx-small;">{{ orderInvoice.supplier.nombre | slice(0,18)}}</small>...
-							 &nbsp;F[{{orderInvoice.id_factura_proveedor}}]
-					</a>
-				</td>
-					<td class="text-right">{{orderInvoice.fecha_emision | date('d/m/Y')}}</td>
-					<td class="text-right">
-						{% if orderInvoice.vencimiento_pago != null %}
-							{{ orderInvoice.vencimiento_pago | date('d/m/Y') }}
-						{% endif %}
-						
-					</td>
-					<td class="text-right">
-						{% if orderInvoice.fecha_pago != null %}
-							{{ orderInvoice.fecha_pago | date('d/m/Y') }}
-						{% endif %}
-						
-					</td>
-					<td class="text-right">{{orderInvoice.moneda}}</td>
-					<td class="text-right">{{orderInvoice.valor | number_format(2, '.', ',') }}</td>
-					{% if (order.bg_isclosed) == 1 %}
-						{% set nacionalizado = orderInvoice.valor %}					
-				    {% endif %}
-				    {# calculamos el saldo de la factura #}
-				    {% set nacionalizado = 0 %}
-				    {% for item in activeStok %}
-				    	{% if (item.id_pedido_factura == orderInvoice.id_pedido_factura)  %}
-				    		{% set nacionalizado = nacionalizado + ( item.stock * item.costo_caja ) %}
-				    	{% endif %}
-				    {% endfor %}
-
-					<td class="text-right">{{nacionalizado | number_format(2, '.', ',') }}</td>
-
-					<td class="text-right"> <strong>{{(orderInvoice.valor - nacionalizado) | number_format(2, '.', ',') }} </strong></td>
-					{% set sumaSaldo = sumaSaldo + (orderInvoice.valor - nacionalizado) %}
-					<td>
-						<div class="dropdown">
-							<button class="btn btn-sm btn-default" id="dLabel" type="button"
-								data-toggle="dropdown" aria-haspopup="true"
-								aria-expanded="false">
-								Acciones <span class="fa fa-list fa-fw"></span> <span
-									class="caret"></span>
-							</button>
-							<ul class="dropdown-menu" aria-labelledby="dLabel">
-								<li><a
-									href="{{rute_url}}pedidofactura/presentar/{{orderInvoice.id_pedido_factura}}">
-										<span class="fa fa-eye fa-fw"></span> Ver Productos
-								</a></li>
-								{% if order.bg_haveExpenses == 0 %}
-								<li><a
-									href="{{rute_url}}detallepedido/nuevo/{{orderInvoice.id_pedido_factura}}">
-										<span class="fa fa-cube fa-fw"></span> Agregar Item Producto
-								</a></li>
-								<li><a
-									href="{{rute_url}}pedidofactura/editar/{{orderInvoice.id_pedido_factura}}">
-										<span class="fa fa-pencil fa-fw"></span> Editar Factura
-								</a></li>
-								<li><a
-									href="{{rute_url}}pedidofactura/eliminar/{{orderInvoice.id_pedido_factura}}">
-										<span class="text-danger fa fa-trash fa-fw"></span> Elminar
-										Factura
-								</a></li>
-								{% endif %}
-							</ul>
-						</div>
-					</td>
-				</tr>
-				{% endfor %}
-
-				<tr>
-					<td></td>
-				</tr>
-			<tr style="background-color:#337ab7; color:#fff;font-weight:bold;">
-            <td colspan="6" class="text-right">SUMAS: &nbsp;&nbsp;&nbsp;&nbsp;</td>
-            <td class="text-right"> {{ sumaFacturas | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ sumaRetirado | number_format(2,',','.') }}</td>
-            <td class="text-right">{{ sumaSaldo  | number_format(2,',','.') }}</td>
-            <td class="text-right"></td>
-          </tr>
-			</tbody>
-		</table>
-	</div>
-</div>
+<div class="col-sm-4">
+     <span>Proveedor</span>
+     <input 
+     type="text" 
+     readonly="readonly" 
+     value="{{ supplier.nombre }}"
+     class="full-width"
+     />
+  </div>  
+  <div class="col-sm-1">
+     <span>Factura</span> 
+     <input 
+     type="text" 
+     readonly="readonly" 
+     value="{{  order_invoices.0.nro_factura }}"
+     class="full-width"
+     />
+  </div>
+  <div class="col-sm-2">
+     <span>F. Emision</span>
+      {% if order_invoices.0.fecha_emision == null or order_invoices.0.fecha_emision == '0000-00-00' %}
+      <a  href="{{ rute_url }}pedidofactura/editar/{{order_invoices.0.id_pedido_factura}}" >Registrar</a>
+      {% else %}
+      <input 
+      type="text"
+      value="{{ order_invoices.0.fecha_emision | date('d/m/Y') }}"
+      readonly="readonly"
+      class="full-width" 
+      />            
+      {% endif %}
+  </div>      
+  <div class="col-sm-1">
+  <span>Moneda</span>
+  <input 
+  type="text"
+  class="full-width text-right"
+  readonly="readonly"
+  value="{{ order_invoices.0.moneda}}" 
+  />
+  </div>
+  <div class="col-sm-1">
+  <span>Valor</span>
+  <input 
+  type="text"
+  class="full-width text-right"
+  readonly="readonly"
+  value="{{ order_invoices.0.valor | number_format(3,',','.')}}" 
+  />
+  </div>
+  <div class="col-sm-1">
+  <span>Tipo C</span>
+  <input 
+  type="text"
+  class="full-width text-right"
+  readonly="readonly"
+  value="{{ order_invoices.0.tipo_cambio | number_format(3,',','.')}}" 
+  />
+  </div>
+  <div class="col-sm-2">
+  <span>Total USD</span>
+  <input 
+  type="text"
+  class="full-width text-right"
+  readonly="readonly"
+  value="$ {{ (order_invoices.0.valor * order_invoices.0.tipo_cambio) | number_format(3,',','.') }}" 
+      />
+      </div>
+   </div>
+   <br />
+   <div class="row">
+   <div class="col-md-12 text-right">
+   
+<a href="{{ rute_url }}pedidofactura/presentar/{{ order_invoices.0.id_pedido_factura  }}" class="btn btn-sm btn-default"> <span class="fa fa-eye"></span> Ver Factura</a>
+   </div>  
+   </div>

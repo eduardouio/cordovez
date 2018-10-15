@@ -10,6 +10,10 @@
  * @filesource
  */
 
+.full-width{
+	width: 100%;
+}
+
 .no-warp > td{
 	white-space: nowrap;
 }

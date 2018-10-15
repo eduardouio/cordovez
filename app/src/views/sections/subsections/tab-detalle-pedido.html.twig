@@ -7,79 +7,94 @@
       <strong class="text-danger"><span class="fa fa-lock"></span></strong>
    {% endif %} 
 	</label>
-	<input value = "{{ order.nro_pedido }}" disabled="disabled" class="form-control">
+	<input value = "{{ order.nro_pedido }}" readonly="readonly" class="full-width" class="full-width" >
 	</div>
 	<div class="col-md-1">
 	<label><small>Régimen</small></label>
-	<input value = "{{ order.regimen }}" disabled="disabled" class="form-control">
+	<input value = "{{ order.regimen }}" readonly="readonly" class="full-width" >
 	</div>
 	<div class="col-md-2">
 		<label><small>País</small></label>
-	<input value = "{{ order.pais_origen }}" disabled="disabled" class="form-control">
+	<input value = "{{ order.pais_origen }}" readonly="readonly" class="full-width" >
 	</div>
 	<div class="col-md-2">
 		<label><small>Fecha Llegada</small></label>
-	<input value = "{{ order.fecha_arribo }}" disabled="disabled" class="form-control">
+	<input value = "{{ order.fecha_arribo }}" readonly="readonly" class="full-width" >
 	</div>
 	<div class="col-md-1">
 		<label><small>Incoterm</small></label>
-	<input value = "{{ order.incoterm }}" disabled="disabled" class="form-control">
+	<input value = "{{ order.incoterm }}" readonly="readonly" class="full-width" >
 	</div>
 	<div class="col-md-4">
 	<label><small>Proveedor</small></label>
-	<input value = "{{ supplier.nombre }}" disabled="disabled" class="form-control">
+	<input value = "{{ supplier.nombre }}" readonly="readonly" class="full-width" >
 	</div>
 </div>
 <div class="row">
 	<div class="col-md-3">
 	<label><small>Referendo</small></label>
-	<input value = "{{ order.nro_refrendo }}" disabled="disabled" class="form-control">
+	<input value = "{{ order.nro_refrendo }}" readonly="readonly" class="full-width" >
 	</div>
 	<div class="col-md-1">
 	<label><small>Moneda</small></label>
-	<input value = "{{ order_invoices.0.moneda }}" disabled="disabled" class="form-control">
+	<input value = "{{ order_invoices.0.moneda }}" readonly="readonly" class="full-width" >
+	</div>
+	<div class="col-md-2">
+	<label><small>Nro Fac</small></label>
+	<input value = "{{ order_invoices.0.id_factura_proveedor }}" readonly="readonly" class="full-width" >
 	</div>
 	<div class="col-md-1">
-	<label><small>Nro Fac</small></label>
-	<input value = "{{ order_invoices.0.id_factura_proveedor }}" disabled="disabled" class="form-control">
+	<label><small>GO</small></label>
+	<input value = "{{ order.gasto_origen | number_format(2,',','.')}}" readonly="readonly" class="full-width text-right"/>
 	</div>
-	<div class="col-md-2">
+	<div class="col-md-1">
 	<label><small>Seguro A</small></label>
-	<input value = "{{ order.seguro_aduana | number_format(2,',','.') }}" disabled="disabled" class="form-control">
+	<input value = "{{ order.seguro_aduana | number_format(2,',','.') }}" readonly="readonly" class="full-width text-right"/>
 	</div>
-	<div class="col-md-2">
+	<div class="col-md-1">
 	<label><small>Flete A</small></label>
-	<input value = "{{ order.flete_aduana | number_format(2,',','.')}}" disabled="disabled" class="form-control">
+	<input value = "{{ order.flete_aduana | number_format(2,',','.')}}" readonly="readonly" class="full-width text-right" />
 	</div>
 	<div class="col-md-1">
 	<label><small>FOB</small></label>
-	<input value = "{{ order_invoices.0.valor | number_format(2,',','.')}}" disabled="disabled" class="form-control">
+	<input value = "{{ order_invoices.0.valor | number_format(2,',','.')}}" readonly="readonly" class="full-width text-right"/>
 	</div>
 	<div class="col-md-2">
 	<label><small>CIF</small></label>
-	<input value = "{{ ((order_invoices.0.valor * order_invoices.0.tipo_cambio  ) +  order.flete_aduana + order.seguro_aduana) | number_format(2,',','.') }}" disabled="disabled" class="form-control">
-	</div>
-	
+	<input value = "{{ ((order_invoices.0.valor * order_invoices.0.tipo_cambio  ) +  order.flete_aduana + order.seguro_aduana) | number_format(2,',','.') }}" readonly="readonly" class="full-width text-right"/>
+	</div>	
 </div>
 <div class="row">
-	<div class="col-md-3">
+	<div class="col-md-2">
 	<label><small>Fecha Registro</small></label>
-	<input value = "{{ order.date_create }}" disabled="disabled" class="form-control">
+	<input value = "{{ order.date_create }}" readonly="readonly" class="full-width">
 	</div>
-	<div class="col-md-3">
+	<div class="col-md-2">
 	<label><small>Fecha Arribo</small></label>
-	<input value = "{{ order.fecha_arribo }}" disabled="disabled" class="form-control">
+	<input value = "{{ order.fecha_arribo }}" readonly="readonly" class="full-width" >
 	</div>
-	<div class="col-md-3">
+	<div class="col-md-2">
 	<label><small>Fecha Ing Almagro</small></label>
-	<input value = "{{ order.fecha_ingreso_almacenera }}" disabled="disabled" class="form-control">
+	<input value = "{{ order.fecha_ingreso_almacenera }}" readonly="readonly" class="full-width">
 	</div>
-	<div class="col-md-3">
+	<div class="col-md-2">
 	<label><small>Fecha Llegada Final</small></label>
-	<input value = "{{ order.fecha_llegada_cliente }}" disabled="disabled" class="form-control">
+	<input value = "{{ order.fecha_llegada_cliente }}" readonly="readonly" class="full-width" >
+	</div>
+	<div class="col-md-2">
+	<label><small>Registrado Por:</small></label>
+	<input value = "{{ order.id_user }}" readonly="readonly" class="full-width" >
+	</div>
+	<div class="col-md-2 text-right">
+	<br />
+	{% if order.bg_isclosed == 0 %}
+	<a href="{{ rute_url }}pedido/editar/{{ order.nro_pedido }}" class="btn btn-sm btn-default">
+	<span class="fa fa-pencil"></span>
+	Editar Pedido
+	</a>
+{%  endif %}
 	</div>
 </div>
-
 <br />
 {% if order.regimen == 10 %}
 <div class="row">
@@ -93,7 +108,7 @@
           <th>Concepto</th>
           <th>Tipo</th>
           <th>Liquidación Aduana</th>
-          <th>Valor Pagado</th>
+          <th>Valor Pagado</th>e
        </tr>
        <tr class="text-right">
        <td>1</td>

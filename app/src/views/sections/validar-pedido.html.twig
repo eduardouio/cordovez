@@ -270,7 +270,7 @@
       <p>
          <a href="{{rute_url}}pedido/presentar/{{order.nro_pedido}}" class="btn btn-default btn-sm">
          <span class="fa fa-arrow-left fa-fw"></span>
-         Volver Al Pedido [{{order.nro_pedido}}]
+         Ficha Pedido
          </a>
          {% if  invoices_order.values_isok == true %}
          	{%  if init_expenses.all_ok == true %}
@@ -278,12 +278,12 @@
          			{% if exist_parcial == True and order.bg_isclosed == 0 %}
                          <button data-toggle="modal" data-target="#myModal" class="btn btn-success btn-sm pull-right">
                          <span class="fa fa-file fa-fw"></span>
-                         Generar Nuevo Parcial [{{order.nro_pedido}}]
+                         Nuevo Parcial
                      	</button>
                     {% else %}
                     	<a class="btn btn-success btn-sm pull-right" href="{{rute_url}}pedido/presentar/{{order.nro_pedido}}">
                  <span class="fa fa-list-ol"></span>
-                 Ver Parciales Del Pedido
+                 Ver Parciales
              	</a>
                  	{% endif %}
              

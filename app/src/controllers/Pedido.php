@@ -133,7 +133,7 @@ class Pedido extends MY_Controller
      *            limite inferior de la lista
      * @return string template plantilla de la pagina
      */
-    public function listar(int $offset = 0)
+    public function listar()
     {       
         $init_data = [];
         $all_orders = [];
@@ -217,7 +217,6 @@ class Pedido extends MY_Controller
             }
         }
         
-        
         $info_invoices = $this->modelInfoInvoice->getByOrder($nroOrder);
         
         if($info_invoices){
@@ -242,10 +241,7 @@ class Pedido extends MY_Controller
         $stock['current'] = $stock_order->getCurrentOrderStock();
         $stock['initial'] = $stock_order->getInitStockProducts();
         $stock['global'] = $stock_order->getGlobalValues();
-        
-        
-        
-        
+                
         return($this->responseHttp([
             'show_order' => true,
             'order_info' => $order_report->getStatusData(),
@@ -259,11 +255,15 @@ class Pedido extends MY_Controller
             'parcials' => $order_report->getPartialInfo(),
             'list_active' => 'class="active"',
             'id_user' => $this->session->userdata('id_user'),
-            'titleContent' => 'Detalle De Pedido [ ' . $nroOrder . '] [' . $order['incoterm'] . '] [Regimen ' . $order['regimen'] . ']'
+            'titleContent' => 'Detalle De Pedido [ ' 
+                            . $nroOrder . '] [' . 
+                                $order['incoterm'] . 
+                                '] [Regimen ' . 
+                                $order['regimen'] . '] <small> Ref:' .
+                                $order['nro_refrendo'] . '</small>'
         ]));
     }
         
-    
     
     /**
      * Muestra el formulario para crear un pedido

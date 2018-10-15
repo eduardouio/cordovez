@@ -20,6 +20,7 @@ class parcialTaxesReliquidate {
     private $total_items = 0;
     private $incoterm;
     private $gastos_origen = 0.0;
+    private $gastos_origen_pedido_tasa_trimestral = 0.0;
     private $id_factura_informativa;
     private $nro_factura_informativa;    
     private $type_change_invoice = 0.0;
@@ -254,6 +255,8 @@ class parcialTaxesReliquidate {
                 $this->gastos_origen += $invoice['gasto_origen'];
                 
         }       
+        #se coloca para manejar los gastos en origen para pedidos fob con GO, intentarlo para EXW y FCA              
+        $this->gastos_origen_pedido_tasa_trimestral = floatval($this->init_data['order']['gasto_origen']);
                
     }
     
@@ -420,7 +423,9 @@ class parcialTaxesReliquidate {
             $fob = $product_value;
             
         }elseif ($this->incoterm == 'FOB'){
+            
             $gasto_origen = ($this->gastos_origen * $percent) * $this->type_change_parcial;
+            $gasto_origen_tasa_trimestral = $this->gastos_origen_pedido_tasa_trimestral * $this->type_change_invoice;
             #en el caso de que los gastos en origen sean negativos se distribuye en base al fob
             $fob = $product_value + $gasto_origen; 
                 
@@ -429,8 +434,8 @@ class parcialTaxesReliquidate {
             * $this->type_change_parcial;     
             $gasto_origen_tasa_trimestral = 0.0;           
              $fob = $product_value + $gasto_origen;
-        }              
-
+        }         
+       
         return ([
             'nombre'=> $product_base['nombre'],
             'id_factura_informativa_detalle' => $detail_info_invoice['id_factura_informativa_detalle'],

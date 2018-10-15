@@ -68,7 +68,7 @@ class Modelorder extends CI_Model
      * @return array | bool
      */
     public function search($nro_pedido)
-    {
+    {          
         $query = "SELECT *, SUBSTRING(nro_pedido, -2) AS anio 
                     FROM pedido 
                     WHERE 
@@ -78,6 +78,16 @@ class Modelorder extends CI_Model
                     OR nro_pedido LIKE '%" . $nro_pedido  .  "%'
                     ORDER BY anio DESC, nro_pedido DESC;
                     ";
+        
+        if($nro_pedido == 'cerrados'){
+            $query = "SELECT *, SUBSTRING(nro_pedido, -2) AS anio
+                    FROM pedido
+                    WHERE
+                    bg_isclosed = 1                    
+                    ORDER BY anio DESC, nro_pedido DESC;
+                    ";
+        }
+        
         return ($this->modelBase->runQuery($query));
     }
 

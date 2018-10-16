@@ -1,4 +1,16 @@
-<h4 class="text-info">{{ supplier.nombre }}
+    {% set simbolo = '$' %}
+    {% if invoice.moneda == 'EUROS' %}
+    {% set simbolo = '&euro;' %}
+    {% endif %}
+    {% set suma = 0 %}
+    {% set unidades = 0 %}
+    {% for detail in invoiceDetail %} 
+    {% set unidades = unidades + detail.nro_cajas %}
+    {% set suma = (suma +  (detail.total_item) ) %}
+    {% endfor %}
+    {% set diferencia =  ((invoice.valor) - suma) | number_format(2) %}
+    {% set nro_cajas = 0 %}
+<h4 class="text-info">{{ supplier[0].nombre }}
   {% if diferencia != 0 %}
     &nbsp;
     &nbsp;
@@ -25,10 +37,22 @@
           {% endif %}
        </span>
       </div>
+      <div class="col-sm-3">
+         <strong>Vencimiento:</strong> <span>{{invoice.vencimiento_pago}}</span>
+      </div>
    </div>
    <div class="row">
       <div class="col-sm-3">
+         <strong>Moneda:</strong> <span>{{invoice.moneda}}</span>
+      </div>
+      <div class="col-sm-3">
          <strong>Tipo Cambio:</strong> <span>{{invoice.tipo_cambio}}</span>
+      </div>
+      <div class="col-sm-3">
+         <strong>Valor:</strong> <span class="text-danger">
+          {{ simbolo | raw}}
+         {{invoice.valor | number_format(2,',','.')}}
+       </span>
       </div>
       <div class="col-sm-3">
          <strong>Creado Por:</strong> <span>{{user.nombres}}</span>
@@ -196,7 +220,7 @@
    		<div class="col-ms-3">
       <a class="btn btn-default btn-sm" href="{{ rute_url }}pedidofactura/editar/{{invoice.id_pedido_factura}}" >
         <span class="fa fa-file-text-o fa-fw"></span>
-        Editar Cabecera Factura
+        Editar Cabecera Factura <b>[{{invoice.id_factura_proveedor}}]</b>
       </a>
     </div>
    {% endif %}

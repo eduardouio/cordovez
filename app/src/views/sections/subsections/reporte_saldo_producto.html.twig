@@ -1,142 +1,278 @@
-<div id="app">
-<div class="row" style="background-color: #eee; padding: 1px; border-radius: 1px; height: 30px;" >
-   <form  action="" method="get">
-   <div class="col-md-1">
-   	<strong clas="pull-right">Producto:</strong>
-   </div>
-      <div class="col-md-5">
-         <div class="form-group"  style="width: 100%">
-            <input 
-            type="text" 
-            class="form-control"
-            placeholder="Ingrese Nombre Producto"
-            v-model="search_query"
-            />
-         </div>         
-      </div>
-      <div class="col-md-1">
-         <button type="submit" class="btn btn-primary btn-sm pull-left"> <span class="fa fa-search"></span></button>
-      </div>
-      <div class="col-md-5">
-			${selected_product.nombre}      
-      </div>
-   </form>
-</div>
-<hr />
-<h4 class="text-primary"> NOMBRE DEL PRODUCTO QUE SE ESTA BUSCANDO</h4>
 <div class="row">
-<div class="col-md-1"></div>
-<div class="col-md-10">
-<div class="text-tittle"> (A) En tránsito (Sin fecha de arribo) </div>
-<table class="table table-hover table-condensed table-striped table-bordered">
-<thead>
-	<tr>
-	<th>Pedido</th>
-	<th>Régimen</th>
-	<th>FOB</th>
-	<th>CIF</th>
-	<th>Cajas</th>
-	<th>Unidades</th>
-	</tr>
-</thead>
-<tbody>
-<tr>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-</tr>
-</tbody>
-</table>
+<div class="col-md-1 text-right">
+<span>Buscar</span>
+</div>
+<div class="col-md-8">
+<input type="text" v-model="query" class="full-width"/>
+</div>
+<div class="col-md-3">
+<button @click="buscar" class="btn btn-sm btn-default" style="padding: 1px 10px">&nbsp;&nbsp; <span class="fa fa-search"></span> Buscar &nbsp;&nbsp;</button>
 </div>
 </div>
 <div class="row">
-<div class="col-md-1"></div>
-<div class="col-md-10">
-<div class="text-tittle"> (A) En tránsito (Sin fecha de arribo) </div>
-<table class="table table-hover table-condensed table-striped table-bordered">
-<thead>
-	<tr>
-	<th>Pedido</th>
-	<th>Régimen</th>
-	<th>FOB</th>
-	<th>CIF</th>
-	<th>Cajas</th>
-	<th>Unidades</th>
-	</tr>
-</thead>
-<tbody>
-<tr>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-</tr>
-</tbody>
-</table>
+<div class="col-md-12">
+<ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#stock"> <span class="fa fa-cube"></span> Saldos de Producto</a></li>
+  <li><a data-toggle="tab" href="#history"> <span class="fa fa-list-ol"></span> Histórico En Precios De Compras E Importación</a></li>
+</ul>
+
+<div class="tab-content">
+  <div id="stock" class="tab-pane fade in active">
+    <div class="row">
+    	<div class="col-md-6">
+    	<div class="text-tittle">Ficha Base Producto</div>
+    			<table class="table table-hover table-bordered table-striped">
+        <thead>
+          <tr style="background-color: #c1c1c1;">
+            <th>Nombre</th>
+            <th>Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-right"> <b>ID:</b></td>
+            <td>251</td>
+          </tr>
+          <tr>
+            <td class="text-right"><b>Código Contable:</b></td>
+            <td>01021080010701030750</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Código ICE:</b></td>
+            <td> 3031-56-000437-013-000750-66-108-000027 </td>
+          </tr>
+          <tr>           
+            <td class="text-right"><b>Nombre:</b></td>
+            <td>CHAMPAGNE CONCHA Y TORO BRUT CAJA6</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Proveedor:</b></td>
+            <td>VIÑA CONCHA Y TORO S.A.</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Capacidad ML:</b></td>
+            <td> 750.00 ml</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Grado Alcohólico:</b></td>
+            <td> 12 </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Cantidad por Caja:</b></td>
+            <td> 6 </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Costo Caja:</b></td>
+            <td> 17.0000000000 </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Peso:</b></td>
+            <td> 0.000 <span class="label label-info">Gramos</span></td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Estado:</b></td>
+                          <td> <span class="label label-success">Activo</span> </td>
+                          
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Custodia Doble:</b></td>
+                            <td> <span class="label label-success">No Tiene</span> </td>
+                        
+            
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Comentarios:</b></td>
+            <td>  </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Creado El:</b></td>
+            <td> 
+                              03/04/2018 23:04 
+                            
+          </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Ultima Actualización:</b></td>
+            <td> 
+                            
+          </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Creado Por:</b></td>
+            <td> ADMINISTRADOR </td>
+          </tr>
+        </tbody>
+      </table>
+    	</div>
+    	<div class="col-md-6">
+    	<div class="text-tittle">Existencias</div>
+    	<table class="table table-bordered table-striped table-hover table-condensed" style="margin-bottom: 5px;">
+    	<tr>
+    	<th style="width: 20%">Nro Pedido</th>
+    	<th style="width: 20%">Fecha</th>
+    	<th style="width: 20%">Cajas</th>
+    	<th style="width: 20%">Unidades</th>
+    	<th style="width: 20%">Fob</th>
+    	</tr>
+    	</table>
+    	<table class="table table-bordered table-striped table-hover table-condensed" style="margin-bottom: 5px;">
+    	<thead>
+    	<tr class="primary">
+    	<td colspan="5"> <span class="text-danger"> (A) </span> Sin Fecha de Llegada</td>
+    	</tr>    	    	
+    	</thead>
+    	<tbody>
+    	<tr>
+    	<td class="text-right" style="width: 20%">054-18</td>
+    	<td class="text-right" style="width: 20%">300</td>
+    	<td class="text-right" style="width: 20%">10/10/2018</td>
+    	<td class="text-right" style="width: 20%">1232</td>
+    	<td class="text-right" style="width: 20%">$ 12039.00</td>
+    	</tr>
+    	</tbody>
+    	</table>
+    	<table class="table table-bordered table-striped table-hover table-condensed" style="margin-bottom: 5px;">
+    	<thead>
+    	<tr class="primary">
+    	<td colspan="5"> <span class="text-danger"> (B) </span> Puerto Aduanero</td>
+    	</tr>    	    	
+    	</thead>
+    	<tbody>
+    	<tr>
+    	<td class="text-right" style="width: 20%">054-18</td>
+    	<td class="text-right" style="width: 20%">300</td>
+    	<td class="text-right" style="width: 20%">10/10/2018</td>
+    	<td class="text-right" style="width: 20%">1232</td>
+    	<td class="text-right" style="width: 20%">$ 12039.00</td>
+    	</tr>
+    	<tr>
+    	<td class="text-right" style="width: 20%">054-18</td>
+    	<td class="text-right" style="width: 20%">300</td>
+    	<td class="text-right" style="width: 20%">10/10/2018</td>
+    	<td class="text-right" style="width: 20%">1232</td>
+    	<td class="text-right" style="width: 20%">$ 12039.00</td>
+    	</tr>
+    	<tr>
+    	<td class="text-right" style="width: 20%">054-18</td>
+    	<td class="text-right" style="width: 20%">300</td>
+    	<td class="text-right" style="width: 20%">10/10/2018</td>
+    	<td class="text-right" style="width: 20%">1232</td>
+    	<td class="text-right" style="width: 20%">$ 12039.00</td>
+    	</tr>
+    	</tbody>
+    	</table>
+    	<table class="table table-bordered table-striped table-hover table-condensed" style="margin-bottom: 5px;">
+    	<thead>
+    	<tr class="primary">
+    	<td colspan="5"> <span class="text-danger"> (C) </span> Bodega Temporal Almagro</td>
+    	</tr>    	    	
+    	</thead>
+    	<tbody>
+    	<tr>
+    	<td class="text-right" style="width: 20%">054-18</td>
+    	<td class="text-right" style="width: 20%">300</td>
+    	<td class="text-right" style="width: 20%">10/10/2018</td>
+    	<td class="text-right" style="width: 20%">1232</td>
+    	<td class="text-right" style="width: 20%">$ 12039.00</td>
+    	</tr>
+    	</tbody>
+    	</table>
+    	<table class="table table-bordered table-striped table-hover table-condensed" style="margin-bottom: 5px;">
+    	<thead>
+    	<tr class="primary">
+    	<td colspan="5"> <span class="text-danger"> (D) </span> Salida Autorizada</td>
+    	</tr>    	    	
+    	</thead>
+    	<tbody>
+    	<tr>
+    	<td class="text-right" style="width: 20%">054-18</td>
+    	<td class="text-right" style="width: 20%">300</td>
+    	<td class="text-right" style="width: 20%">10/10/2018</td>
+    	<td class="text-right" style="width: 20%">1232</td>
+    	<td class="text-right" style="width: 20%">$ 12039.00</td>
+    	</tr>
+    	<tr>
+    	<td class="text-right" style="width: 20%">054-18</td>
+    	<td class="text-right" style="width: 20%">300</td>
+    	<td class="text-right" style="width: 20%">10/10/2018</td>
+    	<td class="text-right" style="width: 20%">1232</td>
+    	<td class="text-right" style="width: 20%">$ 12039.00</td>
+    	</tr>
+    	<tr>
+    	<td class="text-right" style="width: 20%">054-18</td>
+    	<td class="text-right" style="width: 20%">300</td>
+    	<td class="text-right" style="width: 20%">10/10/2018</td>
+    	<td class="text-right" style="width: 20%">1232</td>
+    	<td class="text-right" style="width: 20%">$ 12039.00</td>
+    	</tr>
+    	</tbody>
+    	</table>
+    	<table class="table table-bordered table-striped table-hover table-condensed" style="margin-bottom: 5px;">
+    	<thead>
+    	<tr class="primary">
+    	<td colspan="5"><span class="text-danger"> (E) </span> En Bodegas Importador 5 Últimos Pedidos</td>
+    	</tr>
+    	</thead>
+    	<tbody>
+    	<tr>
+    	<td class="text-right" style="width: 20%">054-18</td>
+    	<td class="text-right" style="width: 20%">300 Cajas</td>
+    	<td class="text-right" style="width: 20%">10/10/2018</td>
+    	<td class="text-right" style="width: 20%">1232 Unds</td>
+    	<td class="text-right" style="width: 20%">$ 12039.00</td>
+    	</tr>
+    	</tbody>
+    	</table>
+    	<table class="table table-bordered table-striped table-hover table-condensed" style="margin-bottom: 5px;">
+    	<thead>
+    	<tr class="primary">
+    	<td colspan="5"><span class="text-danger"> (A) + (B) + (C) + (D) + (E) </span></td>
+    	</tr>
+    	</thead>
+    	<tbody>
+    	<tr>
+    	<td class="text-right" style="width: 20%">10 Pedidos</td>
+    	<td class="text-right" style="width: 20%">300 Cajas</td>
+    	<td class="text-right" style="width: 20%">--</td>
+    	<td class="text-right" style="width: 20%">1232 Unds</td>
+    	<td class="text-right" style="width: 20%">$ 12039.00</td>
+    	</tr>
+    	</tbody>
+    	</table>
+    	</div>    	
+    </div>
+  </div>  
+  <div id="history" class="tab-pane fade">
+    <div class="row">
+    	<div class="col-md-6" style="border: 1px solid #999;">
+    		<div class="text-tittle">Histórico Precio Compra</div>
+    		<img src="https://www.dropbox.com/s/c7mblt0bdypqdq5/Screenshot%20from%202018-10-15%2023-19-03.png?dl=1" alt="" style="width: 100%"/>
+    		<span class="text-left text-primary">Costo Mas Bajo: <strong>$ <span style="font-size: 18px;">45.00</span></strong></span>
+    		<span class="pull-right text-danger">Costo Mas Alto: <strong>$ <span style="font-size: 18px;">49.00</span></strong></span>
+    	</div>
+    	<div class="col-md-6" style="border: 1px solid #999;">
+    		<div class="text-tittle">Histórico Costo Importación</div>
+    		<img src="https://www.dropbox.com/s/c7mblt0bdypqdq5/Screenshot%20from%202018-10-15%2023-19-03.png?dl=1" style="width: 100%"/>
+    		<span class="text-left text-primary">Costo Mas Bajo: <strong>$ <span style="font-size: 18px;">67.23</span></strong> </span>
+    		<span class="pull-right text-danger">Costo Mas Alto: <strong>$ <span style="font-size: 18px;">88.28</span></strong></span>
+    	</div>
+    </div>
+    <br />
+        <div class="row">
+    	<div class="col-md-6" style="border: 1px solid #999;">
+    		<div class="text-tittle">Histórico Compras Por Mes</div>
+    		<img src="https://www.dropbox.com/s/c7mblt0bdypqdq5/Screenshot%20from%202018-10-15%2023-19-03.png?dl=1" alt="" style="width: 100%"/>
+    		<span class="text-left text-primary">Costo Mas Bajo: <strong>$ <span style="font-size: 18px;">45.00</span></strong></span>
+    		<span class="pull-right text-danger">Costo Mas Alto: <strong>$ <span style="font-size: 18px;">49.00</span></strong></span>
+    	</div>
+    	<div class="col-md-6" style="border: 1px solid #999;">
+    		<div class="text-tittle">Histórico Compras Por Año</div>
+    		<img src="https://www.dropbox.com/s/c7mblt0bdypqdq5/Screenshot%20from%202018-10-15%2023-19-03.png?dl=1" style="width: 100%"/>
+    		<span class="text-left text-primary">Costo Mas Bajo: <strong>$ <span style="font-size: 18px;">67.23</span></strong> </span>
+    		<span class="pull-right text-danger">Costo Mas Alto: <strong>$ <span style="font-size: 18px;">88.28</span></strong></span>
+    	</div>
+    </div>
+  </div>
 </div>
 </div>
-<div class="row">
-<div class="col-md-1"></div>
-<div class="col-md-10">
-<div class="text-tittle"> (A) En tránsito (Sin fecha de arribo) </div>
-<table class="table table-hover table-condensed table-striped table-bordered">
-<thead>
-	<tr>
-	<th>Pedido</th>
-	<th>Régimen</th>
-	<th>FOB</th>
-	<th>CIF</th>
-	<th>Cajas</th>
-	<th>Unidades</th>
-	</tr>
-</thead>
-<tbody>
-<tr>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-</tr>
-</tbody>
-</table>
 </div>
-</div>
-<div class="row">
-<div class="col-md-1"></div>
-<div class="col-md-10">
-<hr />
-<table class="table table-hover table-condensed table-striped table-bordered">
-<tr>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<script type="text/javascript">
-var app = new Vue({
-    el: '#app',
-    delimiters: ['${', '}'],
-    data: {
-        products: {{   products | json_encode() | raw }} ,
-        search_query: '',
-        selected_product: {},        
-    },
-    methods: {
-    },
-    computed: {
-    },
-})
-</script>

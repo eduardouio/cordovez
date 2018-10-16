@@ -69,8 +69,56 @@
    </div>
    <br />
    <div class="row">
+	<div class="col-md-12">
+	<table class="table table-bordered table-striped table-condensed table-hover">
+	<thead>
+	<tr>
+	<th>Codigo Cont</th>
+	<th>Nombre Producto</th>
+	<th>Grado Alcohólico</th>
+	<th>C Ml</th>
+	<th>C Unds</th>
+	<th>C X Caja</th>
+	<th>C Cajas</th>
+	<th>Costo C</th>
+	<th>Costo T</th>
+	</tr>
+
+	<tbody>
+	{% set total_unidades = 0 %}
+	{% set  total_cajas = 0 %}
+	{% set total_valor = 0 %}
+	{% for item in order_invoices.0.detail %}
+	<tr>
+		<td> <a href="{{ rute_url }}producto/presentar/{{ item.cod_contable  }}" target="_blank">{{ item.cod_contable }}</a></td>
+		<td><a href="{{ rute_url }}producto/presentar/{{ item.cod_contable  }}" target="_blank">{{ item.nombre }} </a></td>
+		<td class="text-right">{{ item.grado_alcoholico  | number_format(2,',','.') }}</td>
+		<td class="text-right">{{ item.capacidad_ml }} ml</td>
+		<td class="text-right">{{ item.cantidad_x_caja * item.nro_cajas  }}</td>
+		<td class="text-right" > {{ item.cantidad_x_caja }}</td>
+		<td class="text-right">{{ item.nro_cajas }}</td>
+		<td class="text-right">{{ item.costo_caja | number_format(2,',','.') }}</td>
+		<td class="text-right">{{ (item.costo_caja * item.nro_cajas) | number_format(2,',','.') }}</td>	
+		{% set total_unidades = total_unidades + (item.cantidad_x_caja * item.nro_cajas) %}
+	    {% set  total_cajas = total_cajas + item.nro_cajas %}
+	    {% set total_valor = total_valor + (item.costo_caja * item.nro_cajas) %}
+	</tr>
+	<tr style="background-color:#2E86C1; color:#fff; font-weight:bold;">
+            <td colspan="6" class="text-right">SUMAS: &nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td class="text-right">{{ total_unidades | number_format(0,',')}}</td>
+            <td class="text-right">{{ total_cajas | number_format(0,',') }}</td>
+            <td class="text-right">{{ total_valor | number_format(3,',','.') }}</td>
+          </tr>
+	{% endfor %}
+	</tbody>
+	</table>
+	</div>
+</div>
+   <div class="row">
    <div class="col-md-12 text-right">
-   
-<a href="{{ rute_url }}pedidofactura/presentar/{{ order_invoices.0.id_pedido_factura  }}" class="btn btn-sm btn-default"> <span class="fa fa-eye"></span> Ver Factura</a>
+    <a href="{{ rute_url }}pedidofactura/presentar/{{ order_invoices.0.id_pedido_factura  }}" class="btn btn-sm btn-default"> <span class="fa fa-eye"></span> Ver Factura</a>
+    {% if order.bg_isclosed == 0 %}
+      <a href="{{ rute_url }}pedidofactura/nuevo/{{ order.nro_pedido  }}" class="btn btn-sm btn-default"> <span class="fa fa-file-o"></span> Nueva Factura</a>
+    {% endif %}
    </div>  
    </div>

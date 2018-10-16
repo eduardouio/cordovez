@@ -424,8 +424,12 @@ class parcialTaxesReliquidate {
             
         }elseif ($this->incoterm == 'FOB'){
             
+            
             $gasto_origen = ($this->gastos_origen * $percent) * $this->type_change_parcial;
-            $gasto_origen_tasa_trimestral = $this->gastos_origen_pedido_tasa_trimestral * $this->type_change_invoice;
+                        
+            $gasto_origen_tasa_trimestral = ((
+                    $this->gastos_origen_pedido_tasa_trimestral * $this->type_change_invoice
+                ) * $this->init_data['fobs_parcial']['fob_parcial_razon_inicial']) * $percent;
             #en el caso de que los gastos en origen sean negativos se distribuye en base al fob
             $fob = $product_value + $gasto_origen; 
                 

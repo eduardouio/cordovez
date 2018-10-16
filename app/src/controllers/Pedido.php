@@ -240,8 +240,20 @@ class Pedido extends MY_Controller
         
         $stock['current'] = $stock_order->getCurrentOrderStock();
         $stock['initial'] = $stock_order->getInitStockProducts();
-        $stock['global'] = $stock_order->getGlobalValues();
-                
+        $stock['global'] = $stock_order->getGlobalValues();        
+        
+        if(@$params['order_invoices'][0]['detail']){
+            foreach ($params['order_invoices'][0]['detail'] as $k => $det){
+                foreach ($params['products'] as $k => $product){
+                    if($product['cod_contable'] == $params['order_invoices'][0]['detail'][$k]['cod_contable']){
+                        $params['order_invoices'][0]['detail'][$k]['nombre'] = $product['nombre'];
+                        $params['order_invoices'][0]['detail'][$k]['cantidad_x_caja'] = $product['cantidad_x_caja'];
+                        $params['order_invoices'][0]['detail'][$k]['capacidad_ml'] = $product['capacidad_ml'];                        
+                    }
+                }
+            }
+        }
+        
         return($this->responseHttp([
             'show_order' => true,
             'order_info' => $order_report->getStatusData(),

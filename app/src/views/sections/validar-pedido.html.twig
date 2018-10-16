@@ -145,6 +145,23 @@
                </td>
                {% endif %}
             </tr>
+                 <tr>
+               <td>Gasto Origen</td>
+               {% if order.gasto_origen == NULL %}
+               <td>No Registrado</td>
+               <td class="danger"><span class="fa fa-ban text-danger"></span>
+                  <a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}">
+                  Registrar
+                  </a>
+               </td>
+               {% elseif order.incoterm == 'FOB' %}
+               <td>{{ (order.gasto_origen * invoices_order.invoices.0.tipo_cambio) | number_format(2,',','.') }} 
+               </td>
+               <td class="success"><span class="fa fa-check text-success"></span>
+                  <a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}"><span class="fa fa-pencil"></span>Editar</a>
+               </td>
+               {% endif %}
+            </tr>
             <tr>
                <td>Flete Aduana </td>
                {% if order.flete_aduana == NULL or  order.flete_aduana == 0%}

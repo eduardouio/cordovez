@@ -208,7 +208,6 @@ class parcialTaxesReliquidate {
             + $tax['fodinfa']
             + $tax['prorrateos_total']
             + $tax['fob_tasa_trimestral']   
-            + $tax['gasto_origen_tasa_trimestral']
             );
 
             #print '<h3>' .  $tax['gasto_origen_tasa_trimestral']  .'</h3>';
@@ -549,7 +548,9 @@ class parcialTaxesReliquidate {
 
             $fob_percent = ($product['percent']);
             
-                        
+            $valor_prorrateos_gastos_iniciales += ($this->gastos_origen_pedido_tasa_trimestral * $this->type_change_invoice) * $fob_percent * $this->init_data['fobs_parcial']['fob_parcial_razon_inicial'];            
+            #print ($this->gastos_origen_pedido_tasa_trimestral * $this->type_change_invoice) * $fob_percent * $this->init_data['fobs_parcial']['fob_parcial_razon_inicial'];
+
             $prorrateo_item = [
                 'fob_percent' => $fob_percent,
                 'seguro_aduana' => ($fobs_parcial['prorrateo_seguro_aduana']
@@ -565,9 +566,9 @@ class parcialTaxesReliquidate {
                 'tasa_control' => $detail_info_invoice['tasa_control'],                
                 'prorrateo_parcial' => $valor_prorrateos_parcial,
                 'prorrateo_pedido' => $valor_prorrateos_gastos_iniciales,
-                'prorrateos_total' => $valor_prorrateos_gastos_iniciales + $valor_prorrateos_parcial,
-            ];
-                    
+                'prorrateos_total' => $valor_prorrateos_gastos_iniciales + $valor_prorrateos_parcial
+            ];           
+            
             #print $prorrateo_item['seguro_aduana'] * $this->type_change_parcial;
             $prorrateo_item ['cif'] = (
                 (

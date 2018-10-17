@@ -124,7 +124,7 @@ class parcialTaxesReliquidate {
             $this->parcial['ice_especifico']
             - $this->parcial['ice_especifico_pagado']
             );
-                     
+        
         #todos los productos pagan ice especifico
         $all_products = count($taxes);
         #solo buscamos los items que tienen ice advalorem
@@ -161,7 +161,9 @@ class parcialTaxesReliquidate {
 
                     $tax['ice_advalorem_diferencia'] = (
                         $tax['ice_advalorem']
+                        + $tax['ice_especifico']
                         - $tax['ice_advalorem_pagado']
+                        - $this->parcial['ice_especifico_pagado']
                         );
                 }
             }else{
@@ -170,11 +172,6 @@ class parcialTaxesReliquidate {
 
             }
             
-                                  
-            $tax['ice_especifico'] = (
-                $tax['ice_especifico']
-                - ( $diferencia_ice_especifico/$all_products)
-                );
             
             $tax['total_ice'] = $tax['ice_especifico'] + $tax['ice_advalorem'];
             

@@ -1,4 +1,4 @@
-va<?php
+<?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
 $libraries_url = realpath(dirname(__FILE__));

@@ -309,14 +309,14 @@ class Reportes extends MY_Controller
     /**
      * Buesca un producto nombre
      */
-    public function saldosProducto(){        
-        $all_products = $this->modelProduct->getAll();
+    public function saldosProducto(){
+        $products = $this->modelProduct->getAll();        
         
         return $this->responseHttp([
             'titleContent' => 'Reporte de Saldos Por Productos',
             'reporte_saldo_producto' => true,
             'vue_app' => True,
-            'data' => $all_products,
+            'products' => $products,
         ]);
     }
     

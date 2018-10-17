@@ -59,6 +59,7 @@ class Modelproduct extends CI_Model{
                 'nombre' => 'DESC',
             ],
         ]);
+        
         if((gettype($products) == 'array') && (count($products) > 0)){
             return $products;
         }

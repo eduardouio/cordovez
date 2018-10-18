@@ -119,7 +119,6 @@ class parcialTaxesReliquidate {
             - $this->parcial['ice_advalorem_pagado']
             );
                
-        
         $diferencia_ice_especifico = (
             $this->parcial['ice_especifico']
             - $this->parcial['ice_especifico_pagado']
@@ -127,6 +126,7 @@ class parcialTaxesReliquidate {
         
         #todos los productos pagan ice especifico
         $all_products = count($taxes);
+        
         #solo buscamos los items que tienen ice advalorem
         $num_products = 0;
 
@@ -135,55 +135,42 @@ class parcialTaxesReliquidate {
                 $num_products ++;
             }
         }        
+               
         
-
+        #$diferencia =0;
+                
         $reliquidate_taxes = [];
         
-        foreach ( $taxes as $idx => $tax){      
-
+        foreach ( $taxes as $idx => $tax ){      
+            
             if($tax['ice_advalorem'] > 0){
                 if($this->parcial['bg_have_tasa_control']){
-                    
                     $tax['ice_advalorem_pagado'] = (
                         $tax['ice_advalorem_sin_etiquetas']
                         - ( $diferencia/$num_products )
-                        );
-
+                        );                    
                     $tax['ice_advalorem_diferencia'] = (
                         $tax['ice_advalorem']
                         - $tax['ice_advalorem_pagado']
                         );
-                }else{                   
+                }else{                                      
                     $tax['ice_advalorem_pagado'] = (
-                        $tax['ice_advalorem_sin_tasa']
-                        - ( $diferencia/$num_products )
+                                                    $tax['ice_advalorem_sin_tasa']
+                                                    - ( $diferencia/$num_products )
                         );
-
+                    
                     $tax['ice_advalorem_diferencia'] = (
-                        $tax['ice_advalorem']
-                        + $tax['ice_especifico']
-                        - $tax['ice_advalorem_pagado']
-                        - $this->parcial['ice_especifico_pagado']
+                                                    $tax['ice_advalorem']
+                                                    - $tax['ice_advalorem_pagado']
+                                                    - ($diferencia_ice_especifico / $all_products )
                         );
                 }
             }else{
                 $tax['ice_advalorem_pagado'] = 0;
                 $tax['ice_advalorem_diferencia'] = 0;
-
             }
             
-            
             $tax['total_ice'] = $tax['ice_especifico'] + $tax['ice_advalorem'];
-            
-            #FOB + GO ok
-            #FOB ok
-            # FCA
-            #print '<h4>' . $tax['arancel_advalorem_pagar'] . '</h4>';
-            #print '<h4>' . $tax['arancel_especifico_pagar'] . '</h4>';
-            #print '<h4>' . $tax['total_ice'] . '</h4>';
-            #print '<h4>' . $tax['fodinfa'] . '</h4>';
-            #print '<h4>' . $tax['prorrateos_total'] . '</h4>';
-            #print '<h4>' . $tax['gasto_origen_tasa_trimestral'] . '</h4>';
             
             $tax['indirectos'] = (
             + $tax['arancel_advalorem_pagar']
@@ -193,14 +180,7 @@ class parcialTaxesReliquidate {
             + $tax['prorrateos_total']
             + $tax['gasto_origen_tasa_trimestral']
                 );           
-            
-            #print '<pre>';
-            #print_r($tax['indirectos']);
-            #print '</pre>';
-            #FOB + GO ok
-            #FOB ok
-            #CFR ok
-            # FCA
+                        
             $costo_total = (
             $tax['total_ice']
             + $tax['arancel_advalorem_pagar']
@@ -209,8 +189,6 @@ class parcialTaxesReliquidate {
             + $tax['prorrateos_total']
             + $tax['fob_tasa_trimestral']   
             );
-
-            #print '<h3>' .  $tax['gasto_origen_tasa_trimestral']  .'</h3>';
 
             $tax['costo_total'] = $costo_total;
             $tax['costo_caja_final']  = $costo_total/$tax['cajas'];
@@ -528,10 +506,6 @@ class parcialTaxesReliquidate {
                     }                   
                 }               
             } 
-
-            // print '<h3>Flete = '. $flete .'</h3>';
-            // print '<h3>Seguro = '. $seguro .'</h3>';
-
                       
            array_push($prorrateo_item_producto, $this->init_data['warenhouses']['almacenaje_aplicado'] * $product['percent']); 
 
@@ -549,8 +523,7 @@ class parcialTaxesReliquidate {
             $fob_percent = ($product['percent']);
             
             $valor_prorrateos_gastos_iniciales += ($this->gastos_origen_pedido_tasa_trimestral * $this->type_change_invoice) * $fob_percent * $this->init_data['fobs_parcial']['fob_parcial_razon_inicial'];            
-            #print ($this->gastos_origen_pedido_tasa_trimestral * $this->type_change_invoice) * $fob_percent * $this->init_data['fobs_parcial']['fob_parcial_razon_inicial'];
-
+            
             $prorrateo_item = [
                 'fob_percent' => $fob_percent,
                 'seguro_aduana' => ($fobs_parcial['prorrateo_seguro_aduana']

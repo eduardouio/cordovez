@@ -82,8 +82,7 @@ class parcialTaxesReliquidate {
             foreach ($taxes['sums']as $tax_name => $val){
                 if($dx == 0){
                     $taxes['sums'][$tax_name] = 0.0;
-                }
-                
+                }       
                 $taxes['sums'][$tax_name] += floatval($tax[$tax_name]);
             }
         }

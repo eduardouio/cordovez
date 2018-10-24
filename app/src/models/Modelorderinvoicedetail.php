@@ -38,6 +38,30 @@ class Modelorderinvoicedetail extends CI_Model
     
     
     /**
+     * obtiene el idetificador de las facturas en las que un priducto se encuentra
+     * @param string $cod_contable
+     */
+    public function getDetailForProduct(string $cod_contable){
+        $orders_details = $this->modelBase->get_table([
+            'select' => ['id_pedido_factura',],
+            'table' => $this->table,
+            'where'=> [
+                'cod_contable' => $cod_contable,
+            ],
+        ]); 
+
+        if($orders_details == False){
+            $this->modelLog->generalLog(
+                'El producto buscado no existe'
+                );
+            return [];
+        }
+        $orders_details = array_unique($orders_details);
+        return $orders_details;
+    }
+    
+    
+    /**
      * retorna los detalles de una factura de pedido
      * @param int $idOrderInvoice indetificador de tabla padre
      * @return array | boolean

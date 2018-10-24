@@ -103,13 +103,13 @@
 	    {% set  total_cajas = total_cajas + item.nro_cajas %}
 	    {% set total_valor = total_valor + (item.costo_caja * item.nro_cajas) %}
 	</tr>
+	{% endfor %}
 	<tr style="background-color:#2E86C1; color:#fff; font-weight:bold;">
             <td colspan="6" class="text-right">SUMAS: &nbsp;&nbsp;&nbsp;&nbsp;</td>
             <td class="text-right">{{ total_unidades | number_format(0,',')}}</td>
             <td class="text-right">{{ total_cajas | number_format(0,',') }}</td>
             <td class="text-right">{{ total_valor | number_format(3,',','.') }}</td>
           </tr>
-	{% endfor %}
 	</tbody>
 	</table>
 	</div>

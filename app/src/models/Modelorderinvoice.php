@@ -1,4 +1,14 @@
-<?php
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
+/**
+ * Modelo de pedido factura
+ * @package    CordovezApp
+ * @author    Eduardo Villota <eduardouio7@gmail.com>
+ * @copyright    Copyright (c) 2014,  Agencias y Representaciones Cordovez S.A.
+ * @license    Todos los derechos reservados Agencias y Representaciones Cordovez S.A.
+ * @link    https://gitlab.com/eduardo/APPImportaciones
+ * @since    Version 1.0.0
+ * @filesource
+ */
 class Modelorderinvoice extends CI_Model
 {   
     private $table = 'pedido_factura';
@@ -61,6 +71,62 @@ class Modelorderinvoice extends CI_Model
                                                                 current_url() );     
         return false;
     }
+    
+    /**
+     * Retorna las facturas de pedido completas de un pedido
+     * @param string $nro_order
+     * @return array
+     */
+    public function getCompleteInvoice(int $id_info_invoice):array{
+        $invoice = $this->get($id_info_invoice);
+        
+        if($invoice == False){
+            $this->modelLog->errorLog(
+                'La factura no se puede recuperar no existe'
+                );
+            
+            return False;
+        }
+        
+       $invoice['invoice_detail'] = $this->modelOrderInvoiceDetail->getByOrderInvoice($invoice['id_pedido_factura']);
+        
+       if($invoice['invoice_detail']){
+           foreach ($invoice['invoice_detail'] as $k => $det){
+                $product = $this->modelProduct->get($det['cod_contable']);
+                $invoice['invoice_detail'][$k]['cod_ice'] = $product['cod_ice'];
+            }
+        }
+        
+        return $invoice;        
+                
+    }
+    
+    
+    /**
+     * Obtiene todas las facturas registradas en el sistema para un producto
+     */
+    public function getAll(string $cod_contable){
+        $order_invoices = [];
+        $order_invoice_detail = $this->modelOrderInvoiceDetail->getDetailForProduct($cod_contable);
+        
+        if(empty($order_invoice_detail)){
+            return [];
+        }
+        
+        foreach ($order_invoice_detail as $k => $det){
+            array_push($order_invoices, $this->getCompleteInvoice($det['id_pedido_factura']));            
+        }
+                
+        if(empty($order_invoices)){
+            $this->modelLog->generalLog(
+                'La tabla de facturas de proveedor se encuentra vacia'
+                );
+            return [];
+        }       
+        return $order_invoices;
+    }
+    
+    
     
     /**
      * Retorna el las facturas de pedido para un pedido

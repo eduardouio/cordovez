@@ -120,6 +120,28 @@ class Modelinfoinvoice extends CI_Model
     
     
     /**
+     * Obtiene una factura informativa completa
+     * 
+     * @param int $id_info_invoice
+     * @return array
+     */
+    public function getCompleteInfoInvoice(int $id_info_invoice): array {
+       $info_invoice = $this->get($id_info_invoice);
+        
+       if ($info_invoice == False || $info_invoice == Null){
+           return [];
+       }
+       $info_invoice = [
+           'info_invoice' => $info_invoice,
+           'supplier' => $this->modelSupplier->get($info_invoice['identificacion_proveedor']),
+           'info_invoice_details' => $this->modelInfoInvoiceDetail->getByFacInformative($info_invoice['id_factura_informativa']),
+       ];
+       
+       return $info_invoice;
+    }
+    
+    
+    /**
      * Obtiene una factura informativa desde un numero de factura
      * @param string $nro_invoice
      */
@@ -267,6 +289,23 @@ class Modelinfoinvoice extends CI_Model
                         $this->db->last_query()
                         );
         return false;
+    }
+    
+    
+    /**
+     * Actualiza los gastos de origen de una factura informativa
+     * @param int $id_info_invoice
+     */
+    public function updateGO(int $id_info_invoice){
+        $info_invoice = $this->getCompleteInfoInvoice($id_info_invoice);
+        $this->modelLog->errorLog('Entramos');
+        $go = 0.0;
+        foreach ($info_invoice['info_invoice_details'] as $k => $item){
+            $go += $item['gasto_origen'];
+        }        
+        $info_invoice = $info_invoice['info_invoice'];
+        $info_invoice['gasto_origen'] = $go;
+        $this->update($info_invoice);
     }
     
     

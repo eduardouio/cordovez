@@ -13,7 +13,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @filesource
  */
 class Modelproduct extends CI_Model{
-
     private $table = 'producto';
     private $modelLog;
     private $modelBase;
@@ -21,9 +20,22 @@ class Modelproduct extends CI_Model{
 
     function __construct(){
         parent::__construct();
-        $this->load->model('Modelbase');
-        $this->load->model('Mymodel');
-        $this->load->model('Modellog');
+        $this->init();
+    }
+    
+    
+    /**
+     * Inicializa los modelos para la clase
+     */
+    private function init(){
+        $models = [
+            'Modelbase',
+            'Mymodel',
+            'Modellog'
+        ];
+        foreach ($models as $model){
+            $this->load->model($model);
+        }        
         $this->modelLog = new Modellog();
         $this->modelBase = new  ModelBase();
         $this->myModel = new  Mymodel();
@@ -84,7 +96,7 @@ class Modelproduct extends CI_Model{
         }
         return false;
     }
-    
+       
     
     /**
      * Obtiene la lista de productos de un proveedor

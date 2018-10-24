@@ -230,8 +230,21 @@
    	/>
    	</div>
    </div>
+   <div class="col-sm-6">
+   <div class="form-group">
+   <label for="">Comentarios</label>
+   <input 
+   		type="text"
+   		maxlength="250" 
+   		class="form-control"
+   		name="comentarios"
+   		step="0.001" 
+   		value="{{ info_invoice.comentarios }}"
+   	/>
    </div>
-         <hr>
+   </div>
+   </div>
+   <br />
    <div class="row">
       <div class="col-md-10">
          <button type="submit" class="btn btn-sm btn-primary" >
@@ -255,3 +268,4 @@
 <script type="text/javascript">
        $('#nro_refrendo').mask('999-9999-99-99999999');
 </script> 
+

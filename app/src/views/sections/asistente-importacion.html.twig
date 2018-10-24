@@ -269,13 +269,11 @@ var app = new Vue({
         put_orders: function() {
             this.ajaxRequest = true;
         	this.$http.post('{{ rute_url }}importar/importList/', {data: this.selected_orders}).then(response => {
-     	 		console.dir(response)
         	    this.someData = response.body;
      	 		location.reload();
      	 		this.ajaxRequest = false;
         	  }, response => {
         	    alert('Se produjo un error, por favor recargue la página');
-        	    console.dir(response);
         	    this.ajaxRequest = false;
         	  });
         },
@@ -284,12 +282,10 @@ var app = new Vue({
         put_current_order: function() {
          this.ajaxRequest = true;
     	 this.$http.get('{{rute_url}}importar/importOrder/' + this.current_order.nro_pedido, {params: {}}).then(response => {
-    		    console.dir(response);
     		    location.reload();
     		 	this.ajaxRequest = false;
     		  }, response => {
     			  alert('Se produjo un error, por favor recargue la página');
-    			  console.dir(response);
     			  this.ajaxRequest = false;
     		  });
     		}
@@ -308,7 +304,7 @@ var app = new Vue({
                 this.current_order = orders_filter[0];
                 return orders_filter;
             }
-
+            
             for (item in this.orders) {
                 var order = this.orders[item];
                 var re = new RegExp((this.search_query), "ig");

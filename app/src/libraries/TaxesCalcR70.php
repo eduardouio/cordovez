@@ -213,7 +213,6 @@ class parcialTaxes {
      */
     private function getProductData(array $detail_info_invoice):array
     {
-        
         $product_base = [];
         $detail_order_invoice = [];
         
@@ -252,7 +251,7 @@ class parcialTaxes {
             );
             
         
-            if ($this->incoterm == 'CFR'){
+            if ($this->incoterm == 'CFR'){               
                 #si en algun momento hay varias facturas no va a funcionar tienes
                 # se debe calcular en base a las facturas adicionales que existan
                 $fob = (
@@ -263,7 +262,7 @@ class parcialTaxes {
                     * $this->type_change_parcial
                     );
                 
-            }elseif ($this->incoterm == 'FOB'){
+            }elseif ($this->incoterm == 'FOB'){               
                 $fob = (
                     (   $detail_info_invoice['nro_cajas']
                         * $detail_order_invoice['costo_caja']
@@ -275,15 +274,15 @@ class parcialTaxes {
                     ($this->gastos_origen * $percent)
                     * $this->type_change_parcial;
                     
-            }else{
+            }else{             
                 $fob = (
                     (   $detail_info_invoice['nro_cajas']
                         * $detail_order_invoice['costo_caja']
                     ) 
-                    + ($this->gastos_origen * $percent)
+                    + $detail_info_invoice['gasto_origen']
                     ) * $this->type_change_parcial;
                     
-                    $gasto_origen = ($this->gastos_origen * $percent);
+                    $gasto_origen = $detail_info_invoice['gasto_origen'];
             }
             
         return ([

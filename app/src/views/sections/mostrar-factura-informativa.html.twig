@@ -1,89 +1,301 @@
-sdsfsd
-{% set moneda = '&euro;' %}
-{% set moneda_origin_expenses = '&euro;' %}
+{% set moneda = '$' %} {% if infoInvoice.moneda == 'euros' or infoInvoice.moneda == 'EUROS' or infoInvoice.moneda == 'Euros' %} {% set moneda = '&euro;' %} {% endif %}
+<div id="app">
+    <div class="well well-sm">
+        <div class="row">
+            <div class="col-md-2">
+                <strong>Nro Fact:</strong>
+                <input type="text" value="{{ info_invoice.info_invoice.nro_factura_informativa }}" class="full-width text-right" readonly="readonly" />
+            </div>
+            <div class="col-md-3">
+                <strong>Proveedor:</strong>
+                <input type="text" value="{{ info_invoice.supplier.nombre }}" class="full-width" readonly="readonly" />
+            </div>
+            <div class="col-md-2">
+                <strong>Ruc P:</strong>
+                <input type="text" value="{{ info_invoice.supplier.identificacion_proveedor }}" class="full-width" readonly="readonly" />
+            </div>
+            <div class="col-md-2">
+                <strong>Emision:</strong>
+                <input type="text" value="{{ info_invoice.info_invoice.fecha_emision  }}" class="full-width" readonly="readonly" />
+            </div>
+            <div class="col-md-3">
+                <strong>Comentarios:</strong>
+                <input type="text" value="{{ info_invoice.info_invoice.comentarios }}" class="full-width" readonly="readonly" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1">
+                <strong>Nro Pedido</strong>
+                <input type="text" value="{{ parcial.nro_pedido }}" class="full-width" readonly="readonly" />
+            </div>
+            <div class="col-md-1">
+                <strong>Incoterm </strong>
+                <input type="text" value="{{ order.incoterm }}" class="full-width" readonly="readonly" />
+            </div>
+            <div class="col-md-1">
+                <strong>Moneda </strong>
+                <input type="text" value="{{ info_invoice.info_invoice.moneda | upper }}" class="full-width" readonly="readonly" />
+            </div>
+            <div class="col-md-2">
+                <strong>Tipo de Cambio:</strong>
+                <input type="text" value="{{ info_invoice.info_invoice.tipo_cambio }}" class="full-width text-right" readonly="readonly" />
+            </div>
+            <div class="col-md-2">
+                <strong>Usuario :</strong>
+                <input type="text" value="{{ user.nombres }}" class="full-width" readonly="readonly" />
+            </div>
+            <div class="col-md-2">
+                <strong>Registro :</strong>
+                <input type="text" value="{{ info_invoice.info_invoice.date_create }}" class="full-width text-right" readonly="readonly" />
+            </div>
+            <div class="col-md-2">
+                <strong>Ult Actualización :</strong>
+                <input type="text" value="{{ info_invoice.info_invoice.last_update }}" class="full-width text-right" readonly="readonly" />
+            </div>
+            <div class="col-md-1">
+                <strong>Parcial :</strong>
+                <input type="text" value="{{ ordinal_parcial }}" class="full-width text-right" readonly="readonly" />
+            </div>
+        </div>
+    </div>
 
-{% if infoInvoice.moneda == 'DOLARES' %}
-    {% set moneda = '$' %}
-    {% set moneda_origin_expenses = '$' %}
-{% endif %}
+    <div class="row">
+        <div class="text-danger text-right" style="background-color:#ff1;">
+            Pedido con <strong>Gastos en Orgien </strong> debido al incoterm <strong>FCA</strong> por lo que los costos de los productos deben ser ajustados usando un valor para <strong>Gasto Origen</strong>
+        </div>
+        <div class="col-md-3">
+            <a href="{{ rute_url }}facinfdetalle/nuevo/{{ info_invoice.info_invoice.id_factura_informativa }}" class="btn btn-sm btn-primary">
+                <span class="fa fa-cube"></span> [+] Producto
+            </a>
+        </div>
+        <div class="col-md-3 text-right">
+            <h4 class="text-primary">
+			<small>Val Factura: {{ moneda | raw }}</small> <span> ${ productValue | round(3) }</span>
+		</h4>
+        </div>
+        <div class="col-md-3 text-right">
+            <h4 class="text-success">
+			<small>Gasto Origen: {{ moneda_origin_expenses | raw }}</small> <span> {{  info_invoice.info_invoice.gasto_origen  }} </span>
+		</h4>
+        </div>
+        <div class="col-md-3 text-right">
+            <h4 class="text-defult">
+			<small>CIF: {{ moneda | raw }}</small> <span>${ (seguro_aduana + flete_aduana + productValue ) | round(3) }</span>
+		</h4>
+        </div>
+    </div>
 
-{% if order.incoterm == 'EXW' or  order.incoterm == 'FCA' %}
-	{% set moneda_origin_expenses = '$' %}	
-{% endif %}
-<div class="well well-sm">
-	<div class="row">
-		<div class="col-md-3">
-			<strong>Proveedor:</strong> <span>{{ supplier.nombre }}</span>
-		</div>
-		<div class="col-md-2">
-			<strong>Ruc:</strong> <span>{{ supplier.identificacion_proveedor }}</span>
-		</div>
-		<div class="col-md-2">
-			<strong>Fecha:</strong> <span>{{ infoInvoice.fecha_emision  }}</span>
-		</div>
-		<div class="col-md-2">
-			<strong>Seguro</strong> {{infoInvoice.seguro_aduana }}
-			/ 
-			<strong>Flete</strong> {{infoInvoice.flete_aduana }}
-		</div>
-		<div class="col-md-3">
-			<strong>Comentarios:</strong> <span>{{ infoInvoice.comentarios }}</span>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-2">
-			<strong>Valor {{ moneda | raw }}:</strong> <span class="text-primary">{{ infoInvoice.valor | number_format(2,',','.')}}</span>
-		</div>
-		<div class="col-md-2">
-			<strong>Moneda </strong> <span class="text-success"> {{ moneda | raw }}
-				{{ infoInvoice.moneda | upper }}
-			</span>
-		</div>
-		<div class="col-md-2">
-			<strong>Tipo de Cambio:</strong> <span class="text-danger">
-				{{ infoInvoice.tipo_cambio | number_format(2,',','.') }}
-			</span>
-		</div>
-		<div class="col-md-4">
-			<strong>Creado Por :</strong> <span>{{ user.nombres }}</span>
-			<span class="text-primary"> [{{ infoInvoice.date_create }}]</span>
-		</div>
-	</div>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-hover table-bordered table-striped table-condensed">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Producto</th>
+                        <th>Capacidad</th>
+                        <th>Grado A</th>
+                        <th>Cajas</th>
+                        <th>Unds</th>
+                        <th>Costo U</th>
+                        <th>Costo Caja</th>
+                        <th>Gst Origen</th>
+                        <th>Costo T</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(item, index) in data.info_invoice.info_invoice_details" :key="index">                	
+                    <td>${ index + 1}</td>
+                    <td>${ item.product }</td>
+                    </td>
+                    <td class="text-right">${ item.capacidad_ml | round(0)} ml</td>
+                    <td class="text-right">${ item.grado_alcoholico | round(2)}</td>
+                    <td class="text-right">${ item.nro_cajas |round(0) }</td>
+                    <td class="text-right">${ (item.cantidad_x_caja * item.nro_cajas) | round(0) }</td>
+                    <td class="text-right"><span class="pull-left">{{moneda | raw}}</span>${ (item.costo_caja / item.cantidad_x_caja) | round(3) }</td>
+                    <td class="text-right"><span class="pull-left">{{moneda | raw}}</span> ${ item.costo_caja | round(3) }</td>
+                    <td class="text-right"><span class="pull-left">{{moneda | raw}}</span>${ item.gasto_origen | round(3) }</td>
+                    <td class="text-right"><span class="pull-left">{{moneda | raw}}</span> ${ total_item(item) | round(3) }</td>
+                    <td class="text-right">                    	
+                        <span class="btn btn-default btn-sm" style="padding: 0px 11px;" @click="showProduct(item)" data-toggle="modal" data-target="#myModal"><span class="fa fa-pencil fa-fw "></span></span>
+                        <span class="btn btn-danger btn-sm" style="padding: 0.5px 11px;" @click="deleteProduct(item)" ><span class="fa fa-trash fa-fw "></span></span>
+                    </td>
+                    </tr>
+                    <tr style="background-color:#2E86C1; color:#fff; font-weight:bold;" style="padding:1px;">
+                        <td colspan="4" class="text-right" style="background-color: #FFF; color: #000;">SUMAS: &nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td class="text-right">--</td>
+                        <td class="text-right">--</td>
+                        <td class="text-right">--</td>
+                        <td class="text-right">--</td>
+                        <td class="text-right">--</td>
+                        <td class="text-right">--</td>
+                        <td class="text-right">--</td>
+                    </tr>
+                    <tr class="text-right">
+                        <td colspan="9" style="background-color: #fff; border-color: #fff;"></td>
+                        <td>Valor Producto {{ moneda | raw }}</td>
+                        <td>${ productValue | round(3) }</td>
+                    </tr>
+                    <tr class="text-right">
+                        <td colspan="9" style="background-color: #fff; border-color: #fff;"></td>
+                        <td>Gasto Origen {{ moneda_origin_expenses | raw }}</td>
+                        <td> {{ infoInvoice.gasto_origen | number_format(3,',','.')}}</td>
+                    </tr>
+                    <tr class="text-right">
+                        <td colspan="9" style="background-color: #fff; border-color: #fff;"></td>
+                        <td>FOB {{ moneda | raw }}</td>
+                        <td>${ productValue | round(3) } </td>
+                    </tr>
+                    <tr class="text-right">
+                        <td colspan="9" style="background-color: #fff; border-color: #fff;"></td>
+                        <td>Flete {{ moneda | raw }}</td>
+                        <td>${ flete_aduana | number }</td>
+                    </tr>
+                    <tr class="text-right">
+                        <td colspan="9" style="background-color: #fff; border-color: #fff;"></td>
+                        <td>Seguro {{ moneda | raw }}</td>
+                        <td>${ seguro_aduana | number }</td>
+                    </tr>
+                    <tr class="text-right">
+                        <td colspan="9" style="background-color: #fff;"></td>
+                        <td>CIF {{ moneda | raw }}</td>
+                        <td>${ (seguro_aduana + flete_aduana + productValue ) | round(3) } </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <a href="{{rute_url}}pedido/presentar/{{ parcial.nro_pedido }}" class="btn btn-default btn-sm">
+                <i class="fa fa-cubes"></i> Volver al Pedido
+            </a>
+            &nbsp;
+            <a href="{{rute_url}}gstnacionalizacion/parcial/{{ parcial.id_parcial }}" class="btn btn-default btn-sm">
+                <i class="fa fa-gear"></i> Gastos Parcial
+            </a>
+            &nbsp;
+            <a href="{{rute_url}}impuestos/pc/{{ parcial.id_parcial }}" class="btn btn-default btn-sm">
+                <i class="fa fa-money"></i> Ver Tributos
+            </a>
+        </div>
+        {% if parcial.bg_isliquidated == 0 %}
+        <div class="col-md-offset-9 text-right">
+            <a href="{{rute_url}}facinformativa/editar/{{info_invoice.info_invoice.id_factura_informativa}}" class="btn btn-default btn-sm">
+                <span class="fa fa-pencil"></span> Editar Cabeceras
+            </a>
+            &nbsp;
+            <a href="#" class="btn btn-sm btn-danger">
+                <span class="fa fa-trash"></span> Eliminar</a>
+        </div>
+        {% endif %}
+    </div>
+    <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="myModal">
+        <div class="modal-dialog modal-lg" role="document" style="width: 85%">
+            <div class="modal-content">
+             <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Editar Producto Seleccionado</h4>
+        </div>
+                        <div class="row">                  
+                        <div class="col-md-12" style="padding:22px">
+                        <table class="table table-bordered table-condensed">
+                        <thead>
+                        <tr>
+                        <th>Producto</th>
+                        <th>Capacidad</th>
+                        <th>Grado Alcoholico</th>
+                        <th>Cajas</th>
+                        <th>Unds</th>
+                        <th>Costo Caja</th>
+                        <th>Costo U</th>
+                        <th>Gst Origen</th>
+                        <th>Total Item</th>                
+                        </tr>  
+                        </thead>
+                        <tbody>                     
+                        <tr>
+                        <td>${ selected_item.product }</td>
+                        <td class="text-right">${ selected_item.capacidad_ml }</td>
+                        <td class="text-right">${ selected_item.grado_alcoholico }</td>
+                        <td class="text-right"> <input type="number" v-model="selected_item.nro_cajas"/></td>
+                        <td class="text-right">${ selected_item.cantidad_x_caja * selected_item.nro_cajas }</td>
+                        <td class="text-right">${ selected_item.costo_caja }</td>
+                        <td class="text-right">${ selected_item.costo_caja / selected_item.cantidad_x_caja  }</td>
+                        <td class="text-right"> <input type="number" v-model="selected_item.gasto_origen"/></td>
+                        <td class="text-right">${ total_item(selected_item) | round(3)}</td>
+                        </tr>
+                        </tbody>
+                        </table>                 
+                        </div>
+                        </div>
+                    <div class="modal-footer">
+          				<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" @click="updateProduct()"> <span class="fa fa-check"></span> Aplicar</button>          					
+        			</div>
+                    </div>
+                </form>                
+            </div>
+        </div>
+    </div>
 </div>
-<br>
-<!-- Tabs -->
-<div>
-   <ul class="nav nav-tabs" role="tablist">
-      <li role="presentation" class="active">
-      	<a href="#facturas" role="tab" data-toggle="tab" aria-controls="facturas">
-      	<span class="fa fa-file"></span> Detalle Factura Informativa 
-      	{% if infoInvoice.bg_isclosed == '0' %}
-         <span class="label label-success">Abierto</span>
-         {% else %}
-         <span class="label label-died">Cerrado</span>
-         {% endif %}
-      </a>
-      </li>   
-   </ul>
-   <br>
-   <div class="tab-content">
-      <!-- tabFacturas-->
-      <div role="tabpanel" class="tab-pane active" id="facturas">
-         {% include 'sections/subsections/tab-facturainformativa-detalle.html.twig' %}
-      </div>
-      <!-- /tabFacturas-->
-   </div>
-</div>
-<!--/tabs-->
-<div class="row">
-	<div class="col-md-4">
-		<a href="{{rute_url}}parcial/presentar/{{ parcial.id_parcial }}" class="btn btn-default btn-sm">
-			<i class="fa fa-cubes"></i> Volver al Parcial
-		</a>
-	&nbsp;
-		<a href="{{rute_url}}gstnacionalizacion/parcial/{{ parcial.id_parcial }}" class="btn btn-primary btn-sm">
-			<i class="fa fa-gear"></i> Gastos Parcial
-		</a>
-	</div>
-	
-</div>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#app',
+        delimiters: ['${', '}'],
+        data: {
+				'data' : {{ data | raw }},
+				'selected_item' : {},
+                'seguro_aduana': {{ info_invoice.info_invoice.seguro_aduana  }},
+                'flete_aduana' : {{ info_invoice.info_invoice.flete_aduana }},
+            },         
+       methods : {
+           showProduct : function (item){
+                this.selected_item = item
+               },
+           deleteProduct : function (item) {
+               console.dir(item)
+                this.$http.get('{{rute_url}}facinfdetalle/deleteAjax/' + item.id_factura_informativa_detalle, {params: {}}).then(response => {
+    		    location.reload();
+    		  }, response => {
+    			  alert('Se produjo un error, por favor recargue la página');
+    		  });
+               },
+           updateProduct : function(item){
+               this.$http.post('{{ rute_url }}facinfdetalle/updateAjax/', {data: this.selected_item }).then(response => {
+     	 		location.reload();
+        	  }, response => {
+        	    alert('Se produjo un error, por favor recargue la página');
+        	  });
+            },
+           total_item : function (item){
+               return (
+                       (parseFloat(item.nro_cajas) * parseFloat(item.costo_caja)) + parseFloat(item.gasto_origen) 
+                       );
+          },
+           },
+       filters : {
+           round : function(num, decimal_places = 3){               
+               return parseFloat(num).toFixed(decimal_places)
+               },
+           number : function(number){
+        	   return parseFloat(number).toFixed(3) 
+               }
+           },
+       computed : {
+           productValue : function(){
+               items_length = (this.data.info_invoice.info_invoice_details).length
+               items_invoice = this.data.info_invoice.info_invoice_details
+               fob_total = 0.0
+               for(var x = 0; x < items_length ; x++ ){
+                   fob_total += (
+                                parseFloat(items_invoice[x]['gasto_origen']) 
+                                + parseFloat(items_invoice[x]['costo_caja']) * parseFloat(items_invoice[x]['nro_cajas'])
+                                );
+               }
+                              
+               return fob_total;
+               },
+           }           
+    })
+</script>

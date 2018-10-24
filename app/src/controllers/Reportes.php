@@ -7,6 +7,7 @@ $libraries_url = str_replace('controllers', 'libraries/', $libraries_url);
 require_once ( $libraries_url . 'StockOrder.php' );
 require_once ( $libraries_url . 'ReportICE.php' );
 require_once ( $libraries_url . 'ReportCompleteOrder.php' );
+require_once ( $libraries_url . 'ReportStatusProduct.php' );
 
 /**
  * muestra en panatalla los reportes obtenidos por el sistema 
@@ -303,20 +304,26 @@ class Reportes extends MY_Controller
         }
     }
      
-    
-    
-    
+        
     /**
      * Buesca un producto nombre
      */
-    public function saldosProducto(){
-        $products = $this->modelProduct->getAll();        
+    public function saldosProducto(string $cod_contable = '02052091050304010700'){
+        $this->load->model('ModelProductReport');
+        $modelProductReport = new ModelProductReport();
+        $data = $modelProductReport->getData($cod_contable);
+        $ReportStatusProduct = new ReportStatusProduct($data);
+        $data = $ReportStatusProduct->getData();
+        
+        print '<pre>';
+        print_r($data);
+        print '</pre>';
         
         return $this->responseHttp([
             'titleContent' => 'Reporte de Saldos Por Productos',
             'reporte_saldo_producto' => true,
             'vue_app' => True,
-            'products' => $products,
+            'data' => $data,
         ]);
     }
     

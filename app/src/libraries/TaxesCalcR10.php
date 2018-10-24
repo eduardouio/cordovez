@@ -479,7 +479,7 @@ class orderTaxes {
                     (
                         ($product['capacidad_ml'] / $limite_capacidad )
                         *
-                        ($product['grado_alcoholico']/ 100)
+                        ($product['grado_alcoholico'] / 100)
                         )
                     )
                 * $product['unidades']

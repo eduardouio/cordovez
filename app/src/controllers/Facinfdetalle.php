@@ -32,16 +32,16 @@ class Facinfdetalle extends MY_Controller
     private $modelLog;
     private $modelParcial;
     private $modelOrderReport;
-
+    
     public function __construct()
     {
         parent::__construct();
-        $this->init();       
+        $this->init();
     }
     
     /**
-    * Metodo encargado de iniciar las variables de entorno y modelos
-    */
+     * Metodo encargado de iniciar las variables de entorno y modelos
+     */
     private function init(){
         if(! isset($this->session->userdata['id_user'])){
             exit(0);
@@ -58,6 +58,8 @@ class Facinfdetalle extends MY_Controller
         $this->load->model('modelorderinvoicedetail');
         $this->load->model('modelparcial');
         $this->load->model('ModelOrderReport');
+        
+        
         $this->modelOrderReport = new ModelOrderReport();
         $this->load->helper('utils');
         $this->modelOrder = new Modelorder();
@@ -71,7 +73,7 @@ class Facinfdetalle extends MY_Controller
         $this->modelOrderInvoiceDetail = new Modelorderinvoicedetail();
         $this->modelParcial = new Modelparcial();
     }
-
+    
     /**
      * Redireccioa a la lista de pedidos, por no tener un identificador
      */
@@ -102,8 +104,8 @@ class Facinfdetalle extends MY_Controller
         $order = $this->modelOrder->get($parcial['nro_pedido']);
         
         return ($this->responseHttp([
-            'titleContent' => 'Detalle Factura Informativa [' . $infoInvoice['nro_factura_informativa']  . '] ' . 
-                            'Pedido [' . $order['nro_pedido'] .']' . ' Parcial [' . $parcial['id_parcial'] . ']' ,
+            'titleContent' => 'Detalle Factura Informativa [' . $infoInvoice['nro_factura_informativa']  . '] ' .
+            'Pedido [' . $order['nro_pedido'] .']' . ' Parcial [' . $parcial['id_parcial'] . ']' ,
             'show_detail' => true,
             'order' => $order,
             'supplier' => $this->modelSupplier->get($infoInvoice['identificacion_proveedor']),
@@ -113,7 +115,7 @@ class Facinfdetalle extends MY_Controller
             'orderInvoiceDetail' => $orderInvoiceDetail,
             'product' => $this->modelProduct->get($orderInvoiceDetail['cod_contable']),
             'user' => $this->modelUser->get($infoInvoiceDetail['id_user']),
-        ]));       
+        ]));
     }
     
     
@@ -125,38 +127,38 @@ class Facinfdetalle extends MY_Controller
      */
     public function nuevo($idFacInformative)
     {
-      $infoInvoice = $this->modelInfoInvoice->get($idFacInformative);
-      if($infoInvoice == false){
-          $this->modelLog->redirectLog($this->controller . ',nuevo,' . current_url());
-          return($this->index());
-      }
-      $parcial = $this->modelParcial->get($infoInvoice['id_parcial']);
-      $activeStock = $this->modelOrderInvoiceDetail->getActiveStokProductsByOrder($parcial['nro_pedido']);
-      $orderInvoices = $this->modelOrderInvoice->getbyOrder($parcial['nro_pedido']);
-      $orderInvoicesTemp =[];
-      foreach ($orderInvoices as $item => $val){
-          $val['supplier'] = $this->modelSupplier->get($val['identificacion_proveedor']);
-          $val['products'] = [];
-          if ($activeStock != false){
-          foreach ($activeStock as $index => $product){
-              if ($product['id_pedido_factura'] == $val['id_pedido_factura']){
-                  array_push($val['products'], $product);
-              }
-          }
-          }
-          $orderInvoicesTemp[$item] = $val;
-      }
-      
-      return($this->responseHttp([
-          'titleContent' => 'Agregar Producto en Factura infromativa [' . 
-                            $infoInvoice['nro_factura_informativa']. '] del Pedido [' . 
-                            $parcial['nro_pedido'] . ']',
-          'create_detail' => true,
-          'stockProducts' => $activeStock,
-          'orderInvoices' => $orderInvoicesTemp,
-          'infoInvoice' => $infoInvoice,
-          'order' => $this->modelOrder->get($parcial['nro_pedido']),
-      ]));
+        $infoInvoice = $this->modelInfoInvoice->get($idFacInformative);
+        if($infoInvoice == false){
+            $this->modelLog->redirectLog($this->controller . ',nuevo,' . current_url());
+            return($this->index());
+        }
+        $parcial = $this->modelParcial->get($infoInvoice['id_parcial']);
+        $activeStock = $this->modelOrderInvoiceDetail->getActiveStokProductsByOrder($parcial['nro_pedido']);
+        $orderInvoices = $this->modelOrderInvoice->getbyOrder($parcial['nro_pedido']);
+        $orderInvoicesTemp =[];
+        foreach ($orderInvoices as $item => $val){
+            $val['supplier'] = $this->modelSupplier->get($val['identificacion_proveedor']);
+            $val['products'] = [];
+            if ($activeStock != false){
+                foreach ($activeStock as $index => $product){
+                    if ($product['id_pedido_factura'] == $val['id_pedido_factura']){
+                        array_push($val['products'], $product);
+                    }
+                }
+            }
+            $orderInvoicesTemp[$item] = $val;
+        }
+        
+        return($this->responseHttp([
+            'titleContent' => 'Agregar Producto en Factura infromativa [' .
+            $infoInvoice['nro_factura_informativa']. '] del Pedido [' .
+            $parcial['nro_pedido'] . ']',
+            'create_detail' => true,
+            'stockProducts' => $activeStock,
+            'orderInvoices' => $orderInvoicesTemp,
+            'infoInvoice' => $infoInvoice,
+            'order' => $this->modelOrder->get($parcial['nro_pedido']),
+        ]));
     }
     
     
@@ -206,7 +208,7 @@ class Facinfdetalle extends MY_Controller
         $infoInvoiceDetail = $this->modelInfoInvoiceDetail->get($idInfoInvoiceDetail);
         
         if($infoInvoiceDetail == false){
-            $this->modelLog->errorLog('El registro que intenta eliminar no existe ' . current_url());            
+            $this->modelLog->errorLog('El registro que intenta eliminar no existe ' . current_url());
             return($this->index());
         }
         
@@ -221,19 +223,19 @@ class Facinfdetalle extends MY_Controller
     /**
      * Valida la informacion enviada por el formulario de detalle factura informativa
      * @param array $_POST arreglo de detalles factura infotmativa
-     * @return string tmeplate 
+     * @return string tmeplate
      */
     public function validar()
     {
         if(!$_POST){
-            return($this->index());            
+            return($this->index());
         }
         
         $inputForm = $_POST;
         $idInfoInvoice = $inputForm['id_factura_informativa'];
         unset($inputForm['id_factura_informativa']);
         $infoInvoice = $this->modelInfoInvoice->get($idInfoInvoice);
-        $itemsInvoice = array_chunk($inputForm, 3, true);       
+        $itemsInvoice = array_chunk($inputForm, 3, true);
         
         foreach ($itemsInvoice as $item){
             $myItemInvoice = [];
@@ -244,17 +246,26 @@ class Facinfdetalle extends MY_Controller
                 $myItemInvoice[$itemName[0]] = $value;
             }
             
+            $invoice_detail = $this->modelOrderInvoiceDetail->get($myItemInvoice['detalle_pedido_factura']);
+            $product = $this->modelProduct->get($invoice_detail['cod_contable']);
+            
             $new_item = updateWeigth(
-                $this->modelOrderInvoiceDetail->get($myItemInvoice['detalle_pedido_factura']),
+                $invoice_detail,
                 $myItemInvoice
                 );
-                        
+             
+            $new_item['cantidad_x_caja'] = $product['cantidad_x_caja'];
+            $new_item['product'] = $product['nombre'];
+            $new_item['costo_caja'] = $invoice_detail['costo_caja'];
+            $new_item['capacidad_ml'] = $product['capacidad_ml'];
+            $new_item['gasto_origen'] = 0;
+            
             if($this->modelInfoInvoiceDetail->create($new_item) == false){
-             $this->modelLog->errorLog(
-                 'No se puede anadir un item en la factura', 
-                 current_url()
-                 );
-            }             
+                $this->modelLog->errorLog(
+                    'No se puede anadir un item en la factura',
+                    current_url()
+                    );
+            }
         }
         
         $this->calcAndUpdateGO($idInfoInvoice);
@@ -265,7 +276,7 @@ class Facinfdetalle extends MY_Controller
     /**
      * Realiza la actualizacion que le llega por post
      * @param $_POST producto a actualizar
-     * @return string template 
+     * @return string template
      */
     public function actualizar()
     {
@@ -284,16 +295,60 @@ class Facinfdetalle extends MY_Controller
             );
         
         if($this->modelInfoInvoiceDetail->update($new_item)){
-           $this->modelLog->susessLog('Detalle Factura Informativa Actualizada ' .  current_url());
-           #se anade a la funcion el calculo del peso del producto
-           $this->calcAndUpdateGO($new_item['id_factura_informativa']);
-           
-
-           return($this->redirectPage('infoInvoiceShow', $new_item['id_factura_informativa']));
+            $this->modelLog->susessLog('Detalle Factura Informativa Actualizada ' .  current_url());
+            #se anade a la funcion el calculo del peso del producto
+            $this->calcAndUpdateGO($new_item['id_factura_informativa']);
+            
+            
+            return($this->redirectPage('infoInvoiceShow', $new_item['id_factura_informativa']));
         }else{
-           $this->modelLog->errorLog('No se puede actualizar detalle factura infromativa ' . current_url());
-           print 'Error con la base de datos';
+            $this->modelLog->errorLog('No se puede actualizar detalle factura infromativa ' . current_url());
+            print 'Error con la base de datos';
         }
+    }
+    
+    
+    /**
+     * Actualiza por ajax un detalle en la factura informativa
+     */
+    public function updateAjax(){
+        if( $this->rest->_getRequestMethod() != "POST"){
+            return 'No permitido';
+        }
+        $info_invoice_detail = json_decode(file_get_contents("php://input"),true);
+        $info_invoice_detail = $info_invoice_detail['data'];
+        unset($info_invoice_detail['cod_ice']);
+        
+        if($this->modelInfoInvoiceDetail->update($info_invoice_detail));{
+            $this->modelLog->warningLog(
+                'Item de FI Actualizado', 
+                $this->db->last_query()
+                );
+            $this->modelInfoInvoice->updateGO($info_invoice_detail['id_factura_informativa']);
+            return $this->_responsRest(json_encode(['data'=>'success']),200);
+        }
+               
+        
+        $this->modelLog->errorLog(
+            'El item de FI no puede ser actualizado',
+            $this->db->last_query()
+            );
+        
+        return $this->_responsRest(json_encode(['data'=> 'error']), 500);               
+    }
+    
+    
+    /**
+     * Elimina un item de la factura informativa
+     */
+    public function deleteAjax(int $id_info_invoice_detail){
+        if($this->modelInfoInvoiceDetail->delete($id_info_invoice_detail)){
+            $info_invoice_detail = $this->modelInfoInvoiceDetail->get($id_info_invoice_detail);
+            $this->modelInfoInvoice->updateGO($info_invoice_detail['id_factura_informativa']);
+            return $this->_responsRest(json_encode(['data'=>'success']),200);
+        }
+        return $this->_responsRest(json_encode(['data'=> 'error']), 500);  
+        
     }
     
     
@@ -340,15 +395,15 @@ class Facinfdetalle extends MY_Controller
                 }
             }
         }
-                    
+        
         foreach ($order_data['order_invoices'] as $idx => $invoice ){
             if($invoice['detail']){
                 foreach ($invoice['detail'] as $k => $v){
                     $params['val_total'] += ($v['costo_caja'] * $v['nro_cajas']);
                     
                 }
-                    $params['origin_expenses'] += $invoice['gasto_origen'];
-                    $params['money'] = $invoice['moneda'];
+                $params['origin_expenses'] += $invoice['gasto_origen'];
+                $params['money'] = $invoice['moneda'];
             }
         }
         
@@ -365,26 +420,26 @@ class Facinfdetalle extends MY_Controller
         }
         
         $params['parcial_percent'] = (
-                                        $params['val_parcial'] 
-                                        / $params['val_total']
-                );
-        
-        $params['parcial_origen_expenses'] = (
-                $params['parcial_percent'] 
-                * $params['origin_expenses']
+            $params['val_parcial']
+            / $params['val_total']
             );
         
-        if (count($current_parcial['info_invoices']) == 1){               
-                $current_info_invoice = $current_parcial['info_invoices'][0];
-                
-                $current_info_invoice['seguro_aduana'] = $order['seguro_aduana'] * $params['parcial_percent']; 
-                $current_info_invoice['flete_aduana'] = $order['flete_aduana'] * $params['parcial_percent'];               
-                $current_info_invoice['gasto_origen'] = $params['parcial_origen_expenses'];
-                $current_info_invoice['valor'] = $params['val_parcial'];
-                $current_info_invoice['moneda'] = $params['money'];
-                unset($current_info_invoice['detalle_factura']);
-                $this->modelInfoInvoice->update($current_info_invoice);
-                return true;
+        $params['parcial_origen_expenses'] = (
+            $params['parcial_percent']
+            * $params['origin_expenses']
+            );
+        
+        if (count($current_parcial['info_invoices']) == 1){
+            $current_info_invoice = $current_parcial['info_invoices'][0];
+            
+            $current_info_invoice['seguro_aduana'] = $order['seguro_aduana'] * $params['parcial_percent'];
+            $current_info_invoice['flete_aduana'] = $order['flete_aduana'] * $params['parcial_percent'];
+            $current_info_invoice['gasto_origen'] = $params['parcial_origen_expenses'];
+            $current_info_invoice['valor'] = $params['val_parcial'];
+            $current_info_invoice['moneda'] = $params['money'];
+            unset($current_info_invoice['detalle_factura']);
+            $this->modelInfoInvoice->update($current_info_invoice);
+            return true;
         }else{
             $this->modelLog->errorLog(
                 'Los parciales no deben tener mas de una factura informativa',
@@ -395,6 +450,13 @@ class Facinfdetalle extends MY_Controller
         }
     }
     
+    /**
+     * Metodo de respuesta Rest
+     * @param array $config
+     */
+    private function _responsRest($data, $httpstatus = 0){
+        return $this->rest->_responseHttp($data, $httpstatus);
+    }
     
     /* *
      * Envia la respuestas html al navegador

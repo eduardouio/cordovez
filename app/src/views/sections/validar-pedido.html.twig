@@ -2,8 +2,8 @@
 {% set url_delete = rute_url ~ 'gstinicial/eliminar/' %}
 
 {% if order.bg_isclosed == 1 or have_parcial == 1%}
-{% set url_edit = '#' %}
-{% set url_delete = '#' %}
+    {% set url_edit = '#' %}
+    {% set url_delete = '#' %}
 {%  endif%}
 
 {% if have_euros == true %}
@@ -160,6 +160,9 @@
                <td class="success"><span class="fa fa-check text-success"></span>
                   <a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}"><span class="fa fa-pencil"></span>Editar</a>
                </td>
+               {%  else %}
+               	<td>--</td>
+               	<td>--</td>
                {% endif %}
             </tr>
             <tr>

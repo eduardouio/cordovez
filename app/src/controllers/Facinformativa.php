@@ -334,11 +334,7 @@ class Facinformativa extends MY_Controller
         
         if ($status['status']) {
             if (! isset($infoInvoice['id_factura_informativa'])) {
-                if ($lastId = $this->modelInfoInvoice->create($infoInvoice)) {
-                    if($order['incoterm'] != 'CFR' && $order['gasto_origen'] > 0){
-                        return $this->setFOBVals($lastId);
-                    }                   
-                    
+                if ($lastId = $this->modelInfoInvoice->create($infoInvoice)) {                   
                     return ($this->redirectPage(
                                             'newProductInfoInvoice', $lastId
                         ));
@@ -368,45 +364,45 @@ class Facinformativa extends MY_Controller
                 'infoInvoice' => $infoInvoice
             ]));
         }
-    }
-    
-    
-    /**
-     * Permite la usuario colocar los valores fob para cada uno de los productos de 
-     * la factura informativa
-     */
-    public function setFOBVals(int $id_info_invoice = 0){
-        $info_invoice =  $this->modelInfoInvoice->getCompleteInfoInvoice($id_info_invoice);
-        $order_invoice = $this->modelOrderInvoice->get($idInvoice);
-        
-            
-    }
+    }  
     
     /**
-     * Elimina una factura informativa de la base de datos, solo si esta
-     * no tiene dependencias
+     * Elimina una factura informtiva aunque tenga dependencias
      *
      * @param integer $idFacInformativa
      * @return bool | template
      */
     public function eliminar($idFacInformative)
     {
-        $infoInvoice = $this->modelInfoInvoice->get($idFacInformative);
+        $infoInvoice = $this->modelInfoInvoice->get($idFacInformative);       
         $parcial = $this->modelParcial->get($infoInvoice['id_parcial']);
         $order = $this->modelOrder->get($parcial['nro_pedido']);
-
-
+        
+        if (boolval($parcial['bg_isclosed']) || boolval($parcial['bg_isliquidated'])){
+            $this->responseHttp([
+                'titleContent' =>   'No se puede eliminar el registro' .
+                ' Factura Informativa [ ' .
+                $infoInvoice['nro_factura_informativa'] .
+                ' ] </small> ',
+                'viewMessage' => true,
+                'deleted' => true,
+                'message' => 'No puede ser eliminado, Consulte con el administrador del sistema',
+                'id_row' => $infoInvoice['id_factura_informativa'],
+                'order' => $order,
+            ]);
+        }
+        
         if ($this->modelInfoInvoice->delete($idFacInformative)) {
             $this->redirectPage('presentOrder', $parcial['nro_pedido']);
         } else {
             $this->responseHttp([
-                'titleContent' =>   'No se puede eliminar el registro <small>' .
+                'titleContent' =>   'No se puede eliminar el registro' .
                                     ' Factura Informativa [ ' . 
                                     $infoInvoice['nro_factura_informativa'] . 
                                     ' ] </small> ',
                 'viewMessage' => true,
                 'deleted' => true,
-                'message' => 'No puede ser eliminado, tiene dependencias',
+                'message' => 'No puede ser eliminado, Consulte con el administrador del sistema',
                 'id_row' => $infoInvoice['id_factura_informativa'],
                 'order' => $order,
             ]);

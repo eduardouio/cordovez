@@ -417,25 +417,22 @@ class parcialTaxes {
             * (($product['capacidad_ml']/ $limite_capacidad) * $product['grado_alcoholico'])
             ) * $product['unidades'];
             
-            $arancel_especifico_unitario = ($arancel_especifico /  $product['unidades']);
-            
-            $arancel_especifico_liberado =   (
-                $arancel_especifico
-                * ($this->parcial['exoneracion_arancel'] / 100)
-                );
-            
-            $arancel_advalorem_liberado =  (
-                $arancel_advalorem
-                * ($this->parcial['exoneracion_arancel'] / 100)
-                );
-            
-            
-            $arancel_advalorem_pagar =  ($arancel_advalorem - $arancel_advalorem_liberado);
-            $arancel_especifico_pagar = ($arancel_especifico - $arancel_especifico_liberado);
-            
-            
+        $arancel_especifico_unitario = ($arancel_especifico /  $product['unidades']);
+        
+        $arancel_especifico_liberado =   (
+            $arancel_especifico
+            * ($this->parcial['exoneracion_arancel'] / 100)
+            );
+        
+        $arancel_advalorem_liberado =  (
+            $arancel_advalorem
+            * ($this->parcial['exoneracion_arancel'] / 100)
+            );
         
         
+        $arancel_advalorem_pagar =  ($arancel_advalorem - $arancel_advalorem_liberado);
+        $arancel_especifico_pagar = ($arancel_especifico - $arancel_especifico_liberado);
+                
         $base_ice_especifico = $this->getTaxParam('ICE ESPECIFICO');
         
         $ice_especifico = (

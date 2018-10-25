@@ -18,10 +18,14 @@
                 <strong>Emision:</strong>
                 <input type="text" value="{{ info_invoice.info_invoice.fecha_emision  }}" class="full-width" readonly="readonly" />
             </div>
-            <div class="col-md-3">
-                <strong>Comentarios:</strong>
-                <input type="text" value="{{ info_invoice.info_invoice.comentarios }}" class="full-width" readonly="readonly" />
+             <div class="col-md-2">
+                <strong>Refrendo Aduana :</strong>
+                <input type="text" value="{{ info_invoice.info_invoice.nro_refrendo }}" class="full-width text-right" readonly="readonly" />
             </div>
+            <div class="col-md-1">
+                <strong>Parcial :</strong>
+                <input type="text" value="{{ ordinal_parcial }}" class="full-width text-right" readonly="readonly" />
+            </div>            
         </div>
         <div class="row">
             <div class="col-md-1">
@@ -48,22 +52,21 @@
                 <strong>Registro :</strong>
                 <input type="text" value="{{ info_invoice.info_invoice.date_create }}" class="full-width text-right" readonly="readonly" />
             </div>
-            <div class="col-md-2">
-                <strong>Ult Actualización :</strong>
-                <input type="text" value="{{ info_invoice.info_invoice.last_update }}" class="full-width text-right" readonly="readonly" />
-            </div>
-            <div class="col-md-1">
-                <strong>Parcial :</strong>
-                <input type="text" value="{{ ordinal_parcial }}" class="full-width text-right" readonly="readonly" />
+           <div class="col-md-3">
+                <strong>Comentarios:</strong>
+                <input type="text" value="{{ info_invoice.info_invoice.comentarios }}" class="full-width" readonly="readonly" />
             </div>
         </div>
     </div>
+    <h1>{{ order.incorerm }}</h1>
+		{% if order.incorerm == 'FCA' or order.incorerm == 'EXW' %}
+        <div class="text-danger text-right" style="background-color:#ff1;">        
+            Pedido con <strong>Gastos en Orgien </strong> debido al incoterm <strong>{{ order.incorerm }}</strong> por lo que los costos de los productos deben ser ajustados usando un valor para <strong>Gasto Origen</strong>
+        </div>
+        {% endif %}
 
     <div class="row">
-        <div class="text-danger text-right" style="background-color:#ff1;">
-            Pedido con <strong>Gastos en Orgien </strong> debido al incoterm <strong>FCA</strong> por lo que los costos de los productos deben ser ajustados usando un valor para <strong>Gasto Origen</strong>
-        </div>
-        <div class="col-md-3">
+			<div class="col-md-3">
             <a href="{{ rute_url }}facinfdetalle/nuevo/{{ info_invoice.info_invoice.id_factura_informativa }}" class="btn btn-sm btn-primary">
                 <span class="fa fa-cube"></span> [+] Producto
             </a>
@@ -186,11 +189,59 @@
                 <span class="fa fa-pencil"></span> Editar Cabeceras
             </a>
             &nbsp;
-            <a href="#" class="btn btn-sm btn-danger">
-                <span class="fa fa-trash"></span> Eliminar</a>
+            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#myModalDelete">
+                <span class="fa fa-trash"></span> Eliminar </button>
         </div>
         {% endif %}
     </div>
+
+
+<!-- Modal confirmacion Eliminacion de FI -->
+<div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalDeleteLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h5 class="modal-title" id="myModalDeleteLabel">
+        <span class="text-danger">
+        <span class="fa fa-warning"></span>
+        ¿Realmente desea Eliminar la Factura Informativa Nro {{ info_invoice.info_invoice.nro_factura_informativa }}?
+        </span>
+        </h5>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+            <div class="col-md-2">
+                <strong>Nro Fact:</strong>
+                <input type="text" value="{{ info_invoice.info_invoice.nro_factura_informativa }}" class="full-width text-right" readonly="readonly" />
+            </div>
+            <div class="col-md-3">
+                <strong>Proveedor:</strong>
+                <input type="text" value="{{ info_invoice.supplier.nombre }}" class="full-width" readonly="readonly" />
+            </div>
+            <div class="col-md-2">
+                <strong>Ruc P:</strong>
+                <input type="text" value="{{ info_invoice.supplier.identificacion_proveedor }}" class="full-width" readonly="readonly" />
+            </div>
+            <div class="col-md-2">
+                <strong>Emision:</strong>
+                <input type="text" value="{{ info_invoice.info_invoice.fecha_emision  }}" class="full-width" readonly="readonly" />
+            </div>
+            <div class="col-md-3">
+                <strong>Comentarios:</strong>
+                <input type="text" value="{{ info_invoice.info_invoice.comentarios }}" class="full-width" readonly="readonly" />
+            </div>
+        </div>       
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"> <span class="fa fa-ban"></span> Cancelar</button>
+        <a href="{{ rute_url }}facinformativa/eliminar/{{ info_invoice.info_invoice.id_factura_informativa}}" class="btn btn-danger btn-sm"> <span class="fa fa-warning"></span> Confirmar</a>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal confirmacion Eliminacion de FI -->
+
     <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="myModal">
         <div class="modal-dialog modal-lg" role="document" style="width: 85%">
             <div class="modal-content">
@@ -218,8 +269,8 @@
                         <tr>
                         <td>${ selected_item.product }</td>
                         <td class="text-right">${ selected_item.capacidad_ml }</td>
-                        <td class="text-right">${ selected_item.grado_alcoholico }</td>
-                        <td class="text-right"> <input type="number" v-model="selected_item.nro_cajas"/></td>
+                        <td class="text-right"> <input type="number" step="0.00" v-model="selected_item.grado_alcoholico"/></td>
+                        <td class="text-right"> <input type="number" step ="0" v-model="selected_item.nro_cajas"/></td>
                         <td class="text-right">${ selected_item.cantidad_x_caja * selected_item.nro_cajas }</td>
                         <td class="text-right">${ selected_item.costo_caja }</td>
                         <td class="text-right">${ selected_item.costo_caja / selected_item.cantidad_x_caja  }</td>
@@ -254,7 +305,6 @@
                 this.selected_item = item
                },
            deleteProduct : function (item) {
-               console.dir(item)
                 this.$http.get('{{rute_url}}facinfdetalle/deleteAjax/' + item.id_factura_informativa_detalle, {params: {}}).then(response => {
     		    location.reload();
     		  }, response => {
@@ -265,7 +315,7 @@
                this.$http.post('{{ rute_url }}facinfdetalle/updateAjax/', {data: this.selected_item }).then(response => {
      	 		location.reload();
         	  }, response => {
-        	    alert('Se produjo un error, por favor recargue la página');
+        	    alert('No se puede proceder');
         	  });
             },
            total_item : function (item){

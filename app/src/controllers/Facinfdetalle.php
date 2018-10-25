@@ -342,8 +342,8 @@ class Facinfdetalle extends MY_Controller
      * Elimina un item de la factura informativa
      */
     public function deleteAjax(int $id_info_invoice_detail){
+        $info_invoice_detail = $this->modelInfoInvoiceDetail->get($id_info_invoice_detail);            
         if($this->modelInfoInvoiceDetail->delete($id_info_invoice_detail)){
-            $info_invoice_detail = $this->modelInfoInvoiceDetail->get($id_info_invoice_detail);
             $this->modelInfoInvoice->updateGO($info_invoice_detail['id_factura_informativa']);
             return $this->_responsRest(json_encode(['data'=>'success']),200);
         }

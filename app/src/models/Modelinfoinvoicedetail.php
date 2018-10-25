@@ -14,15 +14,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
  */
 class Modelinfoinvoicedetail extends CI_Model
 {
-
     private $table = 'factura_informativa_detalle';
-
     private $modelBase;
-
     private $modelProduct;
-
     private $modelLog;
-
     private $modelOrderInvoiceDetail;
 
     public function __construct()
@@ -65,6 +60,12 @@ class Modelinfoinvoicedetail extends CI_Model
         if ((gettype($detail) == 'array') && (count($detail) > 0)) {
             return $detail[0];
         }
+
+        $this->modelLog->errorLog(
+            'No se puede obtener el detalle de FI', 
+            $this->db->last_query()
+        );
+
         return false;
     }
 
@@ -84,14 +85,11 @@ class Modelinfoinvoicedetail extends CI_Model
         ]);
                 
         if (gettype($detailInfoInvoice) == 'array' && count($detailInfoInvoice) > 0) {
-            
             foreach ($detailInfoInvoice as $k => $det){
                 $order_invoice_detail = $this->modelOrderInvoiceDetail->get($det['detalle_pedido_factura']);
                 $product = $this->modelProduct->get($order_invoice_detail['cod_contable']);
                 $detailInfoInvoice[$k]['cod_ice'] = $product['cod_ice'];
-            }
-                        
-            
+            }                        
             return $detailInfoInvoice;
         }
         return false;

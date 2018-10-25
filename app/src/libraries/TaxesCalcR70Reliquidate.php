@@ -121,8 +121,8 @@ class parcialTaxesReliquidate {
         $diferencia_ice_especifico = (
             $this->parcial['ice_especifico']
             - $this->parcial['ice_especifico_pagado']
-            );
-        
+            );                
+
         #todos los productos pagan ice especifico
         $all_products = count($taxes);
         
@@ -161,7 +161,7 @@ class parcialTaxesReliquidate {
                     $tax['ice_advalorem_diferencia'] = (
                                                     $tax['ice_advalorem']
                                                     - $tax['ice_advalorem_pagado']
-                                                    - ($diferencia_ice_especifico / $all_products )
+                                                    + ($diferencia_ice_especifico / $all_products )
                         );
                 }
             }else{
@@ -224,9 +224,7 @@ class parcialTaxesReliquidate {
         $this->incoterm = $this->init_data['order']['incoterm'];
         
         foreach ($this->init_data['info_invoices'] as $idx => $invoice){
-           
                 $this->gastos_origen += $invoice['gasto_origen'];
-                
         }       
         #se coloca para manejar los gastos en origen para pedidos fob con GO, intentarlo para EXW y FCA              
         $this->gastos_origen_pedido_tasa_trimestral = floatval($this->init_data['order']['gasto_origen']);
@@ -361,10 +359,17 @@ class parcialTaxesReliquidate {
         $gasto_origen_tasa_trimestral = 0.0;
 
         #solo funciona para la primera factura informativa
-        $total_invoices = $this->init_data['info_invoices'][0]['valor'];
-        $this->id_factura_informativa = $this->init_data['info_invoices'][0]['id_factura_informativa'];
-        $this->nro_factura_informativa = $this->init_data['info_invoices'][0]['nro_factura_informativa'];
+        $total_invoices = 0;       
+        
+        if(is_array($this->init_data['info_invoices'][0])){
+            foreach ($this->init_data['info_invoices'][0]['info_invoices_detail'] as $k => $det){
+                $total_invoices += ($det['costo_caja'] * $det['nro_cajas']);
+            }
+        }
 
+        $this->id_factura_informativa = $this->init_data['info_invoices'][0]['id_factura_informativa'];
+        $this->nro_factura_informativa = $this->init_data['info_invoices'][0]['nro_factura_informativa'];        
+        
         $percent = round((
             (   $detail_order_invoice['costo_caja']
                 * $detail_info_invoice['nro_cajas']
@@ -374,6 +379,7 @@ class parcialTaxesReliquidate {
         
         $percent = ($percent * 1000000) -1;
         $percent = $percent/1000000;
+        
         
         #solo funciona para la primera FI
         $product_value = ($detail_info_invoice['nro_cajas'] 
@@ -398,7 +404,7 @@ class parcialTaxesReliquidate {
         }elseif ($this->incoterm == 'FOB'){
             
             
-            $gasto_origen = ($this->gastos_origen * $percent) * $this->type_change_parcial;
+            $gasto_origen = $detail_info_invoice['gasto_origen'] * $this->type_change_parcial;
                         
             $gasto_origen_tasa_trimestral = ((
                     $this->gastos_origen_pedido_tasa_trimestral * $this->type_change_invoice
@@ -407,9 +413,8 @@ class parcialTaxesReliquidate {
             $fob = $product_value + $gasto_origen; 
                 
         }elseif($this->incoterm == 'EXW' || $this->incoterm == 'FCA'){
-            $gasto_origen = ($this->gastos_origen * $percent)
-            * $this->type_change_parcial;     
-            $gasto_origen_tasa_trimestral = 0.0;           
+            $gasto_origen = $detail_info_invoice['gasto_origen'] * $this->type_change_parcial;
+            $gasto_origen_tasa_trimestral = 0.0;
              $fob = $product_value + $gasto_origen;
         }         
        
@@ -457,13 +462,12 @@ class parcialTaxesReliquidate {
         array $detail_info_invoice,
         array $product
         ): array
-        {
+        {            
             $seguro = 0;
             $flete = 0;
 
             $prorrateo_detail = $this->prorrateo['prorrateo_detail'];
             $fobs_parcial = $this->init_data['fobs_parcial'];
-            
             $prorrateo_item_producto = [];          
             $prorrateo_gastos_iniciales = [];
             
@@ -519,7 +523,7 @@ class parcialTaxesReliquidate {
                 $valor_prorrateos_parcial += $value;
             }
 
-            $fob_percent = ($product['percent']);
+            $fob_percent = ($product['percent']);            
             
             $valor_prorrateos_gastos_iniciales += ($this->gastos_origen_pedido_tasa_trimestral * $this->type_change_invoice) * $fob_percent * $this->init_data['fobs_parcial']['fob_parcial_razon_inicial'];            
             

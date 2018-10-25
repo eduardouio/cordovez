@@ -87,18 +87,12 @@
                                         <span class="fa fa-eye fa-fw"></span>
                                         Ver Detalle Parcial</a>
                                 </li>
-                                {%  if invoice.bg_isclosed == 0 %}
-                                <li>
-                                    <a href="{{ rute_url }}facinformativa/nuevo/{{ parcial.id_parcial }}">
-                                        <span class="fa fa-plus fa-fw"></span>
-                                        Añadir Factura Informativa</a>
-                                </li>
+                                {%  if invoice.bg_isclosed == 0 %}                          
                                 <li>
                                     <a href="{{ rute_url }}parcial/eliminar/{{ parcial.id_parcial }}">
                                         <span class="fa fa-trash fa-fw"></span>
                                         Eliminar Parcial</a>
                                 </li>
-                                
                                 <li>
                                   <a href="{{ rute_url }}report/gastosnacionalizacion/{{ parcial.id_parcial }}" target="_blank">
      								<span class="fa fa-file-o"></span> 

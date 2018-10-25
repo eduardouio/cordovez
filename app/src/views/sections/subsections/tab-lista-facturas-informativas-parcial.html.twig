@@ -1,9 +1,8 @@
 <div class="row">
-	<div class="col-md-9">
-		<h4 class="text-tittle">Listado de Facturas Informativas</h4>
+	<div class="col-md-9">		
 	</div>
 	<div class="col-md-3 text-right">
-	{% if parcial.bg_isliquidated == 0 %}
+	{% if infoInvoices == false %}
 		<a href="{{rute_url}}facinformativa/nuevo/{{parcial.id_parcial}}"
 			class="btn btn-sm btn-primary"> 
 			<span class="fa fa-file"></span> Nueva Factura Informativa

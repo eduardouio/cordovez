@@ -405,7 +405,7 @@ th {
 .nav-tabs {
 	border-bottom: 1px solid #c6c8cb;
 	font-size: 13;
-	background-color: #f1f1ff;
+	background: #fbfbfb;
 	font-weight: bold;
 	padding: 5px;
 }
@@ -433,7 +433,7 @@ th {
 	{
 	color: #555555;
 	background-color: #e6e7e8;
-	border: 1px solid #c6c8cb;
+	border: 1px solid #999;
 	border-bottom-color: transparent;
 	cursor: default;
 }
@@ -449,7 +449,6 @@ th {
 
 .nav-tabs.nav-justified>li>a {
 	text-align: center;
-	margin-bottom: 5px;
 }
 
 .nav-tabs.nav-justified>.dropdown .dropdown-menu {

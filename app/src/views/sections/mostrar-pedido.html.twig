@@ -88,12 +88,9 @@
     		<a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}" class="btn btn-default btn-sm">
     				<span class="fa fa-pencil fa-fw"></span>Editar Pedido
     		</a>  
-    		<a href="{{rute_url}}pedidofactura/nuevo/{{ order.nro_pedido }}" class="btn btn-default btn-sm">
-    				<span class="fa fa-plus"></span> Agregar Productos
-    		</a>
 		{% endif %}
 		<a href="{{ rute_url }}report/gastosiniciales/{{ order.nro_pedido }}" target="_blank" class="btn btn-sm btn-primary">
-     <span class="fa fa-file-o"></span>Reporte GI
+     <span class="fa fa-file-pdf-o"></span> Reporte GI
       </a>
 		
 </div>

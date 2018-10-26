@@ -108,15 +108,15 @@
                -->
                <td>
                <small>
-               	<a href="{{ rute_url }}pedido/presentar/{{ order.nro_pedido }}" class="text-primary">
-                           <span class="fa fa-eye"></span> Ver
+               	<a href="{{ rute_url }}pedido/presentar/{{ order.nro_pedido }}" class="btn btn-default btn-sm" style="padding: 0px 9px;">
+                           <span class="fa fa-eye"></span>
                </a>&nbsp;
-                <a href="{{ rute_url }}gstinicial/validargi/{{ order.nro_pedido }}" class="text-primary">
-                           <span class="fa fa-gear"></span> Gastos
+                <a href="{{ rute_url }}gstinicial/validargi/{{ order.nro_pedido }}" class="btn btn-default btn-sm" style="padding: 0px 9px;">
+                           <span class="fa fa-gear"></span>  GI
                            </a>
                            &nbsp;
-                <a href="{{ rute_url }}report/gastosiniciales/{{ order.nro_pedido }}" target="_blank">
-     <span class="fa fa-file-o"></span>Reporte GI
+                <a href="{{ rute_url }}report/gastosiniciales/{{ order.nro_pedido }}" target="_blank" class="btn btn-default btn-sm" style="padding: 0px 9px;">
+                <span class="fa fa-file-pdf-o"></span> 
       				</a>
                 </small>
                </td>

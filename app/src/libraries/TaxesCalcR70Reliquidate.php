@@ -58,8 +58,7 @@ class parcialTaxesReliquidate {
      * ]
      *
      */
-    public function getTaxes():array
-    {
+    public function getTaxes():array{
         $this->setConfiguration();
         
         $taxes = [
@@ -106,9 +105,7 @@ class parcialTaxesReliquidate {
      * @param array $taxes
      */
     private function calDiferenceICEAdvalorem(array $taxes) : array{
-        
-        $ice_advalorem_tasa = 0.0;        
-        
+        $ice_advalorem_tasa = 0.0;
         foreach ( $taxes as $item => $tax ){
             $ice_advalorem_tasa += $tax['ice_advalorem_sin_etiquetas'];
         }
@@ -121,7 +118,7 @@ class parcialTaxesReliquidate {
         $diferencia_ice_especifico = (
             $this->parcial['ice_especifico']
             - $this->parcial['ice_especifico_pagado']
-            );                
+            );           
 
         #todos los productos pagan ice especifico
         $all_products = count($taxes);
@@ -133,10 +130,7 @@ class parcialTaxesReliquidate {
             if($tax['ice_advalorem'] > 0){
                 $num_products ++;
             }
-        }        
-               
-        
-        #$diferencia =0;
+        }                               
                 
         $reliquidate_taxes = [];
         
@@ -226,8 +220,12 @@ class parcialTaxesReliquidate {
         foreach ($this->init_data['info_invoices'] as $idx => $invoice){
                 $this->gastos_origen += $invoice['gasto_origen'];
         }       
-        #se coloca para manejar los gastos en origen para pedidos fob con GO, intentarlo para EXW y FCA              
-        $this->gastos_origen_pedido_tasa_trimestral = floatval($this->init_data['order']['gasto_origen']);
+        #se coloca para manejar los gastos en origen para pedidos fob con GO, intentarlo para EXW y FCA   
+        if($this->init_data['order']['incoterm'] == 'FCA' || $this->init_data['order']['incoterm'] == 'EXW' || $this->init_data['order']['incoterm'] == 'CFR') {
+            $this->gastos_origen_pedido_tasa_trimestral = 0;
+        }else{
+            $this->gastos_origen_pedido_tasa_trimestral = floatval($this->init_data['order']['gasto_origen']);
+        }
                
     }
     

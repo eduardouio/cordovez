@@ -1,10 +1,10 @@
+
 <div class="row">
     <div class="col-sm-3">
     {% if order_report.have_open_parcial == false %}
             <a href="{{ rute_url }}parcial/nuevo/{{ order.nro_pedido }}">
                 <button type="button" class="btn btn-primary btn-sm">
-                    <span class="fa fa-list-ol"></span>
-                    Nuevo Parcial
+                    [+] Nuevo Parcial
                 </button>
             </a>
             <br>
@@ -23,8 +23,10 @@
                 <th>Estado</th>
                 <th>Pedido</th>
                 <th>FOB</th>
-                <th>Fact Informativa</th>
-                <th>Fecha</th>
+                <th>Nro Fact I</th>
+                <th>Referendo</th>
+                <th>Salida Autorizada</th>
+                <th>Fecha Ll. Bodega</th>
                 <th>Cajas</th>                  
                 <th>Acciones</th>
             </tr>
@@ -69,39 +71,38 @@
                     </td>
                     <td> {{ parcial.value | number_format('2',',','.') }} </td>
                     <td> {{ parcial.factura_informativa }} </td>
-                    <td> {{ parcial.fecha_factura_informativa | date ('d/m/Y') }} </td>
-                    <td> {{ parcial.cajas }} </td>
-                    
+                    <td> {{ parcial.info_invoices.0.nro_refrendo }} </td>
+                    {% if parcial.fecha_salida_autorizada == null or parcial.fecha_salida_autorizada == ''   %}
                     <td>
-                        <div class="dropdown">
-                            <button id="dLabel" type="button"
-                                    data-toggle="dropdown" aria-haspopup="true"
-                                    aria-expanded="true"
-                                    class="btn btn-sm btn-default">
-                                <span class="fa fa-chevron-down"></span>
-                                Acciones <span class="fa fa-list"></span>
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dLabel">
-                                <li>
-                                    <a href="{{ rute_url }}parcial/presentar/{{ parcial.id_parcial }}">
-                                        <span class="fa fa-eye fa-fw"></span>
-                                        Ver Detalle Parcial</a>
-                                </li>
-                                {%  if invoice.bg_isclosed == 0 %}                          
-                                <li>
-                                    <a href="{{ rute_url }}parcial/eliminar/{{ parcial.id_parcial }}">
-                                        <span class="fa fa-trash fa-fw"></span>
-                                        Eliminar Parcial</a>
-                                </li>
-                                <li>
-                                  <a href="{{ rute_url }}report/gastosnacionalizacion/{{ parcial.id_parcial }}" target="_blank">
-     								<span class="fa fa-file-o"></span> 
-     								Reporte GP
-      							</a>
-                                </li>
-                                {%  endif %}
-                            </ul>
-                        </div>
+                        <span class="text-danger">Sin Autorización</span>
+                    </td>
+                    {% else %}
+                    <td> 
+                    <span class="text-success">
+                    {{ parcial.fecha_salida_autorizada | date ('d/m/Y') }}
+                    </span>
+                    </td>
+                    {% endif %}
+                    
+                    {% if parcial.fecha_llegada_cliente == null or parcial.fecha_llegada_cliente == ''   %}
+                    <td>
+                        <span class="text-danger">No en Bdega Local</span>
+                    </td>
+                    {% else %}
+                    <td> 
+                    <span class="text-success">
+                    {{ parcial.fecha_llegada_cliente | date ('d/m/Y') }}
+                    </span>                    
+                    </td>
+                    {% endif %}
+
+
+                    <td> {{ parcial.cajas }} </td>                    
+                    <td>
+                    <a href="{{ rute_url }}parcial/presentar/{{ parcial.id_parcial }}" class="btn btn-default btn-sm" style="padding: 0px 9px;margin-left: 5px;margin-right: 5px;"><span class="fa fa-eye fa-fw "></span></span>
+                    <a href="{{ rute_url }}facinformativa/presentar/{{ parcial.info_invoices.0.id_factura_informativa }}" class="btn btn-default btn-sm" style="padding: 0px 9px;margin-left: 5px;margin-right: 5px;"><span class="fa fa-file fa-fw "></span></span>
+                    <a href="{{ rute_url }}report/gastosnacionalizacion/{{ parcial.id_parcial }}" target="_blank" class="btn btn-default btn-sm" style="padding: 0px 9px;margin-left: 5px;margin-right: 5px;"><span class="fa fa-file-pdf-o fa-fw "></span></span>                    
+                    <a href="{{ rute_url }}parcial/eliminar/{{ parcial.id_parcial }}" class="btn btn-danger btn-sm" style="padding: 0px 9px;margin-left: 5px;margin-right: 5px;"><span class="fa fa-trash fa-fw "></span></span>
                     </td>
                 </tr>
             {% endfor %}

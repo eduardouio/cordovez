@@ -65,28 +65,31 @@ class Prorrateos
             'prorrateo_parcial' => [],
             'prorrateo_pedido' => [],
         ];
-        
-        foreach ($this->init_data['parcial_expenses'] as $idx => $expense){
-            if(! preg_match('/[a-zA-Z]-[0-9]/' , $expense['concepto'] ) )
-            {
-                array_push($prorrateos['prorrateo_parcial'], $expense);
+        if($this->init_data['parcial_expenses']){
+            foreach ($this->init_data['parcial_expenses'] as $idx => $expense){
+                if(! preg_match('/[a-zA-Z]-[0-9]/' , $expense['concepto'] ) )
+                {
+                    array_push($prorrateos['prorrateo_parcial'], $expense);
+                }
             }
         }
         
-        foreach ($this->init_data['init_expenses'] as $idx => $expense){
-            $expense['valor_prorrateado'] =  (
-                $expense['valor_provisionado']
-                * $fobs['fob_parcial_razon_inicial']
-                );
-            
-            if($expense['concepto'] == 'TASA DE CONTROL ADUANERO'){
-                $expense['valor_prorrateado'] = $this->getTCAValue(
-                    $expense['valor_provisionado'],
-                    $fobs['fob_parcial_razon_inicial']
+        if($this->init_data['init_expenses']){
+            foreach ($this->init_data['init_expenses'] as $idx => $expense){
+                $expense['valor_prorrateado'] =  (
+                    $expense['valor_provisionado']
+                    * $fobs['fob_parcial_razon_inicial']
                     );
-                $this->have_tasa = True;                
+                
+                if($expense['concepto'] == 'TASA DE CONTROL ADUANERO'){
+                    $expense['valor_prorrateado'] = $this->getTCAValue(
+                        $expense['valor_provisionado'],
+                        $fobs['fob_parcial_razon_inicial']
+                        );
+                    $this->have_tasa = True;                
+                }
+                array_push( $prorrateos['prorrateo_pedido'], $expense);
             }
-            array_push( $prorrateos['prorrateo_pedido'], $expense);
         }
         return $prorrateos;
     }

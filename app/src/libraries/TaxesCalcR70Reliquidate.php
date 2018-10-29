@@ -386,11 +386,6 @@ class parcialTaxesReliquidate {
                
         
         $gasto_origen_tasa_trimestral = 0.0;
-        #se pone la validacion debido a facturas informatovas que no cuadran con Almagrp
-        #se debe colocar un GO negativo para llegar al CIF
-        if($this->gastos_origen > 0 ){
-            ($this->gastos_origen * $percent) * $this->type_change_invoice;        
-        }
 
         $fob_tasa_trimestral = ($product_value / $this->type_change_parcial) * $this->type_change_invoice;
 
@@ -401,9 +396,7 @@ class parcialTaxesReliquidate {
             
         }elseif ($this->incoterm == 'FOB'){
             
-            
             $gasto_origen = $detail_info_invoice['gasto_origen'] * $this->type_change_parcial;
-                        
             $gasto_origen_tasa_trimestral = ((
                     $this->gastos_origen_pedido_tasa_trimestral * $this->type_change_invoice
                 ) * $this->init_data['fobs_parcial']['fob_parcial_razon_inicial']) * $percent;
@@ -412,6 +405,7 @@ class parcialTaxesReliquidate {
                 
         }elseif($this->incoterm == 'EXW' || $this->incoterm == 'FCA'){
             $gasto_origen = $detail_info_invoice['gasto_origen'] * $this->type_change_parcial;
+            #print '<h1>' .  $gasto_origen . '</h1>';
             $gasto_origen_tasa_trimestral = 0.0;
              $fob = $product_value + $gasto_origen;
         }         
@@ -535,7 +529,7 @@ class parcialTaxesReliquidate {
                     ) * $this->type_change_parcial,
                 'seguro' => $seguro,
                 'flete' => $flete,
-                'gasto_origen' => ($this->gastos_origen * $product['percent'] * $this->type_change_parcial),
+                'gasto_origen' => ($detail_info_invoice['gasto_origen'] * $this->type_change_parcial),
                 'otros' =>  $this->parcial['otros'] * $fob_percent,
                 'tasa_control' => $detail_info_invoice['tasa_control'],                
                 'prorrateo_parcial' => $valor_prorrateos_parcial,
@@ -566,14 +560,11 @@ class parcialTaxesReliquidate {
         array $product,
         array $prorrateos
         ): array
-        {
-        
+        {       
+            
         $limite_capacidad = 1000;     
-        
-        $fodinfa = (
-            $this->parcial['fodinfa_pagado']
-            * $prorrateos['fob_percent']
-            );
+                
+        $fodinfa = ($product['fob'] + $prorrateos['seguro_aduana'] + $prorrateos['flete_aduana'])* 0.005;
         
         $etiquetas_fiscales  = (
             $product['unidades']

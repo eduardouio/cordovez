@@ -214,8 +214,7 @@
             Volver Al Parcial
             </a>
             &nbsp;&nbsp;
-            
-            {% if  info_invoices.values_isok == true %}
+            {% if info_invoices.values_isok == true%}
              	{%  if partial_expenses.all_ok == true %}
              		<a  href="{{rute_url}}impuestos/pc/{{parcial.id_parcial}}" class="btn btn-success btn-sm pull-right">
                  		 <span class="fa fa-money"></span>

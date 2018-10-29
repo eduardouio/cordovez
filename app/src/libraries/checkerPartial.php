@@ -153,10 +153,6 @@ class checkerPartial
                     $invoice['check_money'] = False;
                 }
                 
-                if ($invoice['is_complete'] == False) {
-                    $values_isok = False;
-                }
-                
                 array_push($invoices, $invoice);
         }
         

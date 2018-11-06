@@ -56,7 +56,7 @@ class Modelorderinvoicedetail extends CI_Model
                 );
             return [];
         }
-        $orders_details = array_unique($orders_details);
+                
         return $orders_details;
     }
     

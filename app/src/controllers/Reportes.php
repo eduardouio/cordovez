@@ -23,6 +23,7 @@ class Reportes extends MY_Controller
 {
     private $modelReportProvisi;
     private $modelReportPagos;
+    private $modelParcial;
     private $modelOrder;
     private $modelSupplier;
     private $modelOrderReport;
@@ -57,6 +58,7 @@ class Reportes extends MY_Controller
             'Modelproduct',
             'Modelsupplier',
             'ModelReportICE',
+            'Modelparcial',
         ];  
         
         foreach ($models as $model){
@@ -72,6 +74,7 @@ class Reportes extends MY_Controller
         $this->modelReportProvisiones = new ModelReportProvisiones();
         $this->modelReportPagos = new ModelReportPagos();
         $this->modelOrder = new Modelorder();
+        $this->modelParcial = new Modelparcial();
     }
     
     /**
@@ -229,7 +232,7 @@ class Reportes extends MY_Controller
             $ord['stock_current'] = $stock_order->getCurrentOrderStock();
             $ord['stock_initial'] = $stock_order->getInitStockProducts();
             $ord['stock_global'] = $stock_order->getGlobalValues();
-                        
+            
             foreach ($ord['stock_current'] as $idx => $stock){
                 $suplier = $this->modelSupplier->get($stock['identificacion_proveedor']);
                 array_push($report_orders, [
@@ -244,7 +247,6 @@ class Reportes extends MY_Controller
                 ]);                            
             }          
         }
-        
         return $this->responseHttp([
             'titleContent' => 'Reporte de Saldos',
             'data' => $this->_formatData($report_orders),
@@ -306,28 +308,143 @@ class Reportes extends MY_Controller
      
         
     /**
-     * Buesca un producto nombre
+     * Busca un producto nombre
      */
-    public function saldosProducto(string $cod_contable = '02052091050304010700'){
+    public function saldosProducto(string $cod_contable = ''){
+        $current_product = $this->modelProduct->getAllProductInfo($cod_contable);
         $this->load->model('ModelProductReport');
         $modelProductReport = new ModelProductReport();
         $data = $modelProductReport->getData($cod_contable);
-        $ReportStatusProduct = new ReportStatusProduct($data);
-        $data = $ReportStatusProduct->getData();
+        $parcials = $this->modelParcial->getAll($cod_contable);
+        $ReportStatusProduct = new ReportStatusProduct($data, $parcials, $current_product);
+        $product_stocks = $ReportStatusProduct->getData($cod_contable);
+        $products_list = $this->modelProduct->getAll();
+        $all_products = [];
+        $sums = [0,0,0,0,0];
+        $totals = [
+            'saldo_cajas' => 0,
+            'saldo_unidades' => 0,
+            'fob_total' => 0.0,
+        ];
         
-        print '<pre>';
-        print_r($data);
-        print '</pre>';
-        
+        if($product_stocks){
+            $sums = [];
+            foreach ($product_stocks as $stocks){
+                if($stocks){
+                   array_push($sums, $stocks['sums']['saldo_cajas']);
+                   $totals['saldo_cajas'] += $stocks['sums']['saldo_cajas'];
+                   $totals['saldo_unidades'] += $stocks['sums']['saldo_unidades'];
+                   $totals['fob_total'] += $stocks['sums']['fob_total'];                   
+                }else{
+                    array_push($sums, 0);
+                }
+            }
+        }
+                      
+        foreach ($products_list as $key => $value) {
+            array_push($all_products, [
+                'value' => $value['nombre'],
+                'link' => base_url() . 'index.php/reportes/saldosProducto/' . $value['cod_contable'],
+            ]);
+        }
+
         return $this->responseHttp([
             'titleContent' => 'Reporte de Saldos Por Productos',
             'reporte_saldo_producto' => true,
             'vue_app' => True,
-            'data' => $data,
+            'product_stocks' => $product_stocks,
+            'current_product' => $current_product,
+            'all_products' => $all_products,
+            'total_sums' => $sums,
+            'total_values' => $totals,
+            'historico_costos' => @$this->getCostOfProduct($data, $parcials),
         ]);
     }
     
-
+    
+    /**
+     * Obtiene los costos del producto
+     */
+    private function getCostOfProduct(array $orders, array $parcials ):array{
+        $costos = [
+            'compra' => [],
+            'importacion' => [],
+            'costo_compra_alto' => 0.0,
+            'costo_compra_bajo' => 0.0,
+            'costo_importacion_alto' => 0.0,
+            'costo_importacion_bajo' => 0.0,
+            'costo_promedio_compra' => 0.0,
+            'costo_promedio_importacion' => 0.0,
+        ];        
+        $suma_costo_compra = 0.0;
+        $suma_costo_importacion = 0.0;
+        $compras = [];
+        $impotaciones = [];
+        
+        foreach ($orders as $k => $order){
+            array_push(
+                $costos['compra'], 
+                [
+                    'nro_pedido' => $order['order']['nro_pedido'], 
+                    'costo_caja' => $order['order']['costo_caja']
+                    
+                ]);
+            
+            if($order['order']['bg_isclosed'] && $order['order']['regimen'] == 10){
+                array_push(
+                    $costos['importacion'], [
+                        'nro_pedido' => $order['order']['nro_pedido'],
+                        'costo_caja' => $order['order']['costo_caja_final']
+                    ]);
+            }
+        }
+        
+        foreach ($parcials as $k => $parcial){
+            if($parcial['bg_isliquidated']){
+                array_push(
+                    $costos['importacion'], [
+                        'nro_pedido' => $parcial['nro_pedido'],
+                        'costo_caja' => $parcial['costo_caja_final']
+                    ]);
+            }
+        }       
+        
+        foreach($costos['compra'] as $k => $compra){
+            array_push(
+                $compras, 
+                $compra['costo_caja']
+                );
+            $suma_costo_compra += $compra['costo_caja'];
+        }
+        
+        foreach($costos['importacion'] as $k => $importacion){
+            array_push(
+                $impotaciones,
+                $importacion['costo_caja']
+                );
+            $suma_costo_importacion += $importacion['costo_caja'];
+        }
+        
+        $costos['costo_compra_alto'] = max($compras);
+        $costos['costo_compra_bajo'] = min($compras);
+        $costos['costo_importacion_alto'] = max($impotaciones);
+        $costos['costo_importacion_bajo'] = min($impotaciones);
+        $costos['costo_promedio_compra'] = $suma_costo_compra / ((count($compras)) == 0 ? 1 : count($compras));
+        $costos['costo_promedio_importacion'] = $suma_costo_importacion / ((count($impotaciones)) == 0 ? 1 : count($impotaciones));        
+        
+        return $costos; 
+    }
+    
+    /**
+     * Actualiza la linea del producto en el detalle de una factura informativa
+     * en todas las facturas informativas del sistema
+     */
+    public function updateProductInInfoInvoiceDetail(){
+        $this->modelInfoInvoiceDetail->updateAllDetails();
+        print 'Actualizado';
+    }
+    
+    
     /*
      * Redenderiza la informacion y la envia al navegador
      * @param array $config informacion de la plantilla

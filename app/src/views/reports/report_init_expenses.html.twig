@@ -11,8 +11,9 @@ Pedido: <span style="color: #333; font-weight: bold;"> {{ order.nro_pedido }} </
 Regimen: <span style="color: #333; font-weight: bold;"> {{ order.regimen }}  [<strong>{{ order.incoterm }}</strong>]</span>
 <br />
 Refrendo: <span style="color: #333; font-weight: bold;"> {{ order.nro_refrendo }}</span>
+<br />
+Importante:<span style="color: #FF0000; font-weight: bold;"> POR FAVOR VERIFIQUE ESTE REPORTE EN EL SISTEMA </span>
 </div>
-
 <br />
 <table border="1">
 <tr style="background-color: #eeeeee;">
@@ -115,6 +116,19 @@ Refrendo: <span style="color: #333; font-weight: bold;"> {{ order.nro_refrendo }
 <br />
 <br />
 <br />
+{%  if id_parcial > 0 %}
+<div style="font-size: 12px">
+	El Almacenaje del Parcial Vence el : 
+	<strong>
+	{% if fecha_vencimiento_ultimo_almacenaje  == null or fecha_vencimiento_ultimo_almacenaje == '' %}
+	No registra almacenaje revise el parcial anterior
+	{%else  %}
+	{{ fecha_vencimiento_ultimo_almacenaje  | date('d/m/Y') }}
+	{% endif %}
+	</strong>
+	
+</div>
+{% endif %}
 <br />
 <br />
 <br />

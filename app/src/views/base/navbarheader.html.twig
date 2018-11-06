@@ -1,48 +1,42 @@
-<body>
-<!-- ./header -->    
-    <div id="wrapper">
-        <!-- Navigation -->
-        
-        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                  <a class="navbar-brand" style="color:#333;" href="{{base_url}}"> <i class="glyphicon glyphicon-globe"></i> &nbsp; Agencia y Representaciones Cordovez S.A.</a>
-                  <!--
-                  <a class="navbar-brand" style="color:#333;" href="{{base_url}}"> <i class="glyphicon glyphicon-globe"></i> &nbsp; IMNAC Importadora Nacional Cia. Ltda.</a>
-                  <a class="navbar-brand" style="color:#333;" href="{{base_url}}"> <i class="glyphicon glyphicon-globe"></i> &nbsp; VID Internacional S.A.</a>
-                  -->
-            </div>
-            <!-- /.navbar-header -->			
-            <ul class="nav navbar-top-links navbar-right" style="font-size: 14px;">           
-                <li>
-                    <a href="{{rute_url}}pedido/nuevo/">
-                     <i class="fa fa-cubes fa-fw"></i> 
-                     <small>N Pedido</small>
-                     </a>
-                </li>
-                <li>
-                    <a href="{{rute_url}}facturapagos/nuevo/">
-                        <i class="fa fa-file-text-o fa-fw"></i>
-                        <small>N Factura</small>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{rute_url}}proveedor/nuevo/">
-                     <i class="fa fa-users fa-fw"></i> 
-                     <small>N Proveedor</small>
-                     </a>
-                </li>
-                <li>
-                    <a href="{{rute_url}}producto/nuevo/">
-                     <i class="fa fa-cube fa-fw"></i> 
-                     <small>N Producto</small>
-                     </a>
-                </li>
+<div class="navbar" style="margin-bottom: 0px">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+       <form action="{{ rute_url }}pedido/listar" method="GET" class="navbar-form navbar-left">
+        <div class="form-group" style="display:table; width:100%">
+          <div class="input-group">           
+                <div class="input-group custom-search-form">
+                  <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+                  <input type="text" class="form-control" name="nro_pedido" placeholder="Buscar Pedido" autocomplete="off">
+                </div>
+          </div>
+        </div>
+      </form>
+      <a class="navbar-brand" style="color:#333;" href="{{base_url}}"> <i class="glyphicon glyphicon-globe"></i> &nbsp; Agencia y Representaciones Cordovez S.A.</a>                                   
+    </div>
+    <div class="navbar-collapse collapse" id="searchbar">
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+                            <a href="{{rute_url}}home/"><i class="fa fa-dashboard fa-fw"></i> Inicio</a>
+                        </li>
+                        <li>
+                            <a href="{{rute_url}}pedido/listar/"><i class="fa fa-cubes fa-fw"></i> Pedidos</a>
+                        </li>
+                        <li>
+                            <a href="{{rute_url}}facturapagos/"><i class="fa fa-file-text-o fa-fw"></i>Justificaciones</a>
+                        </li>
+                        <li>
+                            <a href="{{rute_url}}proveedor/listar/"><i class="fa fa-users fa-fw"></i> Proveedores</a>
+                        </li>
+                        <li>
+                            <a href="{{rute_url}}producto"><i class="fa fa-cube fa-fw"></i>Productos</a>
+                        </li>
+                        <li>
+                            <a href="{{rute_url}}reportes"><i class="fa fa-table fa-fw"></i>Reportes</a>
+                        </li>
                          <!-- /.dropdown -->
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -54,7 +48,6 @@
                         <li class="divider"></li>
                         <li><a href="{{base_url}}index.php/login/cerrarSesion"><i class="fa fa-sign-out fa-fw"></i> Salir</a>
                         </li>
-                    </ul>
-                    <!-- /.dropdown-user -->
-                </li>
-            </ul>
+      </ul>
+    </div><!--/.nav-collapse -->
+</div>

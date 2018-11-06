@@ -254,4 +254,33 @@ class Modelinfoinvoicedetail extends CI_Model
         }
         return $quantity;
     }
+    
+    
+    /**
+     * Copia los detalles de un producto al de la factura informativa
+     */
+    public function updateAllDetails(){
+        $query = "
+            select 
+                dp.detalle_pedido_factura,
+                dp.cod_contable,
+                fid.id_factura_informativa_detalle,
+                fid.detalle_pedido_factura as detalle_pedido_factura_inf ,
+                fid.cod_contable as cod_contable_inf
+                from factura_informativa_detalle as fid
+                join detalle_pedido_factura as dp on (dp.detalle_pedido_factura = fid.detalle_pedido_factura);
+            ";
+        $results = $this->modelBase->runQuery($query);
+        
+        if($results){
+            foreach ($results as $k => $product){
+                if($product['cod_contable'] != $product['cod_contable_inf']){
+                    unset($product['cod_contable_inf']);
+                    unset($product['detalle_pedido_factura_inf']);
+                    $this->update($product);
+                }
+            }
+        }
+        return False;       
+    }
 }

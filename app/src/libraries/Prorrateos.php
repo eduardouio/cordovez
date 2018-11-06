@@ -109,6 +109,7 @@ class Prorrateos
             print 'Factura Informativa sin productos';
             exit();
         }
+        
         #comprobamos el valor de la tasa
         if(floatval($tasa_provision == 700.00) || floatval($tasa_provision == 40.00)){
             return ($tasa_provision * $fob_parcial_razon_inicial);
@@ -118,6 +119,7 @@ class Prorrateos
             print 'Factura Informativa sin productos';
             exit();
         }
+        
         $tasa_general = [];
         $tasa_parcial = [];
         $total_tasa_parcial = 0.0;
@@ -175,8 +177,8 @@ class Prorrateos
                     break;
                 }
             }
-        }
-        $this->tasa_parcial = $tasa_parcial;
+        }        
+        
         return ($tasa_provision * $fob_parcial_razon_inicial);
     }
     
@@ -300,8 +302,15 @@ class Prorrateos
             $fobs['fob_saldo'] = $fobs['fob_inicial'];
         }
         
+        
+        if($this->init_data['info_invoices'][0]['info_invoices_detail']){
+            foreach ($this->init_data['info_invoices'][0]['info_invoices_detail'] as $k => $det){
+                $fobs['fob_parcial'] +=  ($det['costo_caja'] * $det['nro_cajas']);
+            }
+        }
+        
         foreach ($this->init_data['info_invoices'] as $idx => $invoice){
-            $fobs['fob_parcial'] +=  $invoice['valor'];
+            #$fobs['fob_parcial'] +=  $invoice['valor'];
             $fobs['prorrateo_flete_aduana'] += $invoice['flete_aduana'];
             $fobs['prorrateo_seguro_aduana'] += $invoice['seguro_aduana'];
         }
@@ -321,7 +330,8 @@ class Prorrateos
                 $fobs['fob_parcial']
                 /$fobs['fob_saldo']
                 );
-        }        
+        }                
+        
         return $fobs;
     }
     

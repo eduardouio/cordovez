@@ -142,6 +142,29 @@ class Modelinfoinvoice extends CI_Model
     
     
     /**
+     * Obtiene las facturas informativas de un pedido
+     * @param string $nro_order
+     */
+    public function getCompleteInfoInvoiceByOrder($nro_order):array{
+        if($nro_order == '' || $nro_order == False || $nro_order == Null){
+            return [];
+        }
+        
+        $info_invoices_list = $this->getByOrder($nro_order);
+        if($info_invoices_list == False || empty($info_invoices_list)){
+            return [];
+        }
+        
+        $info_invoices = [];
+        
+        foreach ($info_invoices_list as $k => $inf_inv){
+            array_push($info_invoices, $this->getCompleteInfoInvoice($inf_inv['id_factura_informativa']));
+        }
+        
+        return $info_invoices;
+    }
+    
+    /**
      * Obtiene una factura informativa desde un numero de factura
      * @param string $nro_invoice
      */
@@ -164,7 +187,6 @@ class Modelinfoinvoice extends CI_Model
             'No se puede encontrar la factura informativa',
             $this->db->last_query()
             );
-        
         return False;
     }
     
@@ -187,8 +209,7 @@ class Modelinfoinvoice extends CI_Model
         if($parcials == False){
             $this->modelLog->warningLog(
                 'Pedido sin parciales ' . $nro_order
-                );
-            
+                );            
             return False;
         }
         
@@ -209,7 +230,7 @@ class Modelinfoinvoice extends CI_Model
         
         if($info_invoices){
             $this->modelLog->susessLog(
-                'Lista todas las facturas del pedido ' . $nro_order
+                'Lista todas las facturas informativas del pedido ' . $nro_order
                 );          
             return $info_invoices;            
         }
@@ -221,7 +242,6 @@ class Modelinfoinvoice extends CI_Model
         return false;
     }
      
-    
     
     /**
      * Eliminar una factura infotmativa

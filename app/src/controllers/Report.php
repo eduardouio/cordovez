@@ -1,5 +1,6 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
-
+$libraries_url = realpath(dirname(__FILE__));
+$libraries_url = str_replace('controllers', 'libraries/', $libraries_url);
 /**
  * Controller encargado de manejar los parciales de los pedidos
  *
@@ -105,9 +106,11 @@ class Report extends MY_Controller{
         $order = $this->modelOrder->get($parcial['nro_pedido']);        
         $invoice = $this->getInvoice('parcial', $id_parcial);       
         $order['nro_refrendo'] = $invoice['nro_refrendo'];
-        $invoice['tipo_cambio'] = $parcial['tipo_cambio'];
+        $invoice['tipo_cambio'] = $parcial['tipo_cambio'];        
+        
         $report_data = [
             'data' => $data,
+            'fecha_vencimiento_ultimo_almacenaje' => $this->getDateEndWarenhouse($data),
             'title_report' => 'Gastos Parcial ' . $nro_parcial ,
             'fecha' => date('d/m/Y H:m:s'),
             'user' => $this->modelUser->get($this->session->userdata('id_user')),
@@ -128,6 +131,24 @@ class Report extends MY_Controller{
             );
     }
     
+    
+    /**
+     * Obtiene la fecha de fin del ultimo almacenje
+     * @param  $parcial
+     */
+    private function getDateEndWarenhouse($data){
+        if(is_null($data)){
+            return Null;
+        }
+        
+        foreach ($data as $k => $exp){
+            if(preg_match('/[a-zA-Z]-[0-9]/', $exp['concepto'])){
+                $x = count($data) -1 ;
+                return $data[$x]['fecha_fin'];
+            }
+        }       
+        return Null;
+    }
     
     
     /**
@@ -161,8 +182,8 @@ class Report extends MY_Controller{
         $invoice['nro_factura'] = $info_invoice['nro_factura_informativa'];
         $invoice['proveedor'] = $supplier['nombre'];
         return(array_merge($invoice, $info_invoice)); 
-        
     }
+    
     
     /**
      * Genera la bade de un pdf 
@@ -170,9 +191,7 @@ class Report extends MY_Controller{
      * @param string $title
      */
     private function basePDF(string $author, string $title, string $nro_pedido, string $html){   
-        
         $pdf = new Pdf('P', 'mm', 'A4', true, 'UTF-8', false);       
-        
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor($author);
         $pdf->SetTitle($title . ' Pedido' . $nro_pedido);

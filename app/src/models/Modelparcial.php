@@ -382,7 +382,55 @@ class Modelparcial extends CI_Model
     }
     
     
-    
+    /**
+     * Obtiene la lista de parciales en los que esta un producto
+     */ 
+    public function getAll(string $cod_contable) : array{
+        $query = "
+                    select 
+                    p.nro_pedido,
+                    dp.id_pedido_factura,
+                    o.regimen,
+                    o.fecha_arribo,
+                    o.fecha_ingreso_almacenera,
+                    p.fecha_salida_autorizada_almagro,
+                    p.fecha_llegada_cliente,
+                    p.fecha_cierre,
+                    pf.tipo_cambio,
+                    p.fecha_liquidacion,
+                    fid.nro_cajas,
+                    fid.costo_caja,
+                    (pr.cantidad_x_caja * fid.nro_cajas) as 'unidades',
+                    (fid.nro_cajas * fid.costo_caja * pf.tipo_cambio) as 'fob',
+                    IFNULL(fid.flete_aduana,0) as 'flete_aduana',
+                    IFNULL(fid.seguro_aduana,0) as 'seguro_aduana',
+                    IFNULL(fid.costo_total,0) as 'costo_total',
+                    IFNULL(fid.costo_caja_final,0) as 'costo_caja_final',
+                    IFNULL(fid.costo_botella,0) as 'costo_botella',
+                    p.nro_liquidacion,
+                    p.bg_isclosed,
+                    p.bg_isliquidated,
+                    '1' as 'bg_HaveExpenses'
+                    from factura_informativa_detalle as fid
+                    join factura_informativa as fi on (fi.id_factura_informativa = fid.id_factura_informativa)
+                    join detalle_pedido_factura as dp on (dp.detalle_pedido_factura = fid.detalle_pedido_factura)
+                    join producto as pr on (pr.cod_contable = dp.cod_contable)
+                    join parcial as p on (p.id_parcial = fi.id_parcial)
+                    join pedido as o on (o.nro_pedido = p.nro_pedido)
+                    join pedido_factura as pf on (pf.id_pedido_factura = dp.id_pedido_factura)
+                    where fid.cod_contable = '{cod_contable}';
+                ";        
+        $result = $this->modelBase->runQuery(str_replace(
+            '{cod_contable}',
+            $cod_contable, 
+            $query)
+            );
+        if($result){
+            return $result;
+        }
+        return [];
+    }
+        
     /**
      * Retorna el numero de orden a partir del id de un parcial
      * @param int $idParcial identificacion del parcial

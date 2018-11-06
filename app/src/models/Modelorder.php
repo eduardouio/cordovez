@@ -116,6 +116,8 @@ class Modelorder extends CI_Model
         return false;
     }
     
+    
+    
     /**
      * Obtiene un regsistro completo de la orden de una tabla
      * @param (string) $id_order iddentificador de la order
@@ -222,7 +224,7 @@ class Modelorder extends CI_Model
         }
 
         $result = [];
-        (float)$valueItem = 0.00;
+        $valueItem = 0.00;
         $countBoxesProduct = 0.00;
         $unities = 0;
 
@@ -266,7 +268,7 @@ class Modelorder extends CI_Model
      * @param int $year
      * @param int $month
      */
-    public function getArrivedCellarByDate(int $year, int $month) : array{
+    public function getArrivedCellarByDate(int $year, int $month, bool $almagro = False) : array{
         
         $f_inicio = $year . '-' . $month . '-01';
         $f_fin = $year . '-' . $month . '-31';   
@@ -276,12 +278,23 @@ class Modelorder extends CI_Model
             $f_fin = $year . '-0' . $month . '-31';   
         }
         
-        $query = "
-                    SELECT * 
+        $query = "  SELECT * 
                     FROM pedido 
-                    WHERE fecha_llegada_cliente >= '$f_inicio' 
-                    AND fecha_llegada_cliente <= '$f_fin' 
-                    AND regimen = '10'";
+                    WHERE {{column}} >= '{{f_inicio}}'  
+                    AND {{column}} <= '{{f_fin}}' 
+                    AND regimen = '{{regimen}}'";
+        
+        if($almagro){
+            $query = str_replace('{{column}}', 'fecha_ingreso_almacenera', $query);
+            $query = str_replace('{{f_inicio}}', $f_inicio, $query);
+            $query = str_replace('{{f_fin}}', $f_fin, $query);
+            $query = str_replace('{{regimen}}', '70', $query);
+        }else{
+            $query = str_replace('{{column}}', 'fecha_llegada_cliente', $query);
+            $query = str_replace('{{f_inicio}}', $f_inicio, $query);
+            $query = str_replace('{{f_fin}}', $f_fin, $query);
+            $query = str_replace('{{regimen}}', '10', $query);
+        }
         
         $result = $this->modelBase->runQuery($query);
         

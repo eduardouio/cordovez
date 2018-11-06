@@ -479,9 +479,7 @@ class Gstnacionalizacion extends MY_Controller
                 'El gasto de nacionalizacion es identico no se hace el cambio'
                 );
             return ($this->redirectPage('parcial', $expense['id_parcial']));
-        }        
-       
-        
+        }               
         $this->index();
     }
     

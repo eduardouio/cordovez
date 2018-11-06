@@ -63,42 +63,19 @@ class ModelProductReport extends CI_Model{
      */
     public function getData(string $cod_contable){
         $data = [];               
-        $order_invoices = $this->modelOrderInvoice->getAll($cod_contable);
-        $orders = [];
+        $orders_have_product = $this->modelOrderInvoice->getAll($cod_contable);
         
-        foreach ($order_invoices as $k => $o_inv){
-            array_push($orders, $this->modelOrder->get($o_inv['nro_pedido']));
-        }
-
-        foreach ($orders as $k => $order){
+        foreach ($orders_have_product as $k => $order){
             array_push($data, [ 
                     'order' => $order,
                     'parcials' => $this->modelParcial->getAllParcials($order['nro_pedido']),
-                    'info_invoices' => $this->modelInfoInvoice->getByOrder($order['nro_pedido']),
-                    'order_invoices' => $this->getOrderInvoices($order['nro_pedido'], $order_invoices),
+                    'info_invoices' => $this->modelInfoInvoice->getCompleteInfoInvoiceByOrder($order['nro_pedido']),
                 ]);
         }        
         $this->modelLog->generalLog(
             'Retorno de informacion para reporte de productos'
             );        
         return $data;
-    }
-    
-    
-    /**
-     * Retirna las facturas de un pedido
-     * @param string $nro_order
-     */
-    private function getOrderInvoices(string $nro_order, array $order_invoices){
-        $order_invoice = [];        
-        foreach ($order_invoices as $k => $o_inv){
-            if($nro_order == $o_inv['nro_pedido']){
-                array_push($order_invoice, $o_inv);
-            }
-            
-         return $order_invoice;
-        }
-    }
-          
+    }   
 }
 

@@ -1,12 +1,22 @@
+<div id="app">
 <div class="row">
-<div class="col-md-1 text-right">
-<span>Buscar</span>
-</div>
 <div class="col-md-8">
-<input type="text" v-model="query" class="full-width"/>
+ <div> 
+        <el-autocomplete 
+          v-model="state"
+          :fetch-suggestions="querySearch"
+          @select="handleSelect(state)"
+          placeholder="Ingrese el nombre del producto a buscar"
+          :trigger-on-focus="false"
+			class="full-width"
+			style="line-height: 1px; background-color:#000;border: 1px solid #eee;">
+         </el-autocomplete>
+      </div>
 </div>
-<div class="col-md-3">
-<button @click="buscar" class="btn btn-sm btn-default" style="padding: 1px 10px">&nbsp;&nbsp; <span class="fa fa-search"></span> Buscar &nbsp;&nbsp;</button>
+<div class="col-md-4">
+<div class="pull-right">
+<span class="text-primary">{{ current_product.nombre }}</span>
+</div>
 </div>
 </div>
 <div class="row">
@@ -15,212 +25,259 @@
   <li class="active"><a data-toggle="tab" href="#stock"> <span class="fa fa-cube"></span> Saldos de Producto</a></li>
   <li><a data-toggle="tab" href="#history"> <span class="fa fa-list-ol"></span> Histórico En Precios De Compras E Importación</a></li>
 </ul>
-
 <div class="tab-content">
   <div id="stock" class="tab-pane fade in active">
-    <div class="row">
+    <div class="row" style="padding:15px;">   	
     	<div class="col-md-6">
-    	<div class="text-tittle">Ficha Base Producto</div>
-    			<table class="table table-hover table-bordered table-striped">
-        <thead>
-          <tr style="background-color: #c1c1c1;">
-            <th>Nombre</th>
-            <th>Valor</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="text-right"> <b>ID:</b></td>
-            <td>251</td>
-          </tr>
-          <tr>
-            <td class="text-right"><b>Código Contable:</b></td>
-            <td>01021080010701030750</td>
-          </tr>
-          <tr>
-            <td class="text-right"> <b>Código ICE:</b></td>
-            <td> 3031-56-000437-013-000750-66-108-000027 </td>
-          </tr>
-          <tr>           
-            <td class="text-right"><b>Nombre:</b></td>
-            <td>CHAMPAGNE CONCHA Y TORO BRUT CAJA6</td>
-          </tr>
-          <tr>
-            <td class="text-right"> <b>Proveedor:</b></td>
-            <td>VIÑA CONCHA Y TORO S.A.</td>
-          </tr>
-          <tr>
-            <td class="text-right"> <b>Capacidad ML:</b></td>
-            <td> 750.00 ml</td>
-          </tr>
-          <tr>
-            <td class="text-right"> <b>Grado Alcohólico:</b></td>
-            <td> 12 </td>
-          </tr>
-          <tr>
-            <td class="text-right"> <b>Cantidad por Caja:</b></td>
-            <td> 6 </td>
-          </tr>
-          <tr>
-            <td class="text-right"> <b>Costo Caja:</b></td>
-            <td> 17.0000000000 </td>
-          </tr>
-          <tr>
-            <td class="text-right"> <b>Peso:</b></td>
-            <td> 0.000 <span class="label label-info">Gramos</span></td>
-          </tr>
-          <tr>
-            <td class="text-right"> <b>Estado:</b></td>
-                          <td> <span class="label label-success">Activo</span> </td>
-                          
-          </tr>
-          <tr>
-            <td class="text-right"> <b>Custodia Doble:</b></td>
-                            <td> <span class="label label-success">No Tiene</span> </td>
-                        
-            
-          </tr>
-          <tr>
-            <td class="text-right"> <b>Comentarios:</b></td>
-            <td>  </td>
-          </tr>
-          <tr>
-            <td class="text-right"> <b>Creado El:</b></td>
-            <td> 
-                              03/04/2018 23:04 
-                            
-          </td>
-          </tr>
-          <tr>
-            <td class="text-right"> <b>Ultima Actualización:</b></td>
-            <td> 
-                            
-          </td>
-          </tr>
-          <tr>
-            <td class="text-right"> <b>Creado Por:</b></td>
-            <td> ADMINISTRADOR </td>
-          </tr>
-        </tbody>
-      </table>
-    	</div>
+		<div class="chart-container" style="height:16vh; width:40vw">
+			<canvas id="myChart"></canvas>
+			</div>			
+		<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+		<table class="table table-hover table-bordered table-condensed">
+		<thead>
+		<tr>
+		<th>Ubicacion</th>
+		<th> Cajas</th>
+		<th>Unidades</th>
+		<th>FOB</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td>Sin Fecha de Llegada</td>
+    		<td class="text-right">{{ product_stocks.product_without_date_arrived.sums.saldo_cajas | number_format(0,',','.') }}</td>		
+    		<td class="text-right">{{ product_stocks.product_without_date_arrived.sums.saldo_unidades | number_format(0,',','.') }}</td>		
+    		<td class="text-right">$ {{ product_stocks.product_without_date_arrived.sums.fob_total | number_format('3',',','.') }}</td>		
+		</tr>
+		<tr>
+        		<td>En Puerto Aduanero</td>
+        		<td class="text-right">{{ product_stocks.product_in_customs.sums.saldo_cajas | number_format(0,',','.') }}</td>		
+        		<td class="text-right">{{ product_stocks.product_in_customs.sums.sums.saldo_unidades | number_format(0,',','.') }}</td>		
+        		<td class="text-right">$ {{ product_stocks.product_in_customs.sums.fob_total | number_format('3',',','.') }}</td>		
+		</tr>
+		<tr>
+        		<td>En Almacenra Temporal:</td>
+        		<td class="text-right">{{ product_stocks.product_in_almagro_warenhouse.sums.saldo_cajas | number_format(0,',','.') }}</td>		
+        		<td class="text-right">{{ product_stocks.product_in_almagro_warenhouse.sums.saldo_unidades | number_format(0,',','.') }}</td>		
+        		<td class="text-right">$ {{ product_stocks.product_in_almagro_warenhouse.sums.fob_total | number_format('3',',','.') }}</td>		
+		</tr>
+		<tr>
+        		<td>Con Salida Autorizada</td>
+        		<td class="text-right">{{ product_stocks.product_with_exit_autorized.sums.saldo_cajas | number_format(0,',','.') }}</td>		
+        		<td class="text-right">{{ product_stocks.product_with_exit_autorized.sums.saldo_unidades | number_format(0,',','.') }}</td>		
+        		<td class="text-right">$ {{ product_stocks.product_with_exit_autorized.sums.fob_total | number_format('3',',','.') }}</td>		
+		</tr>
+		<tr>
+        		<td>Ultimos Pedidos en Bodega Local</td>
+        		<td class="text-right">{{ product_stocks.product_in_local_huaren_house.sums.saldo_cajas | number_format(0,',','.') }}</td>		
+        		<td class="text-right">{{ product_stocks.product_in_local_huaren_house.sums.saldo_unidades | number_format(0,',','.') }}</td>		
+        		<td class="text-right">$ {{ product_stocks.product_in_local_huaren_house.sums.fob_total | number_format('3',',','.') }}</td>		
+		</tr>
+		<tr style="background-color:#2E86C1; color:#fff; font-weight:bold;">
+    	<td class="text-right"> Totales </td>
+    	<td class="text-right">{{ total_values.saldo_cajas | number_format(0,',','.') }}</td>
+    	<td class="text-right">{{ total_values.saldo_unidades | number_format(0,',','.') }}</td>
+    	<td class="text-right">$ {{ total_values.fob_total  | number_format(3,',','.') }}</td>
+    	</tr>
+		</tbody>
+		</table>
+		
+		<!-- Trigger the modal with a button -->
+			<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal">Descripción Completa Producto</button>
+			</div>
     	<div class="col-md-6">
-    	<div class="text-tittle">Existencias</div>
+    	<div class="text-tittle">Existencias {{ current_product.nombre }} En Cajas </div>
     	<table class="table table-bordered table-striped table-hover table-condensed" style="margin-bottom: 5px;">
     	<tr>
-    	<th style="width: 20%">Nro Pedido</th>
-    	<th style="width: 20%">Fecha</th>
-    	<th style="width: 20%">Cajas</th>
-    	<th style="width: 20%">Unidades</th>
-    	<th style="width: 20%">Fob</th>
+			<th style="width: 5%">#</th>
+    	<th style="width: 19%">Nro Pedido</th>
+    	<th style="width: 19%">Fecha</th>
+    	<th style="width: 19%">Cajas</th>
+    	<th style="width: 19%">Unidades</th>
+    	<th style="width: 19%">Fob USD</th>
     	</tr>
     	</table>
     	<table class="table table-bordered table-striped table-hover table-condensed" style="margin-bottom: 5px;">
     	<thead>
     	<tr class="primary">
-    	<td colspan="5"> <span class="text-danger"> (A) </span> Sin Fecha de Llegada</td>
+    	<td colspan="6"> <span class="text-danger"> (A) </span> Sin Fecha de Llegada</td>
     	</tr>    	    	
     	</thead>
     	<tbody>
+			{% for order in product_stocks.product_without_date_arrived.saldos %}
     	<tr>
-    	<td class="text-right" style="width: 20%">054-18</td>
-    	<td class="text-right" style="width: 20%">300</td>
-    	<td class="text-right" style="width: 20%">10/10/2018</td>
-    	<td class="text-right" style="width: 20%">1232</td>
-    	<td class="text-right" style="width: 20%">$ 12039.00</td>
+			<td style="width: 5%">{{ loop.index}}</td>
+    	<td class="text-right" style="width: 19%">
+			<a href="{{rute_url}}pedido/presentar/{{order.order}}" target="_blank">
+				{{order.order}}
+			</a>
+			{% if  order.regimen == 70 %}
+			<label class="label label-primary">{{order.regimen}}</label>
+			{% else %}
+			<label class="label label-success">{{order.regimen}}</label>
+			{% endif %}			
+			</td>
+    	<td class="text-right" style="width: 19%">Sin Fecha Aribo</td>
+    	<td class="text-right" style="width: 19%">{{ order.saldo_cajas | number_format (0) }}</td>
+    	<td class="text-right" style="width: 19%">{{ (order.saldo_cajas * order.cantidad_x_caja) | number_format (0) }}</td>
+    	<td class="text-right" style="width: 19%">{{ order.fob_total | number_format (3,',','.')}}</td>
     	</tr>
+			{% endfor %}
+			{% if product_stocks.product_without_date_arrived.sums %}
+				<tr style="background-color:#2E86C1; color:#fff; font-weight:bold;">
+        		<td colspan="3">Sumas:</td>
+        		<td class="text-right">{{ product_stocks.product_without_date_arrived.sums.saldo_cajas | number_format(0,',','.') }} Cajas</td>		
+        		<td class="text-right">{{ product_stocks.product_without_date_arrived.sums.saldo_unidades | number_format(0,',','.') }} Unds</td>		
+        		<td class="text-right">$ {{ product_stocks.product_without_date_arrived.sums.fob_total | number_format('3',',','.') }}</td>		
+		</tr>
+			{% endif %}		
+    	</tbody>
+    	</table>
+    	<table class="table table-bordered table-striped table-hover table-condensed" style="margin-bottom: 5px;">
+    	<thead>`
+    	<tr class="primary">
+    	<td colspan="6"> <span class="text-danger"> (B) </span> Puerto Aduanero</td>
+    	</tr>    	    	
+    	</thead>
+    	<tbody>
+    	{% for order in product_stocks.product_in_customs.saldos %}
+    	<tr>
+			<td style="width: 5%">{{ loop.index}}</td>
+    	<td class="text-right" style="width: 19%">
+			<a href="{{rute_url}}pedido/presentar/{{order.order}}" target="_blank">
+				{{order.order}}
+			</a>
+			{% if  order.regimen == 70 %}
+			<label class="label label-primary">{{order.regimen}}</label>
+			{% else %}
+			<label class="label label-success">{{order.regimen}}</label>
+			{% endif %}			
+			</td>
+    	<td class="text-right" style="width: 19%">{{order.fecha_arribo | date('d/m/Y')}}</td>
+    	<td class="text-right" style="width: 19%">{{ order.saldo_cajas | number_format (0) }}</td>
+    	<td class="text-right" style="width: 19%">{{ (order.saldo_cajas * order.cantidad_x_caja) | number_format (0) }}</td>
+    	<td class="text-right" style="width: 19%">{{ order.fob_total | number_format (3,',','.')}}</td>
+    	</tr>
+			{% endfor %}    
+			
+			{% if product_stocks.product_in_customs.sums %}
+				<tr style="background-color:#2E86C1; color:#fff; font-weight:bold;">
+        		<td colspan="3">Sumas:</td>
+        		<td class="text-right">{{ product_stocks.product_in_customs.sums.saldo_cajas | number_format(0,',','.') }} Cajas</td>		
+        		<td class="text-right">{{ product_stocks.product_in_customs.sums.sums.saldo_unidades | number_format(0,',','.') }} Unds</td>		
+        		<td class="text-right">$ {{ product_stocks.product_in_customs.sums.fob_total | number_format('3',',','.') }}</td>		
+		</tr>
+			{% endif %}				
     	</tbody>
     	</table>
     	<table class="table table-bordered table-striped table-hover table-condensed" style="margin-bottom: 5px;">
     	<thead>
     	<tr class="primary">
-    	<td colspan="5"> <span class="text-danger"> (B) </span> Puerto Aduanero</td>
+    	<td colspan="6"> <span class="text-danger"> (C) </span> Bodega Temporal Almagro</td>
     	</tr>    	    	
     	</thead>
     	<tbody>
+    	{% for order in product_stocks.product_in_almagro_warenhouse.saldos %}
     	<tr>
-    	<td class="text-right" style="width: 20%">054-18</td>
-    	<td class="text-right" style="width: 20%">300</td>
-    	<td class="text-right" style="width: 20%">10/10/2018</td>
-    	<td class="text-right" style="width: 20%">1232</td>
-    	<td class="text-right" style="width: 20%">$ 12039.00</td>
+			<td style="width: 5%">{{ loop.index}}</td>
+    	<td class="text-right" style="width: 19%">
+			<a href="{{rute_url}}pedido/presentar/{{order.order}}" target="_blank">
+				{{order.order}}
+			</a>
+			{% if  order.regimen == 70 %}
+			<label class="label label-primary">{{order.regimen}}</label>
+			{% else %}
+			<label class="label label-success">{{order.regimen}}</label>
+			{% endif %}			
+			</td>
+    	<td class="text-right" style="width: 19%">{{ order.fecha_ingreso_almagro | date('d/m/Y')}}</td>
+    	<td class="text-right" style="width: 19%">{{ order.saldo_cajas | number_format (0) }}</td>
+    	<td class="text-right" style="width: 19%">{{ (order.saldo_cajas * order.cantidad_x_caja) | number_format (0) }}</td>
+    	<td class="text-right" style="width: 19%">{{ order.fob_total | number_format (3,',','.')}}</td>
     	</tr>
-    	<tr>
-    	<td class="text-right" style="width: 20%">054-18</td>
-    	<td class="text-right" style="width: 20%">300</td>
-    	<td class="text-right" style="width: 20%">10/10/2018</td>
-    	<td class="text-right" style="width: 20%">1232</td>
-    	<td class="text-right" style="width: 20%">$ 12039.00</td>
-    	</tr>
-    	<tr>
-    	<td class="text-right" style="width: 20%">054-18</td>
-    	<td class="text-right" style="width: 20%">300</td>
-    	<td class="text-right" style="width: 20%">10/10/2018</td>
-    	<td class="text-right" style="width: 20%">1232</td>
-    	<td class="text-right" style="width: 20%">$ 12039.00</td>
-    	</tr>
+			{% endfor %}
+			
+			{% if product_stocks.product_in_almagro_warenhouse.sums %}
+				<tr style="background-color:#2E86C1; color:#fff; font-weight:bold;">
+        		<td colspan="3">Sumas:</td>
+        		<td class="text-right">{{ product_stocks.product_in_almagro_warenhouse.sums.saldo_cajas | number_format(0,',','.') }} Cajas</td>		
+        		<td class="text-right">{{ product_stocks.product_in_almagro_warenhouse.sums.saldo_unidades | number_format(0,',','.') }} Unds</td>		
+        		<td class="text-right">$ {{ product_stocks.product_in_almagro_warenhouse.sums.fob_total | number_format('3',',','.') }}</td>		
+		</tr>
+			{% endif %}			
     	</tbody>
     	</table>
     	<table class="table table-bordered table-striped table-hover table-condensed" style="margin-bottom: 5px;">
     	<thead>
     	<tr class="primary">
-    	<td colspan="5"> <span class="text-danger"> (C) </span> Bodega Temporal Almagro</td>
+    	<td colspan="6"> <span class="text-danger"> (D) </span> Salida Autorizada</td>
     	</tr>    	    	
     	</thead>
     	<tbody>
+    	{% for order in product_stocks.product_with_exit_autorized.saldos %}
     	<tr>
-    	<td class="text-right" style="width: 20%">054-18</td>
-    	<td class="text-right" style="width: 20%">300</td>
-    	<td class="text-right" style="width: 20%">10/10/2018</td>
-    	<td class="text-right" style="width: 20%">1232</td>
-    	<td class="text-right" style="width: 20%">$ 12039.00</td>
+			<td style="width: 5%">{{ loop.index}}</td>
+    	<td class="text-right" style="width: 19%">
+			<a href="{{rute_url}}pedido/presentar/{{order.order}}" target="_blank">
+				{{order.order}}
+			</a>
+			{% if  order.regimen == 70 %}
+			<label class="label label-primary">{{order.regimen}}</label>
+			{% else %}
+			<label class="label label-success">{{order.regimen}}</label>
+			{% endif %}			
+			</td>
+    	<td class="text-right" style="width: 19%">{{ order.fecha_salida_autorizada | date('d/m/Y') }}</td>
+    	<td class="text-right" style="width: 19%">{{ order.saldo_cajas | number_format (0) }}</td>
+    	<td class="text-right" style="width: 19%">{{ (order.saldo_cajas * order.cantidad_x_caja) | number_format (0) }}</td>
+    	<td class="text-right" style="width: 19%">{{ order.fob_total | number_format (3,',','.')}}</td>
     	</tr>
+			{% endfor %}
+			
+			{% if product_stocks.product_with_exit_autorized.sums %}
+				<tr style="background-color:#2E86C1; color:#fff; font-weight:bold;">
+        		<td colspan="3">Sumas:</td>
+        		<td class="text-right">{{ product_stocks.product_with_exit_autorized.sums.saldo_cajas | number_format(0,',','.') }} Cajas</td>		
+        		<td class="text-right">{{ product_stocks.product_with_exit_autorized.sums.saldo_unidades | number_format(0,',','.') }} Unds</td>		
+        		<td class="text-right">$ {{ product_stocks.product_with_exit_autorized.sums.fob_total | number_format('3',',','.') }}</td>		
+		</tr>
+			{% endif %}			
     	</tbody>
     	</table>
     	<table class="table table-bordered table-striped table-hover table-condensed" style="margin-bottom: 5px;">
     	<thead>
     	<tr class="primary">
-    	<td colspan="5"> <span class="text-danger"> (D) </span> Salida Autorizada</td>
-    	</tr>    	    	
-    	</thead>
-    	<tbody>
-    	<tr>
-    	<td class="text-right" style="width: 20%">054-18</td>
-    	<td class="text-right" style="width: 20%">300</td>
-    	<td class="text-right" style="width: 20%">10/10/2018</td>
-    	<td class="text-right" style="width: 20%">1232</td>
-    	<td class="text-right" style="width: 20%">$ 12039.00</td>
-    	</tr>
-    	<tr>
-    	<td class="text-right" style="width: 20%">054-18</td>
-    	<td class="text-right" style="width: 20%">300</td>
-    	<td class="text-right" style="width: 20%">10/10/2018</td>
-    	<td class="text-right" style="width: 20%">1232</td>
-    	<td class="text-right" style="width: 20%">$ 12039.00</td>
-    	</tr>
-    	<tr>
-    	<td class="text-right" style="width: 20%">054-18</td>
-    	<td class="text-right" style="width: 20%">300</td>
-    	<td class="text-right" style="width: 20%">10/10/2018</td>
-    	<td class="text-right" style="width: 20%">1232</td>
-    	<td class="text-right" style="width: 20%">$ 12039.00</td>
-    	</tr>
-    	</tbody>
-    	</table>
-    	<table class="table table-bordered table-striped table-hover table-condensed" style="margin-bottom: 5px;">
-    	<thead>
-    	<tr class="primary">
-    	<td colspan="5"><span class="text-danger"> (E) </span> En Bodegas Importador 5 Últimos Pedidos</td>
+    	<td colspan="6"><span class="text-danger"> (E) </span> En Bodegas Importador 6 Últimos Pedidos</td>
     	</tr>
     	</thead>
     	<tbody>
+    {% for order in product_stocks.product_in_local_huaren_house.saldos %}
     	<tr>
-    	<td class="text-right" style="width: 20%">054-18</td>
-    	<td class="text-right" style="width: 20%">300 Cajas</td>
-    	<td class="text-right" style="width: 20%">10/10/2018</td>
-    	<td class="text-right" style="width: 20%">1232 Unds</td>
-    	<td class="text-right" style="width: 20%">$ 12039.00</td>
+			<td style="width: 5%">{{ loop.index}}</td>
+    	<td class="text-right" style="width: 19%">
+			<a href="{{rute_url}}pedido/presentar/{{order.order}}" target="_blank">
+				{{order.order}}
+			</a>
+			{% if  order.regimen == 70 %}
+			<label class="label label-primary">{{order.regimen}}</label>
+			{% else %}
+			<label class="label label-success">{{order.regimen}}</label>
+			{% endif %}			
+			</td>
+    	<td class="text-right" style="width: 19%">{{ order.fecha_llegada_cliente | date('d/m/Y')}}</td>
+    	<td class="text-right" style="width: 19%">{{ order.saldo_cajas | number_format (0) }}</td>
+    	<td class="text-right" style="width: 19%">{{ (order.saldo_cajas * order.cantidad_x_caja) | number_format (0) }}</td>
+    	<td class="text-right" style="width: 19%">{{ order.fob_total | number_format (3,',','.')}}</td>
     	</tr>
+			{% endfor %}
+			 {% if product_stocks.product_in_local_huaren_house.sums %}
+				<tr style="background-color:#2E86C1; color:#fff; font-weight:bold;">
+        		<td colspan="3">Sumas:</td>
+        		<td class="text-right">{{ product_stocks.product_in_local_huaren_house.sums.saldo_cajas | number_format(0,',','.') }} Cajas</td>		
+        		<td class="text-right">{{ product_stocks.product_in_local_huaren_house.sums.saldo_unidades | number_format(0,',','.') }} Unds</td>		
+        		<td class="text-right">$ {{ product_stocks.product_in_local_huaren_house.sums.fob_total | number_format('3',',','.') }}</td>		
+		</tr>
+			{% endif %}		
     	</tbody>
     	</table>
     	<table class="table table-bordered table-striped table-hover table-condensed" style="margin-bottom: 5px;">
@@ -231,48 +288,260 @@
     	</thead>
     	<tbody>
     	<tr>
-    	<td class="text-right" style="width: 20%">10 Pedidos</td>
-    	<td class="text-right" style="width: 20%">300 Cajas</td>
+    	<td class="text-right" style="width: 20%"> Totales </td>
     	<td class="text-right" style="width: 20%">--</td>
-    	<td class="text-right" style="width: 20%">1232 Unds</td>
-    	<td class="text-right" style="width: 20%">$ 12039.00</td>
+    	<td class="text-right" style="width: 20%">{{ total_values.saldo_cajas | number_format(0,',','.') }}</td>
+    	<td class="text-right" style="width: 20%">{{ total_values.saldo_unidades | number_format(0,',','.') }}</td>
+    	<td class="text-right" style="width: 20%">$ {{ total_values.fob_total  | number_format(3,',','.') }}</td>
     	</tr>
     	</tbody>
     	</table>
-    	</div>    	
+    	</div>    		
     </div>
   </div>  
   <div id="history" class="tab-pane fade">
-    <div class="row">
+    <div class="row" style="padding:15px">
     	<div class="col-md-6" style="border: 1px solid #999;">
     		<div class="text-tittle">Histórico Precio Compra</div>
-    		<img src="https://www.dropbox.com/s/c7mblt0bdypqdq5/Screenshot%20from%202018-10-15%2023-19-03.png?dl=1" alt="" style="width: 100%"/>
-    		<span class="text-left text-primary">Costo Mas Bajo: <strong>$ <span style="font-size: 18px;">45.00</span></strong></span>
-    		<span class="pull-right text-danger">Costo Mas Alto: <strong>$ <span style="font-size: 18px;">49.00</span></strong></span>
+			<div class="chart-container" style="height:16vh; width:40vw">
+				<canvas id="myChart01"></canvas>
+			</div>    		    
+			<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />		
+    		<span class="text-left text-primary">Costo Mas Bajo: <strong>$ <span style="font-size: 18px;">{{ historico_costos.costo_compra_bajo }}</span></strong></span>
+    		<span class="pull-right text-danger">Costo Mas Alto: <strong>$ <span style="font-size: 18px;">{{ historico_costos.costo_compra_bajo }}</span></strong></span>
     	</div>
     	<div class="col-md-6" style="border: 1px solid #999;">
     		<div class="text-tittle">Histórico Costo Importación</div>
-    		<img src="https://www.dropbox.com/s/c7mblt0bdypqdq5/Screenshot%20from%202018-10-15%2023-19-03.png?dl=1" style="width: 100%"/>
-    		<span class="text-left text-primary">Costo Mas Bajo: <strong>$ <span style="font-size: 18px;">67.23</span></strong> </span>
-    		<span class="pull-right text-danger">Costo Mas Alto: <strong>$ <span style="font-size: 18px;">88.28</span></strong></span>
-    	</div>
-    </div>
-    <br />
-        <div class="row">
-    	<div class="col-md-6" style="border: 1px solid #999;">
-    		<div class="text-tittle">Histórico Compras Por Mes</div>
-    		<img src="https://www.dropbox.com/s/c7mblt0bdypqdq5/Screenshot%20from%202018-10-15%2023-19-03.png?dl=1" alt="" style="width: 100%"/>
-    		<span class="text-left text-primary">Costo Mas Bajo: <strong>$ <span style="font-size: 18px;">45.00</span></strong></span>
-    		<span class="pull-right text-danger">Costo Mas Alto: <strong>$ <span style="font-size: 18px;">49.00</span></strong></span>
-    	</div>
-    	<div class="col-md-6" style="border: 1px solid #999;">
-    		<div class="text-tittle">Histórico Compras Por Año</div>
-    		<img src="https://www.dropbox.com/s/c7mblt0bdypqdq5/Screenshot%20from%202018-10-15%2023-19-03.png?dl=1" style="width: 100%"/>
-    		<span class="text-left text-primary">Costo Mas Bajo: <strong>$ <span style="font-size: 18px;">67.23</span></strong> </span>
-    		<span class="pull-right text-danger">Costo Mas Alto: <strong>$ <span style="font-size: 18px;">88.28</span></strong></span>
+    		<div class="chart-container" style="height:16vh; width:40vw">
+    		<canvas id="myChart02"></canvas>
+    		</div>
+    		<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+    		<span class="text-left text-primary">Costo Mas Bajo: <strong>$ <span style="font-size: 18px;">{{ historico_costos.costo_importacion_bajo }}</span></strong> </span>
+    		<span class="pull-right text-danger">Costo Mas Alto: <strong>$ <span style="font-size: 18px;">{{ historico_costos.costo_importacion_alto }}</span></strong></span>
     	</div>
     </div>
   </div>
 </div>
 </div>
 </div>
+</div>
+<!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h5 class="modal-title">{{ current_product.nombre }} <label class="label label-primary pull-right">{{ current_product.proveedor }} </label></h5>
+        </div>
+        <div class="modal-body">
+          <table class="table table-hover table-bordered table-striped">
+        <thead>
+          <tr style="background-color: #c1c1c1;">
+            <th>Nombre</th>
+            <th>Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-right"> <b>ID:</b></td>
+            <td>{{ current_product.id_producto }}</td>
+          </tr>
+          <tr>
+            <td class="text-right"><b>Código Contable:</b></td>
+            <td>{{ current_product.cod_contable }}</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Código ICE:</b></td>
+            <td> {{ current_product.cod_ice }} </td>
+          </tr>
+          <tr>           
+            <td class="text-right"><b>Nombre:</b></td>
+            <td>{{ current_product.nombre }}</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Proveedor:</b></td>
+            <td>{{ current_product.proveedor }}</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Capacidad ML:</b></td>
+            <td> {{ current_product.capacidad_ml }} ml</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Grado Alcohólico:</b></td>
+            <td> {{ current_product.grado_alcoholico }} </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Cantidad por Caja:</b></td>
+            <td> {{ current_product.cantidad_x_caja }} </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Costo Caja:</b></td>
+            <td> {{ current_product.costo_caja }}</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Peso:</b></td>
+            <td> {{ current_product.peso }}<span class="label label-info">Gramos</span></td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Estado:</b></td>
+            <td>
+            {% if current_product.estado %}
+            <span class="label label-success">Activo</span>
+            {% else %}
+            <span class="label label-danger">Inactivo</span>
+            {% endif %}
+            </td>           
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Custodia Doble:</b></td>
+			<td>
+			{% if current_product.custodia_doble %}
+			<span class="label label-warning">Si Tiene</span>
+			{% else %}
+			<span class="label label-success">No Tiene</span>
+			{% endif %}
+			</td>            
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Comentarios:</b></td>
+            <td>{{ current_product.comentarios }}</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Creado El:</b></td>
+            <td>{{ current_product.date_create | date ('d/m/Y') }}</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Ultima Actualización:</b></td>
+            <td>{{ current_product.last_update | date('d/m/Y') }}</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Creado Por:</b></td>
+            <td> ADMINISTRADOR </td>
+          </tr>
+        </tbody>
+      </table>
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cerrar Ventana</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+<script type="text/javascript">
+var app = new Vue({
+    el: '#app',
+    delimiters: ['${', '}'],
+    data: {
+				all_products : {{ all_products | json_encode() | raw }},
+        current_product: {{   current_product | json_encode() | raw }} ,
+				selected_product : {},
+        search_query : '',
+        debug: true,
+        ajaxRequest: false,
+        postResults: [],
+				links: [],
+				state: '',
+				label: 'label',
+    },
+    methods: {
+    querySearch: function querySearch(query, cb) {
+      var links = this.links;
+      var results = query ? links.filter(this.createFilter(query)) : links;
+      var top3 = results.slice(0, 20);
+      cb(top3);
+    },
+    createFilter: function createFilter(query) {
+      return function (link) {
+        return link.value.toLowerCase().includes(query.toLowerCase());
+      };
+    },
+    loadAll() {
+      return {{ all_products | json_encode () | raw }}
+    },
+    handleSelect(item) {
+			for(i in this.all_products){
+				product = this.all_products[i];
+				if(product.value === item){
+					this.current_product = product
+					console.dir(this.current_product)
+					location.href = this.current_product.link
+				}
+			}
+    }
+  },
+	mounted() {
+    this.links = this.loadAll();
+  },    
+})
+</script>
+<script>
+var ctx = document.getElementById('myChart').getContext('2d');
+var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'line',
+
+    // The data for our dataset
+    data: {
+        labels: ["Sin Fecha llegada", "Puerto", "Almagro", "Salida", "Bodega"],
+        datasets: [{
+            label: "{{current_product.nombre}}  |  {{ current_product.proveedor }}",
+            backgroundColor: 'rgb(255, 99, 71)',
+            borderColor: 'rgb(11, 83, 69)',
+            data: [ {% for val in total_sums %} {{ val }}, {% endfor %}],
+        }]
+    },
+    // Configuration options go here
+    options: {
+			responsive: true,
+		}
+});
+</script>
+<script>
+var ctx = document.getElementById('myChart01').getContext('2d');
+var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'line',
+
+    // The data for our dataset
+    data: {
+        labels: [{% for item in  historico_costos.compra %} "{{ item.nro_pedido }}", {% endfor %}],
+        datasets: [{
+            label: "{{current_product.nombre}}  |  {{ current_product.proveedor }}",
+            backgroundColor: 'rgb(60, 179, 113)',
+            borderColor: 'rgb(11, 83, 69)',
+            data: [ {% for item in  historico_costos.compra %} {{ item.costo_caja }} , {% endfor %}],
+        }]
+    },
+    // Configuration options go here
+    options: {
+			responsive: true,
+		}
+});
+</script>
+<script>
+var ctx = document.getElementById('myChart02').getContext('2d');
+var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'line',
+
+    // The data for our dataset
+    data: {
+        labels: [{% for item in  historico_costos.importacion %} "{{ item.nro_pedido }}", {% endfor %}],
+        datasets: [{
+            label: "{{current_product.nombre}}  |  {{ current_product.proveedor }}",
+            backgroundColor: 'rgb(255, 165, 0)',
+            borderColor: 'rgb(11, 83, 69)',
+            data: [ {% for item in  historico_costos.importacion %} {{ item.costo_caja }} , {% endfor %}],
+        }]
+    },
+    // Configuration options go here
+    options: {
+			responsive: true,
+		}
+});
+</script>

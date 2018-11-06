@@ -32,7 +32,7 @@
 
 .title-proveedor {
 	background-color: #95A5A6 !important;
-	height: 45px;
+	height: 30px;
 	color: #fff;
 }
 
@@ -42,74 +42,74 @@
 
 .title-reliquidacion {
 	background-color: #454545 !important;
-	height: 45px;
+	height: 30px;
 	color: #fff;
 }
 
 .title-reportes{
 	background-color: #8E44AD !important;
-	height: 45px;
+	height: 30px;
 	color: #fff;
 }
 
 
 .title-perfil {
 	background-color: #029CD2 !important;
-	height: 45px;
+	height: 30px;
 	color: #fff;
 }
 
 .title-factura_informativa {
 	background-color: #333 !important;
-	height: 45px;
+	height: 30px;
 	color: #333;
 }
 
 .title-factura_informativa_detalle {
 	background-color: #444 !important;
-	height: 45px;
+	height: 30px;
 	color: #444;
 }
 
 .title-impuestos{
 	background-color:#007bff!important;
-	height: 45px;
+	height: 30px;
 	color: #444;
 }
 
 .title-detalle_pedido_factura {
 	background-color: #0097a7 !important;
-	height: 45px;
+	height: 30px;
 	color: #fff;
 }
 
 .title-pedido_factura {
 	background-color: #0097a7 !important;
-	height: 45px;
+	height: 30px;
 	color: #fff;
 }
 
 .title-justificacion_gasto_nacionalizacion {
 	background-color: #0000a7 !important;
-	height: 45px;
+	height: 30px;
 	color: #fff;
 }
 
 .title-inicio {
 	background-color: #1565C0 !important;
-	height: 45px;
+	height: 30px;
 	color: #fff;
 }
 
 .title-parcial {
 	background-color: #666 !important;
-	height: 45px;
+	height: 30px;
 	color: #fff;
 }
 
 .title-gastos_nacionalizacion {
 	background-color: #7b1fa2 !important;
-	height: 45px;
+	height: 30px;
 	color: #fff;
 }
 
@@ -124,14 +124,14 @@
 
 .title-pedido {
 	background-color: #FF0033  !important;
-	height: 45px;
+	height: 30px;
 	color: #fff;
 	
 }
 
 .title-importar {
 	background-color:  rgb(54, 42, 165) !important;
-	height: 45px;
+	height: 30px;
 	color: #fff;
 	
 }
@@ -140,7 +140,7 @@
 
 .title-producto {
 	background-color: #04738B !important;
-	height: 45px;
+	height: 30px;
 	color: #fff;
 }
 
@@ -390,7 +390,7 @@ body {
 .title-documento_pago, .detalle-documento-pago,
 	.title-detalle_documento_pago {
 	background-color: #37474F !important;
-	height: 45px;
+	height: 30px;
 	color: #fff;
 }
 

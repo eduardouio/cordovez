@@ -59,6 +59,27 @@ class Modelproduct extends CI_Model{
         }
         return false;
     }
+
+
+    /**
+     * Obtiene toda la informacion de un prodcto
+     */
+    public function getAllProductInfo(string $cod_contable):array{
+        $query = "
+        select 
+        pr.* ,
+        s.nombre as 'proveedor'
+        from producto as pr
+        join proveedor as s on (s.identificacion_proveedor = pr.identificacion_proveedor)
+        where pr.cod_contable = '{cod_contable}';
+        ";
+        $result = $this->modelBase->runQuery(str_replace('{cod_contable}', $cod_contable, $query));
+
+        if($result){
+            return $result[0];
+        }
+        return [];
+    }
     
     /**
      * Obtiene la lista de todos los productos de la base

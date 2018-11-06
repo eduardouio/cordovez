@@ -109,44 +109,54 @@ class parcialTaxesReliquidate {
         foreach ( $taxes as $item => $tax ){
             $ice_advalorem_tasa += $tax['ice_advalorem_sin_etiquetas'];
         }
-                      
+        
+        $total_ice_advalorem = 0.0;
+        
+        foreach ($taxes as $k => $t){
+            $total_ice_advalorem += floatval($t['ice_advalorem']); 
+        }
+        
+        
         $diferencia =  (
             $this->parcial['ice_advalorem']
             - $this->parcial['ice_advalorem_pagado']
             );
+        
+        $diferencia_total_ice =  (
+            $total_ice_advalorem
+            - $this->parcial['ice_advalorem_pagado']
+            );
                
+       
         $diferencia_ice_especifico = (
             $this->parcial['ice_especifico']
             - $this->parcial['ice_especifico_pagado']
-            );           
-
+            );
         #todos los productos pagan ice especifico
         $all_products = count($taxes);
-        
         #solo buscamos los items que tienen ice advalorem
         $num_products = 0;
-
         foreach ($taxes as $key => $tax) {
             if($tax['ice_advalorem'] > 0){
                 $num_products ++;
             }
         }                               
-                
         $reliquidate_taxes = [];
-        
-        foreach ( $taxes as $idx => $tax ){      
-            
+        foreach ( $taxes as $idx => $tax ){
             if($tax['ice_advalorem'] > 0){
                 if($this->parcial['bg_have_tasa_control']){
                     $tax['ice_advalorem_pagado'] = (
                         $tax['ice_advalorem_sin_etiquetas']
-                        - ( $diferencia/$num_products )
-                        );                    
+                        - ($diferencia/$num_products)
+                        );
+                    
                     $tax['ice_advalorem_diferencia'] = (
                         $tax['ice_advalorem']
                         - $tax['ice_advalorem_pagado']
+                    
                         );
                 }else{                                      
+                    
                     $tax['ice_advalorem_pagado'] = (
                                                     $tax['ice_advalorem_sin_tasa']
                                                     - ( $diferencia/$num_products )
@@ -162,6 +172,7 @@ class parcialTaxesReliquidate {
                 $tax['ice_advalorem_pagado'] = 0;
                 $tax['ice_advalorem_diferencia'] = 0;
             }
+            
             
             $tax['total_ice'] = $tax['ice_especifico'] + $tax['ice_advalorem'];
             
@@ -680,8 +691,7 @@ class parcialTaxesReliquidate {
             $iva = $iva_total = (
                 $this->parcial['iva_pagado'] * $prorrateos['fob_percent']
                 );   
-                       
-                    
+            
             return ([
                 'fodinfa' => $fodinfa,
                 'base_ice_especifico' => $this->parcial['base_ice_especifico'],

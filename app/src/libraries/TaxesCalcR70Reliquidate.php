@@ -420,7 +420,7 @@ class parcialTaxesReliquidate {
             $gasto_origen_tasa_trimestral = 0.0;
              $fob = $product_value + $gasto_origen;
         }         
-       
+        
         return ([
             'nombre'=> $product_base['nombre'],
             'id_factura_informativa_detalle' => $detail_info_invoice['id_factura_informativa_detalle'],

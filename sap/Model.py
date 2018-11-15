@@ -16,7 +16,7 @@ class Model(object):
                 SELECT
                     DocEntry,
                     DocNum,
-                    U_CORDO_REF_IMP as 'nro_pedido',
+                    NumAtCard as 'nro_pedido',
                     U_CORDO_TIPO_NEG as 'incoterm',
                     CardCode as 'identificacion_proveedor',
                     Comments as 'observaciones',
@@ -46,20 +46,16 @@ class Model(object):
                 'date_create': row[6].strftime("%Y-%m-%d %H:%M:%S"),
                 'nro_refrendo': row[7],
                 'ciudad_origen': row[8],
-                #'ciudad_origen': row[8].encode('utf-8'),
                 'flete_aduana': str(row[9]),
                 'seguro_aduana': str(row[10]),
                 'total_pedido': str(row[11]),
                 'doc_date': row[12].strftime("%Y-%m-%d %H:%M:%S"),
                 'order_items': self.get_order_items(row[0]),
                 'supplier': self.get_supplier(row[4]),
-                'product': self.get_product(row[1]),
+                'product': self.get_product(row[1], row[0]),
                 'invoice' : self.get_invoice(row[1]),
                 'invoice_detail' : self.get_invoice_details(row[1]),
-            }
-            print '=========================='
-            print new_row
-            print '=========================='
+            }           
             orders_array.append(new_row)
 
         return orders_array
@@ -153,8 +149,12 @@ class Model(object):
                 'observacioes': row[8].encode('utf-8'),
             }
 
-    def get_product(self, doc_num):
-        detail = self.get_invoice_details(doc_num)
+    def get_product(self, doc_num, doc_entry):
+        detail = [];
+
+        detail_invoice = self.get_invoice_details(doc_num)
+        order_detail = self.get_order_items(doc_entry)
+
         query = '''
                 SELECT
                     ItemCode as 'cod_contable',
@@ -166,8 +166,20 @@ class Model(object):
                 FROM OITM
                 WHERE ItemCode = '{item_code}';
         '''
-        if len(detail) == 0:
-            return []
+
+        #si el pedido no tiene detalles no retornamos nada
+        if((len(detail_invoice) == 0) and (len(order_detail) == 0)):
+            return detail
+
+        #retornamos el detalle de la factura
+        if len(detail_invoice) > 0:
+            detail = detail_invoice
+
+        #retornamos el detalle del pedido
+        if(len(order_detail) > 0):
+            detail = order_detail
+
+
         product_array = []
         for item in detail:
             if item['cod_contable'] != None:

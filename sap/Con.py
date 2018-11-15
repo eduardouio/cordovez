@@ -39,7 +39,7 @@ class Con():
 
     def make_conection(self):
         ''' Retorna la coneccion de base de datos '''
-        self.cnxn = pyodbc.connect('DRIVER=/opt/microsoft/msodbcsql/lib64/libmsodbcsql-13.1.so.9.2;SERVER=' + self.conf['server'] + ';DATABASE=' + self.conf['database'] +' ;UID=' + self.conf['username'] + ';PWD=' + self.conf['password'])
+        self.cnxn = pyodbc.connect('DRIVER=/opt/microsoft/msodbcsql17/lib64/libmsodbcsql-17.2.so.0.1;SERVER=' + self.conf['server'] + ';DATABASE=' + self.conf['database'] +' ;UID=' + self.conf['username'] + ';PWD=' + self.conf['password'])
         return self.cnxn
 
     def get_conf(self, enterprise):

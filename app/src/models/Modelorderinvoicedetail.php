@@ -98,6 +98,7 @@ class Modelorderinvoicedetail extends CI_Model
     {
         if($this->db->insert($this->table, $orderInvoiceDetail)){
             $this->modelLog->queryInsrertLog($this->db->last_query());
+            $this->modelLog->generalLog('PRODUCTP======', $this->db->last_query());
             return $this->db->insert_id();
         }
         

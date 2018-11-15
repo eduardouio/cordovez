@@ -5,6 +5,11 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
+      <a class="navbar-brand" style="color:#333;" href="{{base_url}}"> <i class="glyphicon glyphicon-globe"></i> &nbsp; Agencia y Representaciones Cordovez</a>                                   
+      <!--
+      <a class="navbar-brand" style="color:#333;" href="{{base_url}}"> <i class="glyphicon glyphicon-globe"></i> &nbsp; Imnac Cia. Ltda.</a>                                   
+      <a class="navbar-brand" style="color:#333;" href="{{base_url}}"> <i class="glyphicon glyphicon-globe"></i> &nbsp; Vidinternacional S.A.</a>
+      -->
        <form action="{{ rute_url }}pedido/listar" method="GET" class="navbar-form navbar-left">
         <div class="form-group" style="display:table; width:100%">
           <div class="input-group">           
@@ -14,20 +19,16 @@
                 </div>
           </div>
         </div>
-      </form>
-      <a class="navbar-brand" style="color:#333;" href="{{base_url}}"> <i class="glyphicon glyphicon-globe"></i> &nbsp; Agencia y Representaciones Cordovez S.A.</a>                                   
+      </form>            
     </div>
     <div class="navbar-collapse collapse" id="searchbar">
       <ul class="nav navbar-nav navbar-right">
-        <li>
-                            <a href="{{rute_url}}home/"><i class="fa fa-dashboard fa-fw"></i> Inicio</a>
-                        </li>
                         <li>
                             <a href="{{rute_url}}pedido/listar/"><i class="fa fa-cubes fa-fw"></i> Pedidos</a>
                         </li>
                         <li>
                             <a href="{{rute_url}}facturapagos/"><i class="fa fa-file-text-o fa-fw"></i>Justificaciones</a>
-                        </li>
+                        </li>                        
                         <li>
                             <a href="{{rute_url}}proveedor/listar/"><i class="fa fa-users fa-fw"></i> Proveedores</a>
                         </li>
@@ -36,6 +37,12 @@
                         </li>
                         <li>
                             <a href="{{rute_url}}reportes"><i class="fa fa-table fa-fw"></i>Reportes</a>
+                        </li>
+                        <li>
+                          <a href=""><i class="fa fa-file-text-o fa-fw"></i>N. Factura</a>
+                        </li>
+                        <li>
+                          <a href=""><i class="fa fa-cubes fa-fw"></i> N Pedido</a>
                         </li>
                          <!-- /.dropdown -->
                 <li class="dropdown">

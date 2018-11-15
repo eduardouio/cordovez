@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import bottle
 from bottle import response
 from bottle import get, run
@@ -28,9 +29,8 @@ class StripPathMiddelware(object):
         e['PATH_INFO'] = e['PATH_INFO'].rstrip('/')
         return self.a(e,h)
 
-
 if __name__ == '__main__':
     ''' run server configuration '''
-    run(        host='0.0.0.0',
-                port=8000
+    run(host='0.0.0.0',
+        port=8000
             )

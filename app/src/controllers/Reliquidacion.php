@@ -238,7 +238,7 @@ class Reliquidacion extends MY_Controller
                     'flete_aduana' => $tax_product['flete_aduana'],
                     'seguro' => $tax_product['seguro'],
                     'flete' => $tax_product['flete'],
-                    'gasto_origen' => $tax_product['gasto_origen'],
+                    #'gasto_origen' => $tax_product['gasto_origen'],
                     'cif' => $tax_product['cif'],
                     'fecha_liquidacion' => $tax_product['fecha_liquidacion'],
                     'nro_pedido' => $tax_product['nro_pedido'],

@@ -21,6 +21,7 @@ class Importar extends MY_Controller
     private $template = '/pages/pageImport.html';
     private $modelImportSAP;
     private $modelLog;
+    private $modelMigrate;
     private $rest;
     private $modelUser;  
     private $enterprise = 'cordovez';
@@ -41,15 +42,15 @@ class Importar extends MY_Controller
             'ModelImportSAP',
             'Modellog',
             'Modeluser',
+            'ModelMigrate',
         ];
-        
         foreach ($models as $model){
             $this->load->model($model);
         }
-        
         #instancia de modelos
         $this->modelUser = new Modeluser();
         $this->modelImportSAP = new ModelImportSAP();
+        $this->modelMigrate = new ModelMigrate();
         $this->modelLog = new Modellog();
         $this->rest = new Rest();
     }
@@ -58,7 +59,7 @@ class Importar extends MY_Controller
      * mostramos en asistente de importacion de pedido
      */
     public function index(){
-      $data = $this->modelImportSAP->getAll();
+      $data = $this->modelMigrate->getAll();
       $empty = False;
       
       if(count($data) == 0){
@@ -81,8 +82,16 @@ class Importar extends MY_Controller
        $this->modelLog->generalLog(
            'Inicio de escaneo Servidor'
            );
-       $this->modelImportSAP->getOrdersSAP($this->enterprise, date('Y'));
-       $this->redirectPage('import_wizard');           
+       $data = $this->modelImportSAP->getOrdersSAP(
+           $this->enterprise, date('Y')
+           );
+       
+       $total_imported = 0;
+       if($data){
+           $total_imported = $this->modelMigrate->checkAndMakeMigrations($data);
+       }    
+       $this->modelLog->generalLog('Se han importado ', $total_imported);
+       return $this->redirectPage('import_wizard'); 
    }
    
    
@@ -99,7 +108,7 @@ class Importar extends MY_Controller
        $data = json_decode(file_get_contents("php://input"),true);
        #recuperamos los pedido que nos llegan de la consulta
        foreach ($data['data'] as $k => $nro_order){           
-           $this->modelImportSAP->migrate($nro_order);
+           $this->modelMigrate->importOrder($nro_order);
        }
        
        return $this->_responsRest(['result' => 'success'], 201);
@@ -111,7 +120,7 @@ class Importar extends MY_Controller
     * @param boolean $nro_orders lista de ordenes en comun
     */
    public function historico(){
-       $data = $this->modelImportSAP->getAll(true);
+       $data = $this->modelMigrate->getAll(true);
        if($data){
            foreach ($data as $k => $order){
                $data[$k]['user'] = $this->modelUser->get($order['id_user']);
@@ -134,8 +143,8 @@ class Importar extends MY_Controller
        if($nro_order == False){
            $this->_responsRest([],204);
        }
-       
-       if($this->modelImportSAP->migrate($nro_order)){
+              
+       if($this->modelMigrate->importOrder($nro_order)){
            return $this->_responsRest(['result' => 'success'] , 201);
        }
        

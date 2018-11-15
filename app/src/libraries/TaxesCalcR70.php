@@ -239,12 +239,21 @@ class parcialTaxes {
             }
         }        
         
+        
         #solo funciona para la primera factura informativa
+        $total_invoices = 0;
+        
+        if(is_array($this->init_data['info_invoices'][0])){
+            foreach ($this->init_data['info_invoices'][0]['info_invoices_detail'] as $k => $det){
+                $total_invoices += ($det['costo_caja'] * $det['nro_cajas']);
+            }
+        }
+        
+        
         $fob = 0.0;
         $gasto_origen = 0.0;
-        $total_invoices = $this->init_data['info_invoices'][0]['valor'];
         $percent = (
-            (   $detail_order_invoice['costo_caja'] 
+            ($detail_order_invoice['costo_caja'] 
                 * $detail_info_invoice['nro_cajas']
                 )
             / $total_invoices

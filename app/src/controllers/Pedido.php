@@ -244,7 +244,7 @@ class Pedido extends MY_Controller
         
         if(@$params['order_invoices'][0]['detail']){
             foreach ($params['order_invoices'][0]['detail'] as $k => $det){
-                foreach ($params['products'] as $k => $product){
+                foreach ($params['products'] as $k => $product){                	        
                     if($product['cod_contable'] == $params['order_invoices'][0]['detail'][$k]['cod_contable']){
                         $params['order_invoices'][0]['detail'][$k]['nombre'] = $product['nombre'];
                         $params['order_invoices'][0]['detail'][$k]['cantidad_x_caja'] = $product['cantidad_x_caja'];

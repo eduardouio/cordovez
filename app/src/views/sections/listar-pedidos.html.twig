@@ -52,6 +52,7 @@
       <table class="table table-hover table-bordered table-striped">
          <thead>
             <tr style="background-color: #c1c1c1;">
+            <td>#</td>
                <th>Pedido</th>
                <th>Origen</th>
                <th>Proveedor</th>
@@ -67,6 +68,7 @@
          <tbody>
             {% for order in orders %}
             <tr>
+            <td>{{ loop.index }}</td>
                <td>
                   {% if order.bg_isclosed == '1' %}  
                   	<span class="fa fa-folder text-default"></span>

@@ -606,10 +606,9 @@ class parcialTaxesReliquidate {
                 * ($this->parcial['exoneracion_arancel'] / 100)
                 );
             
-            
             $arancel_advalorem_pagar =  ($arancel_advalorem - $arancel_advalorem_liberado);
             $arancel_especifico_pagar = ($arancel_especifico - $arancel_especifico_liberado);
-                        
+
             $ice_especifico = (
                 (
                     $this->parcial['base_ice_especifico']

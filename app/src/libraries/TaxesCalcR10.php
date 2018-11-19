@@ -46,6 +46,7 @@ class orderTaxes {
      */
     public function getTaxes():array
     {
+        
         $this->setConfiguration();
         $taxes = [
             'taxes' => [],
@@ -53,9 +54,10 @@ class orderTaxes {
             'data_general' => [],
         ];
         
+        
         foreach ($this->init_data['order_invoice_detail'] as $item => $product){
             array_push($taxes['taxes'], $this->getTaxesProduct($product));
-        }
+        }        
         
         #suma los valores de los impuestos en una sola linea
         foreach ($taxes['taxes'] as $dx => $tax){
@@ -116,7 +118,7 @@ class orderTaxes {
         if ($this->order['incoterm'] == 'FOB'){
             $this->gastos_origen = $this->order['gasto_origen'];
         }
-        
+                
         $this->incoterm = strtoupper($this->init_data['order']['incoterm']);
       }
     
@@ -128,8 +130,8 @@ class orderTaxes {
      *
      */
     private function getTaxesProduct(array $detail_invoice): array
-    {
-        $product = $this->getProductData($detail_invoice);       
+    {                
+        $product = $this->getProductData($detail_invoice);               
         
         $prorrateo_item = $this->getProrrateoItem(
             $detail_invoice,
@@ -207,7 +209,7 @@ class orderTaxes {
     private function getProductData(array $detail_invoice):array
     {
         $product_base = [];
-        $detail_order_invoice = [];
+        $detail_order_invoice = [];      
         
         foreach ($this->init_data['products_base'] as $item => $product){
             if(
@@ -232,22 +234,22 @@ class orderTaxes {
             }
         }     
         
-        $fob = 0.0;
+        $fob = 0.0;        
         $total_invoices = 0.0;
         $gasto_origen = 0.0;
-        
-        foreach ($this->init_data['order_invoices'] as $idx => $invoice){
-            $total_invoices += $invoice['valor'];
+                
+        foreach ($this->init_data['order_invoice_detail'] as $idx => $detail){
+            $total_invoices += ($detail['nro_cajas'] * $detail['costo_caja']);
         }
-        
+                
         $percent = (
             $detail_invoice['nro_cajas']
             * $detail_order_invoice['costo_caja']
-            ) / $total_invoices;
-        
+            ) / $total_invoices;                   
+                            
         if ($this->incoterm == 'CFR'){           
             #si en algun momento hay varias facturas no va a funcionar tienes
-            # se debe calcular en base a las facturas adicionales que existan
+            # se debe calcular en base a las facturas adicionales que existan            
             $fob = (
                 (
                     $detail_invoice['nro_cajas'] 
@@ -256,19 +258,22 @@ class orderTaxes {
                 * $this->type_change_order
                 );
             
-        }elseif ($this->incoterm == 'FOB'){
+        }elseif ($this->incoterm == 'FOB'){            
+            #print '<br /> <span style="color:#F21;">'  . $this->gastos_origen . '</span>';
             $fob = (
                 (   $detail_invoice['nro_cajas']
                     * $detail_order_invoice['costo_caja']
                 )
                 + ($this->gastos_origen * $percent)
-                ) * $this->type_change_order;
-            
+                ) * $this->type_change_order;            
+                
            $gasto_origen =
                ($this->gastos_origen * $percent) 
                 * $this->type_change_order;
            
-        }else{
+            #    print '<br />'  . $this->gastos_origen . '==>' . $this->type_change_order . '->% ' . $percent ;
+           
+        }elseif(($this->incoterm == 'EXW') || ($this->incoterm == 'EXW')){
             $fob = (
                 (   $detail_invoice['nro_cajas']
                     * $detail_order_invoice['costo_caja']
@@ -277,7 +282,7 @@ class orderTaxes {
                 + ($this->gastos_origen * $percent);
             
             $gasto_origen = ($this->gastos_origen * $percent);
-        }       
+        }               
         
         return ([
             'nombre'=> $product_base['nombre'],
@@ -335,7 +340,7 @@ class orderTaxes {
             
             if($this->incoterm == 'CFR' || $this->incoterm == 'FOB'){
                 $this->gastos_origen = (
-                    $this->type_change_order * $this->gastos_origen
+                    $this->gastos_origen
                     );
             }
             

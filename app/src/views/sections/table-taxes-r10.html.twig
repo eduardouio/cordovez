@@ -292,7 +292,7 @@
 <div class="row">
    <div class="col-md-6"></div>
    <div class="col-md-6 text-right">
-      {% if init_data.order.bg_isliquidated == 0 %}
+      {% if init_data.order.bg_isliquidated == 0 and init_data_order.regimen == '10' %}
       <!-- Button trigger modal -->
       <button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#myModal">
       <span class="fa fa-check">
@@ -300,7 +300,9 @@
       Aplicar Liquidación
       </button>
       {% else %}
+      {% if (init_data_order.regimen == '10') %}
       <a href="#" class="btn btn-sm btn-default"> <span class="fa fa-check"></span> Ver Reliquidación </a>
+      {% endif %}
       {% endif %}
       <a href="{{rute_url}}gstinicial/validargi/{{init_data.order.nro_pedido}}" class="btn btn-sm btn-default"> <span class="fa fa-arrow-left"></span> Volver A Gastos Pedido</a>
    </div>

@@ -45,7 +45,7 @@
                <td class="text-right brackground-gray"><strong> Etiquetas Fiscales</strong></td>              
                <td class="text-right">
                   <span class="text-primary">
-                  $ {{ etiquetas_fiscales | number_format(3,',','.') }}
+                  $ {{ parcial_taxes.sums.etiquetas_fiscales | number_format(3,',','.') }}
                   </span>
                </td>
             </tr>

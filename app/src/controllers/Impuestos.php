@@ -59,7 +59,6 @@ class Impuestos extends MY_Controller
         if(! isset($this->session->userdata['id_user'])){
             exit(0);
         }
-        
         $this->load->model('Modelorder');
         $this->load->model('Modelorderinvoicedetail');
         $this->load->model('Modelsupplier');
@@ -125,12 +124,7 @@ class Impuestos extends MY_Controller
                 'No se puedo continuar si el parcial no existe'
                 );
             return $this->index();
-        }
-        
-        if ($parcial['bg_isliquidated'] == 1 ){
-            return $this->redirectPage('showTaxesParcialLiquidate', $id_parcial);
-        }
-        
+        }        
         $init_data = $this->getOrderDataR70($id_parcial);
         
         $detail_order_invoices = [];
@@ -145,9 +139,7 @@ class Impuestos extends MY_Controller
             }
         }
         
-        
         $info_invoices = $this->modelInfoInvoice->getByOrder($parcial['nro_pedido']);
-        
         if($info_invoices){
             foreach ($info_invoices as $idx => $invoice){
                 $details = $this->modelInfoInvoiceDetail->getByFacInformative(
@@ -165,8 +157,7 @@ class Impuestos extends MY_Controller
             $init_data['order'],
             $detail_order_invoices,
             $detail_info_invoices
-            );
-        
+            );       
         $prorrateoLib = new Prorrateos($init_data, $stock_order->getCurrentOrderStock());
         $prorrateo_values = $prorrateoLib->getValues();        
         #seteamos la tasa de control en el producto
@@ -180,11 +171,12 @@ class Impuestos extends MY_Controller
         
         $init_data['fobs_parcial'] = $prorrateo_values['fobs_parcial'];
         $init_data['warenhouses'] = $prorrateo_values['warenhouses'];
-
+        
         $prorrateos = $this->updateProrrateoParcial(
-                                                $prorrateo_values,
-                                                $parcial
+                                            $prorrateo_values,
+                                            $parcial
             );
+            
                 
         $param_taxes = $this->modelRatesExpenses->getTaxesParams();    
         $parcialTaxes =  new parcialTaxes(
@@ -213,6 +205,8 @@ class Impuestos extends MY_Controller
         
         $all_parcials = $this->modelParcial->getAllParcials($parcial['nro_pedido']);
         $ordinal_parcial = ordinalNumberParcial($all_parcials, $parcial['id_parcial']);
+        
+        $parcial_taxes = @$parcialTaxes->getTaxes();
 
         return ($this->responseHttp([
             'title' => 'Impuesto Parcial ' . $ordinal_parcial . '/' . count($all_parcials),
@@ -220,7 +214,7 @@ class Impuestos extends MY_Controller
                               $ordinal_parcial . '/' . count($all_parcials) .
                               '] [Pedido ' . $init_data['order']['nro_pedido'] . ']',
             'init_data' => $init_data,
-            'parcial_taxes' => @$parcialTaxes->getTaxes(),
+            'parcial_taxes' => $parcial_taxes,
             'prorrateos' => $prorrateos,
             'parcial' => $parcial,
             'warenhouses' => $init_data['warenhouses'],
@@ -361,24 +355,12 @@ class Impuestos extends MY_Controller
     public function pd(string $nroOrder)
     {
         $order = $this->modelOrder->get($nroOrder);
-        
         if($order == False){
             $this->modelLog->warningLog(
                 'El pedido solicitado no existe'
                 );
             return $this->index();
-        }
-
-        if($order['regimen'] == '70'){
-            $this->modelLog->warningLog(
-                'No se puede liquidar un pedidos de regimen Diferente al 70'
-            );
-            return $this->index();
-        }
-        
-        if ($order['bg_isliquidated'] == 1){
-            return $this->redirectPage('showTaxesOrderLiquidate', $nroOrder);
-        }
+        }        
         
         $init_data = $this->getOrderDataR10($nroOrder);
         $param_taxes = $this->modelRatesExpenses->getTaxesParams();
@@ -406,7 +388,6 @@ class Impuestos extends MY_Controller
         }
                     
         $order_taxes = $orderTaxes->getTaxes();
-       
         
         return ($this->responseHttp([
             'titleContent' => 'Resumen de Impuestos Liquidación Aduana del Pedido ' .
@@ -467,9 +448,6 @@ class Impuestos extends MY_Controller
                 $product['detalle_pedido_factura'] = $dt['detalle_pedido_factura'];
                 
                 array_push($products_base, $product);
-                
-                
-                
             }
         }
         
@@ -544,8 +522,7 @@ class Impuestos extends MY_Controller
             $paramsParcial['bg_have_tasa_control'] = 1;
         }
         
-       $this->modelParcial->update($paramsParcial);      
-           
+        $this->modelParcial->update($paramsParcial);      
         return ($this->redirectPage('showTaxesParcial', $_POST['id_parcial']));
     }
     
@@ -667,7 +644,6 @@ class Impuestos extends MY_Controller
                     return  $this->redirectPage('validargi', $id);
                 }
             }
-
         }elseif($tipo == 'pc'){
             $parcial = $this->modelParcial->get($id);
             if($parcial && $parcial['bg_isclosed'] == 0){
@@ -678,7 +654,6 @@ class Impuestos extends MY_Controller
                 };
             }
         }
-
         $this->modelLog->errorLog(
             'Acceso restringido al sitio',
             current_url()
@@ -720,10 +695,12 @@ class Impuestos extends MY_Controller
     {
         
         if($parcial['bg_isclosed']){
+           
             $this->modelLog->generalLog(
                 'El parcial se encuentra cerrado no se puede continuar'
                 );
-            return $this->getProrrateosParcial($parcial['id_parcial']);
+            
+            return $this->getProrrateosParcial($parcial['id_parcial']);            
         }
         
         $fobs = $prorrateo_values['fobs_parcial'];
@@ -807,9 +784,8 @@ class Impuestos extends MY_Controller
         $prorrateo = $this->modelProrrateo->getProrrateoByParcial(
             $id_parcial
             );
-        
         $prorrateo_detail = $this->modelProrrateoDetail->getAllDetailProrrateo(
-            $prorrateo[0]['id_prorrateo']
+            $prorrateo['id_prorrateo']
             );
         
         return [

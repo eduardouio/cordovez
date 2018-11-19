@@ -36,10 +36,10 @@
       </div>
       <div class="col-sm-3">
          <strong>
-         Regimen:</strong> 
+         Refrendo:</strong> 
          <span class="text-primary">
          <strong class="text-primary">
-         {{ order.regimen  }}
+         {{ order.nro_refrendo  }}
          </strong>   
          </span>
       </div>
@@ -71,9 +71,9 @@
          </span>
       </div>
       <div class="col-sm-2">
-         <strong>Incoterm:</strong> 
+         <strong>Reg/Inc.:</strong> 
          <span class="text-primary">
-         {{order.incoterm}}
+{{ order.regimen  }} / {{order.incoterm}} 
          </span>         
       </div>
       <div class="col-sm-2">
@@ -293,6 +293,7 @@
          Ficha Pedido
          </a>
          {% if  invoices_order.values_isok == true %}
+         		<a href="{{ rute_url }}impuestos/pd/{{ order.nro_pedido }}" class="btn-sm btn-default btn"><span class="fa fa-money"></span> Tributos Iniciales</a>
          	{%  if init_expenses.all_ok == true %}
          		{% if order.regimen == '70'%}
          			{% if exist_parcial == True and order.bg_isclosed == 0 %}
@@ -308,11 +309,19 @@
                  	{% endif %}
              
              {% else %}
+             	{% if order.bg_isclosed == 0 %}	
                  <a class="btn btn-success btn-sm pull-right" href="{{rute_url}}impuestos/pd/{{order.nro_pedido}}">
                  <span class="fa fa-money"></span>
                  Ver Impuestos de Liquidación
              	</a>
+             	{% else %}
+             	 <a class="btn btn-success btn-sm pull-right" href="{{rute_url}}reliquidacion/pd/{{order.nro_pedido}}">
+                 <span class="fa fa-money"></span>
+                 Ver Liquidación de Pedido
+             	</a>
              {% endif %}
+             {% endif %}
+                         
          	{% else %}
          		<strong class="text-danger pull-right btn btn-sm">
         		<span class="fa fa-ban"></span>

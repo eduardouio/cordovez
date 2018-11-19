@@ -259,7 +259,6 @@ class orderTaxes {
                 );
             
         }elseif ($this->incoterm == 'FOB'){            
-            #print '<br /> <span style="color:#F21;">'  . $this->gastos_origen . '</span>';
             $fob = (
                 (   $detail_invoice['nro_cajas']
                     * $detail_order_invoice['costo_caja']
@@ -269,9 +268,7 @@ class orderTaxes {
                 
            $gasto_origen =
                ($this->gastos_origen * $percent) 
-                * $this->type_change_order;
-           
-            #    print '<br />'  . $this->gastos_origen . '==>' . $this->type_change_order . '->% ' . $percent ;
+                * $this->type_change_order;           
            
         }elseif(($this->incoterm == 'EXW') || ($this->incoterm == 'EXW')){
             $fob = (
@@ -343,7 +340,6 @@ class orderTaxes {
                     $this->gastos_origen
                     );
             }
-            
             $prorrateo_item = [
                 'fob_percent' => $fob_percent,
                 'product' => $product,
@@ -354,7 +350,6 @@ class orderTaxes {
                 'tasa_control' => $tasa_control_producto,
                 'prorrateo_pedido' => $prorrateos_pedido * $fob_percent,
             ];
-            
             $prorrateo_item ['cif'] = (
                     (
                     $product['fob']

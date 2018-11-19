@@ -65,6 +65,7 @@ class parcialTaxes {
        'sums' => [],
        'data_general' => [],
        ];
+             
         
        foreach ($this->init_data['products'] as $item => $product){
            array_push($taxes['taxes'], $this->getTaxesProduct($product));
@@ -162,6 +163,7 @@ class parcialTaxes {
                 'cantidad_x_caja' => $product['cantidad_x_caja'],
                 'cajas_importadas' => $product['cajas_importadas'],
                 'unidades_importadas' => $product['unidades_importadas'],
+                'etiquetas_fiscales' => ($product['unidades'] * $this->getTaxParam('ETIQUETAS FISCALES')),
                 'cajas' => $product['cajas'],
                 'unidades' => $product['unidades'],
                 'costo_caja' => $product['costo_caja'],

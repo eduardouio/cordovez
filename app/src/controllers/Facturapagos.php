@@ -205,8 +205,6 @@ class Facturapagos extends MY_Controller
         $document['fecha_emision'] = date('Y-m-d', strtotime(
                                                 $document['fecha_emision'])
             );
-
-        print($document['fecha_emision']);
         $document['id_user'] = $this->session->userdata('id_user');
         $status = $this->validData($document);
         if($status['status']){
@@ -227,7 +225,7 @@ class Facturapagos extends MY_Controller
                 }
                 $this->db->insert($this->controller, $document);
                 $lastId = $this->db->insert_id();
-                $this->redirectPage('paidDetailNew', $lastId);
+                $this->redirectPage('paidPresent', $lastId);
             }else{
                 $document['last_update'] = date('Y-m-d H:i:s');
                 $this->db->where('id_documento_pago',
@@ -281,7 +279,7 @@ class Facturapagos extends MY_Controller
             return false;
         }
         $provisions = $this->modelExpenses->getAllProvisions();
-        $orders  = get_nro_orders($provisions);        
+        $orders  = get_nro_orders($provisions);
         $this->responseHttp([
             'title' => 'Factura #' . $document['nro_factura'] . ' ' . $document['supplier']['nombre'],
             'titleContent' => 'Detalle Documento De Pago [' .

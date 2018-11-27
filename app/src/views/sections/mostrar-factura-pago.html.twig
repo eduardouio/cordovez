@@ -112,9 +112,7 @@
 						<td class="text-right">
 							<a :href="route_url + 'gstnacionalizacion/presentar/' + item.expense.id_gastos_nacionalizacion"  target="_blank" class="text-primary"> <span class="fa fa-eye"></span>Ver Provisión</a>
 							&nbsp;&nbsp;
-							<a href="" class="text-primary"> <span class="fa fa-pencil"></span>Editar</a>
-							&nbsp;&nbsp;
-							<a href="" class="text-danger"> <span class="fa fa-trash"></span>Eliminar</a>
+							<a class="text-danger" @click="eliminar(item)"> <span class="fa fa-trash"></span>Eliminar</a>
 						</td>
 					</tr>
 					<tr style="background-color:#3747FF; color:#fff; font-weight:bold;">
@@ -328,6 +326,13 @@
 	       			  alert('Se produjo un error, por favor recargue la página');
 	       		  });
 			  },
+			  eliminar(item){
+				  this.$http.get('{{rute_url}}detallefacpago/eliminar/' + item.id_detalle_documento_pago).then(response => {
+  	       		    location.reload();
+  	       		  }, response => {
+  	       			  alert('Se produjo un error, por favor recargue la página');
+  	       		  });
+			  }
 		},
 		computed : {
 			total_justificado() {

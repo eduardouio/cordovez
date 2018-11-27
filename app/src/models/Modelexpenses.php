@@ -29,7 +29,7 @@ class Modelexpenses extends CI_Model
      */
     public function init(){
         $this->load->model('modelbase');
-        $this->load->model('modellog');        
+        $this->load->model('modellog');
         $this->modelBase = new ModelBase();
         $this->modelLog = new Modellog();
     }
@@ -54,7 +54,7 @@ class Modelexpenses extends CI_Model
                 'concepto' => 'ASC',
             ],
         ]);
-        
+
         $this->modelLog->generalLog($this->db->last_query());
         if (empty($rateExpenses)) {
             $this->modelLog->errorLog(
@@ -65,7 +65,7 @@ class Modelexpenses extends CI_Model
         }
 
         $result = [];
-                
+
         foreach ($rateExpenses as $key => $value) {
             $supplier = $this->modelBase->get_table([
                 'table' => 'proveedor',
@@ -74,16 +74,16 @@ class Modelexpenses extends CI_Model
                         $value['identificacion_proveedor'],
                 ],
             ]);
-                   
+
             $value['nombre'] = $supplier[0]['nombre'];
             $result[$key] = $value;
         }
-        
+
         return $result;
     }
-    
-    
-     
+
+
+
 
     /**
      * Retorna los incoterms en de un pedido, en base a su registro
@@ -103,7 +103,7 @@ class Modelexpenses extends CI_Model
         ]);
         return $incoterms;
     }
-    
+
     /**
      * Retorna los gastos iniciales de uin pedido
      * @param (string) $nroOrder
@@ -125,8 +125,8 @@ class Modelexpenses extends CI_Model
         }
         return $expenses;
     }
-    
-    
+
+
     /**
      * Retorna los gastos iniciales de uin pedido
      * @param (string) $nroOrder
@@ -143,11 +143,11 @@ class Modelexpenses extends CI_Model
                 'fecha' => 'DESC',
             ],
         ]);
-        
+
         if ($expenses == false) {
             return false;
         }
-        
+
         foreach ($expenses as $k => $exp){
             $expenses[$k]['pagos'] = $this->modelBase->get_table([
                 'table' => 'detalle_documento_pago',
@@ -155,14 +155,14 @@ class Modelexpenses extends CI_Model
                     'id_gastos_nacionalizacion' => $exp['id_gastos_nacionalizacion']
                 ],
             ]);
-            
+
         }
-        
+
         return $expenses;
     }
-    
+
     /**
-     * retorna el valor de un gasto incicial 
+     * retorna el valor de un gasto incicial
      * @param string $nroOrder nro_pedido
      * @return float valor del gasto
      */
@@ -178,7 +178,7 @@ class Modelexpenses extends CI_Model
                 'concepto' => $detailName,
             ],
         ]);
-        
+
         if((gettype($expense))&&(count($expense) > 0)){
             return (floatval($expense[0]['valor_provisionado']));
         }
@@ -186,11 +186,11 @@ class Modelexpenses extends CI_Model
             'El concepto de Gasto no esta Registrado',
             $this->db->last_query()
             );
-        
+
         return false;
     }
-    
-    
+
+
     /**
      * retorna el valor de un gasto incicial
      * @param string $nroOrder nro_pedido
@@ -205,7 +205,7 @@ class Modelexpenses extends CI_Model
                 'concepto' => $detailName,
             ],
         ]);
-        
+
         if($expense &&(count($expense) > 0)){
             return ($expense[0]);
         }
@@ -213,32 +213,32 @@ class Modelexpenses extends CI_Model
             'El concepto de Gasto no esta Registrado',
             $this->db->last_query()
             );
-        
+
         return false;
     }
-    
-    
-    
+
+
+
     /**
-     * Retorna el valor inicial de CIF para una orden  
+     * Retorna el valor inicial de CIF para una orden
      * @param string $nroORder
      * @return array arreglo SEFGURO, FLETE
      */
     public function initialCIFValue(string $nroOrder):array
     {
-        $sql = "SELECT 
-                    concepto, valor_provisionado  
-                FROM 
-                    gastos_nacionalizacion 
-                WHERE 
-                (concepto = 'FLETE' OR concepto = 'SEGURO') 
+        $sql = "SELECT
+                    concepto, valor_provisionado
+                FROM
+                    gastos_nacionalizacion
+                WHERE
+                (concepto = 'FLETE' OR concepto = 'SEGURO')
                 AND
                 nro_pedido = '$nroOrder'";
         $resultDb = $this->db->query($sql);
         return ($resultDb->result_array());
     }
-    
-    
+
+
     /**
      * Retorna todos los gastos inicales de un pedido
      * @param (string) $nroOrder
@@ -262,8 +262,8 @@ class Modelexpenses extends CI_Model
         }
         return $expenses;
     }
-    
-    
+
+
     /**
      * Obtiene una Provision completa
      * @param int $idExpense
@@ -276,22 +276,21 @@ class Modelexpenses extends CI_Model
                 'id_gastos_nacionalizacion' => $idExpense,
             ],
         ]);
-        
+
         if(gettype($expense) == 'array' && count($expense) > 0){
             if($expense[0]['nro_pedido'] == '000-00'){
               $this->load->model('Modelparcial');
               $modelParcial = new Modelparcial();
-              
               $parcial = $modelParcial->get($expense[0]['id_parcial']);
+              $expense[0]['nro_parcial'] = ordinalNumberParcial($modelParcial->getByOrder($parcial['nro_pedido']),$parcial['id_parcial']);
               $expense[0]['nro_pedido'] = $parcial['nro_pedido'];
             }
-            
-            return $expense[0]; 
+            return $expense[0];
         }
         return false;
     }
-    
-    
+
+
     /**
      * Retorna los gastos de nacionalizacion para un parcial
      * @param int $idInfoInvoice
@@ -302,23 +301,23 @@ class Modelexpenses extends CI_Model
         $partialExpenses = $this->modelBase->get_table([
             'table' => $this->table,
             'where' => [
-                'id_parcial' => $idParcial, 
+                'id_parcial' => $idParcial,
             ],
             'orderby' => ['id_gastos_nacionalizacion' => 'ASC' , 'concepto' => 'DESC' ],
         ]);
-                
+
         if(is_array($partialExpenses) && count($partialExpenses) > 0){
             return $partialExpenses;
         }
-        
+
         $this->modelLog->generalLog(
             "Parcial $idParcial sin Gastos"
             );
-        
+
         return false;
     }
-        
-    
+
+
     /**
      * Obtiene todos los gastos iniciales activos, sin justificar
      * De un pedido
@@ -327,7 +326,7 @@ class Modelexpenses extends CI_Model
      */
     public function getActiveExpenses($nroOrder)
     {
-        
+
         $expenses = $this->modelBase->get_table([
                 'table' => $this->table,
             'where' => [
@@ -335,15 +334,15 @@ class Modelexpenses extends CI_Model
                 'bg_closed' => 0,
             ],
         ]);
-               
-                
+
+
         $parcials = $this->modelBase->get_table([
             'table' => 'parcial',
             'where' => [
                 'nro_pedido' => $nroOrder,
             ],
         ]);
-        
+
         if($parcials){
         foreach ($parcials as $key => $value) {
             $nationalizationExpense = $this->modelBase->get_table([
@@ -353,23 +352,23 @@ class Modelexpenses extends CI_Model
                     'bg_closed' => 0,
                 ],
             ]);
-            
+
             if (is_array($nationalizationExpense)){
-                
+
             foreach ($nationalizationExpense as $idex => $val){
                 $val['concepto'] = '[GP] ' . $val['concepto'];
                 $val['tipo'] = 'Gasto Parcial';
                 array_push($expenses, $val);
                 }
-                
+
             }
     }
         }
-            
+
            return $expenses;
     }
-        
-    
+
+
     /**
      * Actualiza el registro para un gasto nacionalizacion
      * @param array $expense arregli de gasto nacionalizacion
@@ -382,14 +381,14 @@ class Modelexpenses extends CI_Model
             $this->modelLog->queryUpdateLog($this->db->last_query());
             return true;
         }
-        
+
         $this->modelLog->errorLog(
                 'No se puede acceder a la base',
                 $this->db->last_query()
             );
         return false;
     }
-        
+
     /**
      * Crea un gasto de nacionalizacion en la tabla
      * @param array $expense arreglo de gasto nacionalizacion
@@ -406,9 +405,9 @@ class Modelexpenses extends CI_Model
                 $this->db->last_query()
             );
         return false;
-    }   
-    
-    
+    }
+
+
     /**
      * Elimina un gasto de nacionalizacion
      * @param int $idExpense
@@ -420,44 +419,44 @@ class Modelexpenses extends CI_Model
             $this->modelLog->susessLog(
                 'Gasto de nacionalizacion eliminado correctamente'
                 );
-            
+
             return true;
         }
-        
+
         $this->modelLog->errorLog(
-            'No se puede eliminar un gasto de nacionalizacion ', 
+            'No se puede eliminar un gasto de nacionalizacion ',
             $this->db->last_query()
             );
-        
+
         return false;
     }
-    
-    
+
+
     /**
      * Obtiene el almacenaje del primer parcial
      * @param int $id_parcial
      */
     public function getFirstWarenhousesParcial(int $id_parcial){
         $sql = "
-                SELECT * 
-                FROM gastos_nacionalizacion 
-                WHERE  concepto 
-                LIKE 'DEPOSITO%'  
+                SELECT *
+                FROM gastos_nacionalizacion
+                WHERE  concepto
+                LIKE 'DEPOSITO%'
                 AND  id_parcial = $id_parcial
                 ORDER BY fecha ASC
                 LIMIT 1
                 ";
 
         $result  = $this->modelBase->runQuery($sql);
-        
+
         if($result){
-           return  $result[0];            
+           return  $result[0];
         }
-        
+
         return False;
     }
-    
-    
+
+
     /**
      * Elimina todos los gastos iniciales de un pedido
      * @param string $nro_order
@@ -465,11 +464,11 @@ class Modelexpenses extends CI_Model
      */
     public  function deleteInitExenses(string $nro_order):bool{
         $query = "
-                DELETE FROM gastos_nacionalizacion 
+                DELETE FROM gastos_nacionalizacion
                 WHERE nro_pedido = '$nro_order';
                 ";
-        
-        #validamos al usuario que hace la elimnacion        
+
+        #validamos al usuario que hace la elimnacion
         if($this->session->userdata('id_user') != 1){
             $this->modelLog->errorLog(
                 'El usuario que accede a la funcion no puede realizar esta accion',
@@ -477,20 +476,89 @@ class Modelexpenses extends CI_Model
                 );
             return False;
         }
-        
+
         if($this->modelBase->runQuery($query)){
             $this->modelLog->susessLog(
                 'Se han eliminado todos los gastos iniciales del pedido'
                 );
             return true;
         }
-        
+
         $this->modelLog->errorLog(
             'No se pueden eliminar los gastos del pedido',
             $this->db->last_query()
             );
-        
-        return false;
-}
 
+        return false;
+    }
+
+
+    /**
+     * Retorna una lista de todas las provisiones existentes en la base de datos
+     * @return array
+     */
+    public function getAllProvisions():array{
+        $query = "SELECT
+                    s.nombre as 'proveedor',
+                    p.nro_pedido,
+                    p.id_parcial,
+                    gn.id_gastos_nacionalizacion,
+                    gn.concepto,
+                    gn.tipo,
+                    gn.comentarios,
+                    gn.fecha,
+                    gn.fecha_fin,
+                    gn.date_create,
+                    gn.valor_provisionado,
+                    IFNULL((SELECT sum(valor) FROM  detalle_documento_pago AS ddp WHERE  ddp.id_gastos_nacionalizacion = gn.id_gastos_nacionalizacion),0) AS valor_justificado,
+                    u.nombres,
+                    u.id_user
+                    FROM gastos_nacionalizacion AS gn
+                    JOIN parcial AS p ON (p.id_parcial = gn.id_parcial)
+                    JOIN pedido_factura AS pf ON (pf.nro_pedido = p.nro_pedido)
+                    JOIN proveedor AS s ON (s.identificacion_proveedor = pf.identificacion_proveedor)
+                    JOIN usuario AS u ON (u.id_user = gn.id_user)
+                    WHERE gn.bg_closed = 0
+                    AND gn.id_parcial > 0
+                    AND gn.concepto != 'ISD'
+                    ORDER BY gn.concepto
+                ";
+        $result  = $this->modelBase->runQuery($query);
+
+        $parcial_provisions = ($result == False) ? [] : $result;
+        unset($result);
+
+        $query = "SELECT
+                s.nombre as 'proveedor',
+                o.nro_pedido,
+                gn.id_parcial,
+                gn.id_gastos_nacionalizacion,
+                gn.concepto,
+                gn.tipo,
+                gn.comentarios,
+                gn.fecha,
+                gn.fecha_fin,
+                gn.date_create,
+                gn.valor_provisionado,
+                IFNULL((SELECT sum(valor) FROM  detalle_documento_pago AS ddp WHERE  ddp.id_gastos_nacionalizacion = gn.id_gastos_nacionalizacion),0) AS valor_justificado,
+                u.nombres,
+                u.id_user
+                FROM gastos_nacionalizacion AS gn
+                JOIN pedido AS o ON (o.nro_pedido = gn.nro_pedido)
+                JOIN pedido_factura AS pf ON (pf.nro_pedido = o.nro_pedido)
+                JOIN proveedor AS s ON (s.identificacion_proveedor = pf.identificacion_proveedor)
+                JOIN usuario AS u ON (u.id_user = gn.id_user)
+                WHERE gn.bg_closed = 0
+                AND gn.id_parcial = 0
+                AND gn.concepto != 'ISD'
+                ORDER BY gn.concepto
+                ";
+
+        $result = $this->modelBase->runQuery($query);
+        $order_provisions = ($result == False) ? [] : $result;
+
+        return (
+            array_merge($parcial_provisions, $order_provisions)
+            );
+    }
 }

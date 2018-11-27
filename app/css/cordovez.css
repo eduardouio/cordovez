@@ -126,14 +126,14 @@
 	background-color: #FF0033  !important;
 	height: 30px;
 	color: #fff;
-	
+
 }
 
 .title-importar {
 	background-color:  rgb(54, 42, 165) !important;
 	height: 30px;
 	color: #fff;
-	
+
 }
 
 
@@ -342,7 +342,7 @@ body {
 }
 
 .modal-dialog {
-	width: 550px;
+	width: 85%;
 	margin: 30px auto;
 }
 
@@ -493,7 +493,7 @@ th {
 
 
 .text-gray{
-	color: #555;	
+	color: #555;
 }
 
 .btn-primary {
@@ -525,7 +525,7 @@ th {
 	text-align: center;
 	margin: 10px;
 	padding: 5px;
-	border-radius: 5px; 
+	border-radius: 5px;
 }
 
 .borderless{

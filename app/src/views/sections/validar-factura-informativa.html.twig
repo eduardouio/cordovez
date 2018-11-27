@@ -216,7 +216,7 @@
             &nbsp;&nbsp;
             {% if info_invoices.values_isok == true%}
              	{%  if partial_expenses.all_ok == true %}
-             	{%  if parcial.bg_isclosed == '0' %}	
+             	{%  if parcial.bg_isliquidated == '0' %}	
              		<a  href="{{rute_url}}impuestos/pc/{{parcial.id_parcial}}" class="btn btn-success btn-sm pull-right">
                  		 <span class="fa fa-money"></span>
               		  Vizualizar Impuestos Parcial 

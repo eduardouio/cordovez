@@ -21,7 +21,7 @@ class Modelpaiddetail extends \CI_Model
     private $modelLog;
     private $myModel;
 
-    
+
     /**
      * constructor de la clase
      */
@@ -30,7 +30,7 @@ class Modelpaiddetail extends \CI_Model
         parent::__construct();
         $this->init();
     }
-    
+
     /**
      * Inicia los modelos de la clase
      */
@@ -45,7 +45,7 @@ class Modelpaiddetail extends \CI_Model
         $this->modelLog = new Modellog();
         $this->modelBase = new ModelBase();
     }
-    
+
     /**
      * Obtiene los detalles de las facturas y sus sumas, recupera la descripcion
      * de la provision a la que representa
@@ -63,8 +63,7 @@ class Modelpaiddetail extends \CI_Model
         if (gettype($detailsInvoice) == 'array' && count($detailsInvoice) > 0){
             $val = 0.0;
             foreach ($detailsInvoice['details'] as $item => $detail){
-                $detail['expense'] =
-                $this->modelExpenses->getExpense($detail['id_gastos_nacionalizacion']);
+                $detail['expense'] = $this->modelExpenses->getExpense($detail['id_gastos_nacionalizacion']);
                 $val += $detail['valor'];
                 $detailsInvoice['details'][$item] = $detail;
             }
@@ -73,9 +72,9 @@ class Modelpaiddetail extends \CI_Model
         }
         return false;
     }
-    
+
     /**
-     * Obtiene un detalle de una factura de pago 
+     * Obtiene un detalle de una factura de pago
      * @param int $idDetail
      * @ return array | boolean
      */
@@ -86,14 +85,14 @@ class Modelpaiddetail extends \CI_Model
                 'id_detalle_documento_pago' => $idDetail,
             ],
         ]);
-        
+
         if(gettype($detail) == 'array' && count($detail) > 0){
             return $detail[0];
         }
         return false;
     }
-    
-    
+
+
     /**
      * Obtiene una justificacion en base a una provision
      * @param int $idExpense
@@ -116,8 +115,8 @@ class Modelpaiddetail extends \CI_Model
         }
         return false;
     }
-    
-    
+
+
     /**
      * Retorna las justificaciones para una orden, ya que aqui se almacenan
      * las justificaciones a las provisiones
@@ -126,32 +125,32 @@ class Modelpaiddetail extends \CI_Model
      */
     public function getByOrder($nroOrder)
     {
-        $query = "  SELECT 
-                            a.*, 
-                            b.nro_pedido,
-                            c.nro_factura,
-                            c.identificacion_proveedor,
-                            c.fecha_emision,
-                            b.concepto 
-                    FROM detalle_documento_pago AS a 
-                    JOIN gastos_nacionalizacion AS b 
+        $query = "SELECT
+                        a.*,
+                        b.nro_pedido,
+                        c.nro_factura,
+                        c.identificacion_proveedor,
+                        c.fecha_emision,
+                        b.concepto
+                    FROM detalle_documento_pago AS a
+                    JOIN gastos_nacionalizacion AS b
                     USING(id_gastos_nacionalizacion)
-                    JOIN documento_pago as c 
+                    JOIN documento_pago as c
                     USING(id_documento_pago)
                     WHERE nro_pedido =  '" . $nroOrder ."' ORDER BY b.concepto DESC";
-        
+
         $paidsDetails = $this->db->query($query);
         $paidsDetails = $paidsDetails->result_array();
         if(gettype($paidsDetails) == 'array' && count($paidsDetails) > 0){
             return $paidsDetails;
         }
         return false;
-    } 
-    
-    
+    }
+
+
     /**
      * Retorna las justificaciones para un parcial
-     * 
+     *
      * @param string $nroOrder
      * @return array | boolean
      */
@@ -170,23 +169,23 @@ class Modelpaiddetail extends \CI_Model
                     JOIN documento_pago as c
                     USING(id_documento_pago)
                     WHERE id_parcial=  '" . $idParcial ."' ORDER BY b.concepto DESC";
-        
+
         $paidsDetails = $this->db->query($query);
         $this->modelLog->warningLog('Se ejecuta sentencia SQL directa', $query);
         $paidsDetails = $paidsDetails->result_array();
-        
+
         if(gettype($paidsDetails) == 'array' && count($paidsDetails) > 0){
             return $paidsDetails;
         }
-        
+
         $this->modelLog->warningLog(
             'la sentencia directa a retornado un valor vacio',
             $query
             );
         return false;
     }
-    
-    
+
+
     /**
      * Crea un nuevo detalle de factura
      * @param array $paidDetail
@@ -201,12 +200,12 @@ class Modelpaiddetail extends \CI_Model
         $this->modelLog->errorLog(
                             'No se puede registrar el detalle documento',
                             $this->db->last_query()
-                            );        
+                            );
         return false;
     }
-    
-    
-    
+
+
+
     /**
      * Elimina un pago detalle del sustema
      * @param int $idPaidDetail
@@ -218,16 +217,16 @@ class Modelpaiddetail extends \CI_Model
         if($this->db->delete($this->table)){
             return True;
         }
-        
+
         $this->modelLog->errorLog(
             'No se puede eliminar el documento pago',
             $this->db->last_query()
             );
-        
+
        return false;
     }
-    
-    
+
+
     /**
      * Elimina un pago detalle del sustema
      * @param int $idPaidDetail
@@ -239,17 +238,17 @@ class Modelpaiddetail extends \CI_Model
         if($this->db->delete($this->table)){
             return True;
         }
-        
+
         $this->modelLog->errorLog(
             'No se puede eliminar el detalle documento pago',
             $this->db->last_query()
             );
-        
+
         return false;
     }
-    
-    
-    
+
+
+
     /**
      * Actualiza del detalle de un pago
      * @param array $ipaidDetail
@@ -258,7 +257,7 @@ class Modelpaiddetail extends \CI_Model
     public function updatePaidDetail(array $paidDetail) : bool
     {
         $this->db->where(
-                'id_detalle_documento_pago', 
+                'id_detalle_documento_pago',
                 $paidDetail['id_detalle_documento_pago']
             );
         if($this->db->update($this->table, $paidDetail)){
@@ -268,22 +267,22 @@ class Modelpaiddetail extends \CI_Model
         $this->modelLog->errorLog(
             'No es posible actualizar el detalle documento pago',
             $this->db->last_query());
-        
+
         return false;
     }
-    
-    
-    
+
+
+
     /**
      * Obtiene los pagos de una provisio desde los pagos
      * @param int $id_init_expense id de gasto inicial
      * @return array | bool
      */
     public function getPaidsDetailsFromInitExpense(int $id_init_expense)
-    {     
-        $sql = "SELECT 
-                ddp.id_gastos_nacionalizacion, 
-                ddp.valor as justificacion, 
+    {
+        $sql = "SELECT
+                ddp.id_gastos_nacionalizacion,
+                ddp.valor as justificacion,
                 ddp.date_create ,
                 pro.nombre as proveedor,
                 dp.*,
@@ -293,12 +292,12 @@ class Modelpaiddetail extends \CI_Model
                 left join documento_pago as dp on (ddp.id_documento_pago = dp.id_documento_pago)
                 left join proveedor as pro on(dp.identificacion_proveedor = pro.identificacion_proveedor)
                 left join usuario as usr on(ddp.id_user = usr.id_user)
-                where 
+                where
                 id_gastos_nacionalizacion = $id_init_expense;
                 ";
-        
-        $details = $this->modelBase->runQuery($sql);        
-        
+
+        $details = $this->modelBase->runQuery($sql);
+
         if ($details == False){
             $this->modelLog->warningLog(
                 'El gasto inicial no tiene facturas',
@@ -306,9 +305,9 @@ class Modelpaiddetail extends \CI_Model
                 );
             return False;
         }
-        
+
         return $details;
-        
+
     }
-    
+
 }

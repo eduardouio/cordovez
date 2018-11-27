@@ -190,12 +190,9 @@ class Gstinicial extends MY_Controller
         }
         
         if ($initExpense['concepto'] == 'GASTO ORIGEN'){
-            
             $order = $this->modelOrder->get($initExpense['nro_pedido']);
             $order['tipo_cambio_go'] = $initExpense['tipo_cambio_go'];
             $order['gasto_origen'] = $initExpense['valor_provisionado'];
-            #Evitamos que se actualize los gastos en origen del pedido
-            #$this->modelOrder->update($order);
             $initExpense['valor_provisionado'] = (
                 $initExpense['valor_provisionado']
                 * $initExpense['tipo_cambio_go']
@@ -227,30 +224,19 @@ class Gstinicial extends MY_Controller
                 return true;
             } else {
                 $initExpense['last_update'] = date('Y-m-d H:i:s');
+                $paids_expense = $this->modelPaidDetail->getByExpense($initExpense['id_gastos_nacionalizacion']);
                 
-                if($this->modelExpenses->update($initExpense)){
-                    $old_init_expense = $this->modelExpenses->getExpense(
-                        $initExpense['id_gastos_nacionalizacion']
-                        );
-                    
-                    if(floatval($initExpense['valor_provisionado']) != floatval($old_init_expense['valor_provisionado'])){
-                        $initExpense['bg_closed'] = 0;
-                        $this->modelExpenses->update($initExpense);
-                        $this->modelLog->susessLog(
-                            'La provision ha cambiado de valor'
-                            );
-                        
-                        return($this->redirectPage('validargi', $initExpense['nro_pedido']));
-                    }else{
-                        $this->modelLog->warningLog(
-                            'La provision mantiene el mismo valor no es modificada'
-                            );
+                if($paids_expense['sums'] == $initExpense['valor_provisionado']){
+                    $initExpense['bg_closed'] = 1;
+                }else{
+                    $initExpense['bg_closed'] = 0;
+                }
+
+                if($this->modelExpenses->update($initExpense)){                    
                         return($this->redirectPage('validargi', $initExpense['nro_pedido']));
                     }
-                    
                 }
                                 
-            }
         } else {
             $this->responseHttp([
                 'viewMessage' => true,
@@ -259,6 +245,8 @@ class Gstinicial extends MY_Controller
             ]);
         }
     }
+        
+    
     
     /**
      * Elimina un Gasto inicial de la tabla

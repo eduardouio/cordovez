@@ -303,7 +303,7 @@ class Reliquidacion extends MY_Controller
             'titleContent' => 'Resumen de Impuestos Liquidación Aduana Parcial ' . 
                                 $ordnial_parcial 
                                 .  ' del Pedido ' . $init_data['order']['nro_pedido'] . ' R['. $init_data['order']['regimen'] 
-                .'] ' . $init_data['order']['incoterm'],
+            .'] ' . $init_data['order']['incoterm'] . ' Ref. ' . $info_invoices[0]['nro_refrendo'],
             'init_data' => $init_data,
             'parcial_taxes' => $product_taxes,
             'prorrateos' => $prorrateos,
@@ -557,7 +557,7 @@ class Reliquidacion extends MY_Controller
         return ($this->responseHttp([
             'titleContent' => 'Resumen de Reliquidación ICE Pedido ' .
                                 $init_data['order']['nro_pedido'] . 
-                                ' Regimen : ' . $order['regimen'],
+                                ' Regimen : ' . $order['regimen'] . ' Ref. ' . $order['nro_refrendo'],
             'init_data' => $init_data,
             'order_taxes' => $product_taxes,
             'title' => 'Reliquidacion Pedido [' . $nroOrder . ']',

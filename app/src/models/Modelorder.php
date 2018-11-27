@@ -47,6 +47,7 @@ class Modelorder extends CI_Model
         $this->modelLog = new Modellog();
     }
     
+    
     /**
      * Obtiene todas las ordenes, solo las ordenes 
      * @return array | bool
@@ -87,10 +88,10 @@ class Modelorder extends CI_Model
                     ORDER BY anio DESC, nro_pedido DESC;
                     ";
         }
-        
         return ($this->modelBase->runQuery($query));
     }
 
+    
     /**
      * Obtiene un regsistro completo de la orden de una tabla
      * @param (string) $nroOrder identidicador de la tabla 000-00
@@ -527,7 +528,9 @@ class Modelorder extends CI_Model
                                     WHERE id_parcial = ' . 
                                     $o['id_parcial'];
                    $result = $this->modelBase->runQuery($query);
-                   $orders[$idx]['nro_pedido'] = $result[0]['nro_pedido'];                    
+                   if($result){
+                    $orders[$idx]['nro_pedido'] = $result[0]['nro_pedido'];                       
+                   }
                 }
                 
                 unset($orders[$idx]['id_parcial']);

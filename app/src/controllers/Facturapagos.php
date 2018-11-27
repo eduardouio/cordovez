@@ -23,10 +23,11 @@ class Facturapagos extends MY_Controller
     private $modelUser;
     private $modelSupplier;
     private $modelPaid;
+    private $modelExpenses;
     private $modelPaidDetail;
     private $myModel;
-    
-    
+
+
     /**
      * constructor de la clase
      */
@@ -35,8 +36,8 @@ class Facturapagos extends MY_Controller
         parent::__construct();
         $this->init();
     }
-    
-    
+
+
     /**
      * Carga los modelos a usar en la clase
      * @return void
@@ -46,15 +47,24 @@ class Facturapagos extends MY_Controller
         if(! isset($this->session->userdata['id_user'])){
             exit(0);
         }
-        
-        $this->load->model('modelorder');
-        $this->load->model('modelparcial');
-        $this->load->model('modeluser');
-        $this->load->model('modelsupplier');
-        $this->load->model('modellog');
-        $this->load->model('modelpaid');
-        $this->load->model('mymodel');
-        $this->load->model('Modelpaiddetail');
+
+        $models = [
+            'modelorder',
+            'modelparcial',
+            'modeluser',
+            'modelsupplier',
+            'modellog',
+            'modelpaid',
+            'mymodel',
+            'Modelpaiddetail',
+            'Modelexpenses',
+        ];
+
+        foreach ($models as $model){
+            $this->load->model($model);
+        }
+
+        $this->modelExpenses = new Modelexpenses();
         $this->modelPaidDetail = new Modelpaiddetail();
         $this->modelOrder = new Modelorder();
         $this->modelParcial = new Modelparcial();
@@ -77,16 +87,16 @@ class Facturapagos extends MY_Controller
         return $this->listar();
     }
 
-    
+
     /**
      * Lista Todas las facturas de pagos disponibles en el sistema
      * @param $offset (int) primer elemento de la lista
      * @return mixed
      */
     public function listar()
-    {   
+    {
         $documentList = [];
-        
+
         if($_POST){
             $documentList = $this->getInfoDocumentsData(
                                 $this->modelPaid->search($_POST['param'])
@@ -94,9 +104,9 @@ class Facturapagos extends MY_Controller
         }else{
             $documentList = $this->getInfoDocumentsData(
                 $this->modelPaid->getAll()
-                );            
+                );
         }
-        
+
         $this->responseHttp([
             'list' => true,
             'controller' => $this->controller,
@@ -106,9 +116,9 @@ class Facturapagos extends MY_Controller
             'documentsPaids' => $documentList,
         ]);
     }
-    
-    
-       
+
+
+
     /**
      * Presenta el formulario para el registro de un nuevo documento de Pago
      * @return mixed
@@ -133,9 +143,9 @@ class Facturapagos extends MY_Controller
             $this->redirectPage('paidsList');
             return false;
         }
-        
+
         $document = $this->modelPaid->get($nroDocument);
-        
+
         if ($document == false){
             $this->redirectPage('paidsList');
             return false;
@@ -158,7 +168,7 @@ class Facturapagos extends MY_Controller
             $this->redirectPage('paidsList');
             return false;
         }
-        
+
         $this->db->where('id_documento_pago', $nroDocument);
         if($this->db->delete($this->controller)){
             $this->responseHttp([
@@ -170,9 +180,7 @@ class Facturapagos extends MY_Controller
             ]);
             return true;
         }
-        
-        $document = $this->modelPaid->get($nroDocument);
-        
+
         $this->responseHttp([
             'titleContent' => 'Error Al Eliminal',
             'viewMessage' => true,
@@ -197,7 +205,7 @@ class Facturapagos extends MY_Controller
         $document['fecha_emision'] = date('Y-m-d', strtotime(
                                                 $document['fecha_emision'])
             );
-        
+
         print($document['fecha_emision']);
         $document['id_user'] = $this->session->userdata('id_user');
         $status = $this->validData($document);
@@ -240,7 +248,7 @@ class Facturapagos extends MY_Controller
         }
     }
 
-    
+
     /**
      * Verifica que las facturas que estan como abiertas sean cerradas
      * si la suma de los items es igual a la suma del valor total
@@ -249,7 +257,7 @@ class Facturapagos extends MY_Controller
     public function checkinvoices(){
         print 'Cerrando Facturas completas';
         $open_invoices = $this->modelPaid->getAll();
-        
+
         foreach ($open_invoices as $idx => $invoice){
             $detail = $this->modelPaidDetail->get($invoice['id_documento_pago']);
             if ($invoice['valor'] == $detail['sums']){
@@ -257,75 +265,56 @@ class Facturapagos extends MY_Controller
                 $this->modelPaid->update($invoice);
             }
         }
-        
         return $this->redirectPage('paidsList');
-    }      
-        
-    
+    }
+
+
     /**
      * Recupera la informacion completa de una factura
      * @param $idInvoice
      * @return array | bool
      */
-    public function presentar($nroDocument){
-        if(!isset($nroDocument)){
-            $this->redirectPage('paidsList');
-            return false;
-        }        
-        
-        $document = $this->modelPaid->get($nroDocument);
-        
+    public function presentar($id_document = 0){
+        $document = $this->modelPaid->get($id_document);
         if ($document == false){
             $this->redirectPage('paidsList');
             return false;
         }
-        
-        $activeOrders =  $this->modelOrder->getAll();
-        
-        if(is_array($activeOrders)){
-            foreach ($activeOrders as $item => $order){
-                if($order['regimen'] = 70 ){
-                    $order['parcials'] = 
-                                $this->modelParcial->getOrdinalsNumbersParcials(
-                                                            $order['nro_pedido']
-                                                                              );
-                }
-                $activeOrders[$item] = $order;
-            }
-        }
-        
-        
+        $provisions = $this->modelExpenses->getAllProvisions();
+        $orders  = get_nro_orders($provisions);        
         $this->responseHttp([
             'title' => 'Factura #' . $document['nro_factura'] . ' ' . $document['supplier']['nombre'],
-            'titleContent' => 'Detalle Documento De Pago [' . 
-                                  $document['nro_factura']. '] <small>'. 
+            'titleContent' => 'Detalle Documento De Pago [' .
+                                  $document['nro_factura']. '] <small>'.
                                   $document['supplier']['nombre'] . '</small>',
             'document' => $document,
-            'orders' => $activeOrders,
+            'orders' => $orders,
+            'provisions' => $provisions,
             'user' => $this->modelUser->get($document['id_user']),
-            'show' => true,
+            'vue_app' => True,
+            'show' => True,
         ]);
     }
-    
-    
+
+
     /**
      * Recupera la información de los documentos
      * @param array $documents
      * @return array
      */
     private function getInfoDocumentsData($documents) : array {
-        
+
         if ($documents == False){
            return [];
         }
-        
+
         $documents_list = [];
         foreach ($documents as $idx => $doc){
             $details = $this->modelPaidDetail->get($doc['id_documento_pago']);
             $doc['details'] = $details['details'];
             $doc['orders'] = [];
             $doc['saldo'] = $doc['valor'];
-            
+
             if($doc['details']){
                 foreach ($doc['details'] as $k => $det){
                     if($det['expense']['nro_pedido'] == '000-00'){
@@ -334,10 +323,10 @@ class Facturapagos extends MY_Controller
                     }else{
                         array_push($doc['orders'], $det['expense']['nro_pedido']);
                     }
-                    
+
                     $doc['saldo'] = round($doc['saldo'] -  $det['valor']);
                 }
-                
+
                 if ($doc['saldo'] < 0.01 && $doc['bg_closed'] == 0){
                     $document_base = $this->modelPaid->get($doc['id_documento_pago']);
                     $doc['bg_closed'] = 1;
@@ -345,14 +334,14 @@ class Facturapagos extends MY_Controller
                     $doc['saldo'] = 0.0;
                     $this->modelPaid->update($document_base);
                 }
-                
+
             }
             array_push($documents_list, $doc);
         }
       return $documents_list;
     }
-    
-    
+
+
 
     /**
      * Se validan las columnas que debe tener la consulta para que no falle

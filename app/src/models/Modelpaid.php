@@ -20,7 +20,7 @@ class Modelpaid extends CI_Model{
     private $modelPaidDetail;
     private $modelLog;
     private $modelParcial;
-    
+
     /**
      * Constructo de clase
      */
@@ -28,7 +28,7 @@ class Modelpaid extends CI_Model{
         parent::__construct();
         $this->init();
     }
-    
+
     /**
      * Inicia los modelos de la clase
      */
@@ -65,10 +65,9 @@ class Modelpaid extends CI_Model{
             $invoice['supplier'] = $this->modelSupplier->get(
                                         $invoice['identificacion_proveedor']);
             $invoice['invoiceDetails'] = $this->modelPaidDetail->get(
-                                                $invoice['id_documento_pago']);            
-            
+                                                $invoice['id_documento_pago']);
             $invoice['saldo'] = round($invoice['valor'], 2) - round($invoice['invoiceDetails']['sums'],2);
-            
+            $invoice['valor'] = floatval($invoice['valor']);
             return $invoice;
         }
         $this->modelLog->errorLog(
@@ -83,31 +82,31 @@ class Modelpaid extends CI_Model{
      */
     public function getAll()
     {
-        $query = 'SELECT 
-                    dc.id_documento_pago, 
+        $query = 'SELECT
+                    dc.id_documento_pago,
                     dc.identificacion_proveedor,
                     pr.nombre,
-                    dc.nro_factura, 
-                    dc.fecha_emision, 
-                    dc.bg_closed, 
-                    dc.date_create, 
-                    dc.tipo, 
+                    dc.nro_factura,
+                    dc.fecha_emision,
+                    dc.bg_closed,
+                    dc.date_create,
+                    dc.tipo,
                     dc.valor
-                    FROM 
+                    FROM
                     documento_pago AS dc
                     LEFT JOIN proveedor as pr ON (
-                                        dc.identificacion_proveedor = 
+                                        dc.identificacion_proveedor =
                                         pr.identificacion_proveedor
                                                     )
                     where dc.bg_closed != 1
-                    ORDER BY 
-                    dc.bg_closed ASC, 
+                    ORDER BY
+                    dc.bg_closed ASC,
                     pr.nombre ASC,
                     dc.fecha_emision DESC';
-        
+
         $result = $this->db->query($query);
         $result = $result->result_array();
-        
+
         if ($result){
             $this->modelLog->susessLog(
                 'Listado de documento pago recuperado correctamente'
@@ -118,35 +117,35 @@ class Modelpaid extends CI_Model{
             'La tabla de documentos de pago se encuentra vacia',
             $this->db->last_query()
             );
-        
+
         return False;
     }
-    
+
     /**
      * REaliza un busqueda en la lista de facturas no tiene limite
      * en los resultados
-     * 
+     *
      * @param string $param => criterio
      */
     public function search(string $param){
         $query = "
-            SELECT 
-            dc.id_documento_pago, 
+            SELECT
+            dc.id_documento_pago,
             dc.identificacion_proveedor,
             pr.nombre,
-            dc.nro_factura, 
-            dc.fecha_emision, 
-            dc.bg_closed, 
-            dc.date_create, 
-            dc.tipo, 
+            dc.nro_factura,
+            dc.fecha_emision,
+            dc.bg_closed,
+            dc.date_create,
+            dc.tipo,
             dc.valor
-            FROM 
+            FROM
             documento_pago AS dc
             LEFT JOIN proveedor as pr ON (
-                                dc.identificacion_proveedor = 
+                                dc.identificacion_proveedor =
                                 pr.identificacion_proveedor
                                           )
-            WHERE 
+            WHERE
             nro_factura = '{{param}}'
             OR  dc.nro_factura like '%{{param}}'
             OR  dc.nro_factura like '{{param}}%'
@@ -163,16 +162,16 @@ class Modelpaid extends CI_Model{
             OR  dc.fecha_emision LIKE '%{{param}}'
             OR  dc.fecha_emision LIKE '{{param}}%'
             OR  dc.fecha_emision LIKE '%{{param}}%'
-            ORDER BY 
-            dc.bg_closed ASC, 
+            ORDER BY
+            dc.bg_closed ASC,
             pr.nombre ASC,
             dc.fecha_emision DESC;";
-        
+
         $query = str_replace('{{param}}', $param, $query);
-        
+
         $result = $this->db->query($query);
         $result = $result->result_array();
-        
+
         if ($result){
             $this->modelLog->susessLog(
                 'Listado de documento pago recuperado correctamente'
@@ -183,13 +182,13 @@ class Modelpaid extends CI_Model{
             'La consulta no ha retornado ningun resultado',
             $this->db->last_query()
             );
-        
+
         return False;
     }
-    
-    
+
+
     /**
-     * Retorna la informacion de tabla de un documento 
+     * Retorna la informacion de tabla de un documento
      * @param int $idDocument
      */
     public function getDocument($idDocument){
@@ -199,83 +198,83 @@ class Modelpaid extends CI_Model{
                 'id_documento_pago' => $idDocument,
             ],
         ]);
-        
+
         if ((gettype($document) == 'array') && (count($document) > 0)){
             return $document[0];
         }
         return false;
-    }    
-    
-    
+    }
+
+
     /**
      * Recupera el documento pago de una justificacion, recupera un arreglo de documentos o nada
-     * 
+     *
      * @param int $paid_detail
      */
     public function getDocumentFromDetail(int $id_init_expense){
         $documents = [];
-        
+
         $paid_details = $this->modelPaidDetail->getByExpense($id_init_expense);
-        
+
         if($paid_details){
             foreach ($paid_details as $k => $paid_detail){
                 $document = $this->get($paid_detail['id_documento_pago']);
                 array_push($documents, $document);
             }
-            
+
             $this->modelLog->susessLog(
                 'Se recuperan los documentos de la justificacion'
                 );
-            
+
             return $documents;
         }
-         
+
         return False;
     }
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
     /**
      * Obtiene una lista de todas las facturas que corresponden a un pedido
      * para hacer los calculos
      * @param string $nro_order
      */
     public function getAllPaidsFromOrder(string $nro_order){
-        
+
         $expenses = [];
         $invoices_paids = [];
-        
+
         $order_expenses  = $this->modelExpenses->get($nro_order);
         $paricals = $this->modelParcial->getAllParcials($nro_order);
-        
-        
+
+
         if ($order_expenses){
             foreach ($order_expenses as $idx => $exp){
-                array_push($expenses, $exp);        
+                array_push($expenses, $exp);
             }
         }
-               
+
         if ($paricals) {
             foreach ($paricals as $idx => $parcial){
                 $parcial_expenses = $this->modelExpenses->getPartialExpenses(
                     $parcial['id_parcial']
                     );
-                
+
                 if ($parcial_expenses) {
                     foreach ($parcial_expenses as $idx => $exp){
                         array_push($expenses, $exp);
                     }
-                }                
+                }
             }
         }
-        
+
         if ($expenses) {
             $paids_detail = [];
             $invoices = [];
-            
+
             foreach ($expenses as $idx => $exp) {
                 $detail = $this->modelPaidDetail->getByExpense(
                     $exp['id_gastos_nacionalizacion']
@@ -284,7 +283,7 @@ class Modelpaid extends CI_Model{
                     array_push($paids_detail, $detail);
                 }
             }
-            
+
             if ($paids_detail) {
                 foreach ( $paids_detail as $idx => $det){
                     $document = $this->get($det[0]['id_documento_pago']);
@@ -296,10 +295,10 @@ class Modelpaid extends CI_Model{
                 return $invoices;
             }
         }
-            
+
         return False;
-    }        
-      
+    }
+
     /**
      * Actualiza un comprobante de pago
      */
@@ -309,7 +308,7 @@ class Modelpaid extends CI_Model{
        unset($document['supplier']);
        unset($document['invoiceDetails']);
        unset($document['nombre']);
-       
+
        if($this->db->update($this->table, $document)){
            $this->modelLog->susessLog(
                'Documento pago actualizado correctamente'
@@ -320,10 +319,10 @@ class Modelpaid extends CI_Model{
            'No fue posible acualizar el documento de pago',
            $this->db->last_query()
            );
-        return False; 
+        return False;
     }
-    
-    
+
+
     /**
      * Elimina un documento pago
      * @param int $id_documento_pago
@@ -334,14 +333,14 @@ class Modelpaid extends CI_Model{
             $this->modelLog->susessLog(
                 'Documento Pago eliminado Correctamente'
                 );
-            
+
             return True;
         }
         $this->modelLog->errorLog(
             'No se puede elimar el documento de la base de datos tiene dependencias'
             );
-        
+
         return False;
     }
-    
+
 };

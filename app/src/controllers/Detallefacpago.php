@@ -1,5 +1,8 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
+$libraries_url = realpath(dirname(__FILE__));
+$libraries_url = str_replace('controllers', 'libraries/', $libraries_url);
+require_once ( $libraries_url . 'Rest.php' );
 
 /**
  * Ingresa y edita los items de las facturas y el cruce con los pedidos
@@ -24,26 +27,27 @@ class Detallefacpago extends MY_Controller
     private $modelExpenses;
     private $modelSupplier;
     private $myModel;
+    private $rest;
 
-    
+
     /**
      * constructor de la clase
      */
     public function __construct()
     {
         parent::__construct();
-        $this->init();      
+        $this->init();
     }
-    
+
     /**
      * Inicia los modelos de la clase
      */
     private function init(){
-        
+
         if(! isset($this->session->userdata['id_user'])){
             exit(0);
         }
-        
+
         $this->load->model('modelorder');
         $this->load->model('modelpaid');
         $this->load->model('modeluser');
@@ -51,7 +55,8 @@ class Detallefacpago extends MY_Controller
         $this->load->model('modelpaiddetail');
         $this->load->model('modelsupplier');
         $this->load->model('mymodel');
-        $this->load->model('modellog');        
+        $this->load->model('modellog');
+        $this->rest = new Rest();
         $this->modelOrder = new Modelorder();
         $this->modelPaid = new Modelpaid();
         $this->modelUser = new Modeluser();
@@ -70,34 +75,29 @@ class Detallefacpago extends MY_Controller
         $this->redirectPage('paidsList');
         return true;
     }
-    
-    
+
+
     /**
      * Registra el detalle de una factura de pago servicios
      * y a la vez registra un gasto en la tabla de gastos de nacionalizacion
      * como gasto no provisionado y lo deja con estatus gb_closed
-     * El gasto es tomado como gasto inicial en R10 
+     * El gasto es tomado como gasto inicial en R10
      * y si no pertenece a ningun parcial gasto inicial en R70
      * @param int $idDocument => identificacion Factura Pago
      */
-    public function noProvisionado()
-    {
-        if(!$_POST){
-            $this->modelLog->warningLog('Acceso no autorizado a metodo');
-            return $this->index();
-        }
+    public function noProvisionado(){
         $id_parcial = 0;
         $nro_pedido = '000-00';
-        
-        
+
+
         if (isset($_POST['id_parcial'])){
-            $id_parcial = $_POST['id_parcial'];            
+            $id_parcial = $_POST['id_parcial'];
         }else{
             $nro_pedido = $_POST['nro_pedido'];
         }
 
         $document = $this->modelPaid->getDocument($_POST['id_documento_pago']);
-        
+
         $idExpense = $this->modelExpenses->create([
             'nro_pedido' => $nro_pedido,
             'id_parcial' => $id_parcial,
@@ -110,14 +110,14 @@ class Detallefacpago extends MY_Controller
             'id_user' => $this->session->userdata('id_user'),
             'bg_closed' => 1,
             ]);
-        
+
         if($idExpense == false){
             $this->modelLog->errorLog(
                             'No se puede proceder con el gasto no provisionado'
                                      );
             return (print('Error en el Sistema'));
         }
-        
+
         if($this->modelPaidDetail->create([
             'id_gastos_nacionalizacion' => $idExpense,
             'id_documento_pago' => $_POST['id_documento_pago'],
@@ -126,60 +126,12 @@ class Detallefacpago extends MY_Controller
             'bg_isnotprovisioned' => 1,
             'bg_closed' => 1,
         ])){
-            $this->redirectPage('paidPresent' , $_POST['id_documento_pago']);    
+            $this->redirectPage('paidPresent' , $_POST['id_documento_pago']);
         };
     }
-    
-    
-    /**
-     * Presenta el formulario para agregar un nuevo item de factura
-     * 
-     * @param int $nroDocument
-     * @return mixed | Template
-     */
-    public function nuevo($nroDocument)
-    {
-        if (! isset($nroDocument)) {
-            $this->redirectPage('paidsList');
-            return false;
-        }
-        $document = $this->modelPaid->get($nroDocument);
-        if ($document == false) {
-            $this->redirectPage('paidsList');
-            return false;
-        }
-        $activeOrders = $this->modelOrder->getActives();
-               
-        $orders = [];
- 
-        if (is_array($activeOrders)) {
-            foreach ($activeOrders as $item) {
-                
-                $expensesTemp = $this->modelExpenses->getActiveExpenses($item['nro_pedido']);
-                $expenses = [];
-                if($expensesTemp){
-                    foreach ($expensesTemp as $index => $expense){
-                        $expense['justification'] = $this->modelPaidDetail->getByExpense($expense['id_gastos_nacionalizacion']);
-                        $expense['user'] = $this->modelUser->get($expense['id_user']);
-                        $expenses[$index] = $expense;
-                    }
-                    $orders[$item['nro_pedido']] = $expenses;                
-                    
-                }
-            }
-        }
-                
-        $document = $this->modelPaid->get($nroDocument);
-        $this->responseHttp([
-            'titleContent' => 'Justificar Gasto [Factura #' . $document['nro_factura'] . ' ' . $document['supplier']['nombre'] . ']',
-            'document' => $document,
-            'create' => true,
-            'activeOrders' => $activeOrders,
-            'orders' => json_encode($orders),
-            'user' => $this->modelUser->get($document['id_user'])
-        ]);
-    }
-    
+
+
+
     /**
      * Presenta un formulario para editar la justificacion
      * recupera la informacion de las otras justificaciones
@@ -187,24 +139,24 @@ class Detallefacpago extends MY_Controller
      */
     public function editar($idDetail){
         $detail = $this->modelPaidDetail->getDetail($idDetail);
-        
+
         if ($detail == false){
             $this->redirectPage('paidsList');
             return false;
         }
-        
+
         $document = $this->modelPaid->get($detail['id_documento_pago']);
         $provision = $this->modelExpenses->getExpense($detail['id_gastos_nacionalizacion']);
         $details = $this->modelPaidDetail->getByExpense($detail['id_gastos_nacionalizacion']);
         $valJustified = ($details['sums'] - $detail['valor']);
-        
+
         $arreglo = [
             'invoiceDetail' => $detail,
         ];
         $this->responseHttp([
             'edit' => true,
-            'titleContent' => 'Editar Item Docuemento Pago Factura [ ' . 
-                                $document['nro_factura'] . '] <small>' . 
+            'titleContent' => 'Editar Item Docuemento Pago Factura [ ' .
+                                $document['nro_factura'] . '] <small>' .
                                 $document['supplier']['nombre'] . '</small>',
             'document' => $document,
             'details' => $details,
@@ -217,21 +169,13 @@ class Detallefacpago extends MY_Controller
 
     /**
      * valida y registra o actualiza una provision total o parcial
-     * 
+     *
      * @param (array) $_POST
      */
-    public function validar()
-    {
-        if (! $_POST) {
-            $this->redirectPage('paidsList');
-            return false;
-        }
-        
-        $justification = $this->input->post();
+    public function validar(){
+        $justification = json_decode(file_get_contents('php://input'),true);
         $justification['id_user'] = $this->session->userdata('id_user');
-        
         $status = $this->validData($justification);
-  
         if ($status['status']) {
             if(isset($justification['id_detalle_documento_pago'])){
                 $justification['last_update'] = date('Y-m-d H:m:s');
@@ -239,31 +183,20 @@ class Detallefacpago extends MY_Controller
             }else{
                 $this->insertDB($justification, 'insert');
             }
-            $this->redirectPage('paidPresent', 
-                    $justification['id_documento_pago']
-                );
-            return true;
-            
+            return $this->_responseRest([],201);
         } else {
-            $this->responseHttp([
-                'viewMessage' => true,
-                'message' => 'Uno de los campos es incorrecto',
-                'inputPlace' => $status['columns'],
-                'idRow' => $justification['id_documento_pago'],
-            ]);
-            return false;
+            return $this->_responseRest([],500);
         }
     }
-    
-    
-    
+
+
     /**
      * Elimina el detalle de una documento de pago y verifica que la
      * provision quede injustificada
      * @param int $idDetail
      */
     public function eliminar($idDetail){
-        $detail = $this->modelPaidDetail->getDetail($idDetail);        
+        $detail = $this->modelPaidDetail->getDetail($idDetail);
         if ($detail == false){
             $this->redirectPage('paidsList');
             return false;
@@ -272,11 +205,11 @@ class Detallefacpago extends MY_Controller
                                                 $detail['id_gastos_nacionalizacion']);
         $provisonUpdate = [
             'bg_closed' => 0,
-        ]; 
+        ];
         $this->db->where('id_detalle_documento_pago', $idDetail);
         if ($this->db->delete($this->controller)){
             if($provision['bg_closed']){
-                $this->db->where('id_gastos_nacionalizacion', 
+                $this->db->where('id_gastos_nacionalizacion',
                                                 $detail['id_gastos_nacionalizacion']);
                 $this->db->update('gastos_nacionalizacion', $provisonUpdate );
             }
@@ -284,7 +217,7 @@ class Detallefacpago extends MY_Controller
            }
     }
 
-    
+
     /**
      * Presenta los detalles completos de un gasto
      * @param integer $idDetail
@@ -295,15 +228,15 @@ class Detallefacpago extends MY_Controller
             $this->redirectPage('paidsList');
             return false;
         }
-        
+
         $detail = $this->modelPaidDetail->getDetail($idDetail);
-        
+
         if ($idDetail == false){
             $this->redirectPage('paidsList');
             return false;
         }
-        $document = $this->modelPaid->getDocument($detail['id_documento_pago']);        
-       
+        $document = $this->modelPaid->getDocument($detail['id_documento_pago']);
+
         return($this->responseHttp([
             'titleContent' => 'Detalle Justificación de Provision',
             'show' => true,
@@ -313,14 +246,14 @@ class Detallefacpago extends MY_Controller
             'document' => $document,
             'supplier' => $this->modelSupplier->get($document['identificacion_proveedor']),
         ]));
-        
+
     }
-    
-    
+
+
     /**
      * Verifica si un gasto esta completo o no antes de regitrarlo en la bd
      * @param array $row registro a insertar o actualizar
-     * @param string action update | insert 
+     * @param string action update | insert
      * @return bool
      */
     private function insertDB(array $row, string $action): bool
@@ -333,32 +266,32 @@ class Detallefacpago extends MY_Controller
         $provisonUpdate = [
             'bg_closed' => 0,
         ];
-        
+
         if (($action == 'update') && ($details != false)){
             foreach ($details as $index => $val){
-                if($val['id_detalle_documento_pago'] == 
+                if($val['id_detalle_documento_pago'] ==
                     $row['id_detalle_documento_pago']){
                     unset($details[$index]);
-                }                
+                }
             }
         }
-        
+
         if(($action == 'insert') && ($details != 'false')){
             $valRegister = $details['sums'];
         }
-        
+
         if(($valRegister == 0) && ($provision['valor_provisionado'] == $row['valor'])){
             $provisonUpdate['bg_closed'] = 1;
         }elseif($valRegister + $row['valor'] == $provision['valor_provisionado']){
             $provisonUpdate = [
                 'bg_closed' => '1',
-            ];               
-        }        
+            ];
+        }
         if ($action == 'insert'){
             if($this->db->insert($this->controller, $row)){
-                
+
                 $this->db->where(
-                            'id_gastos_nacionalizacion', 
+                            'id_gastos_nacionalizacion',
                             $provision['id_gastos_nacionalizacion']
                     );
                 $this->db->update('gastos_nacionalizacion', $provisonUpdate);
@@ -369,7 +302,7 @@ class Detallefacpago extends MY_Controller
                 $row['id_detalle_documento_pago']);
             if($this->db->update($this->controller, $row)){
                 $this->db->where(
-                    'id_gastos_nacionalizacion', 
+                    'id_gastos_nacionalizacion',
                     $provision['id_gastos_nacionalizacion']);
                 $this->db->update('gastos_nacionalizacion', $provisonUpdate);
                 return true;
@@ -377,15 +310,14 @@ class Detallefacpago extends MY_Controller
         }
         return false;
     }
-    
-    
+
+
     /**
      * Se validan las columnas que debe tener la consulta para que no falle
-     * 
+     *
      * @return [array] | [bolean]
      */
-    private function validData($data)
-    {
+    private function validData($data){
         $paramsData = [
             'id_documento_pago' => 1,
             'id_gastos_nacionalizacion' => 1,
@@ -396,8 +328,17 @@ class Detallefacpago extends MY_Controller
     }
 
     /**
+     * Metodo de respuesta Rest
+     * @param array $config
+     */
+    private function _responseRest($data, $httpstatus = 0){
+        $data['session'] = $this->session->userdata();
+        return $this->rest->_responseHttp($data, $httpstatus);
+    }
+
+    /**
      * Envia el render html al navegador
-     * 
+     *
      * @param array $config arreglo de configiraciones
      * @return mixed
      */
@@ -415,4 +356,3 @@ class Detallefacpago extends MY_Controller
         return $this->twig->display($this->template, array_merge($config, $params));
     }
 }
-

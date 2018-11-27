@@ -12,6 +12,9 @@
 	<div class="col-md-3">Registro: {{ user.nombres }} </div>
 </div>
 </div>
+<div class="pull-right text-primary">
+<h4>{{ init_expense.concepto }}</h4>
+</div>
 {% if status.saldo == 0 %}
 	<label class="label label-success">Justificada</label>
 {% elseif status.saldo == status.provision %}
@@ -28,7 +31,7 @@
   <div id="home" class="tab-pane fade in active">
   <div class="row">
   <div class="col-md-12">
-    <table class="table table-hover table-bordered table-striped">
+    <table class="table table-hover table-bordered">
       <tr style="background-color: #e1e1e1;">
             <th>#</th>
             <th>Proveedor</th>

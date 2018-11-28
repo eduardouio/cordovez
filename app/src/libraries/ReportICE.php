@@ -61,7 +61,6 @@ class ReportICE {
      */
     private function getAllReport() : array{       
         $report = [];
-        #extaemos el reporte de los pedidos
         foreach ($this->product_data['orders'] as $k => $order){
             $orders_report = [
                 'moneda' => $order['invoice']['moneda'],
@@ -75,17 +74,12 @@ class ReportICE {
                 'nro_refrendo' => $order['nro_refrendo'],
                 'valor_factura' => $order['invoice']['valor'],
             ];            
-            
             foreach ($order['invoice']['detail'] as $j => $det){              
-                
                $orders_report = array_merge($orders_report, $det);
-                             
                array_push($report, $orders_report);
             }
         }
-        
 
-        #extraemos el r eporte de los parciales
         foreach ($this->product_data['parcials'] as $j => $parcial){  
             $parcials_report = [
                 'moneda' => $parcial['invoice']['moneda'],

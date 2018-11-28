@@ -171,7 +171,6 @@ class Reportes extends MY_Controller
                 );
             }
         }
-
         return $this->responseHttp([
             'titleContent' => 'Reporte de Provisiones',
             'data' => json_encode($this->_formatData($data)),
@@ -206,10 +205,7 @@ class Reportes extends MY_Controller
                     }
                 }
             }
-            
-            
             $info_invoices = $this->modelInfoInvoice->getByOrder($ord['nro_pedido']);
-            
             if($info_invoices){
                 foreach ($info_invoices as $idx => $invoice){
                     $details = $this->modelInfoInvoiceDetail->getByFacInformative(
@@ -222,13 +218,11 @@ class Reportes extends MY_Controller
                     }
                 }
             }
-            
             $stock_order = new StockOrder(
                 $ord,
                 $detail_order_invoices,
                 $detail_info_invoices
                 );
-            
             $ord['stock_current'] = $stock_order->getCurrentOrderStock();
             $ord['stock_initial'] = $stock_order->getInitStockProducts();
             $ord['stock_global'] = $stock_order->getGlobalValues();
@@ -253,8 +247,7 @@ class Reportes extends MY_Controller
             'orders_list' => $this->modelOrder->getAll(),
             'title_report' => 'Reporte de Saldos Pedidos Regimen 70',
             'saldos' => true,
-        ]);
-               
+        ]);     
     }
     
     
@@ -276,12 +269,10 @@ class Reportes extends MY_Controller
             'Noviembre',
             'Diciembre',
         ];
-        
         if($_GET){            
             $repor_ice = new ReportICE(
                 $this->modelReporICE->getData($_GET['anio'], $_GET['mes'])
-                );            
-            
+                );
             $data_report = $repor_ice->getReport();
             $have_unclosed_items = False;
             
@@ -296,7 +287,6 @@ class Reportes extends MY_Controller
                 'have_unclosed_items' => $have_unclosed_items,
                 'reporte_ice' => true,
             ]);
-            
         }else{
             return $this->responseHttp([
                 'titleContent' => 'Reporte de ICE',

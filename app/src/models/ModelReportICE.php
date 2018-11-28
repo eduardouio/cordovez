@@ -59,7 +59,7 @@ class ModelReportICE extends CI_Model
         $this->month = $month;
                 
         return([
-            'orders' => $this->getOrders(),
+            'orders' => array_merge($this->getTemWarwnhouse(), $this->getOrders()),
             'parcials' => $this->getParcials(),
         ]);
     }    
@@ -74,10 +74,8 @@ class ModelReportICE extends CI_Model
            foreach ($orders as $k => $order){
                $orders[$k]['invoice'] = $this->modelOrderInvoice->getCompleteInvoiceByOrder($order['nro_pedido']);
            }
-                   
            return $orders;
        }
-       
        return [];
     }
        
@@ -97,11 +95,25 @@ class ModelReportICE extends CI_Model
                 $invoice['detail'] = $invoice_detail;
                 $parcials[$k]['invoice'] = $invoice;
             }
-            
             return $parcials;
         }
-        
-        
         return [];        
+    }
+    
+    
+    /**
+     * Retorna todos los pedidos que llegan a la almacenera
+     * @return array
+     */
+    private function getTemWarwnhouse(): Array {
+        $orders = $this->modelOrder->getArrivedCellarByDate($this->year,$this->month, True);
+        if($orders){
+            foreach ($orders as $k => $order){
+                $orders[$k]['invoice'] = $this->modelOrderInvoice->getCompleteInvoiceByOrder($order['nro_pedido']);
+                $orders[$k]['bg_isclosed'] = 1;
+            }
+            return $orders;
+        }
+        return [];
     }
 }

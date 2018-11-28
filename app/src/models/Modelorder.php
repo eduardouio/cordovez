@@ -290,11 +290,13 @@ class Modelorder extends CI_Model
             $query = str_replace('{{f_inicio}}', $f_inicio, $query);
             $query = str_replace('{{f_fin}}', $f_fin, $query);
             $query = str_replace('{{regimen}}', '70', $query);
+            $query = $query . ' ORDER BY fecha_ingreso_almacenera, nro_pedido';
         }else{
             $query = str_replace('{{column}}', 'fecha_llegada_cliente', $query);
             $query = str_replace('{{f_inicio}}', $f_inicio, $query);
             $query = str_replace('{{f_fin}}', $f_fin, $query);
             $query = str_replace('{{regimen}}', '10', $query);
+            $query = $query . ' ORDER BY fecha_llegada_cliente, nro_pedido';
         }
         
         $result = $this->modelBase->runQuery($query);

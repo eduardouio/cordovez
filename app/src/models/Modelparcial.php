@@ -467,6 +467,7 @@ class Modelparcial extends CI_Model
                     LEFT JOIN pedido as pd on (p.nro_pedido = pd.nro_pedido)
                     WHERE p.fecha_llegada_cliente >= '$f_inicio'
                     AND p.fecha_llegada_cliente <= '$f_fin'
+                    ORDER BY p.fecha_llegada_cliente
                  ";
         $result = $this->modelBase->runQuery($query);
         

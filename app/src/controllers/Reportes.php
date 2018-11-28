@@ -8,7 +8,7 @@ require_once ( $libraries_url . 'StockOrder.php' );
 require_once ( $libraries_url . 'ReportICE.php' );
 require_once ( $libraries_url . 'ReportCompleteOrder.php' );
 require_once ( $libraries_url . 'ReportStatusProduct.php' );
-
+    
 /**
  * muestra en panatalla los reportes obtenidos por el sistema 
  * @package    CordovezApp

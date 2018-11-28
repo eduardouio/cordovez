@@ -110,6 +110,7 @@ class ModelReportICE extends CI_Model
         if($orders){
             foreach ($orders as $k => $order){
                 $orders[$k]['invoice'] = $this->modelOrderInvoice->getCompleteInvoiceByOrder($order['nro_pedido']);
+                #ponemos el pedido como cerrado solo para la generacion del reporte
                 $orders[$k]['bg_isclosed'] = 1;
             }
             return $orders;

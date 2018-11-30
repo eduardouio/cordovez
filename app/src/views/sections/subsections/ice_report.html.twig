@@ -4,7 +4,6 @@
          <div class="form-group">
             <label for="anio">Año:</label>
             <select name="anio" id="anio" class="form-control">
-               <option selected="selected" disabled="disabled">Seleccione...</option>
                <option value="2018">2018</option>
             </select>
          </div>
@@ -14,7 +13,6 @@
          <div class="form-group">
             <label for="mes">Mes:</label>
             <select name="mes" id="mes" class="form-control">
-               <option selected="selected" disabled="disabled">Seleccione...</option>
                <option value="1">Enero</option>
                <option value="2">Febrero</option>
                <option value="3">Marzo</option>
@@ -75,9 +73,17 @@
             </thead>
             <tbody>
                {% for item in report %}
+               {% set tipo_cambio = 1 %}
+               {% set simbol = '$' %}
+               {% if item.moneda == 'EUROS' %}
+               		{% set tipo_cambio = 1.25 %}
+               		{% set simbol = '&euro;' %}
+               {% endif %}
                <tr>
                <td>{{ loop.index }}</td>
-               <td class="text-right"> <a href="{{ rute_url }}pedido/presentar/{{ item.pedido }}" target="_blank">{{ item.pedido }}</a></td>
+               <td class="text-right" nowrap> 
+               <a href="{{ rute_url }}pedido/presentar/{{ item.pedido }}" target="_blank"><small class="">({{ simbol | raw }})</small> {{ item.pedido }}</a>               
+               </td>
                <td nowrap="nowrap">{{ item.product }}</td>
                <td nowrap="nowrap">{{ item.cod_ice }} </td>
                {% if item.unidades > 0 %}
@@ -86,25 +92,25 @@
                		<td class="text-right" nowrap="nowrap">{{ item.fecha_ingreso_almacenera | date('d/m/Y') }}</td>
                {% endif %}
                <td>{{ item.pais_origen }}</td>
-               <td class="text-right">{{ item.nro_cajas | number_format(0, ',','.') }}</td>
-               <td class="text-right">{{ item.unidades | number_format(0, ',' , '.') }}</td>
-               <td class="text-right">{{ (item.costo_caja * item.nro_cajas) | number_format(2,',','.')}}</td>
-               <td class="text-right">{{ (item.costo_total - item.total_ice) | number_format(2,',','.')}}</td>
-               <td class="text-right">{{ item.capacidad_ml | number_format(0,',','.')}}</td>
-               <td class="text-right">{{ item.grado_alcoholico | number_format(2,',','.')}}</td>
+               <td class="text-right">{{ item.nro_cajas | number_format(2, '.','') }}</td>
+               <td class="text-right">{{ (item.nro_cajas * item.cantidad_x_caja) | number_format(0, '.','') }}</td>
+               <td class="text-right">{{ ((item.costo_caja * item.nro_cajas) * tipo_cambio ) | number_format(2,'.','')}}</td>
+               <td class="text-right">{{ (item.costo_total - item.total_ice) | number_format(2,'.','')}}</td>
+               <td class="text-right">{{ item.capacidad_ml | number_format(0,'.','')}}</td>
+               <td class="text-right">{{ item.grado_alcoholico | number_format(2,'.','')}}</td>
                {% if item.unidades > 0 %}
-               		<td class="text-right text-primary">{{ (item.ex_aduana / item.unidades) | number_format(2,',','.')}}</td>
+               		<td class="text-right text-primary">{{ (item.ex_aduana / item.unidades) | number_format(2,'.','')}}</td>
                {% else %}
                		<td class="text-right text-primary"> 0 </td>
                {% endif %}
-               <td class="text-right text-primary">{{ item.base_advalorem | number_format(2,',','.')}}</td>
+               <td class="text-right text-primary">{{ item.base_advalorem | number_format(2,'.','')}}</td>
 				{% if item.unidades > 0 %}
-               		<td class="text-right text-primary">{{ (item.ice_especifico / item.unidades) | number_format(2,',','.')}}</td>               		
+               		<td class="text-right text-primary">{{ (item.ice_especifico / item.unidades) | number_format(2,'.','')}}</td>               		
                {% else %}
                		<td class="text-right text-primary"> 0 </td>
                {% endif %}
                {% if item.unidades > 0 %}
-		             <td class="text-right text-primary">{{ (item.ice_advalorem_sin_tasa / item.unidades) | number_format(2,',','.')}}</td>
+		             <td class="text-right text-primary">{{ (item.ice_advalorem  / item.unidades) | number_format(2,'.','')}}</td>
                {% else %}
                		<td class="text-right text-primary"> 0 </td>
                {% endif %}
@@ -113,8 +119,8 @@
                {% else %}
                		<td class="text-right text-primary"> 0 </td>
                {% endif %}
-               <td class="text-right text-primary">{{ item.total_ice | number_format(2,',','.')}}</td>
-               <td class="text-right text-primary">{{ item.costo_total | number_format(2,',','.')}}</td>
+               <td class="text-right text-primary">{{ item.total_ice | number_format(2,'.','')}}</td>
+               <td class="text-right text-primary">{{ item.costo_total | number_format(2,'.','')}}</td>
                <td class="text-right">{{ item.nro_refrendo [:3]}}</td>
                <td class="text-right">{{ item.nro_refrendo [4:4]}}</td>
                <td class="text-right">{{ item.nro_refrendo [9:2]}}</td>

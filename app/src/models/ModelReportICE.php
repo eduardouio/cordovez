@@ -70,10 +70,11 @@ class ModelReportICE extends CI_Model
      */
     private function getOrders() : array{
        $orders = $this->modelOrder->getArrivedCellarByDate($this->year,$this->month);
+             
        if($orders){
            foreach ($orders as $k => $order){
                $orders[$k]['invoice'] = $this->modelOrderInvoice->getCompleteInvoiceByOrder($order['nro_pedido']);
-           }
+           }           
            return $orders;
        }
        return [];
@@ -107,12 +108,13 @@ class ModelReportICE extends CI_Model
      */
     private function getTemWarwnhouse(): Array {
         $orders = $this->modelOrder->getArrivedCellarByDate($this->year,$this->month, True);
+        
         if($orders){
             foreach ($orders as $k => $order){
                 $orders[$k]['invoice'] = $this->modelOrderInvoice->getCompleteInvoiceByOrder($order['nro_pedido']);
                 #ponemos el pedido como cerrado solo para la generacion del reporte
                 $orders[$k]['bg_isclosed'] = 1;
-            }
+            }                        
             return $orders;
         }
         return [];

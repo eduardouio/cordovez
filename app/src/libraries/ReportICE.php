@@ -70,6 +70,7 @@ class ReportICE {
                 'tipo_cambio' => ($order['tipo_cambio_impuestosR10'] =! null ) ? $order['tipo_cambio_impuestosR10'] : 1,
                 'fecha_liquidacion_aduana' => $order['fecha_liquidacion'],
                 'fecha_llegada_cliente' => $order['fecha_llegada_cliente'],
+                'fecha_ingreso_almacenera' => $order['fecha_ingreso_almacenera'],
                 'nro_liquidacion' => $order['nro_liquidacion'],
                 'nro_refrendo' => $order['nro_refrendo'],
                 'valor_factura' => $order['invoice']['valor'],
@@ -132,9 +133,7 @@ class ReportICE {
                     ['order' => $parcial['nro_pedido'], 'parcial' => $parcial['id_parcial'], 'regimen' => 70]
                     );
             }
-        }
-        
+        }       
         return $errors;
     }   
-    
 }

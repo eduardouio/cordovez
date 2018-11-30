@@ -269,11 +269,16 @@ class Reportes extends MY_Controller
             'Noviembre',
             'Diciembre',
         ];
-        if($_GET){            
+        $current_year = '';
+        $current_mounth = '';
+        if($_GET){           
+            $current_year = $_GET['anio'];
+            $current_mounth = $_GET['mes'];
             $repor_ice = new ReportICE(
                 $this->modelReporICE->getData($_GET['anio'], $_GET['mes'])
                 );
             $data_report = $repor_ice->getReport();
+                        
             $have_unclosed_items = False;
             
             if($data_report['errors']['orders'] || $data_report['errors']['parcials']){
@@ -286,12 +291,16 @@ class Reportes extends MY_Controller
                 'errors' => $data_report['errors'],
                 'have_unclosed_items' => $have_unclosed_items,
                 'reporte_ice' => true,
+                'current_year' => $current_year,
+                'current_mounth' => $current_mounth,
             ]);
         }else{
             return $this->responseHttp([
                 'titleContent' => 'Reporte de ICE',
                 'orders_list' => $this->modelOrder->getAll(),
                 'reporte_ice' => true,
+                'current_year' => $current_year,
+                'current_mounth' => $current_mounth,
             ]);
         }
     }

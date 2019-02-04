@@ -4,10 +4,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
 $libraries_url = realpath(dirname(__FILE__));
 $libraries_url = str_replace('controllers', 'libraries/', $libraries_url);
 
-require_once ( $libraries_url . 'TaxesCalcR70.php' );
-require_once ( $libraries_url . 'TaxesCalcR10.php' );
+require_once ( $libraries_url . 'TaxesCalc.php' );
 require_once ( $libraries_url . 'StockOrder.php' );
-require_once ( $libraries_url . 'Prorrateos.php' );
 
 
 /**
@@ -30,7 +28,6 @@ class Impuestos extends MY_Controller
     private $ModelOrderInvoiceDetail;
     private $modelSupplier;
     private $modelOrderInvoice;
-    private $modelExpenses;
     private $modelProducts;
     private $modelUser;
     private $modelLog;
@@ -39,8 +36,6 @@ class Impuestos extends MY_Controller
     private $modelInitExpenses;
     private $modelRatesExpenses;
     private $ratesValues;
-    private $modelProrrateo;
-    private $modelProrrateoDetail;
 
     /**
      * Contructor de la clase
@@ -72,8 +67,6 @@ class Impuestos extends MY_Controller
         $this->load->model('Modelinfoinvoicedetail');
         $this->load->model('Modelinitexpenses');
         $this->load->model('Modelrateexpenses');
-        $this->load->model('Modelprorrateo');
-        $this->load->model('Modelprorrateodetail');
         $this->load->helper('utils.php');
         $this->modelInitExpenses = new Modelinitexpenses();
         $this->modelOrder = new Modelorder();
@@ -88,8 +81,6 @@ class Impuestos extends MY_Controller
         $this->modelInfoInvoice = new Modelinfoinvoice();
         $this->modelInfoInvoiceDetail = new Modelinfoinvoicedetail();
         $this->modelRatesExpenses = new Modelrateexpenses();
-        $this->modelProrrateo = new Modelprorrateo();
-        $this->modelProrrateoDetail = new Modelprorrateodetail();
         $this->ratesValues = $this->modelRatesExpenses->getParcialRates();
     }
 
@@ -125,12 +116,15 @@ class Impuestos extends MY_Controller
                 );
             return $this->index();
         }
+        
         $init_data = $this->getOrderDataR70($id_parcial);
 
         $detail_order_invoices = [];
         $detail_info_invoices = [];
 
-        $order_invoices = $this->modelOrderInvoice->getCompleteInvoiceByOrder($parcial['nro_pedido']);
+        $order_invoices = $this->modelOrderInvoice->getCompleteInvoiceByOrder(
+            $parcial['nro_pedido']
+            );
 
         if($order_invoices){
             foreach ($order_invoices['detail'] as $k => $v){
@@ -153,110 +147,29 @@ class Impuestos extends MY_Controller
             }
         }
 
-        $stock_order = new StockOrder(
-            $init_data['order'],
-            $detail_order_invoices,
-            $detail_info_invoices
-            );
-        $prorrateoLib = new Prorrateos($init_data, $stock_order->getCurrentOrderStock());
-        $prorrateo_values = $prorrateoLib->getValues();
-        #seteamos la tasa de control en el producto
-        if($prorrateoLib->have_tasa && $parcial['bg_isliquidated'] == 0){
-            @$this->updateTasaDetail(
-                            $prorrateoLib->tasa_parcial,
-                            $init_data,
-                            $prorrateoLib->tase_base_peso
-                );
-        }
-
-        $init_data['fobs_parcial'] = $prorrateo_values['fobs_parcial'];
-        $init_data['warenhouses'] = $prorrateo_values['warenhouses'];
-
-        $prorrateos = $this->updateProrrateoParcial(
-                                            $prorrateo_values,
-                                            $parcial
-            );
-
-
         $param_taxes = $this->modelRatesExpenses->getTaxesParams();
-        $parcialTaxes =  new parcialTaxes(
+        $parcialTaxes =  new TaxesCalc(
                                         $init_data,
-                                        $prorrateos,
-                                        $param_taxes,
-                                        $parcial
+                                        $param_taxes
             );
-
-
-        if(checkTASAControl($init_data)){
-            $weigth = False;
-            foreach ($init_data['order_invoice_detail'] as $k => $item){
-                if($item['peso'] == null || $item['peso'] == '' || $item['peso'] == 0){
-                    $this->modelLog->warningLog(
-                        'Uno de los items de la factura no tiene ingresado el peso'
-                        );
-                    $weigth = True;
-                }
-            }
-
-            if($weigth){
-                return $this->redirectPage('insertWeigth', $init_data['order_invoices'][0]['id_pedido_factura']);
-            }
-        }
-
+        
         $all_parcials = $this->modelParcial->getAllParcials($parcial['nro_pedido']);
         $ordinal_parcial = ordinalNumberParcial($all_parcials, $parcial['id_parcial']);
 
-        $parcial_taxes = @$parcialTaxes->getTaxes();
+        $parcial_taxes = $parcialTaxes->getTaxes();
 
         return ($this->responseHttp([
             'title' => 'Impuesto Parcial ' . $ordinal_parcial . '/' . count($all_parcials),
             'titleContent' => 'Resumen de Impuestos Liquidación Aduana [Parcial ' .
                               $ordinal_parcial . '/' . count($all_parcials) .
-                              '] [Pedido ' . $init_data['order']['nro_pedido'] . '] Ref ' . $init_data['info_invoices'][0]['nro_refrendo'] ,
+                              '] [Pedido ' . $init_data['order']['nro_pedido'] . '] Ref ' . 
+                               $init_data['info_invoices'][0]['nro_refrendo'] ,
             'init_data' => $init_data,
             'parcial_taxes' => $parcial_taxes,
-            'prorrateos' => $prorrateos,
             'parcial' => $parcial,
-            'warenhouses' => $init_data['warenhouses'],
             'regimen' => 'R70',
             'user' => $this->modelUser->get($init_data['parcial']['id_user']),
         ]));
-    }
-
-
-    /**
-     * Actualiza la tasa en los productos de la factura informativa
-     */
-    private function updateTasaDetail($tasa_parcial, $init_data, $peso = false){
-        if ($peso){
-            foreach ($init_data['products'] as $i => $dt){
-                foreach ($tasa_parcial as  $tp){
-                    if($tp['detalle_pedido_factura'] == $dt['detalle_pedido_factura']){
-                        $dt['tasa_control'] = $tp['tasa_parcial'];
-                        $this->modelInfoInvoiceDetail->update($dt);
-                        break;
-                    }
-                }
-            }
-            return true;
-        }
-
-        $total_info_invoices = 0.0;
-
-        foreach ($init_data['info_invoices'] as $i => $inv){
-            $total_info_invoices += $inv['valor'];
-        }
-
-        foreach ($init_data['products'] as $i => $dt){
-            foreach ($tasa_parcial as  $tp){
-                if($tp['detalle_pedido_factura'] == $dt['detalle_pedido_factura']){
-                    $dt['tasa_control'] = $tp['tasa_parcial'] * ($tp['costo_item']/$total_info_invoices);
-                    $this->modelInfoInvoiceDetail->update($dt);
-                    break;
-                }
-            }
-        }
-
     }
 
 
@@ -340,9 +253,6 @@ class Impuestos extends MY_Controller
                 ),
             'info_invoices' => $info_invoices,
             'products' => $infoInfoiceDetail,
-            'last_prorrateo' => $this->modelProrrateo->getLastProrrateo(
-                                                          $id_parcial
-                ),
         ]);
     }
 
@@ -365,28 +275,12 @@ class Impuestos extends MY_Controller
         $init_data = $this->getOrderDataR10($nroOrder);
         $param_taxes = $this->modelRatesExpenses->getTaxesParams();
 
-        $orderTaxes =  new orderTaxes(
+        $orderTaxes =  new TaxesCalc(
             $init_data,
             $param_taxes,
-            $order
+            False
             );
-
-        if(checkTASAControl($init_data)){
-            $weigth = False;
-            foreach ($init_data['order_invoice_detail'] as $k => $item){
-                if($item['peso'] == null || $item['peso'] == '' || $item['peso'] == 0){
-                    $this->modelLog->warningLog(
-                        'Uno de los items de la factura no tiene ingresado el peso'
-                        );
-                    $weigth = True;
-                }
-            }
-
-            if($weigth){
-                return $this->redirectPage('insertWeigth', $init_data['order_invoices'][0]['id_pedido_factura']);
-            }
-        }
-
+        
         $order_taxes = $orderTaxes->getTaxes();
 
         return ($this->responseHttp([
@@ -423,7 +317,6 @@ class Impuestos extends MY_Controller
             return $this->index();
         }
 
-        $order_detail = [];
         $products_base = [];
 
 
@@ -682,120 +575,6 @@ class Impuestos extends MY_Controller
     }
 
 
-    /**
-     * Registra y/o actualiza los valores prorrateados del parcial
-     *
-     * @param $prorrateo_values array detalle de los prorrateos
-     * @param $parcial array informacion del parcial
-     */
-    private function updateProrrateoParcial(
-                                        array $prorrateo_values,
-                                        array $parcial
-        )
-    {
-
-        if($parcial['bg_isclosed']){
-
-            $this->modelLog->generalLog(
-                'El parcial se encuentra cerrado no se puede continuar'
-                );
-
-            return $this->getProrrateosParcial($parcial['id_parcial']);
-        }
-
-        $fobs = $prorrateo_values['fobs_parcial'];
-        $warenhouses = $prorrateo_values['warenhouses'];
-        $prorrateos_parcial = $prorrateo_values['prorrateos']['prorrateo_parcial'];
-        $prorrateo_pedido = $prorrateo_values['prorrateos']['prorrateo_pedido'];
-
-        $this->modelProrrateo->deleteProrrateoByParcial($parcial['id_parcial']);
-
-        $prorrateoHeader = [
-            'id_parcial' => $parcial['id_parcial'],
-            'porcentaje_parcial' => $fobs['fob_parcial_razon_inicial'],
-            'fob_parcial_razon_inicial' => $fobs['fob_parcial_razon_inicial'],
-            'fob_parcial_razon_saldo' => $fobs['fob_parcial_razon_saldo'],
-            'fob_proximo_parcial' => $fobs['fob_proximo_parcial'],
-            'fob_inicial' => $fobs['fob_inicial'],
-            'fob_saldo' => $fobs['fob_saldo'],
-            'fob_parcial' => $fobs['fob_parcial'],
-            'almacenaje_parcial' => $warenhouses['almacenaje_parcial'],
-            'almacenaje_anterior' => $warenhouses['almacenaje_anterior'],
-            'almacenaje_aplicado' => $warenhouses['almacenaje_aplicado'],
-            'almacenaje_proximo_parcial' => $warenhouses['almacenaje_proximo_parcial'],
-            'prorrateo_flete_aduana' => $fobs['prorrateo_flete_aduana'],
-            'prorrateo_seguro_aduana' => $fobs['prorrateo_seguro_aduana'],
-            'id_user' => $this->session->userdata('id_user'),
-        ];
-
-        $id_prorrateo = $this->modelProrrateo->createProrrateo($prorrateoHeader);
-        $prorrateo_detail = [];
-
-        if($id_prorrateo){
-            $prorrateos = array_merge($prorrateo_pedido, $prorrateos_parcial);
-            foreach ($prorrateos as $idx => $prorrateo){
-                $valor_prorrateado = 0;
-                $tipo = '';
-
-                if($prorrateo['tipo'] == 'INICIAL'){
-                    $valor_prorrateado = $prorrateo['valor_prorrateado'];
-                    $tipo = 'gasto_inicial';
-                }else{
-                    $valor_prorrateado = $prorrateo['valor_provisionado'];
-                    $tipo = 'parcial';
-                }
-
-                $detail = [
-                    'id_prorrateo' => $id_prorrateo,
-                    'id_gastos_nacionalizacion' => $prorrateo['id_gastos_nacionalizacion'],
-                    'tipo' => $tipo,
-                    'concepto' => $prorrateo['concepto'],
-                    'valor_prorrateado' => $valor_prorrateado,
-                    'valor_provisionado' => $prorrateo['valor_provisionado'],
-                    'id_user' => $this->session->userdata('id_user'),
-                ];
-
-                $this->modelProrrateoDetail->createProrrateoDetail($detail);
-                array_push($prorrateo_detail, $detail);
-
-            }
-
-            return [
-                'prorrateo' => $prorrateoHeader,
-                'prorrateo_detail' => $prorrateo_detail,
-            ];
-        }
-
-        $this->modelLog->errorLog(
-            'No se puede actualizar el parcial Error en prorrateos',
-            $this->db->last_query()
-            );
-
-        return False;
-    }
-
-
-    /**
-     * Obtiene el detalle de los prorrateos del parcial
-     * @param int $id_parcial
-     */
-    private function getProrrateosParcial($id_parcial){
-
-        $prorrateo = $this->modelProrrateo->getProrrateoByParcial(
-            $id_parcial
-            );
-        $prorrateo_detail = $this->modelProrrateoDetail->getAllDetailProrrateo(
-            $prorrateo['id_prorrateo']
-            );
-
-        return [
-            'prorrateo' => $prorrateo,
-            'prorrateo_detail' => $prorrateo_detail,
-        ];
-
-    }
-
-
     /*
      * Redenderiza la informacion y la envia al navegador
      * @param array $config informacion de la plantilla
@@ -805,6 +584,7 @@ class Impuestos extends MY_Controller
         return ($this->twig->display($this->template, array_merge($config, [
             'base_url' => base_url(),
             'rute_url' => base_url() . 'index.php/',
+            'sgi_url' => $this->sgi_url,
             'controller' => $this->controller,
             'iconTitle' => 'fa-money',
             'content' => 'home'

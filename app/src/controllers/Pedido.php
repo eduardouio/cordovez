@@ -677,6 +677,7 @@ class Pedido extends MY_Controller
             $this->twig->display($this->template, array_merge($config,[
                 'base_url' => base_url(),
                 'rute_url' => base_url() . 'index.php/',
+                'sgi_url' => $this->sgi_url,
                 'controller' => $this->controller,
                 'iconTitle' => 'fa-cubes',
                 'content' => 'home']))

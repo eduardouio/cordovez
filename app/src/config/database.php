@@ -77,10 +77,10 @@ $query_builder = TRUE;
 
 $db['localhost'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => 'root',
-	'password' => 'elian.2011',
-	'database' => 'cordovezApp',
+	'hostname' => '192.168.0.198',
+	'username' => 'appCordovez',
+	'password' => '\DBGfW<7;vBa5(LB',
+	'database' => 'cordovezAppDjango',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,

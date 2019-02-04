@@ -5,5 +5,5 @@ colores/
 .buildpath
 .idea/
 .project
-
+app/.settings/org.eclipse.wst.validation.prefs
 /app/nbproject/private/

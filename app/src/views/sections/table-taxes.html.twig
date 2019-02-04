@@ -22,10 +22,6 @@
                </td>
             </tr>
             <tr>
-               <td class="text-right brackground-gray"><strong>Tipo de Cambio Factura</strong></td>
-               <td class="text-right">{{ parcial_taxes.data_general.tipo_cambio_factura | number_format(6,',','.') }}</td>
-            </tr>
-            <tr>
                <td class="text-right brackground-gray"><strong>Tipo de Cambio Parcial</strong></td>
                <td class="text-right">{{ parcial_taxes.data_general.tipo_cambio_parcial | number_format(6,',','.') }}</td>
             </tr>
@@ -36,10 +32,6 @@
             <tr>
                <td class="text-right brackground-gray"><strong>FOB</strong></td>
                <td class="text-right">{{ (parcial_taxes.sums.fob) | number_format(3,',','.') }}</td>
-            </tr>
-            <tr>
-               <td class="text-right brackground-gray"><strong>Porcentaje</strong></td>
-               <td class="text-right">{{ init_data.fobs_parcial.fob_parcial_razon_inicial | number_format(5,',','.') }}</td>
             </tr>
             <tr>
                <td class="text-right brackground-gray"><strong> Etiquetas Fiscales</strong></td>              
@@ -85,7 +77,12 @@
       <div class="row">
          <div class="col-md-1"></div>
          <div class="col-md-10">
-            {% include '/sections/subsections/tabs_container_taxes_params.html.twig' %}
+         {%  if init_data.order.regimen == '10'  %}
+         {%  include 'forms/frm_params_taxesR10.html.twig'  %}
+         {% else %}      	 
+         {%  include 'forms/frm_params_taxes.html.twig'  %}
+         {% endif %}
+         
          </div>
          <div class="col-md-1"></div>
       </div>

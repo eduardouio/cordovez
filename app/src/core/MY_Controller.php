@@ -16,6 +16,7 @@ class MY_Controller extends CI_Controller
 {
     private $modelBase;
     private $modelLog;
+    protected  $sgi_url = 'http://localhost:5000/';
     
     public function __construct()
     {

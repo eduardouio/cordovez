@@ -61,12 +61,11 @@ class TaxesCalc {
        'data_general' => [],
        ];
              
-        
        $all_products = [];
        if ($this->is_partial){
            $all_products = $this->init_data['products'];
        }else{
-           $all_products = $this->init_data['products_base'];
+           $all_products = $this->init_data['order_invoice_detail'];
        }
        
        foreach ($all_products as $item => $product){
@@ -124,12 +123,14 @@ class TaxesCalc {
             }
         }else{
             $this->type_change = $this->init_data['order']['tipo_cambio_impuestosR10'];
+            if (boolval(!$this->type_change)){
+                $this->type_change = 1;
+            }
             $this->gastos_origen = $this->init_data['order']['gasto_origen'];
         }
                        
         $this->incoterm = strtoupper($this->init_data['order']['incoterm']);
     }
-    
     
     
     /**
@@ -213,18 +214,25 @@ class TaxesCalc {
                 
             }
         }
-               
-        foreach ($this->init_data['order_invoice_detail'] as $item => $dt){
-            if(
-                $dt['detalle_pedido_factura']
-                ==
-                $detail_info_invoice['detalle_pedido_factura']
-                ){
-                    $detail_order_invoice = $dt;
-                    break;
-            }
-        }                
         
+        if ($this->is_partial){
+            
+            foreach ($this->init_data['order_invoice_detail'] as $item => $dt){
+                if(
+                    $dt['detalle_pedido_factura']
+                    ==
+                    $detail_info_invoice['detalle_pedido_factura']
+                    ){
+                        $detail_order_invoice = $dt;
+                        break;
+                }
+            }  
+        }else{
+            $detail_order_invoice = $detail_info_invoice;
+        }
+              
+        
+       
         #solo funciona para la primera factura informativa
         $total_invoices = 0;
         if ($this->is_partial){                
@@ -247,41 +255,52 @@ class TaxesCalc {
                 )
             / $total_invoices
             );
-            
         
-            if ($this->incoterm == 'CFR'){               
-                #solo primera factura
-                $fob = (
-                    (
-                        $detail_info_invoice['nro_cajas']
-                        * $detail_order_invoice['costo_caja']
-                        )
-                    * $this->type_change_parcial
-                    );
-                
-            }elseif ($this->incoterm == 'FOB'){               
-                $fob = (
-                    (   $detail_info_invoice['nro_cajas']
-                        * $detail_order_invoice['costo_caja']
-                        )
-                    + ($this->gastos_origen * $percent)
-                    ) * $this->type_change;
-                    
-                    $gasto_origen =
-                    ($this->gastos_origen * $percent)
-                    * $this->type_change;
-                    
-            }else{             
-                $fob = (
-                    (   $detail_info_invoice['nro_cajas']
-                        * $detail_order_invoice['costo_caja']
-                    ) 
-                    + $detail_info_invoice['gasto_origen']
-                    ) * $this->type_change;
-                    
-                    $gasto_origen = $detail_info_invoice['gasto_origen'];
-            }
+       
+        if ($this->incoterm == 'CFR'){               
+            #solo primera factura
+            $fob = (
+                (
+                    $detail_info_invoice['nro_cajas']
+                    * $detail_order_invoice['costo_caja']
+                    )
+                * $this->type_change_parcial
+                );
             
+        }elseif ($this->incoterm == 'FOB'){            
+            $fob = (
+                (   $detail_info_invoice['nro_cajas']
+                    * $detail_order_invoice['costo_caja']
+                    )
+                + ($this->gastos_origen * $percent)
+                ) * $this->type_change;
+                
+                $gasto_origen =
+                ($this->gastos_origen * $percent)
+                * $this->type_change;
+                
+        }else{             
+            $fob = (
+                (   $detail_info_invoice['nro_cajas']
+                    * $detail_order_invoice['costo_caja']
+                ) 
+                + $detail_info_invoice['gasto_origen']
+                ) * $this->type_change;
+                
+                $gasto_origen = $detail_info_invoice['gasto_origen'];
+        }
+        
+        $seguro_aduana = 0 ;
+        $flete_aduana = 0 ;
+        
+        if ($this->is_partial){
+            $seguro_aduana = $percent * $this->init_data['info_invoices'][0]['flete_aduana'] ;
+            $flete_aduana = $percent * $this->init_data['info_invoices'][0]['seguro_aduana'];
+        }else{
+            $seguro_aduana = $percent * $this->init_data['order']['flete_aduana'] ;
+            $flete_aduana = $percent * $this->init_data['order']['seguro_aduana'];
+        }
+        
         return ([
             'nombre'=> $product_base['nombre'],
             'cod_contable' => $product['cod_contable'],
@@ -309,12 +328,12 @@ class TaxesCalc {
             'tasa_control' => $detail_info_invoice['tasa_control'],
             'otros' => $detail_info_invoice['otros'],
             'fob' => $fob,
-            'seguro_aduana' => $percent * $this->init_data['info_invoices'][0]['seguro_aduana'],
-            'flete_aduana' => $percent * $this->init_data['info_invoices'][0]['flete_aduana'],
+            'seguro_aduana' => $seguro_aduana,
+            'flete_aduana' => $flete_aduana,
             'cif' => (
                 $fob
-                + $percent * $this->init_data['info_invoices'][0]['seguro_aduana']
-                + $percent * $this->init_data['info_invoices'][0]['flete_aduana']
+                + $seguro_aduana
+                + $flete_aduana
                 ),
         ]);
     }

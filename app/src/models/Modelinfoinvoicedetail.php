@@ -163,6 +163,7 @@ class Modelinfoinvoicedetail extends CI_Model
             $this->modelLog->queryUpdateLog($this->db->last_query());
             return true;
         }
+        print $this->db->last_query();
         return false;
     }
 

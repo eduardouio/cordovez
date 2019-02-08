@@ -151,13 +151,26 @@ class Impuestos extends MY_Controller
         $parcialTaxes =  new TaxesCalc(
                                         $init_data,
                                         $param_taxes
-            );
+                         );
         
         $all_parcials = $this->modelParcial->getAllParcials($parcial['nro_pedido']);
         $ordinal_parcial = ordinalNumberParcial($all_parcials, $parcial['id_parcial']);
-
         $parcial_taxes = $parcialTaxes->getTaxes();
-
+        
+        if ($parcial['bg_isliquidated'] == 0){
+            foreach ($parcial_taxes['taxes'] as $item){
+                $item['id_factura_informativa_detalle'] = $item['id_registro'];
+                unset($item['id_registro']);
+                unset($item['cajas']);
+                unset($item['costo_caja']);
+                unset($item['capacidad_ml']);
+                unset($item['indirectos']);
+                unset($item['ex_aduana_unitario_antes']);
+           $this->modelInfoInvoiceDetail->update($item);
+           $this->modelLog->generalLog('Registro de prorrateos impuestos');
+            }
+        }
+        
         return ($this->responseHttp([
             'title' => 'Impuesto Parcial ' . $ordinal_parcial . '/' . count($all_parcials),
             'titleContent' => 'Resumen de Impuestos Liquidación Aduana [Parcial ' .
@@ -280,18 +293,31 @@ class Impuestos extends MY_Controller
             $param_taxes,
             False
             );
-        
         $order_taxes = $orderTaxes->getTaxes();
-
+        if ($order['bg_isliquidated'] == 0){
+            foreach($order_taxes['taxes'] as $i => $item){
+                $item['detalle_pedido_factura'] = $item['id_registro'];
+                unset($item['id_registro']);
+                unset($item['cajas']);
+                unset($item['costo_caja']);
+                unset($item['capacidad_ml']);
+                unset($item['indirectos']);
+                unset($item['ex_aduana_unitario_antes']);
+                
+                $this->ModelOrderInvoiceDetail->update($item);
+                $this->modelLog->generalLog('Prorrateo de impuestos Actualizados');
+            }
+        }
+        
         return ($this->responseHttp([
             'titleContent' => 'Resumen de Impuestos Liquidación Aduana del Pedido ' .
-                                              $init_data['order']['nro_pedido'] .
-                                            ' [ ' . $order['incoterm'] . ' Régimen' .
-                                            $order['regimen'] .  ' ] Ref. '  . $order['nro_refrendo'],
+                      $init_data['order']['nro_pedido'] .
+                    ' [ ' . $order['incoterm'] . ' Régimen' .
+                    $order['regimen'] .  ' ] Ref. '  . $order['nro_refrendo'],
             'init_data' => $init_data,
             'order_taxes' => $order_taxes,
             'regimen' => 'R10',
-            'title' => 'Impuestos R10 ' . $order['nro_pedido'],
+            'title' => 'Impuestos' . $order['nro_pedido'],
             'order' => $order,
             'etiquetas_fiscales' => $order_taxes['sums']['unidades'] * 0.13,
             'user' => $this->modelUser->get($init_data['order']['id_user']),
@@ -399,9 +425,7 @@ class Impuestos extends MY_Controller
      * @param $etiquetas_fiscales boolean
      * @return string redirect
      */
-    public function actualizar()
-    {
-
+    public function actualizar() {
         $paramsParcial = [
             'id_parcial' => $_POST['id_parcial'],
             'bg_have_tasa_control' => 0,
@@ -482,7 +506,7 @@ class Impuestos extends MY_Controller
 
         if($this->modelOrder->update($order)){
             return $this->redirectPage(
-                'showTaxesOrderLiquidate',
+                'showTaxesOrder',
                 $order['nro_pedido']
                 );
         }
@@ -511,7 +535,7 @@ class Impuestos extends MY_Controller
 
         if($this->modelParcial->update($parcial)){
             return $this->redirectPage(
-                'showTaxesParcialLiquidate', $parcial['id_parcial']
+                'showTaxesParcial', $parcial['id_parcial']
                 );
         }
         print '<h1>Error de sistema</h1>';
@@ -528,13 +552,13 @@ class Impuestos extends MY_Controller
       */
      public function reverso(string $tipo, string $id){
 
-        if($tipo == 'pedido'){
+        if($tipo == 'pd'){
             $order = $this->modelOrder->get($id);
             if($order && $order['bg_isclosed'] == 0){
                 $order['last_update'] = date('Y-m-d');
                 $order['bg_isliquidated'] = 0;
                 if($this->modelOrder->update($order)){
-                    return  $this->redirectPage('validargi', $id);
+                    return  $this->redirectPage('showTaxesOrder', $id);
                 }
             }
         }elseif($tipo == 'pc'){
@@ -543,7 +567,7 @@ class Impuestos extends MY_Controller
                 $parcial['last_update'] = date('Y-m-d');
                 $parcial['bg_isliquidated'] = 0;
                 if($this->modelParcial->update($parcial)){
-                    return $this->redirectPage('parcial', $id);
+                    return $this->redirectPage('showTaxesParcial', $id);
                 };
             }
         }

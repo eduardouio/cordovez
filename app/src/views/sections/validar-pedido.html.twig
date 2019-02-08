@@ -308,19 +308,12 @@
              	</a>
                  	{% endif %}
              
-             {% else %}
-             	{% if order.bg_isliquidated == 0 %}	
+             {% else %}	
                  <a class="btn btn-success btn-sm pull-right" href="{{rute_url}}impuestos/pd/{{order.nro_pedido}}">
                  <span class="fa fa-money"></span>
                  Ver Impuestos de Liquidación
              	</a>
-             	{% else %}
-             	 <a class="btn btn-success btn-sm pull-right" href="{{rute_url}}reliquidacion/pd/{{order.nro_pedido}}">
-                 <span class="fa fa-money"></span>
-                 Ver Liquidación de Pedido
-             	</a>
-             {% endif %}
-             {% endif %}
+              {% endif %}
                          
          	{% else %}
          		<strong class="text-danger pull-right btn btn-sm">

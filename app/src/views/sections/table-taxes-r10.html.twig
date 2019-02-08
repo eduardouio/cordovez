@@ -21,10 +21,7 @@
                 {% endif %}   
                </td>
             </tr>
-            <tr>
-               <td class="text-right brackground-gray"><strong>Tipo de Cambio Factura</strong></td>
-               <td class="text-right">{{ order_taxes.data_general.tipo_cambio_factura | number_format(6,',','.') }}</td>
-            </tr>
+ 
             <tr>
                <td class="text-right brackground-gray"><strong>Tipo de Cambio Pedido</strong></td>
                <td class="text-right">{{ order_taxes.data_general.tipo_cambio_pedido | number_format(6,',','.') }}</td>
@@ -80,7 +77,7 @@
       <div class="row">
          <div class="col-md-1"></div>
          <div class="col-md-10">
-            {% include '/sections/subsections/tabs_container_taxes_params.html.twig' %}
+         {%  include 'forms/frm_params_taxesR10.html.twig'  %}
          </div>
          <div class="col-md-1"></div>
       </div>
@@ -290,21 +287,35 @@
 </div>
 <br />
 <div class="row">
-   <div class="col-md-6"></div>
+   <div class="col-md-6">
+   {% if init_data.order.bg_isliquidated == 1 and init_data.order.regimen == 10  %}
+	<h5 class="text-danger">Se ha registrado la liquidaci&oacute;n, el pedido fue enviado a costeo final <i class="fa fa-check"></i></h5>
+	<h5>Liquidaci&oacute;n: <strong>{{ init_data.order.nro_liquidacion }}</strong> con fecha: <strong>{{ init_data.order.fecha_liquidacion }}</strong></h5>
+	{% if init_data.order.regimen == 10 and init_data.order.bg_isclosed == 1 %}
+      	<h5>Liquidaci&oacute;n: <strong>{{ init_data.parcial.nro_liquidacion }}</strong> con fecha: <strong>{{ init_data.parcial.fecha_liquidacion }}</strong></h5>
+      	<span class="text-danger">Pedido Liquidado y Costeado</span>
+      {% endif %}
+   {% endif %}
+   </div>
    <div class="col-md-6 text-right">
-      {% if init_data.order.bg_isliquidated == 0 %}
+      {% if init_data.order.bg_isliquidated == 0 and init_data.order.regimen == 10 %}
       <!-- Button trigger modal -->
       <button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#myModal">
       <span class="fa fa-check">
       </span>
-      Aplicar Liquidación
+      		Aplicar Liquidación
       </button>
-      {% else %}
-      {% if (init_data_order.regimen == '10') %}
-      <a href="#" class="btn btn-sm btn-default"> <span class="fa fa-check"></span> Ver Reliquidación </a>
-      {% endif %}
       {% endif %}
       <a href="{{rute_url}}gstinicial/validargi/{{init_data.order.nro_pedido}}" class="btn btn-sm btn-default"> <span class="fa fa-arrow-left"></span> Volver A Gastos Pedido</a>
+      {% if init_data.order.bg_isliquidated == 1 and init_data.order.regimen == 10 and init_data.order.bg_isclosed == 0  %}
+      	<a href="{{ rute_url }}impuestos/reverso/pd/{{init_data.order.nro_pedido  }}" class="btn btn-sm btn-warning">
+      		<i class="fa fa-undo"></i>
+      		Reversar Liquidaci&oacute;n
+      	</a>
+      {% endif %}
+      
+      
+      
    </div>
 </div>
 <form action="{{rute_url}}impuestos/liquidarIvaOrder/" method="post">
@@ -657,7 +668,7 @@
                            type="text" 
                            class="number"
                            name="nro_liquidacion" 
-                           required="required" 
+                           required="required"
                            step="0.001"
                            autocomplete="off"
                            />

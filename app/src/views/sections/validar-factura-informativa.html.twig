@@ -215,18 +215,11 @@
          <a href="{{ rute_url }}impuestos/pc/{{ parcial.id_parcial }}" class="btn-sm btn-default btn"><span class="fa fa-money"></span> Tributos Iniciales</a>
             &nbsp;&nbsp;
             {% if info_invoices.values_isok == true%}
-             	{%  if partial_expenses.all_ok == true %}
-             	{%  if parcial.bg_isliquidated == '0' %}	
+             	{%  if partial_expenses.all_ok == true %}	
              		<a  href="{{rute_url}}impuestos/pc/{{parcial.id_parcial}}" class="btn btn-success btn-sm pull-right">
                  		 <span class="fa fa-money"></span>
               		  Vizualizar Impuestos Parcial 
               			</a>
-      			{%  else %}
-      			<a  href="{{rute_url}}reliquidacion/pc/{{parcial.id_parcial}}" class="btn btn-success btn-sm pull-right">
-                 		 <span class="fa fa-money"></span>
-              		  Vizualizar Liquidación Parcial 
-              			</a>
-      			{% endif %}
          	{% else %}
          		<strong class="text-danger pull-right btn btn-sm">
         		<span class="fa fa-ban"></span>

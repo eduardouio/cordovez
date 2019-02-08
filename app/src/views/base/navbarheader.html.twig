@@ -1,3 +1,4 @@
+{% set sgi_url = 'http://localhost:5000/' %} 
 <div class="navbar" style="margin-bottom: 0px">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -30,19 +31,13 @@
                             <a href="{{rute_url}}facturapagos/"><i class="fa fa-file-text-o fa-fw"></i>Justificaciones</a>
                         </li>                        
                         <li>
-                            <a href="{{rute_url}}proveedor/listar/"><i class="fa fa-users fa-fw"></i> Proveedores</a>
-                        </li>
-                        <li>
-                            <a href="{{rute_url}}producto"><i class="fa fa-cube fa-fw"></i>Productos</a>
+                            <a href="{{sgi_url}}" target="_blank"><i class="fa fa-cogs fa-fw"></i> SGI</a>
                         </li>
                         <li>
                             <a href="{{rute_url}}reportes"><i class="fa fa-table fa-fw"></i>Reportes</a>
                         </li>
                         <li>
                           <a href="{{ rute_url}}facturapagos/nuevo"><i class="fa fa-file-text-o fa-fw"></i>N. Factura</a>
-                        </li>
-                        <li>
-                          <a href="{{ rute_url  }}pedido/nuevo"><i class="fa fa-cubes fa-fw"></i> N Pedido</a>
                         </li>
                          <!-- /.dropdown -->
                 <li class="dropdown">

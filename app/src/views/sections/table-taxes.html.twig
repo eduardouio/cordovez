@@ -77,12 +77,7 @@
       <div class="row">
          <div class="col-md-1"></div>
          <div class="col-md-10">
-         {%  if init_data.order.regimen == '10'  %}
-         {%  include 'forms/frm_params_taxesR10.html.twig'  %}
-         {% else %}      	 
          {%  include 'forms/frm_params_taxes.html.twig'  %}
-         {% endif %}
-         
          </div>
          <div class="col-md-1"></div>
       </div>
@@ -290,7 +285,16 @@
 </div>
 <br>
 <div class="row">
-   <div class="col-md-6"></div>
+   <div class="col-md-6">
+   {% if init_data.parcial.bg_isliquidated == 1 and init_data.order.regimen == 70  %}
+	<h5 class="text-danger">Se ha registrado la liquidaci&oacute;n, el parcial fue enviado a costeo final <i class="fa fa-check"></i></h5>
+	<h5>Liquidaci&oacute;n: <strong>{{ init_data.parcial.nro_liquidacion }}</strong> con fecha: <strong>{{ init_data.parcial.fecha_liquidacion }}</strong></h5>
+	{% if init_data.order.regimen == 70 and init_data.parcial.bg_isclosed == 1 %}
+	<h5>Liquidaci&oacute;n: <strong>{{ init_data.parcial.nro_liquidacion }}</strong> con fecha: <strong>{{ init_data.parcial.fecha_liquidacion }}</strong></h5>
+      	<span class="text-danger">Parcial Liquidado y Costeado</span>
+      {% endif %}
+   {% endif %}
+   </div>
    <div class="col-md-6 text-right">
       {% if init_data.parcial.bg_isliquidated == 0 %}
       <!-- Button trigger modal -->
@@ -300,7 +304,7 @@
       Aplicar Liquidación
       </button>
       {% else %}
-      <a href="{{ rute_url }}reliquidacion/pc/{{init_data.parcial.id_parcial}}" class="btn btn-sm btn-default"> <span class="fa fa-check"></span> Ver Reliquidación </a>
+      <a href="{{ rute_url }}impuestos/reverso/pc/{{init_data.parcial.id_parcial}}" class="btn btn-sm btn-warning"> <span class="fa fa-undo"></span> Reversar Liquidaci&oacute;n </a>
       {% endif %}
       <a href="{{rute_url}}gstnacionalizacion/parcial/{{init_data.parcial.id_parcial}}" class="btn btn-sm btn-default"> <span class="fa fa-arrow-left"></span> Volver Parcial</a>
    </div>

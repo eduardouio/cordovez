@@ -17,6 +17,7 @@ class TaxesCalc {
     private $taxes = [];
     private $base_aranceles = [];
     private $type_change = 1;
+    private $exoneration_arancel = 0;
     private $is_partial;
     private $parcial;
     
@@ -39,6 +40,7 @@ class TaxesCalc {
         $this->param_taxes =  $param_taxes;
         $this->gastos_origen = 0.0;
         $this->is_partial = $is_partial;
+        
     }
     
        
@@ -98,7 +100,7 @@ class TaxesCalc {
        ];
        
        $taxes['data_general'] = $data_general;
-       
+                    
        return $taxes;
     }
     
@@ -128,8 +130,15 @@ class TaxesCalc {
             }
             $this->gastos_origen = $this->init_data['order']['gasto_origen'];
         }
-                       
+
         $this->incoterm = strtoupper($this->init_data['order']['incoterm']);
+        
+        if ($this->is_partial){
+            $this->exoneration_arancel = $this->init_data['parcial']['exoneracion_arancel']/100;
+        }else{
+            $this->exoneration_arancel = $this->init_data['order']['exoneracion_arancel']/100;
+        }
+        
     }
     
     
@@ -186,7 +195,8 @@ class TaxesCalc {
                 'arancel_advalorem_pagar' => $taxes_product['arancel_advalorem_pagar'],
                 'ice_unitario'=> $taxes_product['ice_unitario'],
                 'total_ice' => $taxes_product['total_ice'],
-                'indirectos' => $taxes_product['indirectos']
+                'indirectos' => $taxes_product['indirectos'],
+                'id_registro' => $product['id_registro'],
                 ]);
     }  
     
@@ -202,6 +212,7 @@ class TaxesCalc {
     {
         $product_base = [];
         $detail_order_invoice = [];
+        $id_registro = $detail_info_invoice['detalle_pedido_factura'];
         
         foreach ($this->init_data['products_base'] as $item => $product){
             if(
@@ -215,7 +226,8 @@ class TaxesCalc {
             }
         }
         
-        if ($this->is_partial){
+        if ($this->is_partial){     
+            $id_registro = $detail_info_invoice['id_factura_informativa_detalle'];
             
             foreach ($this->init_data['order_invoice_detail'] as $item => $dt){
                 if(
@@ -230,9 +242,8 @@ class TaxesCalc {
         }else{
             $detail_order_invoice = $detail_info_invoice;
         }
-              
         
-       
+              
         #solo funciona para la primera factura informativa
         $total_invoices = 0;
         if ($this->is_partial){                
@@ -264,7 +275,7 @@ class TaxesCalc {
                     $detail_info_invoice['nro_cajas']
                     * $detail_order_invoice['costo_caja']
                     )
-                * $this->type_change_parcial
+                * $this->type_change
                 );
             
         }elseif ($this->incoterm == 'FOB'){            
@@ -302,6 +313,7 @@ class TaxesCalc {
         }
         
         return ([
+            'id_registro' => $id_registro,
             'nombre'=> $product_base['nombre'],
             'cod_contable' => $product['cod_contable'],
             'cajas_importadas' => $detail_order_invoice['nro_cajas'],
@@ -385,13 +397,14 @@ class TaxesCalc {
         
         $arancel_especifico_liberado =   (
             $arancel_especifico
-            * ($this->parcial['exoneracion_arancel'] / 100)
+            * $this->exoneration_arancel
             );
         
         $arancel_advalorem_liberado =  (
             $arancel_advalorem
-            * ($this->parcial['exoneracion_arancel'] / 100)
+            * $this->exoneration_arancel
             );
+        
         
         
         $arancel_advalorem_pagar =  ($arancel_advalorem - $arancel_advalorem_liberado);

@@ -340,12 +340,12 @@ class TaxesCalc {
             'tasa_control' => $detail_info_invoice['tasa_control'],
             'otros' => $detail_info_invoice['otros'],
             'fob' => $fob,
-            'seguro_aduana' => $seguro_aduana,
-            'flete_aduana' => $flete_aduana,
+            'seguro_aduana' => $seguro_aduana * $this->type_change,
+            'flete_aduana' => $flete_aduana * $this->type_change,
             'cif' => (
                 $fob
-                + $seguro_aduana
-                + $flete_aduana
+                + $seguro_aduana * $this->type_change
+                + $flete_aduana * $this->type_change
                 ),
         ]);
     }

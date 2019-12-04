@@ -71,16 +71,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | the query builder class.
 */
 
-$active_group = 'localhost';
+$active_group = 'cordovezTEST';
 
 $query_builder = TRUE;
 
-$db['localhost'] = array(
+$db['cordovez'] = array(
 	'dsn'	=> '',
 	'hostname' => '192.168.0.198',
 	'username' => 'appCordovez',
 	'password' => '\DBGfW<7;vBa5(LB',
-	'database' => 'cordovezAppDjango',
+	'database' => 'cordovezApp',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
@@ -96,3 +96,116 @@ $db['localhost'] = array(
 	'failover' => array(),
 	'save_queries' => TRUE
 );
+
+$db['imnac'] = array(
+    'dsn'	=> '',
+    'hostname' => '192.168.0.198',
+    'username' => 'appCordovez',
+    'password' => '\DBGfW<7;vBa5(LB',
+    'database' => 'imnacApp',
+    'dbdriver' => 'mysqli',
+    'dbprefix' => '',
+    'pconnect' => FALSE,
+    'db_debug' => FALSE,
+    'cache_on' => FALSE,
+    'cachedir' => '',
+    'char_set' => 'utf8',
+    'dbcollat' => 'utf8_general_ci',
+    'swap_pre' => '',
+    'encrypt' => FALSE,
+    'compress' => FALSE,
+    'stricton' => FALSE,
+    'failover' => array(),
+    'save_queries' => TRUE
+);
+
+$db['vid'] = array(
+    'dsn'	=> '',
+    'hostname' => '192.168.0.198',
+    'username' => 'appCordovez',
+    'password' => '\DBGfW<7;vBa5(LB',
+    'database' => 'vidApp',
+    'dbdriver' => 'mysqli',
+    'dbprefix' => '',
+    'pconnect' => FALSE,
+    'db_debug' => FALSE,
+    'cache_on' => FALSE,
+    'cachedir' => '',
+    'char_set' => 'utf8',
+    'dbcollat' => 'utf8_general_ci',
+    'swap_pre' => '',
+    'encrypt' => FALSE,
+    'compress' => FALSE,
+    'stricton' => FALSE,
+    'failover' => array(),
+    'save_queries' => TRUE
+);
+
+
+// bases de prueba para desarrollo
+$db['cordovezTEST'] = array(
+    'dsn'	=> '',
+    'hostname' => '192.168.0.198',
+    'username' => 'appCordovez',
+    'password' => '\DBGfW<7;vBa5(LB',
+    'database' => 'cordovezAppTEST',
+    'dbdriver' => 'mysqli',
+    'dbprefix' => '',
+    'pconnect' => FALSE,
+    'db_debug' => FALSE,
+    'cache_on' => FALSE,
+    'cachedir' => '',
+    'char_set' => 'utf8',
+    'dbcollat' => 'utf8_general_ci',
+    'swap_pre' => '',
+    'encrypt' => FALSE,
+    'compress' => FALSE,
+    'stricton' => FALSE,
+    'failover' => array(),
+    'save_queries' => TRUE
+);
+
+$db['imnacTEST'] = array(
+    'dsn'	=> '',
+    'hostname' => '192.168.0.198',
+    'username' => 'appCordovez',
+    'password' => '\DBGfW<7;vBa5(LB',
+    'database' => 'imnacAppTEST',
+    'dbdriver' => 'mysqli',
+    'dbprefix' => '',
+    'pconnect' => FALSE,
+    'db_debug' => FALSE,
+    'cache_on' => FALSE,
+    'cachedir' => '',
+    'char_set' => 'utf8',
+    'dbcollat' => 'utf8_general_ci',
+    'swap_pre' => '',
+    'encrypt' => FALSE,
+    'compress' => FALSE,
+    'stricton' => FALSE,
+    'failover' => array(),
+    'save_queries' => TRUE
+);
+
+$db['vidTEST'] = array(
+    'dsn'	=> '',
+    'hostname' => '192.168.0.198',
+    'username' => 'appCordovez',
+    'password' => '\DBGfW<7;vBa5(LB',
+    'database' => 'vidAppTEST',
+    'dbdriver' => 'mysqli',
+    'dbprefix' => '',
+    'pconnect' => FALSE,
+    'db_debug' => FALSE,
+    'cache_on' => FALSE,
+    'cachedir' => '',
+    'char_set' => 'utf8',
+    'dbcollat' => 'utf8_general_ci',
+    'swap_pre' => '',
+    'encrypt' => FALSE,
+    'compress' => FALSE,
+    'stricton' => FALSE,
+    'failover' => array(),
+    'save_queries' => TRUE
+);
+

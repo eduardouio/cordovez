@@ -570,11 +570,11 @@ class Impuestos extends MY_Controller
                     return $this->redirectPage('showTaxesParcial', $id);
                 };
             }
+            print('Parcial cerrado no se puede cambiar');
         }
-        $this->modelLog->errorLog(
-            'Acceso restringido al sitio',
-            current_url()
-        );
+        
+        $this->modelLog->errorLog( 'Acceso restringido al sitio',current_url());
+        $this->modelLog->errorLog($tipo, $id);
     }
 
 

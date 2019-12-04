@@ -57,7 +57,7 @@ class Login extends CI_Controller
      * redirecciona al formulario de autenticacion
      */
     private function checkSession()
-    {
+    {   
         if ($this->session->userdata('id_user') != NULL) {
             return($this->redirectPage('home'));
         } else {

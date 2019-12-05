@@ -67,7 +67,7 @@ var app = new Vue({
     	 */
     	sendLiquidation : function(type){
     		console.dir('Recolectando informacion liquidacion ' + type )
-			this.$http.post('{{rute_url}}impuestos/liquidarivaparcial/', this.complete_liquidation_data).then(response => {
+			this.$http.post('{{rute_url}}impuestos/liquidarIvaParcial/', this.complete_liquidation_data).then(response => {
 				console.log('Geial')
        		    //location.reload();
        		  }, response => {

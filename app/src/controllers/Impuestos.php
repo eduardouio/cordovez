@@ -523,7 +523,10 @@ class Impuestos extends MY_Controller
       * Marca un parcial como liquidado
       */
     public function liquidarIvaParcial(){
-        print('LLegammos');
+        print('liquidarIvaParcial');
+        print(var_dump($_POST));
+        exit();
+        
         if(!$_POST){
             return $this->index();
         }

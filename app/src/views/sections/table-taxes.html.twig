@@ -310,74 +310,10 @@
    </div>
 </div>
 <!-- Modal -->
-{% include 'forms/form-taxes-modal-template.html.twig' %}
+        {% include 'forms/form-taxes-modal-template.html.twig' %}
 <!-- /Modal -->
 <script>
-  $('#arancel_advalorem_pagar_pagado').keyup(function(){
-    var val_inicial = {{ parcial_taxes.sums.arancel_advalorem_pagar | number_format (3, '.','') }};
-    actualizarImpuesto('arancel_advalorem_pagar_pagado', val_inicial );
-  });
-
-  $('#arancel_especifico_pagar_pagado').keyup(function(){
-    var val_inicial = {{ parcial_taxes.sums.arancel_especifico_pagar | number_format (3, '.','') }};
-    actualizarImpuesto('arancel_especifico_pagar_pagado', val_inicial );
-  });
-
-    $('#fodinfa_pagado').keyup(function(){
-    var val_inicial = {{ parcial_taxes.sums.fodinfa | number_format (3, '.','') }};
-    actualizarImpuesto('fodinfa_pagado', val_inicial );
-  });
-
-   $('#ice_especifico_pagado').keyup(function(){
-    var val_inicial = {{ parcial_taxes.sums.ice_especifico | number_format (3, '.','') }};
-    actualizarImpuesto('ice_especifico_pagado', val_inicial );
-  });
-
-  $('#ice_advalorem_pagado').keyup(function(){
-    var val_inicial = {{ parcial_taxes.sums.ice_advalorem | number_format (3, '.','') }};
-    console.dir(val_inicial);
-    actualizarImpuesto('ice_advalorem_pagado', val_inicial );
-  });
-
-  $('#iva_pagado').keyup(function(){
-    var val_inicial = {{ parcial_taxes.sums.iva | number_format (3, '.','') }};
-    actualizarImpuesto('iva_pagado', val_inicial );
-  });
-
-  function actualizarImpuesto(id_input, old_value){
-  var value =  old_value - $('#'+ id_input).val() ;
-  value =  Math.round(value * 1000)/ 1000;
-  $('#' + 'diferencia_' + id_input).val(value);
-  actualizarTotales();
-  }
-
-  function actualizarTotales(){
-      var total_liquidacion =  {{ (
-                        parcial_taxes.sums.iva_total - (parcial_taxes.sums.iva_total - parcial_taxes.sums.iva) 
-                        + parcial_taxes.sums.ice_advalorem 
-                        + parcial_taxes.sums.ice_especifico 
-                        + parcial_taxes.sums.fodinfa
-                        + parcial_taxes.sums.arancel_advalorem_pagar 
-                        + parcial_taxes.sums.arancel_especifico_pagar
-                        ) | number_format(3,'.','') 
-                        }};
-
-      var total_pagar = (
-          parseFloat($('#arancel_advalorem_pagar_pagado').val() )+
-          parseFloat($('#arancel_especifico_pagar_pagado').val() )+
-          parseFloat($('#fodinfa_pagado').val() )+
-          parseFloat($('#ice_especifico_pagado').val() )+
-          parseFloat($('#ice_advalorem_pagado').val() )+
-          parseFloat($('#iva_pagado').val())
-          );
-
-      console.dir(total_pagar);
-
-      $('#autoliquidacion').val(total_pagar);
-      $('#total_diferencias').val(parseFloat(total_liquidacion - total_pagar));
-   }
-
-
+	{% include 'scripts/appliquidations.js' %}
 </script>
 <script>
    /**

@@ -180,6 +180,7 @@ class Impuestos extends MY_Controller
             'init_data' => $init_data,
             'parcial_taxes' => $parcial_taxes,
             'parcial' => $parcial,
+            'vue_app' => true,
             'regimen' => 'R70',
             'user' => $this->modelUser->get($init_data['parcial']['id_user']),
         ]));

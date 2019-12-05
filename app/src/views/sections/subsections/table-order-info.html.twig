@@ -20,7 +20,7 @@ FACTURAS DE PRODUCTOS <strong>{{ money }}</strong>
          <td>{{ loop.index }}</td>
          <td>
             <a href="{{rute_url}}pedidofactura/presentar/{{invoice.id_pedido_factura}}">
-            {{invoice.supplier.nombre}}
+            {{invoice.supplier.nombre}} <strong class="text-warning"><small> F: [{{ invoice.id_factura_proveedor }}]</small></strong> 
             </a>
          </td>
          <td>{{invoice.fecha_emision | date('d/m/Y')}}</td>

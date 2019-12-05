@@ -176,10 +176,13 @@ class Impuestos extends MY_Controller
             'titleContent' => 'Resumen de Impuestos Liquidación Aduana [Parcial ' .
                               $ordinal_parcial . '/' . count($all_parcials) .
                               '] [Pedido ' . $init_data['order']['nro_pedido'] . '] Ref ' . 
-                               $init_data['info_invoices'][0]['nro_refrendo'] ,
+                               $init_data['info_invoices'][0]['nro_refrendo'] . 
+                            '  ['. $init_data['order']['proveedor']  . ']',
             'init_data' => $init_data,
             'parcial_taxes' => $parcial_taxes,
             'parcial' => $parcial,
+            'ordinal_parcial' => $ordinal_parcial,
+            'count_all_parcials' => count($all_parcials),
             'vue_app' => true,
             'regimen' => 'R70',
             'user' => $this->modelUser->get($init_data['parcial']['id_user']),
@@ -520,10 +523,12 @@ class Impuestos extends MY_Controller
       * Marca un parcial como liquidado
       */
     public function liquidarIvaParcial(){
+        print('LLegammos');
         if(!$_POST){
             return $this->index();
         }
-
+        print('Si nos llega por post');
+        exit();
         $parcial = $this->input->post();
         $parcial['fecha_liquidacion'] = str_replace(
                                     '/', '-', $parcial['fecha_liquidacion']

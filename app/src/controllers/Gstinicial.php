@@ -332,7 +332,7 @@ class Gstinicial extends MY_Controller
                                 ' <small>Validar Información</small> ' .
                                 '&nbsp;&nbsp;&nbsp;&nbsp;<small> Fecha Ingreso Bodegaje: ' .
                                 $order['fecha_ingreso_almacenera'] . 
-                                '</small>',
+                                '</small>   [' . $order['proveedor']  .  ']' ,
             'dates_order' => $checked_order->checkOrder(),
             'order' => $order,
             'title' => 'Gastos Iniciales [' . $nroOrder . ']',

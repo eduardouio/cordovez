@@ -102,7 +102,7 @@ class Modelpaid extends CI_Model{
                     ORDER BY
                     dc.bg_closed ASC,
                     pr.nombre ASC,
-                    dc.fecha_emision DESC';
+                    dc.fecha_emision DESC limit 16';
 
         $result = $this->db->query($query);
         $result = $result->result_array();

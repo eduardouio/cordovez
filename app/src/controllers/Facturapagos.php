@@ -16,7 +16,7 @@ class Facturapagos extends MY_Controller
 {
     private $controller = "documento_pago";
     private $template = "/pages/pageFacturas.html";
-    private $listPerPage = 100;
+    private $listPerPage = 1;
     private $modelOrder;
     private $modelParcial;
     private $modelLog;

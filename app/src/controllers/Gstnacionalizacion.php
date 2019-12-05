@@ -279,7 +279,8 @@ class Gstnacionalizacion extends MY_Controller
             'showExpenses' => True,
             'titleContent' => 'Generar gastos nacionalizacion Parcial Pedido: [' .
                                $parcial['nro_pedido'] . '] Régimen 70' .
-                                ' Parcial # ' . $ordinal . ' de ' . count($all_parcials) . $ultimo,
+                                ' Parcial # ' . $ordinal . ' de ' . count($all_parcials) . $ultimo . 
+            ' [' . $order['proveedor'] . ']',
             'dates_parcial' => $checkPartial->checkPartial(),
             'order' => $order,
             'parcial' => $parcial,

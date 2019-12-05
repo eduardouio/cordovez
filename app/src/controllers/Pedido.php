@@ -26,7 +26,7 @@ require_once ( $libraries_url . 'checkerOrder.php' );
 class Pedido extends MY_Controller
 {
     private $controller = 'pedido';
-    private $listPerPage = 100;
+    private $listPerPage = 50;
     private $seguroVal = 2.2;
     private $template = '/pages/pagePedido.html';
     private $modelOrder;
@@ -251,13 +251,12 @@ class Pedido extends MY_Controller
                 }
             }
         }
-        
         return($this->responseHttp([
             'show_order' => true,
             'order_info' => $order_report->getStatusData(),
             'order' => $order,
             'title' => 'Pedido [' . $order['nro_pedido'] . '][R' . 
-                        $order['regimen'] . ']' ,
+                        $order['regimen'] .']' ,
             'order_report' => $order_report->getStatusData(),
             'stock_order' => $stock, 
             'supplier' => $supplier,
@@ -270,7 +269,8 @@ class Pedido extends MY_Controller
                                 $order['incoterm'] . 
                                 '] [Regimen ' . 
                                 $order['regimen'] . '] <small> Ref:' .
-                                $order['nro_refrendo'] . '</small>'
+                                $order['nro_refrendo'] . '</small>  ['.
+                                $order['proveedor']  .']'
         ]));
     }
         

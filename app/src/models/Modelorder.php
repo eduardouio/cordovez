@@ -15,13 +15,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Modelorder extends CI_Model
 {
-    private $table = 'pedido'; 
+    private $table = 'pedido';
     private $modelBase;
     private $modelExpenses;
     private $modelProduct;
     private $modelLog;
-    
-    
+
+
     /**
      * contructor de la clase
      */
@@ -30,8 +30,8 @@ class Modelorder extends CI_Model
         parent::__construct();
         $this->init();
     }
-    
-    
+
+
     /**
      * Inicia los modelos de la clase
      */
@@ -46,52 +46,99 @@ class Modelorder extends CI_Model
         $this->modelProduct = new Modelproduct();
         $this->modelLog = new Modellog();
     }
-    
-    
-    /**
-     * Obtiene todas las ordenes, solo las ordenes 
-     * @return array | bool
-     */
-    public function getAll()
-    {
-        $query = "SELECT *, SUBSTRING(nro_pedido, -2) AS anio 
-                FROM pedido 
-                WHERE nro_pedido != '000-00'
-                AND bg_isclosed = 0
-                ORDER BY anio DESC, 
-                nro_pedido DESC limit 15;";
-        return ($this->modelBase->runQuery($query));            
-    }
 
-        
+
     /**
      * Obtiene todas las ordenes, solo las ordenes
      * @return array | bool
      */
-    public function search($nro_pedido)
-    {          
-        $query = "SELECT *, SUBSTRING(nro_pedido, -2) AS anio 
-                    FROM pedido 
-                    WHERE 
-                    nro_pedido = '" . $nro_pedido  .  "'
-                    OR nro_pedido LIKE '%" . $nro_pedido  .  "'
-                    OR nro_pedido LIKE '" . $nro_pedido  .  "%'
-                    OR nro_pedido LIKE '%" . $nro_pedido  .  "%'
-                    ORDER BY anio DESC, nro_pedido DESC;
-                    ";
-        
-        if($nro_pedido == 'cerrados'){
-            $query = "SELECT *, SUBSTRING(nro_pedido, -2) AS anio
-                    FROM pedido
-                    WHERE
-                    bg_isclosed = 1                    
-                    ORDER BY anio DESC, nro_pedido DESC;
-                    ";
-        }
+    public function getAll()
+    {
+        $query = "SELECT *, SUBSTRING(nro_pedido, -2) AS anio
+                FROM pedido
+                WHERE nro_pedido != '000-00'
+                AND bg_isclosed = 0
+                ORDER BY anio DESC,
+                nro_pedido DESC limit 15;";
         return ($this->modelBase->runQuery($query));
     }
 
-    
+
+    /**
+     * Obtiene todas las ordenes, solo las ordenes
+     * @return array | bool
+     */
+    public function search($input_query){
+        $input_query = str_replace('/', '-',$input_query);
+        #busca por pedido
+        $query_order = "SELECT *, SUBSTRING(nro_pedido, -2) AS anio
+                    FROM pedido
+                    WHERE
+                    nro_pedido = '" . $input_query  .  "'
+                    OR nro_pedido LIKE '%" . $input_query  .  "'
+                    OR nro_pedido LIKE '" . $input_query  .  "%'
+                    OR nro_pedido LIKE '%" . $input_query  .  "%'
+                    ORDER BY anio DESC, nro_pedido DESC;
+                    ";
+        #busca por matricula
+        $query_refrendo = "SELECT *, SUBSTRING(nro_pedido, -2) AS anio
+                    FROM pedido
+                    WHERE
+                    nro_refrendo = '" . $input_query  .  "'
+                    OR nro_refrendo LIKE '%" . $input_query  .  "'
+                    OR nro_refrendo LIKE '" . $input_query  .  "%'
+                    OR nro_refrendo LIKE '%" . $input_query  .  "%'
+                    ORDER BY anio DESC, nro_pedido DESC;
+                    ";
+        #busca por 028-2019-70-00822976
+        $query_matricula = "SELECT *, SUBSTRING(nro_pedido, -2) AS anio
+                    FROM pedido
+                    WHERE
+                    nro_matricula = '" . $input_query  .  "'
+                    OR nro_matricula LIKE '%" . $input_query  .  "'
+                    OR nro_matricula LIKE '" . $input_query  .  "%'
+                    OR nro_matricula LIKE '%" . $input_query  .  "%'
+                    ORDER BY anio DESC, nro_pedido DESC;
+                    ";
+
+        #busca por proveedor
+        $query_proveedor = "SELECT *, SUBSTRING(nro_pedido, -2) AS anio
+                    FROM pedido
+                    WHERE
+                    proveedor = '" . $input_query  .  "'
+                    OR proveedor LIKE '%" . $input_query  .  "'
+                    OR proveedor LIKE '" . $input_query  .  "%'
+                    OR proveedor LIKE '%" . $input_query  .  "%'
+                    ORDER BY anio DESC, nro_pedido DESC limit 25;
+                    ";
+
+        #busca por producto
+
+        $query_product = "SELECT o.*, SUBSTRING(o.nro_pedido, -2) AS anio FROM detalle_pedido_factura AS dpf
+                  LEFT JOIN producto AS p ON (p.cod_contable = dpf.cod_contable)
+                  LEFT JOIN pedido_factura AS pf ON (dpf.id_pedido_factura = pf.id_pedido_factura)
+                  LEFT JOIN pedido AS o ON (pf.nro_pedido = o.nro_pedido)
+                  WHERE
+                  p.nombre = '" . $input_query  .  "'
+                  OR p.nombre LIKE '%" . $input_query  .  "'
+                  OR p.nombre LIKE '" . $input_query  .  "%'
+                  OR p.nombre LIKE '%" . $input_query  .  "%'
+                  ORDER BY anio DESC, nro_pedido DESC limit 25;
+                  ";
+
+
+
+
+        return array_merge(
+          $this->modelBase->runQuery($query_order),
+          $this->modelBase->runQuery($query_matricula),
+          $this->modelBase->runQuery($query_refrendo),
+          $this->modelBase->runQuery($query_proveedor),
+          $this->modelBase->runQuery($query_product)
+        );
+    }
+
+
     /**
      * Obtiene un regsistro completo de la orden de una tabla
      * @param (string) $nroOrder identidicador de la tabla 000-00
@@ -108,17 +155,17 @@ class Modelorder extends CI_Model
         if((gettype($order) == 'array') && (count($order) > 0)){
             return $order[0];
         }
-        
+
         $this->modelLog->errorLog(
-            'El pedido no existe', 
+            'El pedido no existe',
             $this->db->last_query()
             );
-        
+
         return false;
     }
-    
-    
-    
+
+
+
     /**
      * Obtiene un regsistro completo de la orden de una tabla
      * @param (string) $id_order iddentificador de la order
@@ -132,14 +179,14 @@ class Modelorder extends CI_Model
                 'id_pedido' => $id_order
             ],
         ]);
-        
+
         if((gettype($order) == 'array') && (count($order) > 0)){
             return $order[0];
         }
         return false;
     }
-    
-       
+
+
     /**
      * Obtiene un listado de todos los pedidos abiertos R70
      */
@@ -151,24 +198,24 @@ class Modelorder extends CI_Model
                 AND regimen = '70'
                 ORDER BY anio DESC,
                 nro_pedido DESC;";
-        
-        $result = $this->modelBase->runQuery($query);       
-        
+
+        $result = $this->modelBase->runQuery($query);
+
         if($result) {
             $this->modelLog->susessLog(
                 'Devolucion de lista completa de pedidos R70'
                 );
             return $result;
         }
-        
+
         $this->modelLog->warningLog(
             'La lista de pedidos esta vacia',
             $this->db->last_query()
             );
-        
+
         return [];
     }
-    
+
 
     /**
      * Obtiene el detalle de las facturas y lo cruza contra el valor total de
@@ -184,14 +231,14 @@ class Modelorder extends CI_Model
                 'nro_pedido' => $nroOrder
             ]
         ]);
-        
+
         if (empty($invoices)) {
             $this->modelLog->warningLog(
                 'El pedido Solicitado no tiene Facturas registradas'
                 );
             return false;
         }
-        
+
         $result = [];
         foreach ($invoices as $key => $value) {
             $value['supplier'] = $this->modelsupplier->get(
@@ -200,7 +247,7 @@ class Modelorder extends CI_Model
             $value['valor'] =  floatval($value['valor']);
             $result[$key] = $value;
         }
-        
+
         $this->modelLog->susessLog(
             'Se recuperan todas las facturas del pedido'
             );
@@ -234,10 +281,10 @@ class Modelorder extends CI_Model
                 floatval($value['nro_cajas']);
 
             $product = $this->modelProduct->get($value['cod_contable']);
-            
+
             $countBoxesProduct += floatval($value['nro_cajas']);
             $unities += ($value['nro_cajas'] * $product['cantidad_x_caja']);
-            
+
             $value['nombre'] = $product['nombre'];
             $value['cantidad_x_caja'] = $product['cantidad_x_caja'];
             $value['unidades'] = (intval($value['cantidad_x_caja']) *
@@ -259,32 +306,32 @@ class Modelorder extends CI_Model
         ];
         return $result;
     }
-    
-    
-    
+
+
+
     /**
-     * Obtiene una lista de pedidos que han llegado a la bodega 
+     * Obtiene una lista de pedidos que han llegado a la bodega
      * dentro de un mes solo R10
-     * 
+     *
      * @param int $year
      * @param int $month
      */
     public function getArrivedCellarByDate(int $year, int $month, bool $almagro = False) : array{
-        
+
         $f_inicio = $year . '-' . $month . '-01';
-        $f_fin = $year . '-' . $month . '-31';   
-        
+        $f_fin = $year . '-' . $month . '-31';
+
         if($month < 10){
             $f_inicio = $year . '-0' . $month . '-01';
-            $f_fin = $year . '-0' . $month . '-31';   
+            $f_fin = $year . '-0' . $month . '-31';
         }
-        
-        $query = "  SELECT * 
-                    FROM pedido 
-                    WHERE {{column}} >= '{{f_inicio}}'  
-                    AND {{column}} <= '{{f_fin}}' 
+
+        $query = "  SELECT *
+                    FROM pedido
+                    WHERE {{column}} >= '{{f_inicio}}'
+                    AND {{column}} <= '{{f_fin}}'
                     AND regimen = '{{regimen}}'";
-        
+
         if($almagro){
             $query = str_replace('{{column}}', 'fecha_ingreso_almacenera', $query);
             $query = str_replace('{{f_inicio}}', $f_inicio, $query);
@@ -298,25 +345,25 @@ class Modelorder extends CI_Model
             $query = str_replace('{{regimen}}', '10', $query);
             $query = $query . ' ORDER BY fecha_llegada_cliente, nro_pedido';
         }
-        
+
         $result = $this->modelBase->runQuery($query);
-        
+
         if($result){
             $this->modelLog->susessLog(
                 'Pedidos con fecha de llegada bodega oficina listados'
                 );
             return  $result;
         }
-        
+
         $this->modelLog->warningLog(
             'No existen pedidos con fecha de llegada oficina para lisar'
             );
-        
+
         return [];
     }
-    
-    
-    
+
+
+
     /**
      * Lista las facturas pedido por proveedor
      * @param (string) $suplierId
@@ -336,8 +383,8 @@ class Modelorder extends CI_Model
         }
         return false;
     }
-    
-    
+
+
     /**
      * Retorna los valores de sumatorias para
      * FOB -> para calcular el valor FOB se una el incoterm,
@@ -361,7 +408,7 @@ class Modelorder extends CI_Model
             'FOB' => 1.0,
             'CFR' => - 1.0
         ];
-        
+
         $paramsInvoices = [
             'select' => [
                 'SUM(valor * tipo_cambio) AS valInvoices'
@@ -371,7 +418,7 @@ class Modelorder extends CI_Model
                 'nro_pedido' => $order['nro_pedido']
             ]
         ];
-        
+
         $paramsInvoicesEuros = [
             'select' => [
                 'SUM(valor) AS valInvoicesEuros'
@@ -382,7 +429,7 @@ class Modelorder extends CI_Model
                 'moneda' => 'EUROS',
             ]
         ];
-        
+
         $paramsInvoicesDollars = [
             'select' => [
                 'SUM(valor) AS valInvoicesDollars'
@@ -393,7 +440,7 @@ class Modelorder extends CI_Model
                 'moneda' => 'DOLARES',
             ]
         ];
-        
+
         $paramsOriginExpenses = [
             'select' => [
                 'valor_provisionado AS valor_provisionado'
@@ -405,7 +452,7 @@ class Modelorder extends CI_Model
                 'tipo' => 'INICIAL'
             ]
         ];
-        
+
         $paramsSecureExpenses = [
             'select' => [
                 'valor_provisionado'
@@ -417,7 +464,7 @@ class Modelorder extends CI_Model
                 'tipo' => 'INICIAL'
             ]
         ];
-        
+
         $paramsShipExpenses = [
             'select' => [
                 'valor_provisionado'
@@ -429,7 +476,7 @@ class Modelorder extends CI_Model
                 'tipo' => 'INICIAL'
             ]
         ];
-        
+
         $paramsInfoInvoices = [
             'select' => [
                 'SUM( valor * tipo_cambio ) as infoinvoices'
@@ -439,7 +486,7 @@ class Modelorder extends CI_Model
                 'nro_pedido' => $order['nro_pedido']
             ]
         ];
-        
+
         $paramsInfoInvoicesEuros = [
             'select' => [
                 'SUM(valor) as infoinvoicesEuros'
@@ -450,7 +497,7 @@ class Modelorder extends CI_Model
                 'moneda' => 'EUROS',
             ]
         ];
-        
+
         $paramsInfoInvoicesDollars = [
             'select' => [
                 'SUM(valor) as infoinvoicesDollars'
@@ -461,7 +508,7 @@ class Modelorder extends CI_Model
                 'moneda' => 'DOLARES',
             ]
         ];
-        
+
         $paramsLocalExpenses = [
             'select' => [
                 'SUM(valor_provisionado) as sumexpenses'
@@ -471,7 +518,7 @@ class Modelorder extends CI_Model
                 'nro_pedido' => $order['nro_pedido']
             ]
         ];
-        
+
         $multiple = $configIncoterm[$order['incoterm']];
         $valInvoices = $this->modelBase->get_table($paramsInvoices);
         $valInvoicesEuros = $this->modelBase->get_table($paramsInvoicesEuros);
@@ -483,7 +530,7 @@ class Modelorder extends CI_Model
         $infoInvoicesEuros = $this->modelBase->get_table($paramsInfoInvoicesEuros);
         $infoInvoicesDollars = $this->modelBase->get_table($paramsInfoInvoicesDollars);
         $localExpenses = $this->modelBase->get_table($paramsLocalExpenses);
-        
+
         return ([
             'multiple' => $multiple,
             'valInvoices' => floatval($valInvoices[0]['valInvoices']),
@@ -499,10 +546,10 @@ class Modelorder extends CI_Model
             'localPaidsExpenses' => $this->localPaids($order),
         ]);
     }
-    
-    
-    
-    
+
+
+
+
     /**
      * busca ordernes activas las activas que aun tengas gastos por justificar
      * Retorna un arreglo con los numeros de orden unicamente
@@ -516,28 +563,28 @@ class Modelorder extends CI_Model
                 'bg_closed' => 0,
             ],
         ]);
-        
+
         if((gettype($orders) == 'array') && (count($orders))){
             $i = 0;
             $tempArray = [];
             $keyArray = [];
-            
+
             foreach ($orders as $idx => $o) {
                 if ($o['nro_pedido'] == '000-00'){
                         $query = '
-                                    SELECT nro_pedido 
-                                    FROM parcial 
-                                    WHERE id_parcial = ' . 
+                                    SELECT nro_pedido
+                                    FROM parcial
+                                    WHERE id_parcial = ' .
                                     $o['id_parcial'];
                    $result = $this->modelBase->runQuery($query);
                    if($result){
-                    $orders[$idx]['nro_pedido'] = $result[0]['nro_pedido'];                       
+                    $orders[$idx]['nro_pedido'] = $result[0]['nro_pedido'];
                    }
                 }
-                
+
                 unset($orders[$idx]['id_parcial']);
             }
-            
+
             #unifica la lista de pedidos
             foreach ($orders as $idx => $val){
                 if(! in_array($val['nro_pedido'], $keyArray)){
@@ -546,9 +593,9 @@ class Modelorder extends CI_Model
                 }
                 $i++;
             }
-            
-            $result = [];            
-            
+
+            $result = [];
+
             foreach ($tempArray as $key => $value){
                 $value['expenses'] = $this->modelExpenses->getActiveExpenses(
                     $value['nro_pedido']
@@ -559,8 +606,8 @@ class Modelorder extends CI_Model
         }
         return false;
     }
-    
-    
+
+
     /**
      * Verifica si una pedido es un regimen 70 si lo es
      * retorna el pedido sino false
@@ -572,11 +619,11 @@ class Modelorder extends CI_Model
         $order = $this->get($nroOrder);
         if($order == false || $order['regimen'] == 10){
             return false;
-        }       
+        }
         return $order;
     }
-    
-    
+
+
     /**
      * Obtiene la cantidad de cajas de tiene un pedido, en cuanto al stock
      * solo se usa para el regimen 70, el 10 no tiene parciales
@@ -602,7 +649,7 @@ class Modelorder extends CI_Model
                 'nro_pedido' => $nroOrder
             ]
         ]);
-        
+
         foreach ($invoices as $key => $value) {
             $boxesInvoice = $this->modelBase->get_table([
                 'select' => [
@@ -619,7 +666,7 @@ class Modelorder extends CI_Model
                 }
             }
         }
-        
+
         if ($regimen == '70') {
             $infoInvoices = $this->modelBase->get_table([
                 'select' => [
@@ -630,7 +677,7 @@ class Modelorder extends CI_Model
                     'nro_pedido' => $nroOrder
                 ]
             ]);
-            
+
             foreach ($infoInvoices as $key => $invoice) {
                 $boxesInfoInvoice = $this->modelBase->get_table([
                     'select' => [
@@ -651,8 +698,8 @@ class Modelorder extends CI_Model
         }
         return $result;
     }
-    
-    
+
+
     /**
      * Registra un pedido en la base de datos
      * @param array $order
@@ -669,20 +716,20 @@ class Modelorder extends CI_Model
                 );
             return False;
         }
-        
+
         return False;
     }
-    
+
     /**
      * Actualiza una orden en la base de datos
      * @param array $order arreglo con datos de la orden
      * @return bool
      */
     public function update(array $order):bool
-    {           
+    {
         $this->db->where('nro_pedido', $order['nro_pedido']);
         if($this->db->update($this->table, $order)){
-            $this->modelLog->queryUpdateLog($this->db->last_query());            
+            $this->modelLog->queryUpdateLog($this->db->last_query());
             return true;
         }
         $this->modelLog->errorLog(
@@ -691,8 +738,8 @@ class Modelorder extends CI_Model
             );
         return false;
     }
-    
-    
+
+
     /**
      * Intenta eliminar un pedido de la base de datos
      * @param string $nroOrder nro_pedido
@@ -709,22 +756,22 @@ class Modelorder extends CI_Model
             return false;
         }
     }
-    
-    
+
+
     /**
      * Comprueba si un pedido esta cerrado
-     * 
+     *
      * @param string $nro_pedido
      */
     public function idClosed(string $nro_pedido): bool{
        $order = $this->get($nro_pedido);
-       
+
        if($order){
            return boolval($order['bg_isclosed']);
        }
     }
-    
-   
+
+
     /**
      * Cierra un pedido en el sistema
      *
@@ -737,8 +784,8 @@ class Modelorder extends CI_Model
             $order['bg_isclosed'] = 1;
             return $this->update($order);
         }
-        
+
     }
-    
-    
+
+
 }

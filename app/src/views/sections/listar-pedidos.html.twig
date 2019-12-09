@@ -57,8 +57,8 @@
                <th>Origen</th>
                <th>Proveedor</th>
                <th>Arribo</th>
-               <th>Ingreso Almagro</th>
-               <th>FOB</th>
+               <th>Nro Referendo</th>
+               <th>Nro Matricula</th>
                <th>Nacionalizado</th>
                <th>Saldo</th>
                <!--<th>Observaciones</th>-->
@@ -87,15 +87,10 @@
                    <small class="text-gray">[21]</small>
                </td>
                <td class="text-right">
-                {% if order.fecha_ingreso_almacenera != null %}
-                   {{ order.fecha_arribo | date('d/m/Y') }}
-                {% else %}
-                    --/--/----
-                {% endif %}
+                   {{ order.nro_refrendo }}
                </td>
                <td class="text-right">
-               	  {{ money | raw }}
-                  {{ order.info.fob | number_format(2, '.', ',') }}
+               	  {{ order.nro_matricula }}
                </td>
                <td class="text-right {{ text_class }}"> 
                    {{ order.info.nationalized | number_format(2, '.', ',') }} <small class="text-gray"> [{{ order.info.num_parcials }}]</small>

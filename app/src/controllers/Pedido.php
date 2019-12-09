@@ -45,7 +45,7 @@ class Pedido extends MY_Controller
     private $modelOrderInvoiceDetail;
     private $modelPaidDetail;
     private $modelPaid;
-    private $modelParcial;    
+    private $modelParcial;
     private $modelOrderReport;
     private $modelOrderInfo;
     private $modelProrrateo;
@@ -58,8 +58,8 @@ class Pedido extends MY_Controller
         parent::__construct();
         $this->init();
     }
-    
-    
+
+
     /**
      * Carga e inicia los modelos usados por la clase
      */
@@ -109,7 +109,6 @@ class Pedido extends MY_Controller
         $this->modelParcial = new Modelparcial();
     }
     
-    
     /**
      * redirecciona a la lista de proveedores
      *
@@ -123,8 +122,8 @@ class Pedido extends MY_Controller
             );
         return $this->redirectPage('ordersList');
     }
-    
-    
+
+
     /**
      * Presenta la lista de los pedidos, y las acciones para cada
      * uno de ellos
@@ -134,19 +133,19 @@ class Pedido extends MY_Controller
      * @return string template plantilla de la pagina
      */
     public function listar()
-    {       
+    {
         $init_data = [];
         $all_orders = [];
-        
+
         if($_GET){
             $all_orders = $this->modelOrder->search($_GET['nro_pedido']);
         }else{
             $all_orders = $this->modelOrder->getAll();
         }
-        
+
         $orders_open = 0;
         $orders_closed = 0;
-        
+
         if($all_orders){
             foreach ($all_orders as $idx => $order){
                 $order['info'] = $this->modelBasicOrderInfo->getInfoOrder($order['nro_pedido']);
@@ -156,9 +155,9 @@ class Pedido extends MY_Controller
                 }else{
                     $orders_open ++;
                 }
-            }    
+            }
         }
-        
+
         $this->responseHttp([
             'list_orders' => true,
             'title' => 'Lista de Pedidos',
@@ -170,10 +169,10 @@ class Pedido extends MY_Controller
             'infoBase' => $this->getStatisticsInfo(),
             'pagination_url' => base_url() . 'index.php/pedido/listar/'
         ]);
-        
+
     }
-    
-    
+
+
     /**
      * show a complete order information
      *
@@ -181,28 +180,28 @@ class Pedido extends MY_Controller
      * @return void
      */
     public function presentar($nroOrder)
-    {       
+    {
         if (! isset($nroOrder)) {
             $this->modelLog->warningLog(
                 'La url no tiene el numero del pedido'
                 );
             return($this->index());
         }
-        
-        
+
+
         $order = $this->modelOrder->get($nroOrder);
-        
+
         if ($order == false) {
             return($this->index());
-        }                
-        
+        }
+
         $params = $this->modelOrderReport->getOrderData($order);
         $order_report = new ReportCompleteOrder($params);
         $stock = [];
         $detail_order_invoices = [];
         $detail_info_invoices = [];
         $supplier = [];
-        
+
         if($params['order_invoices']){
             foreach ($params['order_invoices'] as $idx => $invoice){
                 $supplier = $this->modelSupplier->get($invoice['identificacion_proveedor']);
@@ -214,9 +213,9 @@ class Pedido extends MY_Controller
                 }
             }
         }
-        
+
         $info_invoices = $this->modelInfoInvoice->getByOrder($nroOrder);
-        
+
         if($info_invoices){
             foreach ($info_invoices as $idx => $invoice){
                 $details = $this->modelInfoInvoiceDetail->getByFacInformative(
@@ -229,24 +228,24 @@ class Pedido extends MY_Controller
                 }
             }
         }
-        
+
         $stock_order = new StockOrder(
-                $order, 
+                $order,
                 $detail_order_invoices,
                 $detail_info_invoices
             );
-        
+
         $stock['current'] = $stock_order->getCurrentOrderStock();
         $stock['initial'] = $stock_order->getInitStockProducts();
-        $stock['global'] = $stock_order->getGlobalValues();        
-        
+        $stock['global'] = $stock_order->getGlobalValues();
+
         if(@$params['order_invoices'][0]['detail']){
             foreach ($params['order_invoices'][0]['detail'] as $k => $det){
-                foreach ($params['products'] as $k => $product){                	        
+                foreach ($params['products'] as $k => $product){
                     if($product['cod_contable'] == $params['order_invoices'][0]['detail'][$k]['cod_contable']){
                         $params['order_invoices'][0]['detail'][$k]['nombre'] = $product['nombre'];
                         $params['order_invoices'][0]['detail'][$k]['cantidad_x_caja'] = $product['cantidad_x_caja'];
-                        $params['order_invoices'][0]['detail'][$k]['capacidad_ml'] = $product['capacidad_ml'];                        
+                        $params['order_invoices'][0]['detail'][$k]['capacidad_ml'] = $product['capacidad_ml'];
                     }
                 }
             }
@@ -255,26 +254,26 @@ class Pedido extends MY_Controller
             'show_order' => true,
             'order_info' => $order_report->getStatusData(),
             'order' => $order,
-            'title' => 'Pedido [' . $order['nro_pedido'] . '][R' . 
+            'title' => 'Pedido [' . $order['nro_pedido'] . '][R' .
                         $order['regimen'] .']' ,
             'order_report' => $order_report->getStatusData(),
-            'stock_order' => $stock, 
+            'stock_order' => $stock,
             'supplier' => $supplier,
             'order_invoices' => $params['order_invoices'],
             'parcials' => $order_report->getPartialInfo(),
             'list_active' => 'class="active"',
             'id_user' => $this->session->userdata('id_user'),
-            'titleContent' => 'Detalle De Pedido [ ' 
-                            . $nroOrder . '] [' . 
-                                $order['incoterm'] . 
-                                '] [Regimen ' . 
+            'titleContent' => 'Detalle De Pedido [ '
+                            . $nroOrder . '] [' .
+                                $order['incoterm'] .
+                                '] [Regimen ' .
                                 $order['regimen'] . '] <small> Ref:' .
                                 $order['nro_refrendo'] . '</small>  ['.
                                 $order['proveedor']  .']'
         ]));
     }
-        
-    
+
+
     /**
      * Muestra el formulario para crear un pedido
      */
@@ -290,8 +289,8 @@ class Pedido extends MY_Controller
             'form' => true,
         ]));
     }
-    
-    
+
+
     /**
      * Muestra el formulario de edicion
      */
@@ -301,13 +300,13 @@ class Pedido extends MY_Controller
         if($order == false){
             return($this->listar());
         }
-        
+
         if($order['fecha_arribo']){
             $order['fecha_arribo'] = date('d/m/Y', strtotime($order['fecha_arribo']));
         }else{
             $order['fecha_arribo'] = '';
         }
-        
+
         return($this->responseHttp([
             'edit_order'    => true,
             'form' => true,
@@ -316,12 +315,12 @@ class Pedido extends MY_Controller
             'incoterms'     => json_encode($this->modelBase->get_table([
                                                    'table' => 'tarifa_incoterm'
                                 ])),
-            'titleContent'  => 'Se Encuentra Editando El Pedido [<b>' 
+            'titleContent'  => 'Se Encuentra Editando El Pedido [<b>'
                                                           . $nroOrder . ']</b>',
         ]));
     }
-    
-    
+
+
     /**
      * Actualiza la fecha de entrada a la almacenera de un pedido
      */
@@ -330,38 +329,38 @@ class Pedido extends MY_Controller
         if (! $_POST) {
             $this->redirectPage('ordersList');
         }
-        
+
         $order = $_POST;
         $order['fecha_ingreso_almacenera'] = str_replace('/', '-', $order['fecha_ingreso_almacenera']);
-        $order['fecha_ingreso_almacenera'] = date('Y-m-d' , strtotime($order['fecha_ingreso_almacenera']));        
+        $order['fecha_ingreso_almacenera'] = date('Y-m-d' , strtotime($order['fecha_ingreso_almacenera']));
         $order['bg_haveExpenses'] = '1';
         $order['last_update'] = date('Y-m-d H:i:s');
-        
+
         if($this->modelOrder->update($order)){
             $this->modelLog->susessLog('Pedido Actualizado Correctamente');
-            
+
             $idParcial = $this->modelParcial->create([
                 'nro_pedido' => $order['nro_pedido'],
                 'id_user' => $this->session->userdata('id_user'),
-                
+
             ]);
-            
+
             if($idParcial){
                 return($this->redirectPage('infoInvoiceNew' , $idParcial));
             }
         }
-        
+
         $this->modelLog->errorLog(
-            'No se peude actualizar el pedido', 
+            'No se peude actualizar el pedido',
             $this->db->last_query()
             );
-        
+
         return false;
     }
-    
-    
+
+
     /**
-     * Elimna todo un pedido del sistema, presenta lo que se va a eliminar 
+     * Elimna todo un pedido del sistema, presenta lo que se va a eliminar
      * y solicita confirmacion
      */
     public function forceDelete(string $nro_pedido, $confirmation = false){
@@ -369,36 +368,36 @@ class Pedido extends MY_Controller
         print_r( $this->getAllDataOrder($nro_pedido));
         print '</pre>';
     }
-    
-    
+
+
     /**
      * elimina un pedido de la tabla, solo lo elimina sino tiene parciales
      */
     public function eliminar($nroOrder, $confirm = False)
-    {          
+    {
         if(intval($this->session->userdata('id_user')) != 1){
             return($this->responseHttp([
                 'title' => 'Acceso Restringido',
                 'titleContent' => 'Acceso Restringido',
                 'delete_order' => True,
                 'autorizado' => False,
-            ]));     
+            ]));
         }
-        
+
         if($confirm == False){
             $order = $this->modelOrder->get($nroOrder);
-            
+
             if($order == False){
                 return $this->index();
             }
-            
+
             $order_invoices =  $this->modelOrderInvoice->getbyOrder($nroOrder);
             $suplier = [];
-            
+
             if($order_invoices){
                 $suplier = $this->modelSupplier->get($order_invoices[0]['identificacion_proveedor']);
             }
-            
+
             return($this->responseHttp([
                 'title' => 'Eliminar Pedido' . $nroOrder,
                 'titleContent' => 'Eliminar Pedido ' . $nroOrder,
@@ -407,33 +406,33 @@ class Pedido extends MY_Controller
                 'order_invoice' => $order_invoices[0],
                 'supplier' => $suplier,
                 'autorizado' => True,
-            ]));     
+            ]));
         }
-                
+
        $this->load->model('Modeldeleteallorder');
        $modelDelteOrder = new Modeldeleteallorder();
-       
+
        if($modelDelteOrder->deleteAllOrder($nroOrder)){
            return($this->responseHttp([
                'title' => 'Elimnado',
                'titleContent' => 'El pedido se eliminó correctamente',
                'success_delete_order' => True,
                'autorizado' => True,
-           ]));     
+           ]));
        };
-       
+
        return($this->responseHttp([
            'title' => 'Error',
            'titleContent' => 'El pedido no se puede eliminar',
            'delete_order' => True,
            'fail_delete' => True,
            'autorizado' => True,
-       ]));     
-       
-       
-       
+       ]));
+
+
+
     }
-    
+
     /**
      * crea y/o modifica un pedido
      *
@@ -444,20 +443,20 @@ class Pedido extends MY_Controller
         if (! $_POST) {
             $this->redirectPage('ordersList');
         }
-        
+
         $pedido = $_POST;
         $pedido['id_user'] = $this->session->userdata('id_user');
-        
+
         if ($pedido['fecha_arribo'] == '' || $pedido['fecha_arribo'] == NULL) {
             unset($pedido['fecha_arribo']);
-        } else {            
-            $pedido['fecha_arribo'] = date( 'Y-m-d', strtotime( 
+        } else {
+            $pedido['fecha_arribo'] = date( 'Y-m-d', strtotime(
                     str_replace( '/','-', $pedido['fecha_arribo'])
                     )
                 );
-            
+
         }
-        
+
         #coloca ceros al inicio del numero de pedido
         if (! isset($pedido['id_pedido'])) {
             if ( $pedido['n_pedido'] < 100 &&  $pedido['n_pedido'] > 9) {
@@ -466,9 +465,9 @@ class Pedido extends MY_Controller
             if ($pedido['n_pedido'] < 9) {
                 $pedido['n_pedido'] = '00' . intval($pedido['n_pedido']);
             }
-            
+
             $pedido['nro_pedido'] = $pedido['n_pedido'] . '-' . $pedido['y_pedido'];
-            
+
             unset($pedido['n_pedido']);
             unset($pedido['y_pedido']);
 
@@ -483,15 +482,15 @@ class Pedido extends MY_Controller
                 return $this->responseHttp($config);
             }
         }
-        
+
         $status = $this->validData($pedido);
-        
+
         if ($status['status']) {
             if (! isset($pedido['id_pedido'])) {
                 $this->modelOrder->create($pedido);
                 return (
                     $this->redirectPage(
-                        'presentOrder', 
+                        'presentOrder',
                         $pedido['nro_pedido'])
                     );
             } else {
@@ -509,8 +508,8 @@ class Pedido extends MY_Controller
                 'order' => $pedido['nro_pedido'],
                 'viewMessage' => true,
                 'fail' => true,
-                'message' => 'La información de uno de los campos es incorrecta, 
-                              presione el botón de regreso del navegador y 
+                'message' => 'La información de uno de los campos es incorrecta,
+                              presione el botón de regreso del navegador y
                               verifique la información ingresada!',
                 'data' => $status
             ];
@@ -518,7 +517,7 @@ class Pedido extends MY_Controller
             return true;
         }
     }
-        
+
     /**
      * retorna las estadisticas de los pedidos para la cabecera de la lista
      *
@@ -553,69 +552,69 @@ class Pedido extends MY_Controller
         $info['activeOrders'] --;
         return $info;
     }
-    
-    
+
+
     /**
      * Retorna todos los registros relacionados a un pedido
      * para poder eliminar
-     * 
+     *
      * @param string $nro_pedido
      * @return array
      */
     private function getAllDataOrder(string $nro_pedido):array{
         $order = $this->modelOrder->get($nro_pedido);
-        
+
         $order_invoices = $this->modelOrderInvoice->getbyOrder($nro_pedido);
-        $order_invoice_detail = [];       
+        $order_invoice_detail = [];
         foreach ($order_invoices as $i => $invoice) {
             array_push(
-                $order_invoice_detail, 
+                $order_invoice_detail,
                 $this->modelOrderInvoiceDetail->getByOrderInvoice(
                                             $invoice['id_pedido_factura'])
                 );
         }
-        
-        $init_expense = $this->modelExpenses->get($nro_pedido);      
-        
+
+        $init_expense = $this->modelExpenses->get($nro_pedido);
+
         $detail_paids = [];
         $documents_paids = [];
-        
+
         foreach ($init_expense as $k => $expense){
             array_push(
-                    $detail_paids, 
+                    $detail_paids,
                     $this->modelPaidDetail->getByExpense(
                                         $expense['id_gastos_nacionalizacion'])
-                );           
+                );
         }
-        
-        foreach ($detail_paids as $k => $dp){           
+
+        foreach ($detail_paids as $k => $dp){
             array_push(
                 $detail_paids,
                 $this->modelPaid->get($dp[0]['id_documento_pago'])
                 );
         }
-        
+
         $prorrateos = [];
         $prorrateos_detail = [];
-                     
+
         $parcials = $this->modelParcial->getByOrder($nro_pedido);
-        
+
         if($parcials){
             foreach ($parcials as $k => $parcial){
                 $prorrateo = $this->modelProrrateo->getProrrateoByParcial(
                     $parcial['id_parcial']
                     );
-                
+
                 array_push($prorrateos, $prorrateo);
-                
+
                 array_push(
-                        $prorrateos_detail, 
+                        $prorrateos_detail,
                         $this->modelProrrateoDetalle->getAllDetailProrrateo(
                                                         $prorrateo['id_prorrateo'])
                     );
             }
         }
-        
+
        $info_invoices = $this->modelInfoInvoice->getByOrder($nro_pedido);
        $info_invoices_detail = [];
        if($info_invoices){
@@ -627,27 +626,27 @@ class Pedido extends MY_Controller
                    );
            }
        }
-             
-                   
+
+
        return ([
            'order' => $order,
            'pedido_factura' => $order_invoices,
            'pedido_factura_detalle' => $order_invoice_detail,
-           'gastos_nacionalizacion' => $init_expense, 
+           'gastos_nacionalizacion' => $init_expense,
            'parciales' => $parcials,
            'prorrateo' => $prorrateos,
            'prorrate_detalle' => $prorrateos_detail,
            'facturas_informativas' => $info_invoices,
            'factura_informativa_detalle' => $info_invoices_detail,
-           'detalle_docuento_pago' => $detail_paids, 
+           'detalle_docuento_pago' => $detail_paids,
            'documento_pago' => $documents_paids,
        ]);
-       
-       
+
+
     }
-    
-   
-    
+
+
+
     /**
      * se validan los datos que deben estar para que la consulta no falle
      *
@@ -665,8 +664,8 @@ class Pedido extends MY_Controller
             'id_user' => 1
         ], $pedido));
     }
-        
-    
+
+
     /*
      * Redenderiza la informacion y la envia al navegador
      * @param array $config informacion de la plantilla
@@ -683,5 +682,5 @@ class Pedido extends MY_Controller
                 'content' => 'home']))
             );
     }
-    
+
    }

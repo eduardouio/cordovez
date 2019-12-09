@@ -317,7 +317,8 @@ class Impuestos extends MY_Controller
             'titleContent' => 'Resumen de Impuestos Liquidación Aduana del Pedido ' .
                       $init_data['order']['nro_pedido'] .
                     ' [ ' . $order['incoterm'] . ' Régimen' .
-                    $order['regimen'] .  ' ] Ref. '  . $order['nro_refrendo'],
+                    $order['regimen'] .  ' ] Ref. '  . $order['nro_refrendo'] .
+                    ' [' . $order['proveedor'] .']',
             'init_data' => $init_data,
             'order_taxes' => $order_taxes,
             'regimen' => 'R10',
@@ -495,28 +496,49 @@ class Impuestos extends MY_Controller
      * Marca un pedido como liquidado
      */
     public function liquidarIvaOrder(){
-        if(!$_POST){
-            return $this->index();
+        
+        $this->load->library('Rest');
+        $rest = new Rest();
+        
+        if ($rest->_getRequestMethod() != 'POST'){
+            print("acceso no permitido");
+            $this->modelLog->warningLog('Accediendo directamente a un metodo ajax');
+            return False;
         }
-
-        $order = $this->input->post();
-
+        
+        $data = json_decode(file_get_contents("php://input"), true);
+        
+        $order = $data['complete_liquidation_data'];
+        $my_order = $this->modelOrder->get($order['nro_pedido']);
+        
+        if ($my_order == false){
+            $this->modelLog->warningLog('El peido no existe');
+            return($this->rest->_reponseHttp('El pedido no existe', 500));
+        }elseif( $my_order['bg_isliquidated'] ==  1 ){
+            return($this->rest->_reponseHttp('pedido ya liquidado', 500));
+        }
+        
         $order['bg_isliquidated'] = 1;
-        $order['fecha_liquidacion'] = str_replace(
-            '/', '-', $order['fecha_liquidacion']
-            );
-        $order['fecha_liquidacion'] = date(
-            'Y-m-d', strtotime($order['fecha_liquidacion'])
-            );
-
-        if($this->modelOrder->update($order)){
-            return $this->redirectPage(
-                'showTaxesOrder',
-                $order['nro_pedido']
-                );
+        $order['fecha_liquidacion'] = date('Y-m-d', strtotime($order['fecha_liquidacion']));
+        foreach ($data['liquidations_items'] as $item){
+            if($this->ModelOrderInvoiceDetail->update(
+                array (
+                    'detalle_pedido_factura' => $item['id_registro'],
+                    'ice_advalorem_pagado' => $item['ice_advalorem'],
+                    'ice_advalorem_unitario' => ($item['ice_advalorem']/$item['unidades']),
+                    'ice_unitario' => (($item['ice_advalorem']/$item['unidades']) + $item['ice_especifico_unitario']),
+                    'total_ice' => ($item['ice_advalorem'] + $item['ice_especifico']),
+                )
+                ) == false){
+                    $this->modelLog->warningLog('No es posible actualizar un item');
+                    return $rest->_responseHttp('No es posible actualizar un item', 500);
+                }
         }
-        print '<h1>Error de sistema</h1>';
-        return $this->redirectPage('validargi', $order['nro_pedido']);
+        
+        if($this->modelOrder->update($order)){
+            return $rest->_responseHttp('Actualizado correctamente', 200);
+        }
+        return $rest->_responseHttp('No es posible actualizar el parcial', 500);
      }
 
 

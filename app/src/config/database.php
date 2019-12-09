@@ -71,8 +71,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | the query builder class.
 */
 
+$active_group = 'cordovezTEST';
 #$active_group = 'imnacTEST';
-$active_group = 'imnacTEST';
 
 $query_builder = TRUE;
 
@@ -209,4 +209,3 @@ $db['vidTEST'] = array(
     'failover' => array(),
     'save_queries' => TRUE
 );
-

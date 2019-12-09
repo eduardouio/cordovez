@@ -52,7 +52,7 @@
                             </tr>
                             <tr>
                                 <td class="text-primary text-right">FONFINFA</td>
-                                <td class="text-right">$ ${ parcial_taxes.sums.fodinfa | money }</td>
+                                <td class="text-right"> ${ parcial_taxes.sums.fodinfa | money }</td>
                                 <td class="text-right">
                                     <input type="number" v-model="complete_liquidation_data.fodinfa_pagado" required="required" step="0.001" class="text-right" />
                                 </td>
@@ -71,7 +71,7 @@
                                     ${ parcial_taxes.sums.ice_advalorem | money }
                                 </td>
                                 <td class="text-right">
-                                    <input class="text-right" type="number" v-model="complete_liquidation_data.ice_advalorem_pagado" required="required" step="0.001" />
+                                    <input class="text-right" type="number" v-model="complete_liquidation_data.ice_advalorem_pagado" @change="checkItems()" required="required" step="0.001" />
                                 </td>
                                 <td class="text-right">
                                     <strong v-bind:class="{ 'text-danger' : (Math.round(Math.abs(parcial_taxes.sums.ice_advalorem - complete_liquidation_data.ice_advalorem_pagado)*100)/100) > 6 }"> ${ (parcial_taxes.sums.ice_advalorem -  complete_liquidation_data.ice_advalorem_pagado) | money }</strong>
@@ -118,20 +118,23 @@
                                 <th class="text-primary text-right">TOTALES</th>
                                 <th class="text-right">
                                     <span class="text-primary number form-control" disabled="disabled">
-                                    $ 13628.97
+                                    $ ${ 
+                                      (parcial_taxes.sums.arancel_advalorem_pagar 
+                                    + parcial_taxes.sums.arancel_especifico_pagar
+                                    + parcial_taxes.sums.fodinfa
+                                    + parcial_taxes.sums.ice_especifico
+                                    + parcial_taxes.sums.ice_advalorem
+                                    + parcial_taxes.sums.iva) | money
+                                    }
                                     </span>
                                 </th>
                                 <th class="text-right">
                                     <span class="text-primary number form-control" disabled="disabled">
-                                    $ 13628.97
+                                    $ ${ total_tributes | money}
+                                    
                                     </span>
                                 </th>
-                                <th class="text-right">
-                                    <span class="text-primary number form-control" disabled="disabled">
-                                    $ 0.00
-                                    </span>
-                                </th>
-                                <th></th>
+                                <th colspan="2"></th>
                             </tr>
                         </table>
                     </div>
@@ -179,18 +182,23 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <label>Fecha Liquidación:</label>
-                                    <input type="date" v-model="fecha_liquidacion" placeholder="dd/mm/yyyy" autocomplete="off" />
+                                    <input type="date" v-model="complete_liquidation_data.fecha_liquidacion" placeholder="dd/mm/yyyy" autocomplete="off" />
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Nro de Liquidaci&oacute;n</label>
-                                <input type="text" v-model="nro_liquidacion" required="required" autocomplete="off" />
+                                <input type="text" v-model="complete_liquidation_data.nro_liquidacion" required="required" autocomplete="off" />
                             </div>
                         </div>
                     </div>
-                    <br />
+                    <div class="row" v-if="show_ice_diff">
+                    	<div class="col-12 text-danger">
+                    	<h5>
+                    	 <i class="fa fa-warning"></i>	Error, el Ice Advalorem Total no coincide con el Ice Advalorem por Item, favor revise el prorrateo de los valores
+                    	</h5></div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>

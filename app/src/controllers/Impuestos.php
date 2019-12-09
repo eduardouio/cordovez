@@ -323,6 +323,7 @@ class Impuestos extends MY_Controller
             'regimen' => 'R10',
             'title' => 'Impuestos' . $order['nro_pedido'],
             'order' => $order,
+            'vue_app' => true,
             'etiquetas_fiscales' => $order_taxes['sums']['unidades'] * 0.13,
             'user' => $this->modelUser->get($init_data['order']['id_user']),
         ]));
@@ -520,37 +521,58 @@ class Impuestos extends MY_Controller
 
 
      /**
-      * Marca un parcial como liquidado
+      * Liquidar iva parcial
+      * Retorna la informacion completa de las liquidaciones de la SENAE
+      * tabnto por item como el global de la liquidacion
+      * 
+      * @param complete_liquidation_data [Dict]
+      * contiene la informacion de la liquidacion y de el desglose de la DAI
+      * para los tributos.
+      *   
       */
     public function liquidarIvaParcial(){
-        print('liquidarIvaParcial');
-        print(var_dump($_POST));
-        exit();
+        $this->load->library('Rest');
+        $rest = new Rest();
         
-        if(!$_POST){
-            return $this->index();
+        if ($rest->_getRequestMethod() != 'POST'){
+            print("acceso no permitido");
+            $this->modelLog->warningLog('Accediendo directamente a un metodo ajax');
+            return False;
         }
-        print('Si nos llega por post');
-        exit();
-        $parcial = $this->input->post();
-        $parcial['fecha_liquidacion'] = str_replace(
-                                    '/', '-', $parcial['fecha_liquidacion']
-                                    );
-        $parcial['fecha_liquidacion'] = date(
-                            'Y-m-d', strtotime($parcial['fecha_liquidacion'])
-            );
-
+        
+        $data = json_decode(file_get_contents("php://input"), true);
+        $parcial = $data['complete_liquidation_data'];
+        $my_parcial = $this->modelParcial->get($parcial['id_parcial']);
+        
+        if ($my_parcial == false){
+            $this->modelLog->warningLog('El parcial no existe');
+            return($this->rest->_reponseHttp('El parcial no existe', 500));
+        }elseif( $my_parcial['bg_isliquidated'] ==  1 ){
+            return($this->rest->_reponseHttp('parcial ya liquidado', 500));
+        }
+        
         $parcial['bg_isliquidated'] = 1;
-
-        if($this->modelParcial->update($parcial)){
-            return $this->redirectPage(
-                'showTaxesParcial', $parcial['id_parcial']
-                );
+        $parcial['fecha_liquidacion'] = date('Y-m-d', strtotime($parcial['fecha_liquidacion']));
+        foreach ($data['liquidations_items'] as $item){
+            if($this->modelInfoInvoiceDetail->update(
+            array (
+                'id_factura_informativa_detalle' => $item['id_registro'],
+                'ice_advalorem_pagado' => $item['ice_advalorem'],
+                'ice_advalorem_unitario' => ($item['ice_advalorem']/$item['unidades']),
+                'ice_unitario' => (($item['ice_advalorem']/$item['unidades']) + $item['ice_especifico_unitario']),
+                'total_ice' => ($item['ice_advalorem'] + $item['ice_especifico']),
+            )
+            ) == false){
+                $this->modelLog->warningLog('No es posible actualizar un item');
+                return $rest->_responseHttp('No es posible actualizar un item', 500);
+            }
         }
-        print '<h1>Error de sistema</h1>';
-        return $this->redirectPage('showTaxesParcial', $parcial['id_parcial']);
+       
+        if($this->modelParcial->update($parcial)){
+            return $rest->_responseHttp('Actualizado correctamente', 200);
+        }
+            return $rest->_responseHttp('No es posible actualizar el parcial', 500);
      }
-
 
      /**
       * Saca a un pedido de la liquidacion final

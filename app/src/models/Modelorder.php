@@ -59,7 +59,7 @@ class Modelorder extends CI_Model
                 WHERE nro_pedido != '000-00'
                 AND bg_isclosed = 0
                 ORDER BY anio DESC, 
-                nro_pedido DESC;";
+                nro_pedido DESC limit 15;";
         return ($this->modelBase->runQuery($query));            
     }
 

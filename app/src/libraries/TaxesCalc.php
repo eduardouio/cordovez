@@ -289,7 +289,6 @@ class TaxesCalc {
                 $gasto_origen =
                 ($this->gastos_origen * $percent)
                 * $this->type_change;
-                
         }else{             
             $fob = (
                 (   $detail_info_invoice['nro_cajas']
@@ -305,8 +304,8 @@ class TaxesCalc {
         $flete_aduana = 0 ;
         
         if ($this->is_partial){
-            $seguro_aduana = $percent * $this->init_data['info_invoices'][0]['flete_aduana'] ;
-            $flete_aduana = $percent * $this->init_data['info_invoices'][0]['seguro_aduana'];
+            $seguro_aduana = $percent * $this->init_data['info_invoices'][0]['flete_aduana'] * $this->type_change;
+            $flete_aduana = $percent * $this->init_data['info_invoices'][0]['seguro_aduana'] * $this->type_change;
         }else{
             $seguro_aduana = $percent * $this->init_data['order']['flete_aduana'] ;
             $flete_aduana = $percent * $this->init_data['order']['seguro_aduana'];
@@ -340,12 +339,12 @@ class TaxesCalc {
             'tasa_control' => $detail_info_invoice['tasa_control'],
             'otros' => $detail_info_invoice['otros'],
             'fob' => $fob,
-            'seguro_aduana' => $seguro_aduana * $this->type_change,
-            'flete_aduana' => $flete_aduana * $this->type_change,
+            'seguro_aduana' => $seguro_aduana,
+            'flete_aduana' => $flete_aduana,
             'cif' => (
                 $fob
-                + $seguro_aduana * $this->type_change
-                + $flete_aduana * $this->type_change
+                + $seguro_aduana
+                + $flete_aduana
                 ),
         ]);
     }

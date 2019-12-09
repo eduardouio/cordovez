@@ -2,7 +2,7 @@ var app = new Vue({
     el : '#app_liquidaciones',
     delimiters: ['${', '}'],
     data : {
-      init_data : JSON.parse('{{ init_data | json_encode() | raw  }}'),
+      show_ice_diff : true,
       parcial_taxes : JSON.parse('{{ parcial_taxes | json_encode() | raw  }}'),
       parcial : JSON.parse('{{ parcial | json_encode() | raw }}'),
       regimen : JSON.parse('{{ regimen  | json_encode() | raw }}'),
@@ -14,7 +14,7 @@ var app = new Vue({
         base_arancel_especifico : parseFloat('{{ parcial_taxes.data_general.base_aranceles.base_arancel_especifico }}'),
         base_ice_especifico : parseFloat('{{ parcial_taxes.data_general.base_aranceles.base_ice_especifico }}'),
         base_ice_advalorem : parseFloat('{{ parcial_taxes.data_general.base_aranceles.base_ice_advalorem }}'),
-        porcentaje_ice_advalorem : parseFloat('"{{ parcial_taxes.data_general.base_aranceles.porcentaje_ice_advalorem }}'),
+        porcentaje_ice_advalorem : parseFloat('{{ parcial_taxes.data_general.base_aranceles.porcentaje_ice_advalorem }}'),
         base_iva : parseFloat('{{ parcial_taxes.data_general.base_aranceles.base_iva }}'),
         base_etiquetas : parseFloat('{{ parcial_taxes.data_general.base_aranceles.base_etiquetas }}'),
         arancel_advalorem_pagar_pagado : 0,
@@ -22,13 +22,19 @@ var app = new Vue({
         fodinfa_pagado : 0,
         ice_advalorem_pagado : 0,
         ice_especifico_pagado : 0,
-        iva_pagado : 0,
+        iva_pagado : parseFloat('{{ parcial_taxes.sums.iva }}'),
+        fecha_liquidacion : '',
+        nro_liquidacion : null,
         },
       liquidations_items : JSON.parse('{{ parcial_taxes.taxes | json_encode() | raw  }}'),
-      fecha_liquidacion : '',
-      nro_liquidacion : null,
     },
     methods : {
+    	checkItems : function(){
+    		if (this.liquidations_items.length === 1){
+    			this.liquidations_items[0]['ice_advalorem'] = this.complete_liquidation_data.ice_advalorem_pagado
+    		}
+    		return false
+    	},
     	fixedLiquidationsItems : function(){
     		//limpiamos el ecxeso de decimales del arreglo de tributos
     		$.each(this.liquidations_items, function(k,v){
@@ -55,11 +61,20 @@ var app = new Vue({
 			$.each(this.liquidations_items, function(k,v){
 				totals['boxes'] += parseInt(v.cajas)
 				totals['bottles'] += parseInt(v.unidades)
-				totals['fodinfa'] += v.fodinfa
-				totals['ice_advalorem'] += v.ice_advalorem
-			})			
+				totals['fodinfa'] += parseFloat(v.fodinfa)
+				totals['ice_advalorem'] += parseFloat(v.ice_advalorem)
+			})
 			totals['fodinfa']  = Math.round(totals['fodinfa'] * 1000) /1000
 			totals['ice_advalorem']  = Math.round(totals['ice_advalorem'] * 1000) /1000
+			
+			dif_ice_advalorem = 
+					Math.abs(this.complete_liquidation_data.ice_advalorem_pagado
+					- totals['ice_advalorem'])
+			if (dif_ice_advalorem < 0.01){
+				this.show_ice_diff = false
+			}else{
+				this.show_ice_diff = true
+			}
 			return totals[detail]
     	},
     	/**
@@ -67,9 +82,11 @@ var app = new Vue({
     	 */
     	sendLiquidation : function(type){
     		console.dir('Recolectando informacion liquidacion ' + type )
-			this.$http.post('{{rute_url}}impuestos/liquidarIvaParcial/', this.complete_liquidation_data).then(response => {
-				console.log('Geial')
-       		    //location.reload();
+			this.$http.post('{{rute_url}}impuestos/liquidarIvaParcial/', data = {
+					'complete_liquidation_data' : this.complete_liquidation_data,
+					'liquidations_items' : this.liquidations_items,
+						}).then(response => {
+       		    location.reload();
        		  }, response => {
        			  alert('Se produjo un error, por favor recargue la página');
        		  });    		
@@ -83,6 +100,19 @@ var app = new Vue({
       int : function(num){
     	  return parseInt(num)
       }
+    },
+    computed : {
+    	total_tributes : function(){
+    		return (
+    		parseFloat(this.complete_liquidation_data.arancel_advalorem_pagar_pagado)
+			+ parseFloat(this.complete_liquidation_data.arancel_especifico_pagar_pagado)
+			+ parseFloat(this.complete_liquidation_data.fodinfa_pagado)
+			+ parseFloat(this.complete_liquidation_data.ice_advalorem_pagado)
+			+ parseFloat(this.complete_liquidation_data.ice_especifico_pagado)
+			+ parseFloat(this.complete_liquidation_data.iva_pagado)
+			)
+    	
+    	}
     },
 mounted : function(){
     	this.fixedLiquidationsItems()

@@ -157,13 +157,14 @@ class Modelinfoinvoicedetail extends CI_Model
      * @return bool
      */
     public function update(array $infoInvoiceDetail): bool
-    {
+    {     
+        
         $this->db->where('id_factura_informativa_detalle', $infoInvoiceDetail['id_factura_informativa_detalle']);
         if ($this->db->update($this->table, $infoInvoiceDetail)) {
             $this->modelLog->queryUpdateLog($this->db->last_query());
             return true;
         }
-        print $this->db->last_query();
+        $this->modelLog->warningLog($this->db->last_query());
         return false;
     }
 

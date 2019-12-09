@@ -201,9 +201,9 @@
    	<input 
    		type="number" 
    		class="form-control" 
-   		step="0.001" 
    		required="required" 
    		name="flete_aduana"
+         step="any"
    		id="flete_aduana"
    		value="{{ info_invoice.flete_aduana }}"
    		/>
@@ -224,7 +224,7 @@
    		class="form-control"
    		name="seguro_aduana"
    		id="seguro_aduana"
-   		step="0.001"
+         step="any"
    		required="required" 
    		value="{{ info_invoice.seguro_aduana }}"
    	/>
@@ -238,7 +238,6 @@
    		maxlength="250" 
    		class="form-control"
    		name="comentarios"
-   		step="0.001" 
    		value="{{ info_invoice.comentarios }}"
    	/>
    </div>

@@ -80,7 +80,7 @@ class Modelorder extends CI_Model
                     OR nro_pedido LIKE '%" . $input_query  .  "%'
                     ORDER BY anio DESC, nro_pedido DESC;
                     ";
-        #busca por matricula
+        #busca por refrendo
         $query_refrendo = "SELECT *, SUBSTRING(nro_pedido, -2) AS anio
                     FROM pedido
                     WHERE
@@ -90,7 +90,7 @@ class Modelorder extends CI_Model
                     OR nro_refrendo LIKE '%" . $input_query  .  "%'
                     ORDER BY anio DESC, nro_pedido DESC;
                     ";
-        #busca por 028-2019-70-00822976
+        #busca por matricula
         $query_matricula = "SELECT *, SUBSTRING(nro_pedido, -2) AS anio
                     FROM pedido
                     WHERE

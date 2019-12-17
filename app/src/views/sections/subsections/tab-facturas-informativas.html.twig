@@ -1,19 +1,21 @@
 
 <div class="row">
     <div class="col-sm-3">
-    {% if order_report.have_open_parcial == false %}
-            <a href="{{ rute_url }}parcial/nuevo/{{ order.nro_pedido }}">
-                <button type="button" class="btn btn-primary btn-sm">
-                    [+] Nuevo Parcial
-                </button>
-            </a>
-            <br>
-            <br>
-            {% endif %}
+      {% if order.bg_isclosed == 0 %}
+      {% if order_report.have_open_parcial == false %}
+              <a href="{{ rute_url }}parcial/nuevo/{{ order.nro_pedido }}">
+                  <button type="button" class="btn btn-primary btn-sm">
+                      [+] Nuevo Parcial
+                  </button>
+              </a>
+              <br>
+              <br>
+              {% endif %}
+              {% endif %}
     </div>
 </div>
 
-<div class="row">    
+<div class="row">
     <div class="col-sm-12">
         <table class="table table-hover table-bordered table-striped text-right">
             <thead>
@@ -26,7 +28,7 @@
                 <th>Referendo</th>
                 <th>Salida Autorizada</th>
                 <th>Fecha Ll. Bodega</th>
-                <th>Cajas</th>                  
+                <th>Cajas</th>
                 <th>Acciones</th>
             </tr>
             </thead>
@@ -36,18 +38,18 @@
                     <td>
                     <a href="{{ rute_url }}gstnacionalizacion/parcial/{{ parcial.id_parcial }}">
                     {{ loop.index }}
-                    <span class="fa fa-eye"></span> Ver                    
+                    <span class="fa fa-eye"></span> Ver
                     </a>
                     </td>
                     <td>
                       <small>
                     {%  if parcial.bg_isclosed == 0 and parcial.bg_isliquidated == 0 %}
                     	<span class="text-success"> Abierto
-                    	<span class="fa fa-folder-open-o"></span> 
+                    	<span class="fa fa-folder-open-o"></span>
                     	<span class="fa fa-unlock"></span>
                     	</span>
                     {%  endif %}
-                    
+
                     {%  if parcial.bg_isclosed == 1 %}
                     	<span class="text-default">
                     	Liquidado y Cerrado
@@ -55,15 +57,15 @@
                     	<span class="fa fa-lock"></span>
                     	</span>
                     {%  endif %}
-                    
+
                       {%  if parcial.bg_isclosed == 0 and parcial.bg_isliquidated == 1 %}
                     	<span class="text-success"> Abierto Liquidacion Aduana Ingresada
-                    	<span class="fa fa-folder-open-o"></span> 
+                    	<span class="fa fa-folder-open-o"></span>
                     	<span class="fa fa-lock"></span>
                     		</span>
                     {%  endif %}
                     		</small>
-                   
+
                     </td>
                     <td>
                     {{ parcial.nro_pedido }}
@@ -76,32 +78,32 @@
                         <span class="text-danger">Sin Autorización</span>
                     </td>
                     {% else %}
-                    <td> 
+                    <td>
                     <span class="text-success">
                     {{ parcial.fecha_salida_autorizada | date ('d/m/Y') }}
                     </span>
                     </td>
                     {% endif %}
-                    
+
                     {% if parcial.fecha_llegada_cliente == null or parcial.fecha_llegada_cliente == ''   %}
                     <td>
                         <span class="text-danger">No en Bdega Local</span>
                     </td>
                     {% else %}
-                    <td> 
+                    <td>
                     <span class="text-success">
                     {{ parcial.fecha_llegada_cliente | date ('d/m/Y') }}
-                    </span>                    
+                    </span>
                     </td>
                     {% endif %}
 
 
-                    <td> {{ parcial.cajas }} </td>                    
+                    <td> {{ parcial.cajas }} </td>
                     <td>
                     <a href="{{ rute_url }}parcial/presentar/{{ parcial.id_parcial }}" class="btn btn-default btn-sm" style="padding: 0px 9px;margin-left: 5px;margin-right: 5px;"><span class="fa fa-eye fa-fw "></span></span>
                     <a href="{{ rute_url }}facinformativa/presentar/{{ parcial.info_invoices.0.id_factura_informativa }}" class="btn btn-default btn-sm" style="padding: 0px 9px;margin-left: 5px;margin-right: 5px;"><span class="fa fa-file fa-fw "></span></span>
                     <a href="{{ rute_url }}impuestos/pc/{{ parcial.id_parcial }}" class="btn btn-default btn-sm" style="padding: 0px 9px;margin-left: 5px;margin-right: 5px;"><span class="fa fa-money fa-fw "></span></span>
-                    <a href="{{ rute_url }}report/gastosnacionalizacion/{{ parcial.id_parcial }}" target="_blank" class="btn btn-default btn-sm" style="padding: 0px 9px;margin-left: 5px;margin-right: 5px;"><span class="fa fa-file-pdf-o fa-fw "></span></span>                    
+                    <a href="{{ rute_url }}report/gastosnacionalizacion/{{ parcial.id_parcial }}" target="_blank" class="btn btn-default btn-sm" style="padding: 0px 9px;margin-left: 5px;margin-right: 5px;"><span class="fa fa-file-pdf-o fa-fw "></span></span>
                     <a href="{{ rute_url }}parcial/eliminar/{{ parcial.id_parcial }}" class="btn btn-danger btn-sm" style="padding: 0px 9px;margin-left: 5px;margin-right: 5px;"><span class="fa fa-trash fa-fw "></span></span>
                     </td>
                 </tr>

@@ -24,7 +24,7 @@ class Modelparcial extends CI_Model
     private $modelOrderInvoice;
     private $modelInfoInvoice;
     private $modelProduct;
-    
+
     public function __construct()
     {
         parent::__construct();
@@ -39,8 +39,8 @@ class Modelparcial extends CI_Model
         $this->modelInfoInvoice = new Modelinfoinvoice();
         $this->modelOrderInvoice = new Modelorderinvoice();
     }
-    
-    
+
+
     /**
      * Retorna el registro de un parcial
      * @param int $idParcial
@@ -54,19 +54,19 @@ class Modelparcial extends CI_Model
                 'id_parcial' => $idParcial,
             ],
         ]);
-        
+
         if( (is_array($parcial)) && (!empty($parcial)) )
-        {        
+        {
             return $parcial[0];
         }
-        
+
         $this->modelLog->warningLog(
-                                        'El parcial no existe', 
+                                        'El parcial no existe',
                                         $this->db->last_query()
                                     );
         return false;
     }
-    
+
     /**
      * Verifica que un pedido tenga un parcial cerrado
      * @param array $nro_order
@@ -74,21 +74,21 @@ class Modelparcial extends CI_Model
      */
     public function orderHaveCloseParcial(string $nro_order):bool{
         $parcials = $this->getByOrder($nro_order);
-        
+
         if ($parcials == False){
             return False;
         }
-        
+
         foreach ($parcials as $k => $parc){
             if($parc['bg_isclosed'] == 1){
                 return True;
             }
         }
-        
+
         return False;
     }
-    
-    
+
+
     /**
      * Obtiene la lista de parciales para un numero de pedido
      * @param string $nroOrder
@@ -102,43 +102,42 @@ class Modelparcial extends CI_Model
                 'nro_pedido' => $nroOrder,
             ],
         ]);
-        
         if( is_array($parcials) && count($parcials) > 0){
             return $parcials;
         }
         return false;
     }
-    
-    
+
+
     /**
-     * Registra un parcial abierto en la base de datos 
+     * Registra un parcial abierto en la base de datos
      * @param array $parcial arreglo con informacion del parcial
      * @return int | boolean
      */
     public function create(array $parcial)
     {
-               
+
         if($this->db->insert($this->table, $parcial)){
             $this->modelLog->queryInsrertLog($this->db->last_query());
             return $this->db->insert_id();
         }
         if($this->modelLog->errorLog(
-                'No se puede insertar un parcial' , 
+                'No se puede insertar un parcial' ,
                 $this->db->last_query())
             );
         return false;
     }
-    
-    
+
+
     /**
      * Actualiza la informacion de un parcial
-     * 
+     *
      * @param array $parcial
      * @return bool
      */
     public function update(array $parcial):bool
     {
-        
+
         $this->db->where('id_parcial', $parcial['id_parcial']);
         unset($parcial['id_parcial']);
         if($this->db->update($this->table, $parcial)){
@@ -150,9 +149,9 @@ class Modelparcial extends CI_Model
             );
         return False;
     }
-    
+
     /**
-     * Retorna el ultimo parcial de un pedido, 
+     * Retorna el ultimo parcial de un pedido,
      * se usa para saber la fecha de salida del ultimo parical,
      * si no existe un parcial se toma la fecha de entrada a la almacenera
      * @param string $nroOrder identificador del parical
@@ -169,31 +168,31 @@ class Modelparcial extends CI_Model
                 'proximo_almacenaje_desde' => 'DESC'
             ],
         ]);
-        
+
         if(is_array($lastParcias) && count($lastParcias) > 1){
             $this->modelLog->warningLog(
-                                'Revisar que el primero sea el ultimo parcial', 
+                                'Revisar que el primero sea el ultimo parcial',
                                 $this->db->last_query());
             return $lastParcias[1];
         }
-        return false;        
+        return false;
     }
-    
-    
+
+
     /**
      * Obtiene la lista de los parciales cerrados para un pedido
-     * 
+     *
      * @param int $idParcial
-     * @param $all boolean true-> retorna todos 
+     * @param $all boolean true-> retorna todos
      * @return array | boolean
      */
     public function getClosedParcials(string $nroOrder, bool $all = false)
     {
         $limit = ($all) ? 1 : 1000;
-        
+
         $oldParcial = $this->modelBase->get_table([
             'table' => $this->table,
-            'where' => [ 
+            'where' => [
                 'nro_pedido' => $nroOrder,
                 'bg_isclosed' => '1',
             ],
@@ -202,19 +201,19 @@ class Modelparcial extends CI_Model
             ],
             'limit' => $limit,
         ]);
-        
-        $this->modelLog->warningLog('Consulta a los parciales de un pedido', 
+
+        $this->modelLog->warningLog('Consulta a los parciales de un pedido',
                                      $this->db->last_query()
                                     );
-        
+
         if(is_array($oldParcial) && count($oldParcial) > 0){
             return $oldParcial;
         }
-        
+
         return false;
     }
-    
-    
+
+
     /**
      * Obtiene el detalle de las facturas y lo cruza contra el valor total de
      * la factura
@@ -229,27 +228,27 @@ class Modelparcial extends CI_Model
                 'id_parcial' => $id_parcial
             ]
         ]);
-        
+
         if (empty($invoices)) {
             $this->modelLog->warningLog(
                 'El el parcial Solicitado no tiene Facturas registradas'
                 );
             return false;
         }
-        
+
         $result = [];
         foreach ($invoices as $key => $value) {
             $value['detailInvoice'] = $this->getInvoiceDetail($value);
             $value['valor'] =  floatval($value['valor']);
             $result[$key] = $value;
         }
-        
+
         $this->modelLog->susessLog(
             'Se recuperan todas las facturas del pedido'
             );
         return $result;
     }
-    
+
     /**
      * Busca los detalles de la factura y la suma de las mimsas
      * @param array $invoice objeto factura completo
@@ -263,30 +262,30 @@ class Modelparcial extends CI_Model
                 'id_factura_informativa' => $invoice['id_factura_informativa'],
             ],
         ]);
-        
+
         if (empty($detailInvoice)) {
             return false;
         }
-        
+
         $result = [];
         (float)$valueItem = 0.00;
         $countBoxesProduct = 0.00;
         $unities = 0;
-        
+
         foreach ($detailInvoice as $key => $value) {
             $detail_order_invoice =  $this->modelBase->get_table([
                 'table' => 'detalle_pedido_factura',
                 'where' => [
                     'detalle_pedido_factura' => $value['detalle_pedido_factura'],
-                ],                
+                ],
             ]);
-            
-            $detail_order_invoice = $detail_order_invoice[0];            
+
+            $detail_order_invoice = $detail_order_invoice[0];
             $valueItem += floatval($detail_order_invoice['costo_caja']) *
             floatval($value['nro_cajas']);
-            
+
             $product = $this->modelProduct->get($detail_order_invoice['cod_contable']);
-            
+
             $countBoxesProduct += floatval($value['nro_cajas']);
             $unities += ($value['nro_cajas'] * $product['cantidad_x_caja']);
             $value['nombre'] = $product['nombre'];
@@ -299,7 +298,7 @@ class Modelparcial extends CI_Model
                 floatval($value['nro_cajas']));
             $value['peso'] = $product['peso'];
             $result[$key] = $value;
-        }       
+        }
         $result['sums'] = [
             'valueItems' =>  floatval(str_replace(',','',number_format($valueItem,2))),
             'money' => $invoice['moneda'],
@@ -309,8 +308,8 @@ class Modelparcial extends CI_Model
         ];
         return $result;
     }
-    
-    
+
+
     /**
      * Retorna todos los parciales de un pedido, no toma en cuenta
      * el bg_isclosed
@@ -327,21 +326,21 @@ class Modelparcial extends CI_Model
             ],
             'orderby' => ['id_parcial' => 'ASC']
         ]);
-        
+
         if(is_array($parcials) && count($parcials) > 0){
             return $parcials;
         }
-        
+
         return false;
     }
-    
-    
+
+
     /**
      * Obtiene la lista de parciales en los que esta un producto
-     */ 
+     */
     public function getAll(string $cod_contable) : array{
         $query = "
-                    select 
+                    select
                     p.nro_pedido,
                     dp.id_pedido_factura,
                     o.regimen,
@@ -373,10 +372,10 @@ class Modelparcial extends CI_Model
                     join pedido as o on (o.nro_pedido = p.nro_pedido)
                     join pedido_factura as pf on (pf.id_pedido_factura = dp.id_pedido_factura)
                     where fid.cod_contable = '{cod_contable}';
-                ";        
+                ";
         $result = $this->modelBase->runQuery(str_replace(
             '{cod_contable}',
-            $cod_contable, 
+            $cod_contable,
             $query)
             );
         if($result){
@@ -384,7 +383,7 @@ class Modelparcial extends CI_Model
         }
         return [];
     }
-        
+
     /**
      * Retorna el numero de orden a partir del id de un parcial
      * @param int $idParcial identificacion del parcial
@@ -393,7 +392,7 @@ class Modelparcial extends CI_Model
     public function getNroOrderByParcial(int $idParcial) : string
     {
         $parcial = $this->get($idParcial);
-        
+
         if($parcial == false){
             $this->modelLog->errorLog(
                 'El parcial que busca no existe',
@@ -401,16 +400,16 @@ class Modelparcial extends CI_Model
                 );
             return false;
         }
-        
+
         return ($parcial['nro_pedido']);
     }
-       
 
-    
+
+
     /**
      * Elimina un parcial vacio de la base de datos
      * @param array $parcial
-     * @return bool 
+     * @return bool
      */
     public function delete(array $parcial):bool
     {
@@ -419,15 +418,15 @@ class Modelparcial extends CI_Model
             $this->modelLog->susessLog('Parcial Eliminado correctamente');
             return True;
         }
-        
+
         $this->modelLog->errorLog(
             'No se pudo eliminar un parcial',
             $this->db->last_query()
             );
         return False;
     }
-    
-    
+
+
     /**
      * Comprueba si un pedido esta cerrado
      *
@@ -435,16 +434,16 @@ class Modelparcial extends CI_Model
      */
     public function idClosed(int $id_parcial): bool{
          $parcial = $this->get($nro_pedido);
-        
+
         if($parcial){
             return boolval($parcial['bg_isclosed']);
         }
-        
+
         return False;
     }
-    
-    
-    
+
+
+
     /**
      * Obtiene una lista de pedidos que han llegado a la bodega
      * dentro de un mes solo R10
@@ -453,15 +452,15 @@ class Modelparcial extends CI_Model
      * @param int $month
      */
     public function getArrivedCellarByDate(int $year, int $month) : array{
-        
+
         $f_inicio = $year . '-' . $month . '-01';
         $f_fin = $year . '-' . $month . '-31';
-        
+
         if($month < 10){
             $f_inicio = $year . '-0' . $month . '-01';
             $f_fin = $year . '-0' . $month . '-31';
         }
-        
+
         $query = "  SELECT p.*, pd.pais_origen
                     FROM parcial as p
                     LEFT JOIN pedido as pd on (p.nro_pedido = pd.nro_pedido)
@@ -470,23 +469,23 @@ class Modelparcial extends CI_Model
                     ORDER BY p.fecha_llegada_cliente
                  ";
         $result = $this->modelBase->runQuery($query);
-        
+
         if($result){
             $this->modelLog->susessLog(
                 'Parciales con fecha de llegada bodega oficina listados'
-                );            
+                );
             return  $result;
         }
-        
+
         $this->modelLog->warningLog(
             'No existen parciales con fecha de llegada oficina para lisar'
             );
-        
+
         return [];
     }
-    
-    
-    
+
+
+
     /**
      * Obtiene el almacenaje del primer parcial
      * @param int $id_parcial
@@ -499,16 +498,16 @@ class Modelparcial extends CI_Model
                 ORDER BY id_parcial ASC
                 LIMIT 10
                 ";
-        
+
         $result  = $this->modelBase->runQuery($sql);
-        
+
         if($result){
             return  $result[0];
         }
-        
+
         return False;
     }
-    
+
     /**
      * Cierra un pedido en el sistema
      *
@@ -521,7 +520,7 @@ class Modelparcial extends CI_Model
             $parcial['bg_isclosed'] = 1;
             return $this->update($parcial);
         }
-        
+
         return False;
         }
 }

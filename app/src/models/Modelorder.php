@@ -21,7 +21,6 @@ class Modelorder extends CI_Model
     private $modelProduct;
     private $modelLog;
 
-
     /**
      * contructor de la clase
      */

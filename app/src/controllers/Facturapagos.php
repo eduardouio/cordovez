@@ -370,6 +370,7 @@ class Facturapagos extends MY_Controller
         $config['controller'] = $this->controller;
         $config['iconTitle'] = 'fa-file-text';
         $config['content'] = 'home';
+        $config['enterprise'] = $GLOBALS['selected_enterprise'];
         return $this->twig->display($this->template, $config);
     }
 }

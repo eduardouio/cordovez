@@ -23,10 +23,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 */
 
-$config['base_url'] = 'http://localhost/cordovezapp/app';
-#$config['base_url'] = 'http://179.49.60.158:8888/cordovez'; #CORDOVEZ
-#$config['base_url'] = 'http://179.49.60.158:8888/imnac'; #CORDOVEZ
-#$config['base_url'] = 'http://179.49.60.158:8888/vid'; #CORDOVEZ
+$config['base_url'] = $GLOBALS['selected_enterprise']['base_url'];
 
 /*
 |--------------------------------------------------------------------------

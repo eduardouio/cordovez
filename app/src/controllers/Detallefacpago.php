@@ -351,7 +351,8 @@ class Detallefacpago extends MY_Controller
             'controller' => $this->controller,
             'iconTitle' => 'fa-file-text',
             'content' => 'home',
-            'controller' => $this->controller
+            'controller' => $this->controller,
+            'enterprise' => $GLOBALS['selected_enterprise'],
         ];
         return $this->twig->display($this->template, array_merge($config, $params));
     }

@@ -154,10 +154,8 @@ class Pedido extends MY_Controller
                     $orders_closed ++;
                 }else{
                     $orders_open ++;
-                }
-            }
-        }
-
+                }}}
+        
         $this->responseHttp([
             'list_orders' => true,
             'title' => 'Lista de Pedidos',
@@ -165,11 +163,11 @@ class Pedido extends MY_Controller
             'orders' => $init_data,
             'orders_closed' => $orders_closed,
             'orders_opened' => $orders_open,
-            'titleContent' => 'Lista de Pedidos Activos',
+            'titleContent' => 'Lista de Pedidos ' . $GLOBALS['selected_enterprise']['nombre'],
             'infoBase' => $this->getStatisticsInfo(),
-            'pagination_url' => base_url() . 'index.php/pedido/listar/'
+            'pagination_url' => base_url() . 'index.php/pedido/listar/',
+            'enterprise' => $GLOBALS['selected_enterprise'],
         ]);
-
     }
 
 

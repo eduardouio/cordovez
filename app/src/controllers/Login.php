@@ -80,7 +80,8 @@ class Login extends CI_Controller
             'actionFrm' => base_url() . 'index.php/login/validar',
             'controller' => $this->controller,
             'iconTitle' => 'fa-users',
-            'content' => 'home'
+            'content' => 'home',
+            'enterprise' => $GLOBALS['selected_enterprise'],
         ];
         return $this->twig->display($this->template, array_merge($config, $init));
     }

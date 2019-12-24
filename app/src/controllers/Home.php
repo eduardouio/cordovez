@@ -89,7 +89,9 @@ class Home extends MY_Controller {
 	        'content' => 'home',
 	        'titleContent' => 'Sistema de Importaciones &nbsp;&nbsp;&nbsp;
 												<small> Lista de Módulos Disponibles </small>',
-	    ];
+		];
+		
+		$config['enterprise'] = $GLOBALS['selected_enterprise'];
 	    
 	    return $this->twig->display($this->template, $config);
 	}

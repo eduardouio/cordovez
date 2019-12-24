@@ -24,9 +24,7 @@ class Importar extends MY_Controller
     private $modelMigrate;
     private $rest;
     private $modelUser;  
-    private $enterprise = 'cordovez';
-    #private $enterprise = 'vid';
-    #private $enterprise = 'imnac';
+    private $enterprise;
 
     function __construct(){
         parent::__construct();
@@ -48,6 +46,7 @@ class Importar extends MY_Controller
             $this->load->model($model);
         }
         #instancia de modelos
+        $this->enterprise = $GLOBALS['selected_enterprise']['enterprise'];
         $this->modelUser = new Modeluser();
         $this->modelImportSAP = new ModelImportSAP();
         $this->modelMigrate = new ModelMigrate();
@@ -168,6 +167,7 @@ class Importar extends MY_Controller
                 'rute_url' => base_url() . 'index.php/',
                 'controller' => $this->controller,
                 'iconTitle' => 'fa-retweet',
+                'enterprise' => $GLOBALS['selected_enterprise'],
                 'content' => 'home']))
             );
     }

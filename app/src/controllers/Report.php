@@ -57,9 +57,7 @@ class Report extends MY_Controller{
         $this->modelUser = new Modeluser();
         $this->modelOrder = new Modelorder();
         $this->modelReportExpenses = new Modelreportexpenses();
-        $this->empresa = selectCompany('cordovez');
-        #$this->empresa = selectCompany('imnac');
-        #$this->empresa = selectCompany('vid');
+        $this->empresa = selectCompany($GLOBALS['selected_enterprise']['enterprise']);
     }
         
     
@@ -120,6 +118,7 @@ class Report extends MY_Controller{
             'invoice' => $invoice,
             'nro_parcial' => $nro_parcial,
             'id_parcial' => $id_parcial,
+            'enterprise' => $GLOBALS['selected_enterprise'],
         ];
         
         $html = $this->twig->render($this->template, $report_data);

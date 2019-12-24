@@ -664,6 +664,7 @@ class Impuestos extends MY_Controller
             'sgi_url' => $this->sgi_url,
             'controller' => $this->controller,
             'iconTitle' => 'fa-money',
+            'enterprise' => $GLOBALS['selected_enterprise'],
             'content' => 'home'
         ])));
     }

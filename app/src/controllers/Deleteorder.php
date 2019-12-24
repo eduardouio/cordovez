@@ -50,7 +50,8 @@ class Deleteorder extends MY_Controller{
             'rute_url' => base_url() . 'index.php/',
             'controller' => $this->controller,
             'iconTitle' => 'fa-warning',
-            'content' => 'home'
+            'content' => 'home',
+            'enterprise' => $GLOBALS['selected_enterprise'],
         ])));
     }
 }

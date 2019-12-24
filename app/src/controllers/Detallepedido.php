@@ -89,7 +89,7 @@ class Detallepedido extends MY_Controller
             'products' => $products,
             'productsarray' => json_encode($products),
             'invoice' => $invoiceOrder,
-		    'supplier' => $supplier,
+			'supplier' => $supplier,
         ]);
 	}
 	
@@ -123,7 +123,7 @@ class Detallepedido extends MY_Controller
 	            'edit_weigth' => true,
 	            'order' => $order,
 	            'order_details' => $order_invoice_details,
-	            'order_invoice' => $order_invoice,	            
+				'order_invoice' => $order_invoice,      
 	        ])
 	            );
 	    
@@ -163,7 +163,7 @@ class Detallepedido extends MY_Controller
 	        'edit' => true,
 	        'detailInvoiceOrder' => $detailInvoiceOrder,
 	        'invoiceOrder' => $invoiceOrer ,
-	        'product' => $product,
+			'product' => $product,
 	    ]);
 	}
 
@@ -187,7 +187,7 @@ class Detallepedido extends MY_Controller
             'title' => 'Error en validación de datos',
             'orderDetail' => $detailOrderInvoice,
             'viewMessage' => true,
-            'message' => 'No se puede eliminar el registro',
+			'message' => 'No se puede eliminar el registro',
         ]));
 	}
 
@@ -237,7 +237,7 @@ class Detallepedido extends MY_Controller
 			    'titleContent' => 'Error en uno de los campos',
 			    'viewMessage' => true,
 			    'message' => 'La información de uno de los campos es incorrecta!',
-			    'data' => $status['columns'],
+				'data' => $status['columns'],
 			]));
 		}	
 	}
@@ -288,6 +288,7 @@ class Detallepedido extends MY_Controller
 		$config['controller'] = $this->controller;
 		$config['iconTitle'] = 'fa-cube';
 		$config['content'] = 'home';
+		$config['enterprise'] = $GLOBALS['selected_enterprise'];
 		return $this->twig->display($this->template, $config);
 	}
 

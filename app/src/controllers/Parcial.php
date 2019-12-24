@@ -256,6 +256,7 @@ class Parcial extends MY_Controller
             'base_url' => base_url(),
             'rute_url' => base_url() . 'index.php/',
             'controller' => $this->controller,
+            'enterprise' => $GLOBALS['selected_enterprise'],
             'iconTitle' => 'fa-cubes',
             'content' => 'home'
         ])));

@@ -155,9 +155,9 @@
 					Use el siguiente cuadro de díalogo para justificar o registrar una provisión que no se haya contemplado
 					<br />
 				</div>
-					<input type="hidden" name="id_documento_pago" value="{{document.id_documento_pago}}">
+					<input type="hidden" name="id_documento_pago" value="{{ document.id_documento_pago }}">
 					<div class="row">
-						<div class="col-md-2">
+						<div class="col-md-1">
 							<div class="form-group">
 								<label>Nro Pedido</label>
 								<select class="form-control" v-model="selected_item" @change="select_order" autofocus>
@@ -165,8 +165,8 @@
 								</select>
 							</div>
 						</div>
-						<div class="col-md-7">
-							<div class="form-group">
+						<div class="col-md-5">
+							<div class="form-group">0
 								<label> Concepto: </label>
 								<select class="form-control" v-model="selected_provision" @change="select_provision()">
 								<option v-for="provision in current_order_provisions" v-bind:value="provision.id_gastos_nacionalizacion"> [${provision.tipo}] ${ provision.concepto }</option>
@@ -179,9 +179,24 @@
 							<input type="number" step="0.01" required="required" class="form-control text-right" v-model="value_justify" @change="change_justify_value" @input="change_justify_value">
 						</div>
 					</div>
-					<div class="col-md-1">
+					<div class="col-md-2">
+						<div class="form-group">
+							<label> Valor Ajuste </label>
+							<input type="number" v-model="saldo_provision" v-bind:class="class_color" class="form-control text-right" readonly>
+						</div>
+					</div>
+						<div class="col-md-1 text-right">
+						<div class="form-group">
+						<br>
+							<label for="">Ajuste</label>
+							<input type="checkbox" style="zoom: 1.85;" v-model="generar_ajuste">
+						</div>
+					</div>
+					<div class="col-md-1 text-right">
+					<div class="form-group">
 						<br>
 						<button class="btn btn-sm btn-default" @click="guardar_justificacion"> <span class="fa fa-save"></span> Guardar</button>
+					</div>
 					</div>
 				</div>
 			<div class="row">
@@ -213,61 +228,59 @@
 							</tr>
 							<tr>
 								<td class="text-right"><strong>Nro Parcial:</strong></td>
-								<td>0</td
+								<td>0</td>
 							</tr>
 							<tr>
 								<td class="text-right"><strong>Valor Provisionado:</strong></td>
-								<td>${ current_provision.valor_provisionado }</td
+								<td>${ current_provision.valor_provisionado }</td>
 							</tr>
 							<tr>
 								<td class="text-right"><strong>Valor Justificado:</strong></td>
-								<td>${ current_provision.valor_justificado }</td
+								<td>${ current_provision.valor_justificado }</td>
 							</tr>
 							<tr>
 								<td class="text-right"><strong>Saldo:</strong></td>
-								<td>${ (current_provision.valor_provisionado - current_provision.valor_justificado) | money }</td
+								<td>${ (current_provision.valor_provisionado - current_provision.valor_justificado) | money }</td>
 							</tr>
 							<tr>
 								<td class="text-right"><strong>Fecha Inicio:</strong></td>
-								<td>${ current_provision.fecha }</td
+								<td>${ current_provision.fecha }</td>
 							</tr>
 							<tr>
 								<td class="text-right"><strong>Fecha Fin:</strong></td>
-								<td>${ current_provision.fecha_fin }</td
+								<td>${ current_provision.fecha_fin }</td>
 							</tr>
 							<tr>
 								<td class="text-right"><strong>Registrado Por:</strong></td>
-								<td>${ current_provision.nombres }</td
+								<td>${ current_provision.nombres }</td>
 							</tr>
 							<tr>
 								<td class="text-right"><strong>Fecha Registro:</strong></td>
-								<td>${ current_provision.date_create }</td
+								<td>${ current_provision.date_create }</td>
 							</tr>
 							<tr>
 								<td class="text-right"><strong>Última Actualizacion:</strong></td>
-								<td>${ current_provision.last_update }</td
+								<td>${ current_provision.last_update }</td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
-				<div class="col-md-4" style="border:solid 1px #eee;border-radius:5px;">
-					<h1 v-bind:class="class_color">
+				<div class="col-md-4 text-center" style="border:solid 1px #eee;border-radius:5px;">
+					
+				<h1 v-bind:class="class_color">
 						${ saldo_provision | money }
 						<span v-bind:class="class_simbol"></span>
 					</h1>
 					<h4 class="text-center">Saldo Provisión</h4>
 					<br />
 					<div class="row" style="padding:30px;">
-						<div class="col-md-6">
-							<h5 class="text-left">Pedido ${ current_provision.nro_pedido }</h5>
-						</div>
-						<div class="col-md-6">
-							<h5 class="text-right">${ current_provision.tipo }</h5>
-						</div>
-					</div>
-					<div class="row" style="padding:30px;">
 						<div class="col-md-12 text-center">
 							<h6 class="text-primary">{{ document.supplier.nombre }}</h6>
+						</div>
+					</div>
+					<div class="row">
+					<div class="col-md-12 text-center">
+							<span class="text-warning">Los ajustes se usan para cerrar las facturas, las facturas no deben tener saldo</span>
 						</div>
 					</div>
 				</div>
@@ -277,106 +290,5 @@
 </div>
 </div>
 <script type="text/javascript">
-	var app = new Vue({
-		el : '#app',
-		delimiters: ['${', '}'],
-		data : {
-			document : {{ document | json_encode() | raw }},
-			orders : {{  orders | json_encode() | raw }},
-			current_user : {{ user | json_encode() | raw }},
-			all_provisions : {{ provisions | json_encode() | raw }},
-			route_url : '{{ rute_url | raw }}',
-			paids_invoice : 0,
-			value_justify : 0.0,
-			selected_item : '',
-			current_provision : {},
-			selected_provision : null ,
-			current_order_provisions : [],
-			saldo_provision : 0,
-		},
-		methods : {
-			select_order() {
-				var current_order = [];
-				var x = this.selected_item
-				this.all_provisions.forEach(function(item){
-					if(item.nro_pedido === x){
-						current_order.push(item)
-					}
-				})
-				this.current_order_provisions = current_order
-			},
-			select_provision(){
-				var current_provision = {}
-				var x = this.selected_provision
-				this.all_provisions.forEach(function(item){
-					if(item.id_gastos_nacionalizacion === x ){
-						current_provision = item
-					}
-				})
-				this.saldo_provision = (current_provision.valor_provisionado - current_provision.valor_justificado)
-				this.current_provision = current_provision
-			},
-			change_justify_value(){
-				this.saldo_provision = (this.current_provision.valor_provisionado - this.current_provision.valor_justificado) - this.value_justify
-			},
-			guardar_justificacion(){
-				var data = {
-					id_documento_pago: this.document.id_documento_pago,
-					id_gastos_nacionalizacion : this.current_provision.id_gastos_nacionalizacion,
-					valor : this.value_justify
-				}
-				this.$http.post('{{rute_url}}detallefacpago/validar/', data).then(response => {
-	       		    location.reload();
-	       		  }, response => {
-	       			  alert('Se produjo un error, por favor recargue la página');
-	       		  });
-			  },
-			  eliminar(item){
-				  this.$http.get('{{rute_url}}detallefacpago/eliminar/' + item.id_detalle_documento_pago).then(response => {
-  	       		    location.reload();
-  	       		  }, response => {
-  	       			  alert('Se produjo un error, por favor recargue la página');
-  	       		  });
-			  }
-		},
-		computed : {
-			total_justificado() {
-				justificado = 0.0;
-				this.document.invoiceDetails.details.forEach(function(item){
-					justificado += parseFloat(item.valor)
-				})
-				return justificado
-			},
-			valor_pendiente() {
-				return (this.document.valor - this.total_justificado)
-			},
-			class_color(){
-				if(this.saldo_provision > 0){
-					return 'text-center text-primary'
-				}
-				if(this.saldo_provision < 0){
-					return 'text-center text-danger'
-				}
-				if(this.saldo_provision === 0){
-					return 'text-center text-success'
-				}
-			},
-			class_simbol(){
-				if(this.saldo_provision > 0){
-					return 'pull-right text-primary fa fa-warning'
-				}
-				if(this.saldo_provision < 0){
-					return 'pull-right text-danger fa fa-ban'
-				}
-				if(this.saldo_provision === 0){
-					return 'pull-right text-success fa fa-check'
-				}
-			}
-		},
-		filters : {
-			money(number){
-				return(parseFloat(number).toFixed(2))
-			}
-		},
-	})
+	{% include 'scripts/app_invoices.js' %}
 </script>

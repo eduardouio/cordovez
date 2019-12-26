@@ -297,6 +297,7 @@ class Detallefacpago extends MY_Controller
                 $this->db->update('gastos_nacionalizacion', $provisonUpdate);
                 return true;
             }
+           print $this->db->last_query();
         }else{
             $this->db->where('id_detalle_documento_pago',
                 $row['id_detalle_documento_pago']);
@@ -321,7 +322,7 @@ class Detallefacpago extends MY_Controller
         $paramsData = [
             'id_documento_pago' => 1,
             'id_gastos_nacionalizacion' => 1,
-            'valor' => 2,
+            'valor' => 0,
             'id_user' => 1
         ];
         return $this->_checkColumnsData($paramsData, $data);

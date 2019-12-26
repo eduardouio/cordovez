@@ -151,11 +151,27 @@
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 					<h5 class="modal-title"> <span class="fa fa-cog"></span> Justificar/Generar Provisión Para <strong>Factura: # {{ document.nro_factura }}</strong> de {{ document.supplier.nombre }}</h5>
-					<br />
-					Use el siguiente cuadro de díalogo para justificar o registrar una provisión que no se haya contemplado
-					<br />
 				</div>
 					<input type="hidden" name="id_documento_pago" value="{{ document.id_documento_pago }}">
+				<div class="row" v-if="generar_ajuste">
+					<div class="col-12">
+						<h5 class="text-danger">Se generará un ajsute por el valor $ <strong> ${ saldo_provision } </strong></h5>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">
+					<br/>
+					<div v-if="no_provisionado === false"> 
+						<button class="btn btn-warning btn-sm" @click="no_provisionado = true"> <i class="fa fa-warning"></i>Formulario Justificar No Provisionado</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Realizar una justificación de un valor que no se ha provisionado antes del costeo del producto</span>
+					</div>
+					<div v-else="">
+						<button class="btn btn-primary btn-sm" @click="no_provisionado = false"> <i class="fa fa-file"></i> Formulario Justificar Provisionado </button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Volver al formulario normal
+					</div>
+					<br/>
+					<br/>
+					</div>
+				</div>
+				<div class="justificar" v-if="no_provisionado === false">
 					<div class="row">
 						<div class="col-md-1">
 							<div class="form-group">
@@ -166,7 +182,7 @@
 							</div>
 						</div>
 						<div class="col-md-5">
-							<div class="form-group">0
+							<div class="form-group">
 								<label> Concepto: </label>
 								<select class="form-control" v-model="selected_provision" @change="select_provision()">
 								<option v-for="provision in current_order_provisions" v-bind:value="provision.id_gastos_nacionalizacion"> [${provision.tipo}] ${ provision.concepto }</option>
@@ -286,6 +302,64 @@
 				</div>
 			</div>
 		</div>
+	<div class="generar_ajuste" v-else="">
+			<div class="row">
+						<div class="col-md-1">
+							<div class="form-group">
+								<label>Nro Pedido</label>
+								<select class="form-control" v-model="current_not_provision.nro_pedido" @change="show_partials" autofocus>
+									<option v-for="item in orders">${ item }</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+								<label>Nro Parcial</label>
+								<select class="form-control" v-model="current_not_provision.id_parcial">
+									<option value="0" selected="selected">Gasto Inicial</option>
+									<option v-for="item in partial_selected_orders" :value="item.id_parcial">${ item.ordinal }</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-5">
+							<div class="form-group">
+								<label> Concepto: </label>
+								<input type="text" class="form-control" v-model="current_not_provision.concepto" maxlength="23">
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div class="form-group">
+							<label> Valor a Justificar USD </label>
+							<input type="number" step="0.01" required="required" class="form-control text-right" v-model="current_not_provision.valor_justificado" readonly>
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div class="form-group">
+							<label> Valor Ajuste </label>
+							<input type="number" v-model="current_not_provision.valor_ajuste" class="form-control text-right text-danger" step="0.01">
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-10">
+						<div class="form-gorup">
+							<label for="">Comentarios</label>
+							<input type="text" v-model="current_not_provision.comentarios" class="form-control">
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div class="form-group">
+							<br>
+							<button class="btn btn-sm btn-warning" @click="generar_provision"><i class="fa fa-save"></i> Generar y Guardar </button>
+							</div>
+					</div>
+				</div>
+
+	</div>
+	  <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"> <i class="fa fa-close"></i> Cerrar Ventana</button>
+      </div>
+	</div>
 	</div>
 </div>
 </div>

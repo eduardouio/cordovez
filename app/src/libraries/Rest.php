@@ -26,6 +26,7 @@ class Rest{
             404 => 'Not Found' ,
             405 => 'Not Allowed' ,
             406 => 'Not Acceptable',
+            500 => 'Internal Server Error',
 
             );
         return ($status[$this->CodeHTTP] ? $status[$this->CodeHTTP] : $status[500]);

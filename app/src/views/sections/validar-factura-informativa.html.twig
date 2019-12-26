@@ -121,6 +121,9 @@
                 		checked="chequed"
                 	{% endif %}
                 	/> 
+                   <a href="{{ rute_url }}gstnacionalizacion/presentar/{{ expense.id_gastos_nacionalizacion }}">
+							<span class="fa fa-eye"></span> 
+	               		</a>
                         {% if expense.paids == False %}
                        		<small class="label label-danger"> &nbsp;Provisión&nbsp;</small>
                          {%  else %}
@@ -132,19 +135,14 @@
                			{% else %}           			
     						<small class="label label-success">Justificado</small>           		
 		               {% endif %}           		
-	               {% endif %}
-	               
-               		<a href="{{ rute_url }}gstnacionalizacion/presentar/{{ expense.id_gastos_nacionalizacion }}">
-							<span class="fa fa-eye"></span> 
-	               		</a>
-	               
+	               {% endif %}   
 	               {% for paid in expense.paids %}
 	               		<a href="{{ rute_url }}facturapagos/presentar/{{ paid.id_documento_pago  }}">
 	               				<label class="label label-primary">{{ paid.nro_factura }}</label>
 	               		</a>
 	               		{% endfor %}
                {% endif %}
-               {{expense.concepto }}
+               {{ expense.concepto }}
                </td>
                   <td>{{ expense.fecha | date('d/m/Y')}}</td>
                   {% if ((expense.fecha_fin == null) or (expense.fecha_fin == '0000-00-00')) %}

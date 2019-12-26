@@ -194,6 +194,9 @@
                 		checked="chequed"
                 	{% endif %}
                 	/> 
+                   <a href="{{ rute_url }}gstnacionalizacion/presentar/{{ expense.id_gastos_nacionalizacion }}">
+							<span class="fa fa-eye"></span> 
+	               		</a>
                {% if expense.paids == False %}
                		{% if expense.concepto == 'ISD' or (expense.concepto == 'FLETE' and order.incoterm == 'CFR')  %}
                		<small class="label label-success">Justificado</small>
@@ -214,25 +217,19 @@
                			{% if expense.tipo == 'NO PROVISIONADO' %}
                				<small class="label label-inverse"><span class="text-danger">No Provisionado</span></small>
                			{% else %}           			
-    						<small class="label label-success">Justificado</small>           		
+    						<small class="label label-success">Justificado</small>
 		               {% endif %}
 	               {% endif %}
-	               
-	               		<a href="{{ rute_url }}gstnacionalizacion/presentar/{{ expense.id_gastos_nacionalizacion }}">
-							<span class="fa fa-eye"></span> 
-	               		</a>
-	               		
 	               		{% for paid in expense.paids %}
 	               		<a href="{{ rute_url }}facturapagos/presentar/{{ paid.id_documento_pago  }}">
 	               				<label class="label label-primary">{{ paid.nro_factura }}</label>
 	               		</a>
 	               		{% endfor %}
-	               
                {% endif %}
                {{ expense.concepto }}
                </td>
                  <td>
-                  {{expense.valor_provisionado}}
+                  {{ expense.valor_provisionado }}
                </td>
                {% if expense.valor_provisionado > 0 %}
                <td class="success">

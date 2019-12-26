@@ -6,6 +6,7 @@ $libraries_url = str_replace('controllers', 'libraries/', $libraries_url);
 require_once ( $libraries_url . 'warenHouseParcial.php' );
 require_once ( $libraries_url . 'checkerPartial.php' );
 require_once ( $libraries_url . 'resumeOrder.php' );
+require_once ( $libraries_url . 'Rest.php' );
 require_once ( $libraries_url . 'Checkexpense.php' );
 
 /**
@@ -39,6 +40,7 @@ class Gstnacionalizacion extends MY_Controller
     private $modelSupplier;
     private $modelPaidDetail;
     private $modelOrderInfo;
+    private $rest;
 
 
     /**
@@ -102,6 +104,7 @@ class Gstnacionalizacion extends MY_Controller
         $this->modelSupplier = new Modelsupplier();
         $this->modelRateExpenses = new Modelrateexpenses();
         $this->modelParcial = new Modelparcial();
+        $this->rest = new Rest();
     }
 
 
@@ -165,6 +168,14 @@ class Gstnacionalizacion extends MY_Controller
             $this->modelExpenses->create($expense);
         }
        return($this->redirectPage('parcial', $id_parcial));
+    }
+
+    /**
+     * Genera una provision por ajax, una vez creada la provision
+     * retorta el objeto creado
+     */
+    public function putExpenseAJAX(){
+
     }
 
 
@@ -622,7 +633,14 @@ class Gstnacionalizacion extends MY_Controller
 
     }
 
-
+     /**
+     * Metodo de respuesta Rest
+     * @param array $config
+     */
+    private function _responseRest($data, $httpstatus = 0){
+        $data['session'] = $this->session->userdata();
+        return $this->rest->_responseHttp($data, $httpstatus);
+    }
 
     /*
      * Envia la respuestas html al navegador

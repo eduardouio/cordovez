@@ -175,6 +175,15 @@ class Gstnacionalizacion extends MY_Controller
      * retorta el objeto creado
      */
     public function putExpenseAJAX(){
+        $expense = json_decode(file_get_contents('php://input'),true);
+        $expense['fecha'] = date('Y-m-d');
+        $id_expense = $this->modelExpenses->create($expense);
+        if ($id_expense){
+            $this->modelLog->susessLog('Se inserta gasto de nacionalizacion por ajax');
+            return $this->_responseRest(['id_gastos_nacionalizacion' => $id_expense], 200);
+        }
+        $this->modelLog->errorLog('Error al crear gasto de nacionalizacion');
+        return $this->_responseRest([],500);
 
     }
 
@@ -628,9 +637,7 @@ class Gstnacionalizacion extends MY_Controller
             }
             array_push($init_expenses_with_paid, $expense);
         }
-
         return $init_expenses_with_paid;
-
     }
 
      /**

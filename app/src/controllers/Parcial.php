@@ -5,6 +5,7 @@ $libraries_url = realpath(dirname(__FILE__));
 $libraries_url = str_replace('controllers', 'libraries/', $libraries_url);
 
 require_once ( $libraries_url . 'ReportCompleteOrder.php' );
+require_once ( $libraries_url . 'Rest.php' );
 
 /**
  * Controller encargado de manejar los parciales de los pedidos
@@ -32,6 +33,7 @@ class Parcial extends MY_Controller
     private $modelSupplier;
     private $modelPaidDetail;
     private $modelOrderReport;
+    private $rest;
 
     /**
      * constructor de clase
@@ -75,6 +77,7 @@ class Parcial extends MY_Controller
         $this->modelExpenses = new Modelexpenses();
         $this->modelSupplier = new Modelsupplier();
         $this->modelPaidDetail = new Modelpaiddetail();
+        $this->rest = new Rest();
     }
 
     /**
@@ -137,6 +140,32 @@ class Parcial extends MY_Controller
             'paidsDetails' => $this->modelPaidDetail->getByParcial($idParcial),
             'partialNumber' => $this->getNumberParcial($order['nro_pedido']),
         ]));
+    }
+
+    /**
+     * lista de parciales de un pedido
+     */
+    public function all_partials($nro_order){
+        $pedido = $this->modelOrder->get($nro_order);
+        if ($pedido == false){
+            $this->modelLog->errorLog('El pedido solicitado no existe');
+            return $this->_responseRest(['data'=>[]],500);
+        }
+        
+        $all_partials = $this->modelParcial->getByOrder($nro_order);
+        
+        if ($all_partials == false){
+            $this->modelLog->errorLog('Pedido sin Parciales');
+            return $this->_responseRest(['data'=>[]], 200);
+        }
+        $partials = [];
+        foreach ($all_partials as $k => $v){
+            array_push($partials, [
+                'id_parcial' => $v['id_parcial'],
+                'ordinal' => $k+1,
+             ]);
+        } 
+        return $this->_responseRest(['data' => $partials],200);
     }
     
     /**
@@ -205,9 +234,7 @@ class Parcial extends MY_Controller
         }        
         
     }
-
-
-    
+   
     
     /**
      * se validan los datos que deben estar para que la consulta no falle
@@ -261,5 +288,16 @@ class Parcial extends MY_Controller
             'content' => 'home'
         ])));
     }
+
+    /**
+     * Metodo de respuesta Rest
+     * @param array $config
+     */
+    private function _responseRest($data, $httpstatus = 0){
+        $data['session'] = $this->session->userdata();
+        return $this->rest->_responseHttp($data, $httpstatus);
+    }
+
+
 }
    

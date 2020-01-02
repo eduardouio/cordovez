@@ -289,15 +289,16 @@ class TaxesCalc {
                 $gasto_origen =
                 ($this->gastos_origen * $percent)
                 * $this->type_change;
-        }else{             
-            $fob = (
-                (   $detail_info_invoice['nro_cajas']
-                    * $detail_order_invoice['costo_caja']
-                ) 
-                + $detail_info_invoice['gasto_origen']
-                ) * $this->type_change;
-                
+        }else{    
+            $fob =( $detail_info_invoice['nro_cajas']
+                        * $detail_order_invoice['costo_caja']) ;
+            if($this->is_partial){
+                $fob +=  $detail_info_invoice['gasto_origen'] * $this->type_change;
                 $gasto_origen = $detail_info_invoice['gasto_origen'];
+            }else{
+                $fob += ($this->gastos_origen * $percent);
+            }         
+                
         }
         
         $seguro_aduana = 0 ;

@@ -71,7 +71,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | the query builder class.
 */
 
-$active_group = 'cordovezTEST';
+$active_group = 'imnac';
 #$active_group = 'imnacTEST';
 
 $query_builder = TRUE;

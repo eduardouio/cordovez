@@ -317,7 +317,7 @@
 								<label>Nro Parcial</label>
 								<select class="form-control" v-model="current_not_provision.id_parcial">
 									<option value="0" selected="selected">Gasto Inicial</option>
-									<option v-for="item in partial_selected_orders" :value="item.id_parcial">${ item.ordinal }</option>
+									<option v-for="item in partial_selected_orders" v-bind:value="item.id_parcial">${ item.ordinal }</option>
 								</select>
 							</div>
 						</div>

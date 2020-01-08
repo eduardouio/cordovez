@@ -198,6 +198,7 @@ class Detallefacpago extends MY_Controller
     public function eliminar($idDetail){
         $detail = $this->modelPaidDetail->getDetail($idDetail);
         if ($detail == false){
+            $this->modelLog->errorLog('No se puede eliminar no existe el gasto');
             $this->redirectPage('paidsList');
             return false;
         }
@@ -205,6 +206,7 @@ class Detallefacpago extends MY_Controller
                                                 $detail['id_gastos_nacionalizacion']);
         $provisonUpdate = [
             'bg_closed' => 0,
+            'valor_ajuste' => 0,
         ];
         $this->db->where('id_detalle_documento_pago', $idDetail);
         if ($this->db->delete($this->controller)){

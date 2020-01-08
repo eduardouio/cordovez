@@ -675,6 +675,7 @@ class Pedido extends MY_Controller
                 'base_url' => base_url(),
                 'rute_url' => base_url() . 'index.php/',
                 'sgi_url' => $this->sgi_url,
+                'enterprise' => $GLOBALS['selected_enterprise'],
                 'controller' => $this->controller,
                 'iconTitle' => 'fa-cubes',
                 'content' => 'home']))

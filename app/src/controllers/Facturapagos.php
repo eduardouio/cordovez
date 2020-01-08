@@ -204,11 +204,12 @@ class Facturapagos extends MY_Controller
         $document['fecha_emision'] = str_replace('/', '-', $document['fecha_emision']);
         $document['fecha_emision'] = date('Y-m-d', strtotime(
                                                 $document['fecha_emision'])
-            );
+            );        
         $document['id_user'] = $this->session->userdata('id_user');
         $status = $this->validData($document);
         if($status['status']){
             if(!isset($document['id_documento_pago'])){
+                $document['date_create'] = date('Y-m-d H:m:s');
                 $this->db->where('nro_factura', $document['nro_factura']);
                 $this->db->where('identificacion_proveedor', $document['identificacion_proveedor']);
                 $result = $this->db->get($this->controller);

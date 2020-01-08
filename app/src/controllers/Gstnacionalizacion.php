@@ -187,6 +187,20 @@ class Gstnacionalizacion extends MY_Controller
 
     }
 
+    /**
+    * Actualiza el gasto por ajax
+    */
+    public function updateExpense(){
+        $expense = json_decode(file_get_contents('php://input'), true);
+        if ($this->modelExpenses->update($expense)){
+            $this->modelLog->susessLog('Se ha modificado un gasto de nacionalizacion');
+            return $this->_responseRest([],200);
+        }else{
+            $this->modelLog->errorLog('No se puede actualizar gasto nacionaliacion');
+            return $this->_responseRest([], 500);
+        }
+    }
+
 
     /**
      * Registra los costos de alamcenaje para el parcial de un pedido

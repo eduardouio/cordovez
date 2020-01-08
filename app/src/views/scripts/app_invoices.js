@@ -8,6 +8,8 @@ var app = new Vue({
         current_user : JSON.parse('{{ user | json_encode() | raw }}'),
         all_provisions : JSON.parse('{{ provisions | json_encode() | raw }}'),
         route_url : '{{ rute_url | raw }}',
+        show_error : false,
+        error_message : '',
         http_request : false,
         paids_invoice : 0,
         value_justify : 0.0,
@@ -50,12 +52,13 @@ var app = new Vue({
             console.log('Mostrando los parciales disponibles en el pedido')
             this.$http.get('{{rute_url}}parcial/all_partials/' + this.current_not_provision.nro_pedido).then(
                 response=>{
-                    console.log('Obteneniendo respuesta del server')
-                    console.dir(response)
                     this.partial_selected_orders = response.data.data
                     this.http_request = false
+                    console.dir(response)
                 },error=>{
-                    console.log('Error en comunicarse con el server')
+                    this.show_error = true
+                    this.error_message = 'Error al obtener los paciales del pedido'
+                    this.http_request = false
                     console.dir(error)
                 })
         },
@@ -73,7 +76,6 @@ var app = new Vue({
         change_justify_value(){
             this.saldo_provision = (this.current_provision.valor_provisionado - this.current_provision.valor_justificado) - this.value_justify
             if (this.saldo_provision < 0){
-                console.log('Se marca como activo el ajuste de la provision')
                 this.generar_ajuste = true;    
             }
         },
@@ -89,8 +91,8 @@ var app = new Vue({
 
             this.$http.post('{{rute_url}}gstnacionalizacion/putExpenseAJAX/', this.current_not_provision).then(
                 response => {
-                    console.log('Solicitud regisrada correctamente')
                     console.dir(response)
+                    this.http_request = false
                     this.current_provision.id_gastos_nacionalizacion = response.data.id_gastos_nacionalizacion
                     this.value_justify = 0
                     this.saldo_provision = this.current_not_provision.valor_ajuste
@@ -102,31 +104,63 @@ var app = new Vue({
                 }
             )
         },
+        actualizar_provision(){
+            if(this.generar_ajuste === false){
+                console.log('No se realiza el cambio de la provision')
+                return false
+            }
+            console.log('actualizamos la provision actual')
+            const provision = {
+                id_gastos_nacionalizacion : this.current_provision.id_gastos_nacionalizacion,
+                valor_ajuste : (this.generar_ajuste ? this.saldo_provision : 0) 
+            }
+            console.dir(provision)
+            this.http_request = true
+            this.$http.post('{{ rute_url }}gstnacionalizacion/updateExpense/', provision).then(
+                response => {
+                    console.log('Se ha modificado el gasto de nacionalizacion')
+                    console.dir(response)
+                    this.http_request = false
+                },error =>{
+                    console.log('No fue posible modificar el gasto de nacionalizacion')
+                    console.dir(error)
+                    this.show_error = true
+                    this.error_message = 'No es posible actualizar el gasto de nacionalizacion'
+
+                })
+
+        },
         guardar_justificacion(){
+            console.log()
             var data = {
                 id_documento_pago: this.document.id_documento_pago,
                 id_gastos_nacionalizacion : this.current_provision.id_gastos_nacionalizacion,
                 valor : this.value_justify,
-                valor : 0,
+                valor_ajuste :0,
             }
 
             if(this.generar_ajuste === true){
-                data.valor = this.saldo_provision
+                console.log('Se generara Ajuste en el gastos de nacionalizacion, actualizamos el gasto')
+                data.valor_ajuste = this.saldo_provision
             }
-
+            console.log('Detalle de justificacion a generar')
+            console.dir(data)
+            this.actualizar_provision()
             this.$http.post('{{rute_url}}detallefacpago/validar/', data).then(response => {
-                console.log('Solicitud regisrada correctamente')
                 console.dir(response)
-                location.reload()
+                if(this.show_error === false){
+                    location.reload()
+                }
             }, error => {
-                     console.log('error en solicitud al servidor')
+                     this.show_error = true
+                     this.error_message = 'No es posible actualizar el gasto'
                      console.dir(error)
-                     alert('Se produjo un error, por favor recargue la página');
                  });
           },
           eliminar(item){
               this.$http.get('{{rute_url}}detallefacpago/eliminar/' + item.id_detalle_documento_pago).then(response => {
-                     location.reload();
+                    console.log('Se ha eliminado la justificacion')
+                     location.reload()
                    }, response => {
                         console.log('error en solicitud al servidor')
                         console.dir(response)

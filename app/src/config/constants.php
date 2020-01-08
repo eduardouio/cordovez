@@ -88,12 +88,12 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 $enterprises_data = array(
     'test' => array (
         'nombre' => 'AMBIENTE DE PRUEBAS TEST',
-        'empresa' => 'test',
+        'enterprise' => 'test',
         'ruc' => '1722919725001',
         'direccion'=> 'COLON 1133 Y AMAZONAS',
         'telefono'=> '022405911',
         'email' => 'eduardouio7@gmail.com',
-        'path_log' => '/var/www/html/imnac/src/logs/',
+        'path_log' => '/var/www/html/cordovezapp/app/src/logs/',
         'url_logo' => 'http://179.49.60.158:8888/img/logo_test.png',
         'url_favicon' => 'http://179.49.60.158:8888/imnac/img/imnac.ico',
         'base_url' => 'http://localhost/cordovezapp/app/',
@@ -101,20 +101,20 @@ $enterprises_data = array(
     ),
     'cordovez' => array(
         'nombre' => 'AGENCIAS Y REPRESENTACIONES CORDOVEZ S.A.',
-        'empresa' => 'cordovez',
+        'enterprise' => 'cordovez',
         'ruc' => '1790023516001',
         'direccion' => 'AV. 10 DE AGOSTO N.57-186 Y LEONARDO MURIALDO ',
         'telefono' => '022405911',
         'email'  => 'sgi@cordovez.com.ec',
-        'path_log' => '/var/www/html/cordovezapp/app/src/logs/',
+        'path_log' => '/var/www/html/cordovez/app/src/logs/',
         'url_logo' => 'http://179.49.60.158:8888/img/logo_cordovez.jpg',
         'url_favicon' => 'http://179.49.60.158:8888/cordovez/img/cordovez.ico',
         'base_url' => 'http://179.49.60.158:8888/cordovez/',
-        'local_url' => 'http://localhost/cordovezapp/app/',
+        'local_url' => 'http://localhost/cordovez/app/',
     ),
     'imnac' => array (
         'nombre' => 'IMNAC IMPORTADORA NACIONAL CIA LTDA',
-        'empresa' => 'imnac',
+        'enterprise' => 'imnac',
         'ruc' => '1792324289001',
         'direccion'=> 'LA PAZ PAUL RIVET 227 Y JAMES ORTON',
         'telefono'=> '022405911',
@@ -127,7 +127,7 @@ $enterprises_data = array(
     ),
     'vid' => array(
         'nombre' => 'VIDINTERNACIONAL S.A.',
-        'empresa' => 'vid',
+        'enterprise' => 'vid',
         'ruc' => '1791771907001',
         'direccion'=> 'AV. 10 DE AGOSTO N.57-186 Y LEONARDO MURIALDO',
         'telefono'=> '022405911',
@@ -140,4 +140,4 @@ $enterprises_data = array(
     ));
 
 #Selecciona la empresa para la instancia
-$selected_enterprise = $enterprises_data['cordovez'];
+$selected_enterprise = $enterprises_data['test'];

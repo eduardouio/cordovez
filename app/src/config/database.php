@@ -71,8 +71,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | the query builder class.
 */
 
-$active_group = 'imnac';
-#$active_group = 'imnacTEST';
+#selcciona empresa activa
+$active_group = 'pruebas';
 
 $query_builder = TRUE;
 
@@ -144,56 +144,12 @@ $db['vid'] = array(
 
 
 // bases de prueba para desarrollo
-$db['cordovezTEST'] = array(
+$db['pruebas'] = array(
     'dsn'	=> '',
     'hostname' => '192.168.0.198',
     'username' => 'appCordovez',
     'password' => '\DBGfW<7;vBa5(LB',
     'database' => 'cordovezAppTEST',
-    'dbdriver' => 'mysqli',
-    'dbprefix' => '',
-    'pconnect' => FALSE,
-    'db_debug' => FALSE,
-    'cache_on' => FALSE,
-    'cachedir' => '',
-    'char_set' => 'utf8',
-    'dbcollat' => 'utf8_general_ci',
-    'swap_pre' => '',
-    'encrypt' => FALSE,
-    'compress' => FALSE,
-    'stricton' => FALSE,
-    'failover' => array(),
-    'save_queries' => TRUE
-);
-
-$db['imnacTEST'] = array(
-    'dsn'	=> '',
-    'hostname' => '192.168.0.198',
-    'username' => 'appCordovez',
-    'password' => '\DBGfW<7;vBa5(LB',
-    'database' => 'imnacAppTEST',
-    'dbdriver' => 'mysqli',
-    'dbprefix' => '',
-    'pconnect' => FALSE,
-    'db_debug' => FALSE,
-    'cache_on' => FALSE,
-    'cachedir' => '',
-    'char_set' => 'utf8',
-    'dbcollat' => 'utf8_general_ci',
-    'swap_pre' => '',
-    'encrypt' => FALSE,
-    'compress' => FALSE,
-    'stricton' => FALSE,
-    'failover' => array(),
-    'save_queries' => TRUE
-);
-
-$db['vidTEST'] = array(
-    'dsn'	=> '',
-    'hostname' => '192.168.0.198',
-    'username' => 'appCordovez',
-    'password' => '\DBGfW<7;vBa5(LB',
-    'database' => 'vidAppTEST',
     'dbdriver' => 'mysqli',
     'dbprefix' => '',
     'pconnect' => FALSE,

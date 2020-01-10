@@ -89,6 +89,7 @@ var app = new Vue({
                 this.current_not_provision.tipo = 'NACIONALIZACION'
             }
 
+            this.http_request = true
             this.$http.post('{{rute_url}}gstnacionalizacion/putExpenseAJAX/', this.current_not_provision).then(
                 response => {
                     console.dir(response)
@@ -96,10 +97,13 @@ var app = new Vue({
                     this.current_provision.id_gastos_nacionalizacion = response.data.id_gastos_nacionalizacion
                     this.value_justify = 0
                     this.saldo_provision = this.current_not_provision.valor_ajuste
+                    this.http_request = false
                     this.guardar_justificacion()
                 },
                 error =>{
-                    console.log('Error en la solicitud al servidor')
+                    this.http_request = false
+                    this.show_error = true
+                    this.error_message = 'No fue posible generar la provision'
                     console.dir(error)
                 }
             )
@@ -122,16 +126,15 @@ var app = new Vue({
                     console.dir(response)
                     this.http_request = false
                 },error =>{
-                    console.log('No fue posible modificar el gasto de nacionalizacion')
                     console.dir(error)
-                    this.show_error = true
                     this.error_message = 'No es posible actualizar el gasto de nacionalizacion'
-
+                    this.show_error = true
+                    this.http_request = false
                 })
 
         },
         guardar_justificacion(){
-            console.log()
+            console.log('Preparandose para registrar la justificaciom')
             var data = {
                 id_documento_pago: this.document.id_documento_pago,
                 id_gastos_nacionalizacion : this.current_provision.id_gastos_nacionalizacion,
@@ -143,17 +146,18 @@ var app = new Vue({
                 console.log('Se generara Ajuste en el gastos de nacionalizacion, actualizamos el gasto')
                 data.valor_ajuste = this.saldo_provision
             }
-            console.log('Detalle de justificacion a generar')
             console.dir(data)
             this.actualizar_provision()
             this.$http.post('{{rute_url}}detallefacpago/validar/', data).then(response => {
                 console.dir(response)
+                this.http_request = false
                 if(this.show_error === false){
-                    location.reload()
+                    //location.reload()
                 }
             }, error => {
                      this.show_error = true
                      this.error_message = 'No es posible actualizar el gasto'
+                     this.http_request = false
                      console.dir(error)
                  });
           },

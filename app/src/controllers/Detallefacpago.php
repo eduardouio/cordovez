@@ -183,6 +183,18 @@ class Detallefacpago extends MY_Controller
             }else{
                 $this->insertDB($justification, 'insert');
             }
+            $expense = $this->modelExpenses->getExpense($justification['id_gastos_nacionalizacion']);
+            $paids_expense = $this->modelPaidDetail->getByExpense($justification['id_gastos_nacionalizacion']);
+            if(floatval($paids_expense['sums']) == floatval($expense['valor_provisionado'] - $expense['valor_ajuste'])){
+                $expense['bg_closed'] = 1;
+            }else{
+                $expense['bg_closed'] = 0;
+            }
+            print('<pre>');
+            print_r($expense);
+            print('</pre>');
+            exit();
+            $this->modelExpenses->update($expense);
             return $this->_responseRest([],201);
         } else {
             return $this->_responseRest([],500);
@@ -203,18 +215,18 @@ class Detallefacpago extends MY_Controller
             return false;
         }
         $provision = $this->modelExpenses->getExpense(
-                                                $detail['id_gastos_nacionalizacion']);
+                                                $detail['id_gastos_nacionalizacion']);        
         $provisonUpdate = [
             'bg_closed' => 0,
-            'valor_ajuste' => 0,
+            'valor_ajuste' => $provision['valor_ajuste'] - $detail['valor_ajuste'],
         ];
+
         $this->db->where('id_detalle_documento_pago', $idDetail);
         if ($this->db->delete($this->controller)){
-            if($provision['bg_closed']){
                 $this->db->where('id_gastos_nacionalizacion',
                                                 $detail['id_gastos_nacionalizacion']);
                 $this->db->update('gastos_nacionalizacion', $provisonUpdate );
-            }
+                print($this->db->last_query());
             $this->redirectPage('paidPresent', $detail['id_documento_pago']);
            }
     }
@@ -299,7 +311,6 @@ class Detallefacpago extends MY_Controller
                 $this->db->update('gastos_nacionalizacion', $provisonUpdate);
                 return true;
             }
-           print $this->db->last_query();
         }else{
             $this->db->where('id_detalle_documento_pago',
                 $row['id_detalle_documento_pago']);

@@ -191,7 +191,8 @@ class Gstnacionalizacion extends MY_Controller
     * Actualiza el gasto por ajax
     */
     public function updateExpense(){
-        $expense = json_decode(file_get_contents('php://input'), true);
+        $expense = json_decode(file_get_contents('php://input'), true);        
+        
         if ($this->modelExpenses->update($expense)){
             $this->modelLog->susessLog('Se ha modificado un gasto de nacionalizacion');
             return $this->_responseRest([],200);
@@ -489,9 +490,9 @@ class Gstnacionalizacion extends MY_Controller
                                                  $expense['valor_provisionado']
                                                 );
         $expense['last_update'] = date('Y-m-d H:m:s');
+        $current_expense_db = $this->modelExpenses->getExpense($expense['id_gastos_nacionalizacion']);
         $paids_expense = $this->modelPaidDetail->getByExpense($expense['id_gastos_nacionalizacion']);
-
-        if(floatval($paids_expense['sums']) == floatval($expense['valor_provisionado'])){
+        if(floatval($paids_expense['sums']) == floatval($expense['valor_provisionado'] - $current_expense_db['valor_ajuste'])){
             $expense['bg_closed'] = 1;
         }else{
             $expense['bg_closed'] = 0;

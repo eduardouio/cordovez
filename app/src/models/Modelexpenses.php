@@ -510,6 +510,7 @@ class Modelexpenses extends CI_Model
                     gn.fecha_fin,
                     gn.date_create,
                     gn.valor_provisionado,
+                    gn.valor_ajuste,
                     IFNULL((SELECT sum(valor) FROM  detalle_documento_pago AS ddp WHERE  ddp.id_gastos_nacionalizacion = gn.id_gastos_nacionalizacion),0) AS valor_justificado,
                     u.nombres,
                     u.id_user

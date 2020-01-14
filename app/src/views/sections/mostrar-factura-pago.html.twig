@@ -88,6 +88,8 @@
 				<thead>
 					<tr>
 						<th>#</th>
+						<th>IDGN</th>
+						<th>IDDP</th>
 						<th>Concepto</th>
 						<th>Tipo</th>
 						<th>Pedido</th>
@@ -104,6 +106,8 @@
 				<tbody>
 					<tr v-for="(item , k) in document.invoiceDetails.details">
 						<td> ${ k + 1 } </td>
+						<td> <a :href="route_url + 'gstnacionalizacion/presentar/' + item.id_gastos_nacionalizacion " target="_blank">${ item.id_gastos_nacionalizacion }</a> </td>
+						<td> ${ item.id_detalle_documento_pago } </td>
 						<td> ${ item.expense.concepto } </td>
 						<td> ${ item.expense.tipo } </td>
 						<td class="text-center">
@@ -132,7 +136,7 @@
 						<td class="text-right"> ${ item.expense.valor_provisionado | money } </td>
 						<td class="text-right"> ${ item.valor | money } </td>
 						<td class="text-right"> ${ item.valor_ajuste | money } </td>
-						<td class="text-right"> ${(item.expense.valor_provisionado - item.valor ) | money} </td>
+						<td class="text-right"> ${ item.expense.valor_provisionado - item.expense.valor_ajuste - item.valor } </td>
 						<td class="text-right">
 							<a :href="route_url + 'gstnacionalizacion/presentar/' + item.expense.id_gastos_nacionalizacion"
 								target="_blank" class="text-primary"> <span class="fa fa-eye"></span>Ver Provisión</a>
@@ -142,7 +146,7 @@
 						</td>
 					</tr>
 					<tr style="background-color:#3747FF; color:#fff; font-weight:bold;">
-						<td colspan="7" class="text-right">SUMAS: &nbsp;&nbsp;&nbsp;&nbsp;</td>
+						<td colspan="9" class="text-right">SUMAS: &nbsp;&nbsp;&nbsp;&nbsp;</td>
 						<td class="text-right">--</td>
 						<td class="text-right">${ total_justificado | money}</td>
 						<td class="text-right">--</td>

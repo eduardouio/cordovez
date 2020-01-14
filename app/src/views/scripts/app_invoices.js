@@ -70,7 +70,7 @@ var app = new Vue({
                     current_provision = item
                 }
             })
-            this.saldo_provision = (current_provision.valor_provisionado - current_provision.valor_justificado)
+            this.saldo_provision = (current_provision.valor_provisionado - current_provision.valor_justificado - current_provision.valor_ajuste)
             this.current_provision = current_provision
         },
         change_justify_value(){
@@ -100,7 +100,7 @@ var app = new Vue({
                     this.http_request = false
                     this.guardar_justificacion()
                 },
-                error =>{
+                error => {
                     this.http_request = false
                     this.show_error = true
                     this.error_message = 'No fue posible generar la provision'
@@ -113,12 +113,12 @@ var app = new Vue({
                 console.log('No se realiza el cambio de la provision')
                 return false
             }
+            var valor_ajuste = this.saldo_provision
             console.log('actualizamos la provision actual')
             const provision = {
                 id_gastos_nacionalizacion : this.current_provision.id_gastos_nacionalizacion,
-                valor_ajuste : (this.generar_ajuste ? this.saldo_provision : 0) 
+                valor_ajuste : (this.generar_ajuste ? valor_ajuste : 0) 
             }
-            console.dir(provision)
             this.http_request = true
             this.$http.post('{{ rute_url }}gstnacionalizacion/updateExpense/', provision).then(
                 response => {
@@ -131,7 +131,6 @@ var app = new Vue({
                     this.show_error = true
                     this.http_request = false
                 })
-
         },
         guardar_justificacion(){
             console.log('Preparandose para registrar la justificaciom')
@@ -163,7 +162,7 @@ var app = new Vue({
           },
           eliminar(item){
               this.$http.get('{{rute_url}}detallefacpago/eliminar/' + item.id_detalle_documento_pago).then(response => {
-                    console.log('Se ha eliminado la justificacion')
+                    console.log('Se ha eliminado la justificacion')        
                      location.reload()
                    }, response => {
                         console.log('error en solicitud al servidor')
@@ -174,7 +173,7 @@ var app = new Vue({
     },
     computed : {
         total_justificado() {
-            justificado = 0.0;
+            justificado = 0.0
             this.document.invoiceDetails.details.forEach(function(item){
                 justificado += parseFloat(item.valor)
             })

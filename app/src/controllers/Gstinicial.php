@@ -225,13 +225,14 @@ class Gstinicial extends MY_Controller
             } else {
                 $initExpense['last_update'] = date('Y-m-d H:i:s');
                 $paids_expense = $this->modelPaidDetail->getByExpense($initExpense['id_gastos_nacionalizacion']);
-                
-                if($paids_expense['sums'] == $initExpense['valor_provisionado']){
+                $current_expense_db = $this->modelExpenses->getExpense($initExpense['id_gastos_nacionalizacion']);
+
+                if($paids_expense['sums'] == ($initExpense['valor_provisionado'] - $current_expense_db['valor_ajuste'])){
                     $initExpense['bg_closed'] = 1;
                 }else{
                     $initExpense['bg_closed'] = 0;
                 }
-
+                
                 if($this->modelExpenses->update($initExpense)){                    
                         return($this->redirectPage('validargi', $initExpense['nro_pedido']));
                     }

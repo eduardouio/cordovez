@@ -6,7 +6,7 @@ var app = new Vue({
         orders : JSON.parse('{{  orders | json_encode() | raw }}'),
         partial_selected_orders: [],
         current_user : JSON.parse('{{ user | json_encode() | raw }}'),
-        all_provisions : JSON.parse('{{ provisions | json_encode() | raw }}'),
+        all_provisions : {{ provisions | json_encode() | raw }},
         route_url : '{{ rute_url | raw }}',
         show_error : false,
         error_message : '',
@@ -85,10 +85,12 @@ var app = new Vue({
             this.current_not_provision.concepto = 'AJUSTE NO PROVISIONADO ' +  this.current_not_provision.concepto
             if (this.current_not_provision.id_parcial === 0){
                 this.current_not_provision.tipo = 'INICIAL'
+                this.current_not_provision.id_parcial = 0
             }else{
                 this.current_not_provision.tipo = 'NACIONALIZACION'
+                this.current_not_provision.nro_pedido = '000-00'
             }
-
+            this.current_not_provision.valor_ajuste =  this.current_not_provision.valor_ajuste * -1
             this.http_request = true
             this.$http.post('{{rute_url}}gstnacionalizacion/putExpenseAJAX/', this.current_not_provision).then(
                 response => {
@@ -141,17 +143,23 @@ var app = new Vue({
                 valor_ajuste :0,
             }
 
-            if(this.generar_ajuste === true){
+            if(this.generar_ajuste === true && this.no_provisionado === false){
                 console.log('Se generara Ajuste en el gastos de nacionalizacion, actualizamos el gasto')
                 data.valor_ajuste = this.saldo_provision
             }
+            
+            if(this.no_provisionado){
+                data.valor = this.current_not_provision.valor_ajuste * -1
+                data.valor_ajuste = this.current_not_provision.valor_ajuste
+            }
+
             console.dir(data)
             this.actualizar_provision()
             this.$http.post('{{rute_url}}detallefacpago/validar/', data).then(response => {
                 console.dir(response)
                 this.http_request = false
                 if(this.show_error === false){
-                    //location.reload()
+                    location.reload()
                 }
             }, error => {
                      this.show_error = true

@@ -189,11 +189,7 @@ class Detallefacpago extends MY_Controller
                 $expense['bg_closed'] = 1;
             }else{
                 $expense['bg_closed'] = 0;
-            }
-            print('<pre>');
-            print_r($expense);
-            print('</pre>');
-            exit();
+            }            
             $this->modelExpenses->update($expense);
             return $this->_responseRest([],201);
         } else {

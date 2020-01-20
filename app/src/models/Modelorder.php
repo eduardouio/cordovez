@@ -265,6 +265,7 @@ class Modelorder extends CI_Model
             'where' => [
                 'id_pedido_factura' => $invoice['id_pedido_factura'],
             ],
+            'orderby' => ['detalle_pedido_factura' => 'ASC']
         ]);
         if (empty($detailInvoice)) {
             return false;

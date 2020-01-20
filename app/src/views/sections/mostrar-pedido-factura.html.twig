@@ -129,7 +129,7 @@
           {% for detail in invoiceDetail %}
           {% set nro_cajas = nro_cajas + detail.nro_cajas %}
           <tr>
-            <td>{{ loop.index }}</td>
+            <td>{{ detail.detalle_pedido_factura }}</td>
             <td> <a href="{{ rute_url }}detallepedido/editar/{{ detail.detalle_pedido_factura }}"> <span class="fa fa-pencil"></span> {{ detail.nombre }}</a></td>
             <td>  <a href="{{ rute_url }}producto/presentar/{{ detail.cod_contable }}" target="_blank"> <span class="fa fa-eye"></span> Ficha</a></td>
             <td class="text-right">{{ detail.grado_alcoholico }}</td>

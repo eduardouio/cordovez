@@ -1,3 +1,5 @@
+const img = '{{ provisions | json_encode() | raw }}';
+
 var app = new Vue({
     el : '#app',
     delimiters: ['${', '}'],

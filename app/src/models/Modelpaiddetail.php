@@ -59,6 +59,7 @@ class Modelpaiddetail extends \CI_Model
             'where' => [
                 'id_documento_pago' => $nroDocument,
             ],
+            'orderby' => ['id_detalle_documento_pago' => 'ASC'],
         ]);
         if (gettype($detailsInvoice) == 'array' && count($detailsInvoice) > 0){
             $val = 0.0;

@@ -219,12 +219,18 @@ class Detallefacpago extends MY_Controller
 
         $this->db->where('id_detalle_documento_pago', $idDetail);
         if ($this->db->delete($this->controller)){
-                $this->db->where('id_gastos_nacionalizacion',
-                                                $detail['id_gastos_nacionalizacion']);
-                $this->db->update('gastos_nacionalizacion', $provisonUpdate );
-                print($this->db->last_query());
-            $this->redirectPage('paidPresent', $detail['id_documento_pago']);
+            if ($provision['valor_provisionado'] == 0){
+                if($this->modelExpenses->delete($provision['id_gastos_nacionalizacion'])){
+                    $this->redirectPage('paidPresent', $detail['id_documento_pago']);
+                }
+            }else{
+                    $this->db->where('id_gastos_nacionalizacion',$detail['id_gastos_nacionalizacion']);
+                    $this->db->update('gastos_nacionalizacion', $provisonUpdate );
+                    $this->redirectPage('paidPresent', $detail['id_documento_pago']);
+                }
            }
+        print('Error del sistema DetalleFacPago L232');
+
     }
 
 

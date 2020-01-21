@@ -82,10 +82,6 @@
                         required=""  
                         style="width:100%" 
                         value = "{{ parcial_taxes.data_general.tipo_cambio_parcial }}"
-                        {% if init_data.order_invoices.0.moneda == 'DOLARES' %}
-                        	readonly="readonly"
-                        	value = "1.000000000"	
-                        {% endif %}
                         >
                   </div>
                </div>

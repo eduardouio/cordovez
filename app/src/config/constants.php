@@ -98,6 +98,7 @@ $enterprises_data = array(
         'url_favicon' => 'http://179.49.60.158:8888/imnac/img/imnac.ico',
         'base_url' => 'http://localhost/cordovezapp/app/',
         'local_url' => 'http://localhost/cordovezapp/app/',
+        'sgi_url' => 'http://localhost:8000/',
     ),
     'cordovez' => array(
         'nombre' => 'AGENCIAS Y REPRESENTACIONES CORDOVEZ S.A.',
@@ -111,6 +112,7 @@ $enterprises_data = array(
         'url_favicon' => 'http://179.49.60.158:8888/cordovez/img/cordovez.ico',
         'base_url' => 'http://179.49.60.158:8888/cordovez/',
         'local_url' => 'http://localhost/cordovez/app/',
+        'sgi_url' => 'http://179.49.60.158:5001/',
     ),
     'imnac' => array (
         'nombre' => 'IMNAC IMPORTADORA NACIONAL CIA LTDA',
@@ -124,6 +126,7 @@ $enterprises_data = array(
         'url_favicon' => 'http://179.49.60.158:8888/imnac/img/imnac.ico',
         'base_url' => 'http://179.49.60.158:8888/imnac/',
         'local_url' => 'http://localhost/cordovezapp/app/',
+        'sgi_url' => 'http://179.49.60.158:5002/',
     ),
     'vid' => array(
         'nombre' => 'VIDINTERNACIONAL S.A.',
@@ -137,6 +140,8 @@ $enterprises_data = array(
         'url_favicon' => 'http://179.49.60.158:8888/vid/img/vid.ico',
         'base_url' => 'http://179.49.60.158:8888/vid/',
         'local_url' => 'http://localhost/cordovezapp/app/',
+        'local_url' => 'http://localhost/cordovezapp/app/',
+        'sgi_url' => 'http://179.49.60.158:5003/',
     ));
 
 #Selecciona la empresa para la instancia

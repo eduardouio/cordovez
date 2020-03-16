@@ -305,11 +305,11 @@ class TaxesCalc {
         $flete_aduana = 0 ;
         
         if ($this->is_partial){
-            $seguro_aduana = $percent * $this->init_data['info_invoices'][0]['flete_aduana'] * $this->type_change;
-            $flete_aduana = $percent * $this->init_data['info_invoices'][0]['seguro_aduana'] * $this->type_change;
+            $seguro_aduana = $percent * $this->init_data['info_invoices'][0]['seguro_aduana'] * $this->type_change;
+            $flete_aduana = $percent * $this->init_data['info_invoices'][0]['flete_aduana'] * $this->type_change;
         }else{
-            $seguro_aduana = $percent * $this->init_data['order']['flete_aduana'] ;
-            $flete_aduana = $percent * $this->init_data['order']['seguro_aduana'];
+            $seguro_aduana = $percent * $this->init_data['order']['seguro_aduana'] ;
+            $flete_aduana = $percent * $this->init_data['order']['flete_aduana'];
         }
         
         return ([

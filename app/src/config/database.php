@@ -71,17 +71,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | the query builder class.
 */
 
+$enterprises = $GLOBALS['selected_enterprise']['db'];
+
 #selcciona empresa activa
-$active_group = 'cordovez';
+$active_group = 'my_db';
 
 $query_builder = TRUE;
 
-$db['cordovez'] = array(
+$db['my_db'] = array(
 	'dsn'	=> '',
-	'hostname' => '192.168.0.198',
-	'username' => 'appCordovez',
-	'password' => '\DBGfW<7;vBa5(LB',
-	'database' => 'cordovezApp',
+	'hostname' => $enterprises['hostname'],
+	'username' => $enterprises['username'],
+	'password' => $enterprises['password'],
+	'database' => $enterprises['database'],
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
@@ -96,72 +98,4 @@ $db['cordovez'] = array(
 	'stricton' => FALSE,
 	'failover' => array(),
 	'save_queries' => TRUE
-);
-
-$db['imnac'] = array(
-    'dsn'	=> '',
-    'hostname' => '192.168.0.198',
-    'username' => 'appCordovez',
-    'password' => '\DBGfW<7;vBa5(LB',
-    'database' => 'imnacApp',
-    'dbdriver' => 'mysqli',
-    'dbprefix' => '',
-    'pconnect' => FALSE,
-    'db_debug' => FALSE,
-    'cache_on' => FALSE,
-    'cachedir' => '',
-    'char_set' => 'utf8',
-    'dbcollat' => 'utf8_general_ci',
-    'swap_pre' => '',
-    'encrypt' => FALSE,
-    'compress' => FALSE,
-    'stricton' => FALSE,
-    'failover' => array(),
-    'save_queries' => TRUE
-);
-
-$db['vid'] = array(
-    'dsn'	=> '',
-    'hostname' => '192.168.0.198',
-    'username' => 'appCordovez',
-    'password' => '\DBGfW<7;vBa5(LB',
-    'database' => 'vidApp',
-    'dbdriver' => 'mysqli',
-    'dbprefix' => '',
-    'pconnect' => FALSE,
-    'db_debug' => FALSE,
-    'cache_on' => FALSE,
-    'cachedir' => '',
-    'char_set' => 'utf8',
-    'dbcollat' => 'utf8_general_ci',
-    'swap_pre' => '',
-    'encrypt' => FALSE,
-    'compress' => FALSE,
-    'stricton' => FALSE,
-    'failover' => array(),
-    'save_queries' => TRUE
-);
-
-
-// bases de prueba para desarrollo
-$db['pruebas'] = array(
-    'dsn'	=> '',
-    'hostname' => '192.168.0.198',
-    'username' => 'appCordovez',
-    'password' => '\DBGfW<7;vBa5(LB',
-    'database' => 'cordovezAppTEST',
-    'dbdriver' => 'mysqli',
-    'dbprefix' => '',
-    'pconnect' => FALSE,
-    'db_debug' => FALSE,
-    'cache_on' => FALSE,
-    'cachedir' => '',
-    'char_set' => 'utf8',
-    'dbcollat' => 'utf8_general_ci',
-    'swap_pre' => '',
-    'encrypt' => FALSE,
-    'compress' => FALSE,
-    'stricton' => FALSE,
-    'failover' => array(),
-    'save_queries' => TRUE
 );

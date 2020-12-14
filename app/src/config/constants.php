@@ -93,12 +93,19 @@ $enterprises_data = array(
         'direccion'=> 'COLON 1133 Y AMAZONAS',
         'telefono'=> '022405911',
         'email' => 'eduardouio7@gmail.com',
-        'path_log' => '/var/www/html/cordovez/src/logs/',
+        'path_log' => '/var/www/html/cordovezapp/app/src/logs/',
         'url_logo' => 'http://179.49.60.158:8888/img/logo_test.png',
         'url_favicon' => 'http://179.49.60.158:8888/imnac/img/imnac.ico',
-        'base_url' => 'http://179.49.60.158:8888/cordovez/',
-        'local_url' => 'http://localhost/cordovezapp/app/',
+        'base_url' => 'http://127.0.0.1/cordovezapp/app/',
+        'local_url' => 'http://127.0.0.1/cordovezapp/app/',
         'sgi_url' => 'http://localhost:8000/',
+        'db' => [
+            'hostname' => '127.0.0.1',
+            'username' => 'root',
+            'password' => 'elian.2011',
+            'database' => 'cordovezApp',
+        ]
+        
     ),
     'cordovez' => array(
         'nombre' => 'AGENCIAS Y REPRESENTACIONES CORDOVEZ S.A.',
@@ -113,6 +120,12 @@ $enterprises_data = array(
         'base_url' => 'http://179.49.60.158:8888/cordovez/',
         'local_url' => 'http://localhost/cordovez/app/',
         'sgi_url' => 'http://179.49.60.158:5001/',
+        'db' => [
+            'hostname' => '192.168.0.198',
+            'username' => 'appCordovez',
+            'password' => '\DBGfW<7;vBa5(LB',
+            'database' => 'cordovezApp',
+        ]
     ),
     'imnac' => array (
         'nombre' => 'IMNAC IMPORTADORA NACIONAL CIA LTDA',
@@ -127,6 +140,12 @@ $enterprises_data = array(
         'base_url' => 'http://179.49.60.158:8888/imnac/',
         'local_url' => 'http://localhost/cordovezapp/app/',
         'sgi_url' => 'http://179.49.60.158:5002/',
+        'db' => [
+            'hostname' => '192.168.0.198',
+            'username' => 'appCordovez',
+            'password' => '\DBGfW<7;vBa5(LB',
+            'database' => 'imnacApp',
+        ]
     ),
     'vid' => array(
         'nombre' => 'VIDINTERNACIONAL S.A.',
@@ -142,7 +161,13 @@ $enterprises_data = array(
         'local_url' => 'http://localhost/cordovezapp/app/',
         'local_url' => 'http://localhost/cordovezapp/app/',
         'sgi_url' => 'http://179.49.60.158:5003/',
+        'db' => [
+            'hostname' => '192.168.0.198',
+            'username' => 'appCordovez',
+            'password' => '\DBGfW<7;vBa5(LB',
+            'database' => 'vidApp',
+        ]
     ));
 
 #Selecciona la empresa para la instancia
-$selected_enterprise = $enterprises_data['cordovez'];
+$selected_enterprise = $enterprises_data['test'];

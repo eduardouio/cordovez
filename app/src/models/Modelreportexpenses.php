@@ -63,8 +63,7 @@ class Modelreportexpenses extends CI_Model
 
         if ($id_parcial == 0) {
             $sql .= " WHERE nro_pedido = '$nro_order'
-            AND concepto != 'ISD'
-            ";
+            AND concepto != 'ISD'";
         } else {
             $sql .= " WHERE id_parcial = '$id_parcial'
             AND concepto != 'ISD'

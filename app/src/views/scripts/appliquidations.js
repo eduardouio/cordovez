@@ -3,7 +3,7 @@ var app = new Vue({
     delimiters: ['${', '}'],
     data : {
       show_ice_diff : true,
-      parcial_taxes : JSON.parse('{{ parcial_taxes | json_encode() | raw  }}'),
+      parcial_taxes : JSON.parse('{{(parcial_taxes | json_encode()) | raw }}'),
       parcial : JSON.parse('{{ parcial | json_encode() | raw }}'),
       regimen : JSON.parse('{{ regimen  | json_encode() | raw }}'),
       usuario : JSON.parse('{{ usuario  | json_encode() | raw }}'),
@@ -66,8 +66,8 @@ var app = new Vue({
 			})
 			totals['fodinfa']  = Math.round(totals['fodinfa'] * 1000) /1000
 			totals['ice_advalorem']  = Math.round(totals['ice_advalorem'] * 1000) /1000
-			
-			dif_ice_advalorem = 
+
+			dif_ice_advalorem =
 					Math.abs(this.complete_liquidation_data.ice_advalorem_pagado
 					- totals['ice_advalorem'])
 			if (dif_ice_advalorem < 0.01){
@@ -89,12 +89,12 @@ var app = new Vue({
        		    location.reload();
        		  }, response => {
        			  alert('Se produjo un error, por favor recargue la página');
-       		  });    		
+       		  });
       	}
     },
     filters : {
-      money : function(num){                                                                                
-        num = parseFloat(num)                                        
+      money : function(num){
+        num = parseFloat(num)
         return num.toFixed(3)
       },
       int : function(num){
@@ -111,7 +111,7 @@ var app = new Vue({
 			+ parseFloat(this.complete_liquidation_data.ice_especifico_pagado)
 			+ parseFloat(this.complete_liquidation_data.iva_pagado)
 			)
-    	
+
     	}
     },
 mounted : function(){

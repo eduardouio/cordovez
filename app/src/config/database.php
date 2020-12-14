@@ -72,7 +72,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 
 #selcciona empresa activa
-$active_group = 'pruebas';
+$active_group = 'cordovez';
 
 $query_builder = TRUE;
 

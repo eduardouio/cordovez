@@ -93,10 +93,10 @@ $enterprises_data = array(
         'direccion'=> 'COLON 1133 Y AMAZONAS',
         'telefono'=> '022405911',
         'email' => 'eduardouio7@gmail.com',
-        'path_log' => '/var/www/html/cordovezapp/app/src/logs/',
+        'path_log' => '/var/www/html/cordovez/src/logs/',
         'url_logo' => 'http://179.49.60.158:8888/img/logo_test.png',
         'url_favicon' => 'http://179.49.60.158:8888/imnac/img/imnac.ico',
-        'base_url' => 'http://localhost/cordovezapp/app/',
+        'base_url' => 'http://179.49.60.158:8888/cordovez/',
         'local_url' => 'http://localhost/cordovezapp/app/',
         'sgi_url' => 'http://localhost:8000/',
     ),
@@ -107,7 +107,7 @@ $enterprises_data = array(
         'direccion' => 'AV. 10 DE AGOSTO N.57-186 Y LEONARDO MURIALDO ',
         'telefono' => '022405911',
         'email'  => 'sgi@cordovez.com.ec',
-        'path_log' => '/var/www/html/cordovez/app/src/logs/',
+        'path_log' => '/var/www/html/cordovez/src/logs/',
         'url_logo' => 'http://179.49.60.158:8888/img/logo_cordovez.jpg',
         'url_favicon' => 'http://179.49.60.158:8888/cordovez/img/cordovez.ico',
         'base_url' => 'http://179.49.60.158:8888/cordovez/',
@@ -145,4 +145,4 @@ $enterprises_data = array(
     ));
 
 #Selecciona la empresa para la instancia
-$selected_enterprise = $enterprises_data['test'];
+$selected_enterprise = $enterprises_data['cordovez'];

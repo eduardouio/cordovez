@@ -156,6 +156,17 @@ class Impuestos extends MY_Controller
         $all_parcials = $this->modelParcial->getAllParcials($parcial['nro_pedido']);
         $ordinal_parcial = ordinalNumberParcial($all_parcials, $parcial['id_parcial']);
         $parcial_taxes = $parcialTaxes->getTaxes();
+
+        #eliminamos la comilla sencilla de DEVILS 
+        $i = 0;
+        foreach($parcial_taxes['taxes'] as $k){
+            $parcial_taxes['taxes'][$i]['product'] =  str_replace("'","-",$k['product']);
+            $i++;
+        }
+
+        #print('<pre>');
+        #print(var_dump($parcial_taxes));
+        #print('</pre>');
         
         if ($parcial['bg_isliquidated'] == 0){
             foreach ($parcial_taxes['taxes'] as $item){

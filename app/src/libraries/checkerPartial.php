@@ -214,9 +214,9 @@ class checkerPartial
         
         $rates = [
             'MANO DE OBRA ETIQUETADO' => (
-                $unidades * .03
+                $unidades * $labeled_value_unity['valor'
                 ),
-            'ETIQUETAS FISCALES' => .13 * $unidades ,
+            'ETIQUETAS FISCALES' => $label_unity['valor'] * $unidades ,
         ];
         
         $unused_expenses = [];

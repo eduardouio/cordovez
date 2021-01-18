@@ -177,6 +177,8 @@ class Impuestos extends MY_Controller
                 unset($item['capacidad_ml']);
                 unset($item['indirectos']);
                 unset($item['ex_aduana_unitario_antes']);
+                unset($item['gasto_origen']);
+                
            $this->modelInfoInvoiceDetail->update($item);
            $this->modelLog->generalLog('Registro de prorrateos impuestos');
             }

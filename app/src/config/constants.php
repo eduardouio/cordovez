@@ -103,9 +103,9 @@ $enterprises_data = array(
             'hostname' => '127.0.0.1',
             'username' => 'root',
             'password' => 'elian.2011',
-            'database' => 'cordovezApp',
+            'database' => 'test_cordovezApp',
         ]
-        
+
     ),
     'cordovez' => array(
         'nombre' => 'AGENCIAS Y REPRESENTACIONES CORDOVEZ S.A.',

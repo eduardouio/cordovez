@@ -7,3 +7,4 @@ colores/
 .project
 app/.settings/org.eclipse.wst.validation.prefs
 /app/nbproject/private/
+app/src/config/constants.php

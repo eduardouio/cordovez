@@ -1,9 +1,10 @@
 #!/usr/bin/python
 import bottle
 from bottle import response
-from bottle import get, run
+from bottle import get, run, template
 import json
 from Model import Model
+from ModelProducts import ModelProducts
 
 @get('/<enterprise>/<year>/')
 def getOrders(enterprise, year):
@@ -17,7 +18,32 @@ def getOrders(enterprise, year):
 def test():
     response.headers['Content-Type'] = 'application/json'
     response.headers['Cache-Control'] = 'no-cache'
-    return json.dumps({'data':'Test'})
+    return json.dumps({
+        'data':'Test',
+        'urls' : {
+            'cordovez/YYYY/',
+            'imnac/YYYY/',
+            'vid/YYYY/',
+        },
+        'comments': 'try change the url'
+        })
+
+@get('/products/<enterprise>/')
+def getProducts(enterprise):
+    """Obtains complete catalog form company products
+
+    Args:
+        enterprise (str): Name of entrerprise
+
+    Returns:
+        json: List of company producst
+    """
+    response.headers['Content-Type'] = 'application/json'
+    response.headers['Cache-Control'] = 'no-cache'
+    products  = ModelProducts(enterprise).get_all()
+    return json.dumps({
+        'data' json.dumps(products)
+    })
 
 class StripPathMiddelware(object):
     '''Get taht slash out of request '''

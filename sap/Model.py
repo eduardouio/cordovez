@@ -1,4 +1,4 @@
-from Con import Con
+from .Con import Con
 
 class Model(object):
     def __init__(self, enterprise, year):
@@ -55,7 +55,7 @@ class Model(object):
                 'product': self.get_product(row[1], row[0]),
                 'invoice' : self.get_invoice(row[1]),
                 'invoice_detail' : self.get_invoice_details(row[1]),
-            }           
+            }
             orders_array.append(new_row)
 
         return orders_array

@@ -1,4 +1,4 @@
-from .Con import Con
+from Con import Con
 
 class Model(object):
     def __init__(self, enterprise, year):

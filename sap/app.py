@@ -20,15 +20,15 @@ def test():
     response.headers['Cache-Control'] = 'no-cache'
     return json.dumps({
         'data':'Test',
-        'urls' : {
+        'urls' : [
             'cordovez/YYYY/',
             'imnac/YYYY/',
             'vid/YYYY/',
-        },
+        ],
         'comments': 'try change the url'
         })
 
-@get('/products/<enterprise>/')
+@get('/<enterprise>/')
 def getProducts(enterprise):
     """Obtains complete catalog form company products
 
@@ -42,7 +42,7 @@ def getProducts(enterprise):
     response.headers['Cache-Control'] = 'no-cache'
     products  = ModelProducts(enterprise).get_all()
     return json.dumps({
-        'data' json.dumps(products)
+        'data': products
     })
 
 class StripPathMiddelware(object):

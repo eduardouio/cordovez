@@ -22,8 +22,8 @@ class Modelproduct extends CI_Model{
         parent::__construct();
         $this->init();
     }
-    
-    
+
+
     /**
      * Inicializa los modelos para la clase
      */
@@ -35,13 +35,13 @@ class Modelproduct extends CI_Model{
         ];
         foreach ($models as $model){
             $this->load->model($model);
-        }        
+        }
         $this->modelLog = new Modellog();
         $this->modelBase = new  ModelBase();
         $this->myModel = new  Mymodel();
     }
-    
-    
+
+
     /**
      * Obtiene un producto de la tabla
      * @param string $codContable
@@ -66,7 +66,7 @@ class Modelproduct extends CI_Model{
      */
     public function getAllProductInfo(string $cod_contable):array{
         $query = "
-        select 
+        select
         pr.* ,
         s.nombre as 'proveedor'
         from producto as pr
@@ -80,11 +80,11 @@ class Modelproduct extends CI_Model{
         }
         return [];
     }
-    
+
     /**
      * Obtiene la lista de todos los productos de la base
      * @return array | false
-     */    
+     */
     public function getAll(){
         $products = $this->modelBase->get_table([
             'table' => $this->table,
@@ -92,14 +92,14 @@ class Modelproduct extends CI_Model{
                 'nombre' => 'DESC',
             ],
         ]);
-        
+
         if((gettype($products) == 'array') && (count($products) > 0)){
             return $products;
         }
         return false;
     }
-    
-    
+
+
     /**
      * Obtiene un producto de la tabla
      * @param string $idProduct identificador tabla
@@ -117,8 +117,8 @@ class Modelproduct extends CI_Model{
         }
         return false;
     }
-       
-    
+
+
     /**
      * Obtiene la lista de productos de un proveedor
      * @param int $idSupplier ruc proveedor
@@ -138,8 +138,8 @@ class Modelproduct extends CI_Model{
         }
         return false;
     }
-    
-    
+
+
     /**
      * Actualiza un producto en la base de datos
      * @param int $idProduct identificador del producto
@@ -155,8 +155,8 @@ class Modelproduct extends CI_Model{
         $this->modelLog->errorLog('No se puede actualizar un producto', $this->db->last_query());
         return false;
     }
-    
-    
+
+
     /**
      * Registra un producto en la base de datos
      * @param array $product arreglo del produto
@@ -165,13 +165,12 @@ class Modelproduct extends CI_Model{
     public function create( array $product ){
         if($this->db->insert($this->table, $product)){
             $this->modelLog->queryInsrertLog($this->db->last_query());
-            return true;   
+            return true;
         }
         return false;
     }
-    
-    
-    /**
+
+    /*
      * elimina un producto de la base de datos
      * @param int $idProduct identicacion AI tabla
      * @return boolean
@@ -183,7 +182,7 @@ class Modelproduct extends CI_Model{
         }
         return false;
     }
-    
+
     /**
      * Realiza una busqueda de producto de acuerdo a un criterio
      * NOMBRE
@@ -203,5 +202,5 @@ class Modelproduct extends CI_Model{
         ];
         return ($this->myModel->searchDb($this->table, $querySearchParams));
     }
-    
+
 }

@@ -116,7 +116,7 @@ class Impuestos extends MY_Controller
                 );
             return $this->index();
         }
-        
+
         $init_data = $this->getOrderDataR70($id_parcial);
 
         $detail_order_invoices = [];
@@ -152,12 +152,12 @@ class Impuestos extends MY_Controller
                                         $init_data,
                                         $param_taxes
                          );
-        
+
         $all_parcials = $this->modelParcial->getAllParcials($parcial['nro_pedido']);
         $ordinal_parcial = ordinalNumberParcial($all_parcials, $parcial['id_parcial']);
         $parcial_taxes = $parcialTaxes->getTaxes();
 
-        #eliminamos la comilla sencilla de DEVILS 
+        #eliminamos la comilla sencilla de DEVILS
         $i = 0;
         foreach($parcial_taxes['taxes'] as $k){
             $parcial_taxes['taxes'][$i]['product'] =  str_replace("'","-",$k['product']);
@@ -167,7 +167,7 @@ class Impuestos extends MY_Controller
         #print('<pre>');
         #print(var_dump($parcial_taxes));
         #print('</pre>');
-        
+
         if ($parcial['bg_isliquidated'] == 0){
             foreach ($parcial_taxes['taxes'] as $item){
                 $item['id_factura_informativa_detalle'] = $item['id_registro'];
@@ -178,18 +178,23 @@ class Impuestos extends MY_Controller
                 unset($item['indirectos']);
                 unset($item['ex_aduana_unitario_antes']);
                 unset($item['gasto_origen']);
-                
+
            $this->modelInfoInvoiceDetail->update($item);
+
+           $product = $this->Modelproduct->get($item['cod_contable']);
+           $parcial_taxes['taxes'][$i]['nro_registro_sanitario'] = $product['nro_registro_sanitario'];
+           $parcial_taxes['taxes'][$i]['registro_sanitario'] = $product['registro_sanitario'];
+
            $this->modelLog->generalLog('Registro de prorrateos impuestos');
             }
         }
-        
+
         return ($this->responseHttp([
             'title' => 'Impuesto Parcial ' . $ordinal_parcial . '/' . count($all_parcials),
             'titleContent' => 'Resumen de Impuestos Liquidación Aduana [Parcial ' .
                               $ordinal_parcial . '/' . count($all_parcials) .
-                              '] [Pedido ' . $init_data['order']['nro_pedido'] . '] Ref ' . 
-                               $init_data['info_invoices'][0]['nro_refrendo'] . 
+                              '] [Pedido ' . $init_data['order']['nro_pedido'] . '] Ref ' .
+                               $init_data['info_invoices'][0]['nro_refrendo'] .
                             '  ['. $init_data['order']['proveedor']  . ']',
             'init_data' => $init_data,
             'parcial_taxes' => $parcial_taxes,
@@ -320,12 +325,14 @@ class Impuestos extends MY_Controller
                 unset($item['capacidad_ml']);
                 unset($item['indirectos']);
                 unset($item['ex_aduana_unitario_antes']);
-                
                 $this->ModelOrderInvoiceDetail->update($item);
+                $product = $this->Modelproduct->get($item['cod_contable']);
+                $order_taxes['taxes'][$i]['nro_registro_sanitario'] = $product['nro_registro_sanitario'];
+                $order_taxes['taxes'][$i]['registro_sanitario'] = $product['registro_sanitario'];
                 $this->modelLog->generalLog('Prorrateo de impuestos Actualizados');
             }
         }
-        
+
         return ($this->responseHttp([
             'titleContent' => 'Resumen de Impuestos Liquidación Aduana del Pedido ' .
                       $init_data['order']['nro_pedido'] .
@@ -337,6 +344,7 @@ class Impuestos extends MY_Controller
             'regimen' => 'R10',
             'title' => 'Impuestos' . $order['nro_pedido'],
             'order' => $order,
+            'url_sgi' => $GLOBALS['selected_enterprise']['sgi_url'],
             'vue_app' => true,
             'etiquetas_fiscales' => $order_taxes['sums']['unidades'] * 0.13,
             'user' => $this->modelUser->get($init_data['order']['id_user']),
@@ -509,28 +517,28 @@ class Impuestos extends MY_Controller
      * Marca un pedido como liquidado
      */
     public function liquidarIvaOrder(){
-        
+
         $this->load->library('Rest');
         $rest = new Rest();
-        
+
         if ($rest->_getRequestMethod() != 'POST'){
             print("acceso no permitido");
             $this->modelLog->warningLog('Accediendo directamente a un metodo ajax');
             return False;
         }
-        
+
         $data = json_decode(file_get_contents("php://input"), true);
-        
+
         $order = $data['complete_liquidation_data'];
         $my_order = $this->modelOrder->get($order['nro_pedido']);
-        
+
         if ($my_order == false){
             $this->modelLog->warningLog('El peido no existe');
             return($this->rest->_reponseHttp('El pedido no existe', 500));
         }elseif( $my_order['bg_isliquidated'] ==  1 ){
             return($this->rest->_reponseHttp('pedido ya liquidado', 500));
         }
-        
+
         $order['bg_isliquidated'] = 1;
         $order['fecha_liquidacion'] = date('Y-m-d', strtotime($order['fecha_liquidacion']));
         foreach ($data['liquidations_items'] as $item){
@@ -547,7 +555,7 @@ class Impuestos extends MY_Controller
                     return $rest->_responseHttp('No es posible actualizar un item', 500);
                 }
         }
-        
+
         if($this->modelOrder->update($order)){
             return $rest->_responseHttp('Actualizado correctamente', 200);
         }
@@ -559,33 +567,33 @@ class Impuestos extends MY_Controller
       * Liquidar iva parcial
       * Retorna la informacion completa de las liquidaciones de la SENAE
       * tabnto por item como el global de la liquidacion
-      * 
+      *
       * @param complete_liquidation_data [Dict]
       * contiene la informacion de la liquidacion y de el desglose de la DAI
       * para los tributos.
-      *   
+      *
       */
     public function liquidarIvaParcial(){
         $this->load->library('Rest');
         $rest = new Rest();
-        
+
         if ($rest->_getRequestMethod() != 'POST'){
             print("acceso no permitido");
             $this->modelLog->warningLog('Accediendo directamente a un metodo ajax');
             return False;
         }
-        
+
         $data = json_decode(file_get_contents("php://input"), true);
         $parcial = $data['complete_liquidation_data'];
         $my_parcial = $this->modelParcial->get($parcial['id_parcial']);
-        
+
         if ($my_parcial == false){
             $this->modelLog->warningLog('El parcial no existe');
             return($this->rest->_reponseHttp('El parcial no existe', 500));
         }elseif( $my_parcial['bg_isliquidated'] ==  1 ){
             return($this->rest->_reponseHttp('parcial ya liquidado', 500));
         }
-        
+
         $parcial['bg_isliquidated'] = 1;
         $parcial['fecha_liquidacion'] = date('Y-m-d', strtotime($parcial['fecha_liquidacion']));
         foreach ($data['liquidations_items'] as $item){
@@ -602,7 +610,7 @@ class Impuestos extends MY_Controller
                 return $rest->_responseHttp('No es posible actualizar un item', 500);
             }
         }
-       
+
         if($this->modelParcial->update($parcial)){
             return $rest->_responseHttp('Actualizado correctamente', 200);
         }
@@ -638,7 +646,7 @@ class Impuestos extends MY_Controller
             }
             print('Parcial cerrado no se puede cambiar');
         }
-        
+
         $this->modelLog->errorLog( 'Acceso restringido al sitio',current_url());
         $this->modelLog->errorLog($tipo, $id);
     }

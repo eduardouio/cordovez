@@ -1,4 +1,4 @@
-<?php 
+<?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
 $libraries_url = realpath(dirname(__FILE__));
@@ -18,7 +18,7 @@ require_once ( $libraries_url . 'ReportCompleteOrder.php' );
  * @since Version 1.0.0
  * @filesource
  */
-class Facinformativa extends MY_Controller 
+class Facinformativa extends MY_Controller
 {
     private $controller = "factura_informativa";
     private $template = '/pages/pageFactutaInformativa.html';
@@ -37,8 +37,8 @@ class Facinformativa extends MY_Controller
     private $myModel;
     private $modelParcial;
     private $modelOrderReport;
-    
-    
+
+
     /**
      * Constructor de la funcion
      */
@@ -47,7 +47,7 @@ class Facinformativa extends MY_Controller
         parent::__construct();
         $this->init();
     }
-    
+
     /**
      * Carga los modelos a usar en la clase
      *
@@ -58,7 +58,7 @@ class Facinformativa extends MY_Controller
         if(! isset($this->session->userdata['id_user'])){
             exit(0);
         }
-        
+
         $this->load->model('modelorder');
         $this->load->model('modeluser');
         $this->load->model('modelsupplier');
@@ -86,7 +86,7 @@ class Facinformativa extends MY_Controller
         $this->modelLog = new Modellog();
         $this->myModel = new Mymodel();
     }
-    
+
     /**
      * Redirecciona a la lista de pedidos
      */
@@ -95,12 +95,12 @@ class Facinformativa extends MY_Controller
         $this->modelLog->redirectLog(
             'Redireccionamiento por acceso directo a metodos',
             current_url()
-            );        
-        
+            );
+
         $this->redirectPage('ordersList');
         return true;
     }
-    
+
     /**
      * Muestra a detalle una factura informativa
      *
@@ -109,73 +109,75 @@ class Facinformativa extends MY_Controller
      */
     public function presentar($id_info_invoice) {
         $infoInvoice = $this->modelInfoInvoice->getCompleteInfoInvoice($id_info_invoice);
-        
+
         if ($infoInvoice == false) {
             return($this->index());
         }
-        
+
         $parcial = $this->modelParcial->get($infoInvoice['info_invoice']['id_parcial']);
         $order = $this->modelOrder->get($parcial['nro_pedido']);
         $all_parcials = $this->modelParcial->getAllParcials($parcial['nro_pedido']);
-        $ordinal_parcial = ordinalNumberParcial($all_parcials, $parcial['id_parcial']);        
-        
+        $ordinal_parcial = ordinalNumberParcial($all_parcials, $parcial['id_parcial']);
+
         $data_vue_app = [
             'parcial' => $parcial,
             'info_invoice' => $infoInvoice,
             'order' => $order,
             'all_parcials' => $all_parcials,
+            'sgi_url' => $GLOBALS['selected_enterprise']['sgi_url'] . 'media/'
         ];
-                                     
+
         $this->responseHttp([
             'show' => true,
-            'titleContent' => 'Pedido [' . $order['nro_pedido'] . '] ' . 
-                                ' Detalle Factura Informativa [ <small> ' . 
-                                $infoInvoice['info_invoice']['nro_factura_informativa'] . ' </small>] ' . 
+            'titleContent' => 'Pedido [' . $order['nro_pedido'] . '] ' .
+                                ' Detalle Factura Informativa [ <small> ' .
+                                $infoInvoice['info_invoice']['nro_factura_informativa'] . ' </small>] ' .
                                 '<span class="text-right"> Parcial ' . $ordinal_parcial . '</span>',
             'order' => $order,
             'info_invoice' => $infoInvoice,
             'parcial' => $parcial,
+            'sgi' => $GLOBALS['selected_enterprise'],
             'ordinal_parcial' => $ordinal_parcial,
             'vue_app' => True,
             'data' => json_encode($data_vue_app),
             'user' => $this->modelUser->get($infoInvoice['info_invoice']['id_user'])
         ]);
     }
-    
-    
+
+
     /**
      * Presenta el formulario para registrar una nueva factura informativa
      * las facturas informativas solo se usan con regimen 70
      *
-     * @param (string) $nroOrder pedido al que 
+     * @param (string) $nroOrder pedido al que
      * @return void
      */
     public function nuevo(int $idParcial)
     {
         $parcial = $this->modelParcial->get($idParcial);
-        
+
         if ($parcial == false) {
             return $this->index();
         }
-        
+
         $info_invoice = $this->modelInfoInvoice->getByParcial(
             $parcial['id_parcial']
             );
-        
+
         #solo se toma la primera factura informativa
         $info_invoice = $info_invoice[0];
-               
+
         $order = $this->modelOrder->get($parcial['nro_pedido']);
         $supplier = $this->modelSupplier->get($this->almaceneraId);
         $params = $this->modelOrderReport->getOrderData($order);
         $order_report = new ReportCompleteOrder($params);
-        
+
         $parcials_data = $order_report->getPartialInfo();
-        
+
         $detail_order_invoices = [];
         $detail_info_invoices = [];
-        
-        
+
+
         if($params['order_invoices']){
             foreach ($params['order_invoices'] as $idx => $invoice){
                 if($invoice['detail']){
@@ -186,19 +188,19 @@ class Facinformativa extends MY_Controller
                 }
             }
         }
-        
+
         $stock_order = new StockOrder(
             $order,
             $detail_order_invoices,
             $detail_info_invoices
             );
-        
+
         $stock = [
             'current' => $stock_order->getCurrentOrderStock(),
             'initial' => $stock_order->getInitStockProducts(),
             'global' => $stock_order->getGlobalValues(),
         ];
-        
+
         return $this->responseHttp([
             'frm_invoice' => true,
             'create_invoice' => true,
@@ -210,13 +212,13 @@ class Facinformativa extends MY_Controller
             'parcial' => $parcial,
             'supplier' => $supplier,
             'haveEuros' => $this->orderHaveEuros($order['nro_pedido']),
-            'titleContent' => 'Ingreso de Factura Informativa Pedido: [' . 
-                                $order['nro_pedido'] . ']' . '[' . 
+            'titleContent' => 'Ingreso de Factura Informativa Pedido: [' .
+                                $order['nro_pedido'] . ']' . '[' .
                                 $order['incoterm']  . ']',
             'user' => $this->modelUser->get($order['id_user'])
         ]);
     }
-    
+
     /**
      * Prepara el formulario para editar una factura informativa
      *
@@ -227,24 +229,24 @@ class Facinformativa extends MY_Controller
     public function editar(int $id_info_invoice)
     {
         $info_invoice = $this->modelInfoInvoice->get($id_info_invoice);
-        
+
         if($info_invoice == False){
             return $this->index();
         }
-        
-        $parcial = $this->modelParcial->get($info_invoice['id_parcial']);        
-        
+
+        $parcial = $this->modelParcial->get($info_invoice['id_parcial']);
+
         $order = $this->modelOrder->get($parcial['nro_pedido']);
         $supplier = $this->modelSupplier->get($this->almaceneraId);
         $params = $this->modelOrderReport->getOrderData($order);
         $order_report = new ReportCompleteOrder($params);
-        
+
         $parcials_data = $order_report->getPartialInfo();
-        
+
         $detail_order_invoices = [];
         $detail_info_invoices = [];
-        
-        
+
+
         if($params['order_invoices']){
             foreach ($params['order_invoices'] as $idx => $invoice){
                 if($invoice['detail']){
@@ -255,19 +257,19 @@ class Facinformativa extends MY_Controller
                 }
             }
         }
-        
+
         $stock_order = new StockOrder(
             $order,
             $detail_order_invoices,
             $detail_info_invoices
             );
-        
+
         $stock = [
             'current' => $stock_order->getCurrentOrderStock(),
             'initial' => $stock_order->getInitStockProducts(),
             'global' => $stock_order->getGlobalValues(),
         ];
-        
+
         return $this->responseHttp([
             'frm_invoice' => true,
             'title' => 'Nueva Factura Informativa [' . $order['nro_pedido']  . ']',
@@ -286,8 +288,8 @@ class Facinformativa extends MY_Controller
             'user' => $this->modelUser->get($order['id_user'])
         ]);
     }
-    
-    
+
+
     /**
      * Valida y gusrada una factura informativa si no existe redirecciona a pedidos
      *
@@ -296,30 +298,30 @@ class Facinformativa extends MY_Controller
      */
     public function validar()
     {
-        if (! $_POST) {           
+        if (! $_POST) {
             $this->redirectPage('ordersList');
             return true;
         }
-        
+
         $infoInvoice = $this->input->post();
         $parcial = $this->modelParcial->get($_POST['id_parcial']);
         $order = $this->modelOrder->get($parcial['nro_pedido']);
-        
+
         $infoInvoice['fecha_emision'] = date('Y-m-d',
                                         strtotime(
                                                 str_replace('/','-',$infoInvoice['fecha_emision'])
                                             )
-            );                      
-        
+            );
+
         if (
-            ($this->modelInfoInvoice->existRow($infoInvoice) == true) && 
+            ($this->modelInfoInvoice->existRow($infoInvoice) == true) &&
             (! isset($infoInvoice['id_factura_informativa']))
             ){
 
             $info_invoice = $this->modelInfoInvoice->getByNroInvoice($infoInvoice['nro_factura_informativa']);
                return ($this->responseHttp([
-                'titleContent' => 'La Factura Informativa [' . 
-                                    $infoInvoice['nro_factura_informativa'] . 
+                'titleContent' => 'La Factura Informativa [' .
+                                    $infoInvoice['nro_factura_informativa'] .
                                    '] ya se ecuentra Registrada!.',
                 'viewMessage' => true,
                 'message' => 'EL Registro que intenta ingresar ya Existe.',
@@ -328,13 +330,13 @@ class Facinformativa extends MY_Controller
                 'idInfoInvoice' => $info_invoice['id_factura_informativa'],
             ]));
         }
-        
+
         $infoInvoice['id_user'] = $this->session->userdata('id_user');
-        $status = $this->validData($infoInvoice);        
-        
+        $status = $this->validData($infoInvoice);
+
         if ($status['status']) {
             if (! isset($infoInvoice['id_factura_informativa'])) {
-                if ($lastId = $this->modelInfoInvoice->create($infoInvoice)) {                   
+                if ($lastId = $this->modelInfoInvoice->create($infoInvoice)) {
                     return ($this->redirectPage(
                                             'newProductInfoInvoice', $lastId
                         ));
@@ -343,10 +345,10 @@ class Facinformativa extends MY_Controller
                 $infoInvoice['last_update'] = date('Y-m-d H:m:s');
                 if ($this->modelInfoInvoice->update($infoInvoice)) {
                     return ($this->redirectPage(
-                            'infoInvoiceShow', 
+                            'infoInvoiceShow',
                             $infoInvoice['id_factura_informativa'])
                         );
-                }                
+                }
             }
         } else {
             return ($this->responseHttp([
@@ -364,8 +366,8 @@ class Facinformativa extends MY_Controller
                 'infoInvoice' => $infoInvoice
             ]));
         }
-    }  
-    
+    }
+
     /**
      * Elimina una factura informtiva aunque tenga dependencias
      *
@@ -374,10 +376,10 @@ class Facinformativa extends MY_Controller
      */
     public function eliminar($idFacInformative)
     {
-        $infoInvoice = $this->modelInfoInvoice->get($idFacInformative);       
+        $infoInvoice = $this->modelInfoInvoice->get($idFacInformative);
         $parcial = $this->modelParcial->get($infoInvoice['id_parcial']);
         $order = $this->modelOrder->get($parcial['nro_pedido']);
-        
+
         if (boolval($parcial['bg_isclosed']) || boolval($parcial['bg_isliquidated'])){
             $this->responseHttp([
                 'titleContent' =>   'No se puede eliminar el registro' .
@@ -391,14 +393,14 @@ class Facinformativa extends MY_Controller
                 'order' => $order,
             ]);
         }
-        
+
         if ($this->modelInfoInvoice->delete($idFacInformative)) {
             $this->redirectPage('presentOrder', $parcial['nro_pedido']);
         } else {
             $this->responseHttp([
                 'titleContent' =>   'No se puede eliminar el registro' .
-                                    ' Factura Informativa [ ' . 
-                                    $infoInvoice['nro_factura_informativa'] . 
+                                    ' Factura Informativa [ ' .
+                                    $infoInvoice['nro_factura_informativa'] .
                                     ' ] </small> ',
                 'viewMessage' => true,
                 'deleted' => true,
@@ -408,8 +410,8 @@ class Facinformativa extends MY_Controller
             ]);
         }
     }
-    
-    
+
+
     /**
      * Verifica si el pedido tiene una factura en euros
      *
@@ -421,18 +423,18 @@ class Facinformativa extends MY_Controller
     {
         $order = $this->modelOrder->get($nroOrder);
         $haveEuros = $this->modelOrderInvoice->haveEuros($nroOrder);
-        
+
         if($haveEuros){
             return ([
                 'euros' => true,
                 'tipo_cambio' => 1.25,
             ]);
         }
-        
+
         return false;
     }
-    
-    
+
+
     /**
      * Obtiene el tiempo en dias de un pedido en la almacenera publica
      * desde la fecha_ingreso_almacenera, si el pedido se encuentra cerrado
@@ -443,23 +445,23 @@ class Facinformativa extends MY_Controller
      * @return int
      */
     private function getWarenHouseDays(array $order): int
-    {           
+    {
         if (gettype($order['fecha_salida_almacenera']) == 'NULL') {
             return (
-                dateDiffInDays($order['fecha_ingreso_almacenera'], 
+                dateDiffInDays($order['fecha_ingreso_almacenera'],
                 date('Y-m-d'))
                 );
         }
-        
+
         return (dateDiffInDays(
-            $order['fecha_ingreso_almacenera'], 
+            $order['fecha_ingreso_almacenera'],
             $order['fecha_salida_almacenera']
             )
             );
     }
-    
-    
-    
+
+
+
     /**
      * Se validan las columnas que debe tener la consulta para que no falle
      *
@@ -476,7 +478,7 @@ class Facinformativa extends MY_Controller
         );
         return $this->_checkColumnsData($columnsLen, $data);
     }
-    
+
     /*
      * Envia la respuestas html al navegador
      * @param array $config Arreglo con info de la plantilla
@@ -490,7 +492,7 @@ class Facinformativa extends MY_Controller
         $config['iconTitle'] = 'fa-file';
         $config['content'] = 'home';
         $config['enterprise'] = $GLOBALS['selected_enterprise'];
-        
+
         return $this->twig->display($this->template, $config);
     }
 }

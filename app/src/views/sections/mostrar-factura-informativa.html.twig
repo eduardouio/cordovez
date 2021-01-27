@@ -25,7 +25,7 @@
             <div class="col-md-1">
                 <strong>Parcial :</strong>
                 <input type="text" value="{{ ordinal_parcial }}" class="full-width text-right" readonly="readonly" />
-            </div>            
+            </div>
         </div>
         <div class="row">
             <div class="col-md-1">
@@ -60,7 +60,7 @@
     </div>
     <h1>{{ order.incorerm }}</h1>
 		{% if order.incorerm == 'FCA' or order.incorerm == 'EXW' %}
-        <div class="text-danger text-right" style="background-color:#ff1;">        
+        <div class="text-danger text-right" style="background-color:#ff1;">
             Pedido con <strong>Gastos en Orgien </strong> debido al incoterm <strong>{{ order.incorerm }}</strong> por lo que los costos de los productos deben ser ajustados usando un valor para <strong>Gasto Origen</strong>
         </div>
         {% endif %}
@@ -106,9 +106,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                <tr v-for="(item, index) in data.info_invoice.info_invoice_details" :key="index">                	
+                <tr v-for="(item, index) in data.info_invoice.info_invoice_details" :key="index">
                     <td>${ index + 1}</td>
-                    <td>${ item.product }</td>
+                    <td>${ item.product }  ->  <a :href="data.sgi_url + item.registro_sanitario"> [ ${ item.nro_registro_sanitario } ] </a> </td>
                     </td>
                     <td class="text-right">${ item.capacidad_ml | round(0)} ml</td>
                     <td class="text-right">${ item.grado_alcoholico | round(2)}</td>
@@ -118,7 +118,7 @@
                     <td class="text-right"><span class="pull-left">{{moneda | raw}}</span> ${ item.costo_caja | round(3) }</td>
                     <td class="text-right"><span class="pull-left">{{moneda | raw}}</span>${ item.gasto_origen | round(3) }</td>
                     <td class="text-right"><span class="pull-left">{{moneda | raw}}</span> ${ total_item(item) | round(3) }</td>
-                    <td class="text-right">                    	
+                    <td class="text-right">
                         <span class="btn btn-default btn-sm" style="padding: 0px 11px;" @click="showProduct(item)" data-toggle="modal" data-target="#myModal"><span class="fa fa-pencil fa-fw "></span></span>
                         <span class="btn btn-danger btn-sm" style="padding: 0.5px 11px;" @click="deleteProduct(item)" ><span class="fa fa-trash fa-fw "></span></span>
                     </td>
@@ -230,7 +230,7 @@
                 <strong>Comentarios:</strong>
                 <input type="text" value="{{ info_invoice.info_invoice.comentarios }}" class="full-width" readonly="readonly" />
             </div>
-        </div>       
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"> <span class="fa fa-ban"></span> Cancelar</button>
@@ -248,7 +248,7 @@
           <button type="button" class="close" data-dismiss="modal">&times;</button>
           <h4 class="modal-title">Editar Producto Seleccionado</h4>
     </div>
-                <div class="row">                  
+                <div class="row">
                 <div class="col-md-12" style="padding:22px">
                 <table class="table table-bordered table-condensed">
                 <thead>
@@ -261,10 +261,10 @@
                 <th>Costo Caja</th>
                 <th>Costo U</th>
                 <th>Gst Origen</th>
-                <th>Total Item</th>                
-                </tr>  
+                <th>Total Item</th>
+                </tr>
                 </thead>
-                <tbody>                     
+                <tbody>
                 <tr>
                 <td>${ selected_item.product }</td>
                 <td class="text-right">${ selected_item.capacidad_ml }</td>
@@ -277,14 +277,14 @@
                 <td class="text-right">${ total_item(selected_item) | round(3)}</td>
                 </tr>
                 </tbody>
-                </table>                 
+                </table>
                 </div>
                 </div>
                     <div class="modal-footer">
-          				<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" @click="updateProduct()"> <span class="fa fa-check"></span> Aplicar</button>          					
+          				<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" @click="updateProduct()"> <span class="fa fa-check"></span> Aplicar</button>
         			</div>
                     </div>
-                </form>                
+                </form>
             </div>
         </div>
     </div>
@@ -298,7 +298,7 @@
 				'selected_item' : {},
                 'seguro_aduana': {{ info_invoice.info_invoice.seguro_aduana  }},
                 'flete_aduana' : {{ info_invoice.info_invoice.flete_aduana }},
-            },         
+            },
        methods : {
            showProduct : function (item){
                 this.selected_item = item
@@ -319,16 +319,16 @@
             },
            total_item : function (item){
                return (
-                       (parseFloat(item.nro_cajas) * parseFloat(item.costo_caja)) + parseFloat(item.gasto_origen) 
+                       (parseFloat(item.nro_cajas) * parseFloat(item.costo_caja)) + parseFloat(item.gasto_origen)
                        );
           },
            },
        filters : {
-           round : function(num, decimal_places = 3){               
+           round : function(num, decimal_places = 3){
                return parseFloat(num).toFixed(decimal_places)
                },
            number : function(number){
-        	   return parseFloat(number).toFixed(3) 
+        	   return parseFloat(number).toFixed(3)
                }
            },
        computed : {
@@ -338,13 +338,13 @@
                fob_total = 0.0
                for(var x = 0; x < items_length ; x++ ){
                    fob_total += (
-                                parseFloat(items_invoice[x]['gasto_origen']) 
+                                parseFloat(items_invoice[x]['gasto_origen'])
                                 + parseFloat(items_invoice[x]['costo_caja']) * parseFloat(items_invoice[x]['nro_cajas'])
                                 );
                }
-                              
+
                return fob_total;
                },
-           }           
+           }
     })
 </script>

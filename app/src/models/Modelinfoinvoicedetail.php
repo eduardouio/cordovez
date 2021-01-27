@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
  * modelo que gestiona los detalles de las facturas informativas
- * 
+ *
  * @package modelLayer
  * @author Eduardo Villota <eduardouio7@gmail.com>
  * @copyright Copyright (c) 2014, Agencias y Representaciones Cordovez S.A.
@@ -43,7 +43,7 @@ class Modelinfoinvoicedetail extends CI_Model
 
     /**
      * Obtiene el registro del detalle de un item de una factura informativa
-     * 
+     *
      * @param int $idInfoInvDetail
      *            identificador Detalle
      * @return array | boolean
@@ -56,13 +56,13 @@ class Modelinfoinvoicedetail extends CI_Model
                 'id_factura_informativa_detalle' => $idInfoInvDetail
             ]
         ]);
-        
+
         if ((gettype($detail) == 'array') && (count($detail) > 0)) {
             return $detail[0];
         }
 
         $this->modelLog->errorLog(
-            'No se puede obtener el detalle de FI', 
+            'No se puede obtener el detalle de FI',
             $this->db->last_query()
         );
 
@@ -71,7 +71,7 @@ class Modelinfoinvoicedetail extends CI_Model
 
     /**
      * Lista los productos de las facturas informativas
-     * 
+     *
      * @param int $idInfoDetail
      * @return array | boolean
      */
@@ -83,13 +83,15 @@ class Modelinfoinvoicedetail extends CI_Model
                 'id_factura_informativa' => $idInfoDetail
             ]
         ]);
-                
+
         if (gettype($detailInfoInvoice) == 'array' && count($detailInfoInvoice) > 0) {
             foreach ($detailInfoInvoice as $k => $det){
                 $order_invoice_detail = $this->modelOrderInvoiceDetail->get($det['detalle_pedido_factura']);
                 $product = $this->modelProduct->get($order_invoice_detail['cod_contable']);
                 $detailInfoInvoice[$k]['cod_ice'] = $product['cod_ice'];
-            }                        
+                $detailInfoInvoice[$k]['nro_registro_sanitario'] = $product['nro_registro_sanitario'];
+                $detailInfoInvoice[$k]['registro_sanitario'] = $product['registro_sanitario'];
+            }
             return $detailInfoInvoice;
         }
         return false;
@@ -99,28 +101,28 @@ class Modelinfoinvoicedetail extends CI_Model
      * Retorna el detalle completo de una factura infotm ativa
      * inclutendo el costo por caja que se encuentra en la tabla de detalle
      * pedido factura
-     * 
+     *
      * @param int $idInfoInvoice
      * @return array arreglo de prodyucto
-     *        
+     *
      */
     public function getCompleteDetail($idInfoInvoice)
     {
-        $sql = "SELECT 
+        $sql = "SELECT
         	a.*,
             b.costo_caja,
             b.cod_contable,
             c.*
-        FROM 
+        FROM
         	factura_informativa_detalle AS a
         JOIN
             detalle_pedido_factura as b using(detalle_pedido_factura)
-        JOIN 
+        JOIN
         	producto as c using(cod_contable)
-        WHERE id_factura_informativa = $idInfoInvoice;        
+        WHERE id_factura_informativa = $idInfoInvoice;
             ";
         $result = $this->db->query($sql);
-        
+
         if($result->num_rows() > 0){
             $this->modelLog->susessLog('Se realiza SQL exitoso');
             return $result->result_array();
@@ -134,7 +136,7 @@ class Modelinfoinvoicedetail extends CI_Model
 
     /**
      * Registra el item de una factura infromativa en la base de datos
-     * 
+     *
      * @param array $infoInvoiceDetail
      *            arreglo del detalle Fac Info
      * @return boolean | int -> last_insert id
@@ -151,14 +153,14 @@ class Modelinfoinvoicedetail extends CI_Model
 
     /**
      * Actualiza el detalle de una factura en la db
-     * 
+     *
      * @param array $infoInvoiceDetail
      *            arreglo del detalle de la fac info
      * @return bool
      */
     public function update(array $infoInvoiceDetail): bool
-    {     
-        
+    {
+
         $this->db->where('id_factura_informativa_detalle', $infoInvoiceDetail['id_factura_informativa_detalle']);
         if ($this->db->update($this->table, $infoInvoiceDetail)) {
             $this->modelLog->queryUpdateLog($this->db->last_query());
@@ -170,7 +172,7 @@ class Modelinfoinvoicedetail extends CI_Model
 
     /**
      * Elimina una factura informativa de la db
-     * 
+     *
      * @param int $idinfoInvoiceDetail
      *            identificador registro db
      * @return bool
@@ -184,7 +186,7 @@ class Modelinfoinvoicedetail extends CI_Model
         }
         return false;
     }
-    
+
     /**
      * Elimina una factura informativa de la db
      *
@@ -203,11 +205,11 @@ class Modelinfoinvoicedetail extends CI_Model
         }
         return false;
     }
-    
+
 
     /**
      * Comprueba si un item que se va a insertar ya esta registrado
-     * 
+     *
      * @param array $newRowParams
      *            [
      *            'detalle_pedido_factura',
@@ -234,7 +236,7 @@ class Modelinfoinvoicedetail extends CI_Model
 
     /**
      * Retorna el numero de cajas que tiene una factura informativa
-     * 
+     *
      * @param int $idInfoInvoice
      * @return array [boxes = , unitid]
      */
@@ -244,7 +246,7 @@ class Modelinfoinvoicedetail extends CI_Model
             'boxes' => 0,
             'unities' => 0
         ];
-        
+
         $details = $this->getByFacInformative($idInfoInvoice);
         if (is_array($details)) {
             foreach ($details as $item => $itemInvoice) {
@@ -256,14 +258,14 @@ class Modelinfoinvoicedetail extends CI_Model
         }
         return $quantity;
     }
-    
-    
+
+
     /**
      * Copia los detalles de un producto al de la factura informativa
      */
     public function updateAllDetails(){
         $query = "
-            select 
+            select
                 dp.detalle_pedido_factura,
                 dp.cod_contable,
                 fid.id_factura_informativa_detalle,
@@ -273,7 +275,7 @@ class Modelinfoinvoicedetail extends CI_Model
                 join detalle_pedido_factura as dp on (dp.detalle_pedido_factura = fid.detalle_pedido_factura);
             ";
         $results = $this->modelBase->runQuery($query);
-        
+
         if($results){
             foreach ($results as $k => $product){
                 if($product['cod_contable'] != $product['cod_contable_inf']){
@@ -283,6 +285,6 @@ class Modelinfoinvoicedetail extends CI_Model
                 }
             }
         }
-        return False;       
+        return False;
     }
 }

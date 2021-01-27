@@ -22,8 +22,8 @@ class Modelinfoinvoice extends CI_Model
     private $modelOrderInvoice;
     private $modelLog;
     private $modelOrder;
-    
-        
+
+
     /**
      * Constructor de la clase
      */
@@ -32,8 +32,8 @@ class Modelinfoinvoice extends CI_Model
         parent::__construct();
         $this->init();
     }
-    
-    
+
+
     /**
      * carga los modelos y librerias necesarias para la
      * clase
@@ -55,8 +55,8 @@ class Modelinfoinvoice extends CI_Model
         $this->modelLog = new Modellog();
         $this->modelOrder = new Modelorder();
     }
-    
-    
+
+
     /**
      * Obtiene el listado de facturas informativas de un pedido en regimen 70
      * @param (string) $nroOrder
@@ -73,74 +73,79 @@ class Modelinfoinvoice extends CI_Model
                 'fecha_emision' => 'DESC',
             ],
         ]);
-        
+
         if((gettype($invoices) == 'array') && (count($invoices) > 0)){
             $this->modelLog->susessLog(
                 'Lista de facturas informativas de un paricial'
                 );
-            
+
             foreach ($invoices as $k => $inv){
-                $invoices[$k]['info_invoices_detail'] = $this->modelInfoInvoiceDetail->getByFacInformative($inv['id_factura_informativa']); 
+                $invoices[$k]['info_invoices_detail'] = $this->modelInfoInvoiceDetail->getByFacInformative($inv['id_factura_informativa']);
             }
-            
+
             return $invoices;
         }
         $this->modelLog->warningLog(
-                                    'Parcial Sin facturas informativas', 
+                                    'Parcial Sin facturas informativas',
                                     $this->db->last_query()
                                  );
         return false;
     }
-    
-        
-    
+
+
     /**
      * Obtiene el registro de una factura informativa
      * @param int $idFacInformativemodel
      * @return array | boolean
      */
     public function get($idFacInformative){
-        
+
         $infoInvoice = $this->modelBase->get_table([
             'table' => $this->table,
             'where' => [
                 'id_factura_informativa' => $idFacInformative,
             ],
         ]);
-        
+
         if((gettype($infoInvoice) == 'array') && (count($infoInvoice) > 0)){
             $this->modelLog->susessLog(
                 'Se recupera una factura informativa del Sistema'
                 );
             return $infoInvoice[0];
         }
-        
+
         return false;
     }
-    
-    
+
+
     /**
      * Obtiene una factura informativa completa
-     * 
+     *
      * @param int $id_info_invoice
      * @return array
      */
     public function getCompleteInfoInvoice(int $id_info_invoice): array {
        $info_invoice = $this->get($id_info_invoice);
-        
+
        if ($info_invoice == False || $info_invoice == Null){
+         $this->modelLog->errorLog('El pedido no tiene factura informativa');
            return [];
        }
+
+       $info_invoice_details = $this->modelInfoInvoiceDetail->getByFacInformative(
+         $info_invoice['id_factura_informativa']
+       );
+
        $info_invoice = [
            'info_invoice' => $info_invoice,
            'supplier' => $this->modelSupplier->get($info_invoice['identificacion_proveedor']),
-           'info_invoice_details' => $this->modelInfoInvoiceDetail->getByFacInformative($info_invoice['id_factura_informativa']),
+           'info_invoice_details' => $info_invoice_details
        ];
-       
+
        return $info_invoice;
     }
-    
-    
+
+
     /**
      * Obtiene las facturas informativas de un pedido
      * @param string $nro_order
@@ -149,21 +154,21 @@ class Modelinfoinvoice extends CI_Model
         if($nro_order == '' || $nro_order == False || $nro_order == Null){
             return [];
         }
-        
+
         $info_invoices_list = $this->getByOrder($nro_order);
         if($info_invoices_list == False || empty($info_invoices_list)){
             return [];
         }
-        
+
         $info_invoices = [];
-        
+
         foreach ($info_invoices_list as $k => $inf_inv){
             array_push($info_invoices, $this->getCompleteInfoInvoice($inf_inv['id_factura_informativa']));
         }
-        
+
         return $info_invoices;
     }
-    
+
     /**
      * Obtiene una factura informativa desde un numero de factura
      * @param string $nro_invoice
@@ -175,44 +180,44 @@ class Modelinfoinvoice extends CI_Model
                 'nro_factura_informativa' => $nro_invoice
             ],
         ]);
-        
+
         if($info_invoice){
             $this->modelLog->susessLog(
                 'Factura infromativa Recuperada desde Nro'
-                );           
+                );
             return $info_invoice[0];
         }
-        
+
         $this->modelLog->warningLog(
             'No se puede encontrar la factura informativa',
             $this->db->last_query()
             );
         return False;
     }
-    
-    
+
+
     /**
      * Retorna las facturas informativas de un pedido
-     * 
+     *
      * @param string $nro_order
      */
     public function getByOrder(string $nro_order){
         $info_invoices = [];
-        
+
         $parcials = $this->modelBase->get_table([
             'table' => 'parcial',
             'where' => [
                 'nro_pedido' => $nro_order
             ],
         ]);
-        
+
         if($parcials == False){
             $this->modelLog->warningLog(
                 'Pedido sin parciales ' . $nro_order
-                );            
+                );
             return False;
         }
-        
+
         foreach ($parcials as $idx => $par){
             $info_invoice =  $this->modelBase->get_table([
                 'table' => $this->table,
@@ -220,40 +225,40 @@ class Modelinfoinvoice extends CI_Model
                     'id_parcial' => $par['id_parcial']
                 ],
             ]);
-            
+
             if ($info_invoice){
                 foreach ($info_invoice as $k => $v){
-                    array_push($info_invoices, $v);                
+                    array_push($info_invoices, $v);
                 }
             }
         }
-        
+
         if($info_invoices){
             $this->modelLog->susessLog(
                 'Lista todas las facturas informativas del pedido ' . $nro_order
-                );          
-            return $info_invoices;            
+                );
+            return $info_invoices;
         }
-        
+
         $this->modelLog->warningLog(
             'Pedido sin facturas informativas'
             );
-        
+
         return false;
     }
-     
-    
+
+
     /**
      * Eliminar una factura infotmativa
      * @param integer $idFactInformative identificador de regitro
      * @return boolean
      */
     public function delete($idFactInformative){
-        
+
         $this->modelInfoInvoiceDetail->deleteDetailFromInvoice(
             $idFactInformative
             );
-        
+
         $this->db->where('id_factura_informativa', $idFactInformative);
         if($this->db->delete($this->table)){
             return true;
@@ -265,7 +270,7 @@ class Modelinfoinvoice extends CI_Model
             return false;
         }
     }
-    
+
     /**
      * crea una factura informativa en la base de datos
      * @param array $infoiInvoice informacion factura informativa
@@ -277,13 +282,13 @@ class Modelinfoinvoice extends CI_Model
             return $this->db->insert_id();
         }
         $this->modelLog->errorLog(
-            'Modelinfoinvoice,create,No se puede crear', 
+            'Modelinfoinvoice,create,No se puede crear',
             $this->db->last_query()
             );
         return false;
     }
-    
-    
+
+
     /**
      * Actualiza el registro de una
      * @param array $infoInvoice
@@ -294,12 +299,12 @@ class Modelinfoinvoice extends CI_Model
         {
             unset($infoInvoice['info_invoices_detail']);
         }
-        
+
         $this->db->where(
-            'id_factura_informativa', 
+            'id_factura_informativa',
             $infoInvoice['id_factura_informativa']
             );
-        
+
         if($this->db->update($this->table, $infoInvoice)){
             $this->modelLog->queryUpdateLog($this->db->last_query());
             return true;
@@ -310,8 +315,8 @@ class Modelinfoinvoice extends CI_Model
                         );
         return false;
     }
-    
-    
+
+
     /**
      * Actualiza los gastos de origen de una factura informativa
      * @param int $id_info_invoice
@@ -322,13 +327,13 @@ class Modelinfoinvoice extends CI_Model
         $go = 0.0;
         foreach ($info_invoice['info_invoice_details'] as $k => $item){
             $go += $item['gasto_origen'];
-        }        
+        }
         $info_invoice = $info_invoice['info_invoice'];
         $info_invoice['gasto_origen'] = $go;
         $this->update($info_invoice);
     }
-    
-    
+
+
     /**
      * Actualiza el tipo_cambio en todas las facturas del parcial
      * @param array $paramsUpdate => [tipo_cambio, id_parcial]
@@ -347,8 +352,8 @@ class Modelinfoinvoice extends CI_Model
             );
         return false;
     }
-    
-    
+
+
     /**
      * Obtiene la cantidad de parciales para un pedido
      * @param string $nroOrder nro de pedido
@@ -368,8 +373,8 @@ class Modelinfoinvoice extends CI_Model
         }
         return 0;
     }
-    
-    
+
+
     /**
      * Verifica si en las facturas de un parcial
      * @param string $nroOrder
@@ -378,7 +383,7 @@ class Modelinfoinvoice extends CI_Model
     public function haveEuros(string $id_parcial):bool
     {
         $orderInvoices = $this->getByParcial($id_parcial);
-        
+
         if (is_array($orderInvoices)){
             foreach ($orderInvoices as $item => $invoice){
                 if($invoice['moneda'] == 'EUROS'){
@@ -392,7 +397,7 @@ class Modelinfoinvoice extends CI_Model
             );
         return false;
     }
-    
+
 
     /**
      * Verifica si un registro ya existe en la base de datos
@@ -412,11 +417,11 @@ class Modelinfoinvoice extends CI_Model
             $this->modelLog->warningLog(
                 'La factura informativa existe '
                 );
-            
+
             return true;
         }
 
         return 0;
     }
-    
+
 }

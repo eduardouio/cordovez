@@ -4,7 +4,7 @@
     {% endif %}
     {% set suma = 0 %}
     {% set unidades = 0 %}
-    {% for detail in invoiceDetail %} 
+    {% for detail in invoiceDetail %}
     {% set unidades = unidades + detail.nro_cajas %}
     {% set suma = (suma +  (detail.total_item) ) %}
     {% endfor %}
@@ -68,7 +68,7 @@
     <h4 class="text-success"><span class="fa fa-check"></span>Factura Completa!</h4>
 
 {% elseif diferencia < 0 %}
-    <h4 class="text-danger" ><span class="fa fa-warning"></span> Factura Inválida, VALORES EXCEDIDOS</h4>  
+    <h4 class="text-danger" ><span class="fa fa-warning"></span> Factura Inválida, VALORES EXCEDIDOS</h4>
 {% else %}
       <a href="{{ rute_url }}detallepedido/nuevo/{{invoice.id_pedido_factura}}">
         <button class="btn btn-sm btn-default">
@@ -78,20 +78,20 @@
       </a>
 {% endif %}
     </div>
-  
+
     <div class="col-sm-2">
       &nbsp;
     </div>
 <div class="col-sm-2">
-      <h5 class="text-primary"> 
+      <h5 class="text-primary">
       <small>Gastos Origen: </small>
        <span>
        {% if order.tipo_cambio_go == 1 %}
       	$
       {% else %}
       	&euro;
-      {% endif %} 
-       {{ order.gasto_origen | number_format(0, '.', ',') }} 
+      {% endif %}
+       {{ order.gasto_origen | number_format(0, '.', ',') }}
        </span>
       </h5>
     </div>
@@ -102,7 +102,7 @@
       <h5 class="text-primary"> <small>Valor Reg: </small> <span id="suma"> {{ simbolo | raw}} {{ suma | number_format(2, '.', ',')}}</span></h5>
     </div>
     <div class="col-sm-2">
-      <h5 class="text-danger"> <small>Diferencia: </small> <span id="suma"> {{ simbolo | raw}} 
+      <h5 class="text-danger"> <small>Diferencia: </small> <span id="suma"> {{ simbolo | raw}}
       {{ diferencia }} </span></h5>
     </div>
   </div>
@@ -130,7 +130,7 @@
           {% set nro_cajas = nro_cajas + detail.nro_cajas %}
           <tr>
             <td>{{ detail.detalle_pedido_factura }}</td>
-            <td> <a href="{{ rute_url }}detallepedido/editar/{{ detail.detalle_pedido_factura }}"> <span class="fa fa-pencil"></span> {{ detail.nombre }}</a></td>
+            <td> <a href="{{ rute_url }}detallepedido/editar/{{ detail.detalle_pedido_factura }}"> <span class="fa fa-pencil"></span> {{ detail.nombre }}</a> &nbsp;<a href="{{ sgi_url }}media/{{ detail.registro_sanitario }}">[{{ detail.nro_registro_sanitario }}]</a></td>
             <td>  <a href="{{ rute_url }}producto/presentar/{{ detail.cod_contable }}" target="_blank"> <span class="fa fa-eye"></span> Ficha</a></td>
             <td class="text-right">{{ detail.grado_alcoholico }}</td>
             <td class="text-right">{{ detail.nro_cajas }}</td>
@@ -147,33 +147,33 @@
                 <span class="fa fa-chevron-down" ></span>
                 Seleccione
                 </button>
-                
+
                 {% if order.regimen == 10 and order.bg_isliquidated == 0 %}
                 <ul class="dropdown-menu" aria-labelledby="dLabel">
                   <li> <a href="{{rute_url}}detallepedido/editar/{{detail.detalle_pedido_factura}}">
                     <span class="fa fa-pencil fa-fw"></span>
-                    Editar Producto</a> 
+                    Editar Producto</a>
                   </li>
                   <li> <a href="{{rute_url}}detallepedido/eliminar/{{detail.detalle_pedido_factura}}">
                     <span class="fa fa-trash fa-fw"></span>
-                    Elminar Producto</a> 
+                    Elminar Producto</a>
                   </li>
                 </ul>
                 {% endif %}
-                
+
                 {% if order.regimen == 70 and order.bg_haveExpenses == 0 %}
                 <ul class="dropdown-menu" aria-labelledby="dLabel">
                   <li> <a href="{{rute_url}}detallepedido/editar/{{detail.detalle_pedido_factura}}">
                     <span class="fa fa-pencil fa-fw"></span>
-                    Editar Producto</a> 
+                    Editar Producto</a>
                   </li>
                   <li> <a href="{{rute_url}}detallepedido/eliminar/{{detail.detalle_pedido_factura}}">
                     <span class="fa fa-trash fa-fw"></span>
-                    Elminar Producto</a> 
+                    Elminar Producto</a>
                   </li>
                 </ul>
                 {% endif %}
-                
+
               </div>
             </td>
           </tr>
@@ -206,16 +206,16 @@
 				<span class="fa fa-gear"></span> Gastos Iniciales
 		</a>
     </div>
-    
+
     {% if order.regimen == 70 and order.bg_haveExpenses == 0 %}
    		<div class="col-ms-3">
       <a class="btn btn-default btn-sm" href="{{ rute_url }}pedidofactura/editar/{{invoice.id_pedido_factura}}" >
         <span class="fa fa-file-text-o fa-fw"></span>
         Editar Cabecera Factura <b>[{{invoice.id_factura_proveedor}}]</b>
       </a>
-    </div> 
+    </div>
     {% endif %}
-    
+
     {% if order.regimen == 10 and order.bg_isliquidated == 0 %}
    		<div class="col-ms-3">
       <a class="btn btn-default btn-sm" href="{{ rute_url }}pedidofactura/editar/{{invoice.id_pedido_factura}}" >

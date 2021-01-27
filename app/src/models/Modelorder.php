@@ -286,6 +286,8 @@ class Modelorder extends CI_Model
             $unities += ($value['nro_cajas'] * $product['cantidad_x_caja']);
 
             $value['nombre'] = $product['nombre'];
+            $value['nro_registro_sanitario'] = $product['nro_registro_sanitario'];
+            $value['registro_sanitario'] = $product['registro_sanitario'];
             $value['cantidad_x_caja'] = $product['cantidad_x_caja'];
             $value['unidades'] = (intval($value['cantidad_x_caja']) *
                 intval($value['nro_cajas']));

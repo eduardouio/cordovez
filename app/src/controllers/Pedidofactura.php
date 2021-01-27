@@ -44,7 +44,7 @@ class Pedidofactura extends MY_Controller
         if(! isset($this->session->userdata['id_user'])){
             exit(0);
         }
-        
+
         $this->load->model('modelorder');
         $this->load->model('modeluser');
         $this->load->model('modelsupplier');
@@ -83,25 +83,26 @@ class Pedidofactura extends MY_Controller
         }
         $invoiceDetail = $this->modelOrder->getInvoiceDetail($invoiceOrder);
         $sums = false;
-        
+
         if($invoiceDetail != false){
             $sums = $invoiceDetail['sums'];
             unset($invoiceDetail['sums']);
             $config['invoiceDetail'] = $invoiceDetail;
         }
-        
+
         $order = $this->modelOrder->get($invoiceOrder['nro_pedido']);
-        
+
         return ($this->responseHttp([
             'titleContent' => 'Detalle Factura [ # ' .
                                       $invoiceOrder['id_factura_proveedor'] .
-                                     ' ] Pedido [ ' . $invoiceOrder['nro_pedido'] . ' ] [R '. 
+                                     ' ] Pedido [ ' . $invoiceOrder['nro_pedido'] . ' ] [R '.
                                     $order['regimen'] .']',
             'show_invoices' => true,
             'title' => 'Factura Pedido ' . $order['nro_pedido'],
             'user' => $this->modelUser->get($invoiceOrder['id_user']),
             'invoice' => $invoiceOrder,
             'invoiceDetail' => $invoiceDetail,
+            'sgi_url' => $GLOBALS['selected_enterprise']['sgi_url'],
             'order' => $order,
             'sums' => $sums,
             'supplier' => $this->modelSupplier->get($invoiceOrder['identificacion_proveedor']),
@@ -116,23 +117,23 @@ class Pedidofactura extends MY_Controller
     public function nuevo($nroOrder)
     {
         $order = $this->modelOrder->get($nroOrder);
-        
+
         if ($order == false) {
             $this->modelLog->warningLog('Acceso directo, Redireccionamiento ', current_url());
             return($this->index());
         }
-        
+
         $alert_message = False;
         $go_dollar = False;
-        
+
         if ($order['incoterm'] != 'CFR'){
             $alert_message = True;
         }
-        
+
         if ($order['incoterm'] == 'EXW' || $order['incoterm'] == 'FCA'){
             $go_dollar = False;
         }
-        
+
         $suppliers = $this->modelSupplier->getByLocation('INTERNACIONAL');
         return($this->responseHttp([
             'create_invoice' => true,
@@ -143,14 +144,14 @@ class Pedidofactura extends MY_Controller
             'suppliers' => $suppliers,
             'titleContent' => 'Ingresando Factura ' .
             ' Pedido [' . $order['nro_pedido'] . ']' .
-            ' Incoterm ['. $order['incoterm'] . ']', 
+            ' Incoterm ['. $order['incoterm'] . ']',
         ]));
     }
 
     /**
      * Muestra el formulario de edicion con la informacion del pedido
      * @param int $idInvoice indentificador tabla
-     * @return string template 
+     * @return string template
      */
     public function editar($idInvoice)
     {
@@ -159,28 +160,28 @@ class Pedidofactura extends MY_Controller
             $this->modelLog->warningLog('acceso directo, aviso redireccionamiento', current_url());
             return($this->index());
         }
-        
+
         $order = $this->modelOrder->get($invoiceOrder['nro_pedido']);
-        
+
         $supplier = $this->modelSupplier->get($invoiceOrder['identificacion_proveedor']);
-        
+
         $alert_message = False;
         $go_dollar = False;
-        
+
         if ($order['incoterm'] != 'CFR'){
             $alert_message = True;
         }
-        
+
         if ($order['incoterm'] == 'EXW' || $order['incoterm'] == 'FCA'){
             $go_dollar == True;
         }
-        
-        
+
+
         return($this->responseHttp([
-            'titleContent' => 'Editando Factura ' . 
-                                $invoiceOrder['id_factura_proveedor'] . 
+            'titleContent' => 'Editando Factura ' .
+                                $invoiceOrder['id_factura_proveedor'] .
                               ' <small>' . $supplier['nombre'] . '</small>' .
-                               'Incoterm ['. $order['incoterm'] . ']', 
+                               'Incoterm ['. $order['incoterm'] . ']',
             'title' => 'Registro de Factura Pedido ' . $order['nro_pedido'],
             'edit_invoice' => true,
             'go_dollar' => $go_dollar,
@@ -193,19 +194,19 @@ class Pedidofactura extends MY_Controller
     /**
      * elimina un pedido de la tabla, sino tiene parciales
      * @param int $invoiceId identificador tabla
-     * @return string template  
+     * @return string template
      */
     public function eliminar($idInvoiceOrder)
     {
         $invoiceOrder = $this->modeOrderInvoice->get($idInvoiceOrder);
-        
+
         if($invoiceOrder == false){
             $this->modelLog->warningLog('Intentando eliminar directamente', current_url());
             return($this->index());
         }
-       
+
         if($this->modeOrderInvoice->delete($idInvoiceOrder)){
-            
+
             return($this->responseHttp([
                 'order' => $invoiceOrder['nro_pedido'],
                 'viewMessage' => true,
@@ -214,12 +215,12 @@ class Pedidofactura extends MY_Controller
                 'message' => 'Factura Eliminada Exitosamente!',
             ]));
         }
-        
+
     return($this->responseHttp([
         'order' => $invoiceOrder['nro_pedido'],
         'orderInvoice' => $invoiceOrder,
         'viewMessage' => true,
-        'message' => 'El Pedido No Puede Ser Eliminado, 
+        'message' => 'El Pedido No Puede Ser Eliminado,
 						 Tiene Dependencias!',
          ]));
     }
@@ -234,46 +235,46 @@ class Pedidofactura extends MY_Controller
         if (! $_POST) {
             $this->index();
         }
-        
+
         $orderInvoice = $this->input->post();
-        
+
         if($orderInvoice['fecha_emision'] == '' || $orderInvoice['fecha_emision'] == null){
             unset($orderInvoice['fecha_emision']);
         }else{
-            $orderInvoice['fecha_emision'] = str_replace( 
+            $orderInvoice['fecha_emision'] = str_replace(
                 '/', '-', $orderInvoice['fecha_emision']
                 );
             $orderInvoice['fecha_emision'] = date(
                 'Y-m-d', strtotime($orderInvoice['fecha_emision'])
                 );
         }
-                 
-     
+
+
         if($orderInvoice['vencimiento_pago'] == ''){
             unset($orderInvoice['vencimiento_pago']);
         }else{
             $orderInvoice['vencimiento_pago'] = str_replace( '/', '-', $orderInvoice['vencimiento_pago']);
             $orderInvoice['vencimiento_pago'] = date('Y-m-d', strtotime($orderInvoice['vencimiento_pago']));
         }
-        
+
         if($orderInvoice['fecha_pago'] == ''){
             unset($orderInvoice['fecha_pago']);
         }else{
             $orderInvoice['fecha_pago'] = str_replace( '/', '-', $orderInvoice['fecha_pago']);
             $orderInvoice['fecha_pago'] = date('Y-m-d', strtotime($orderInvoice['fecha_pago']));
         }
-        
+
         $orderInvoice['id_user'] = $this->session->userdata('id_user');
-     
-        
+
+
         if (! isset($orderInvoice['id_pedido_factura'])) {
             $this->db->where('id_factura_proveedor', $orderInvoice['id_factura_proveedor']);
             $this->db->where('identificacion_proveedor', $orderInvoice['identificacion_proveedor']);
-            
+
             $resultDb = $this->db->get($this->controller);
-            
+
             $order = $resultDb->result_array();
-            
+
             if ($resultDb->num_rows() == 1) {
                 $order = $order[0];
                 $config['order'] = $order['nro_pedido'];
@@ -283,9 +284,9 @@ class Pedidofactura extends MY_Controller
                 return true;
             }
         }
-        
+
         $status = $this->_validData($orderInvoice);
-        
+
         if ($status['status']) {
             if (! isset($orderInvoice['id_pedido_factura'])) {
                 $resultQuery = $this->modeOrderInvoice->create($orderInvoice);
@@ -305,48 +306,48 @@ class Pedidofactura extends MY_Controller
             return($this->responseHttp([
                 'viewMessage' => true,
                 'message' => 'La información de uno de los campos es incorrecta!',
-                'data' => $status['columns'],                
+                'data' => $status['columns'],
                 ]));
         }
     }
-    
-    
+
+
     /**
-     *  Crea la provision de ISD en los gastos iniciales 
+     *  Crea la provision de ISD en los gastos iniciales
      */
     private function setISD(string $nro_order){
         $this->modelLog->warningLog(
             'Se llama a la creacion del gasto inicial ISD'
             );
-        
+
         $order = $this->modelOrder->get($nro_order);
         $order_invoices = $this->modeOrderInvoice->getbyOrder($nro_order);
-        
+
         $valor_base = 0.0;
-        
+
         foreach ($order_invoices as $k => $invoice){
             $valor_base += ($invoice['valor'] * $invoice['tipo_cambio']);
         }
-        
+
         $gasto_origen = 0.0;
-        
+
         if($order['incoterm'] == 'CFR' || $order['incoterm'] == 'FOB' ){
             $gasto_origen = ($order['gasto_origen'] * $invoice['tipo_cambio']);
         }
-        
+
         #aqui se calcula el ISD
         $valor_isd = ($valor_base + $gasto_origen) * 0.05;
-        
+
         $isd_expenses = $this->modelExpenses->getByName(
-                $order['nro_pedido'], 
+                $order['nro_pedido'],
                 'ISD'
-            );            
-                   
-        
+            );
+
+
         if($isd_expenses){
             $isd_expenses['valor_provisionado'] = $valor_isd;
             if($this->modelExpenses->update($isd_expenses)){
-                $this->modelLog->warningLog('Se actualiza el ISD ' . $order['nro_pedido']);                                
+                $this->modelLog->warningLog('Se actualiza el ISD ' . $order['nro_pedido']);
             }else{
                 $this->modelLog->errorLog(
                     'No se puede actualizar el ISD',
@@ -363,7 +364,7 @@ class Pedidofactura extends MY_Controller
                 'tipo' => 'INICIAL',
                 'fecha' => date('Y-m-d'),
                 'id_user' => $this->session->userdata('id_user')
-            ])){                
+            ])){
                 $this->modelLog->warningLog('Se registra el ISD' . $order['nro_pedido']);
             }else{
                 $this->modelLog->errorLog(
@@ -372,13 +373,13 @@ class Pedidofactura extends MY_Controller
                     );
             }
         }
-        
-    }      
-    
+
+    }
+
 
     /**
      * se validan los datos que deben estar para que la consulta no falle
-     * 
+     *
      * @return [array] | [bolean]
      */
     private function _validData($data)

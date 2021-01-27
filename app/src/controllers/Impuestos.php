@@ -312,9 +312,11 @@ class Impuestos extends MY_Controller
             False
             );
         $order_taxes = $orderTaxes->getTaxes();
+        $taxes = [];
         if ($order['bg_isliquidated'] == 0){
             foreach($order_taxes['taxes'] as $i => $item){
                 $item['detalle_pedido_factura'] = $item['id_registro'];
+                $item['nro_cajas'] = $item['cajas'];
                 unset($item['id_registro']);
                 unset($item['cajas']);
                 unset($item['costo_caja']);
@@ -323,11 +325,13 @@ class Impuestos extends MY_Controller
                 unset($item['ex_aduana_unitario_antes']);
                 $this->ModelOrderInvoiceDetail->update($item);
                 $product = $this->Modelproduct->get($item['cod_contable']);
-                $order_taxes['taxes'][$i]['nro_registro_sanitario'] = $product['nro_registro_sanitario'];
-                $order_taxes['taxes'][$i]['registro_sanitario'] = $product['registro_sanitario'];
+                $item['nro_registro_sanitario'] = $product['nro_registro_sanitario'];
+                $item['registro_sanitario'] = $product['registro_sanitario'];
+                array_push($taxes, $item);
                 $this->modelLog->generalLog('Prorrateo de impuestos Actualizados');
             }
         }
+        $order_taxes['taxes'] = $taxes;
 
         return ($this->responseHttp([
             'titleContent' => 'Resumen de Impuestos Liquidación Aduana del Pedido ' .

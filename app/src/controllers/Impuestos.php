@@ -163,11 +163,7 @@ class Impuestos extends MY_Controller
             $parcial_taxes['taxes'][$i]['product'] =  str_replace("'","-",$k['product']);
             $i++;
         }
-
-        #print('<pre>');
-        #print(var_dump($parcial_taxes));
-        #print('</pre>');
-
+        $taxes = [];
         if ($parcial['bg_isliquidated'] == 0){
             foreach ($parcial_taxes['taxes'] as $item){
                 $item['id_factura_informativa_detalle'] = $item['id_registro'];
@@ -178,16 +174,15 @@ class Impuestos extends MY_Controller
                 unset($item['indirectos']);
                 unset($item['ex_aduana_unitario_antes']);
                 unset($item['gasto_origen']);
-
-           $this->modelInfoInvoiceDetail->update($item);
-
-           $product = $this->Modelproduct->get($item['cod_contable']);
-           $parcial_taxes['taxes'][$i]['nro_registro_sanitario'] = $product['nro_registro_sanitario'];
-           $parcial_taxes['taxes'][$i]['registro_sanitario'] = $product['registro_sanitario'];
-
-           $this->modelLog->generalLog('Registro de prorrateos impuestos');
+                $this->modelInfoInvoiceDetail->update($item);
+                $product = $this->Modelproduct->get($item['cod_contable']);
+                $item['registro_sanitario'] = $product['registro_sanitario'];
+                $item['nro_registro_sanitario'] = $product['nro_registro_sanitario'];
+                array_push($taxes, $item);
             }
         }
+
+        $parcial_taxes['taxes'] = $taxes;
 
         return ($this->responseHttp([
             'title' => 'Impuesto Parcial ' . $ordinal_parcial . '/' . count($all_parcials),
@@ -198,6 +193,7 @@ class Impuestos extends MY_Controller
                             '  ['. $init_data['order']['proveedor']  . ']',
             'init_data' => $init_data,
             'parcial_taxes' => $parcial_taxes,
+            'url_sgi' => $GLOBALS['selected_enterprise']['sgi_url'],
             'parcial' => $parcial,
             'ordinal_parcial' => $ordinal_parcial,
             'count_all_parcials' => count($all_parcials),

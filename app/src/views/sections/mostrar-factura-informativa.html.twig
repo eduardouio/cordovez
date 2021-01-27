@@ -108,7 +108,7 @@
                 <tbody>
                 <tr v-for="(item, index) in data.info_invoice.info_invoice_details" :key="index">
                     <td>${ index + 1}</td>
-                    <td>${ item.product }  ->  <a :href="data.sgi_url + item.registro_sanitario"> [ ${ item.nro_registro_sanitario } ] </a> </td>
+                    <td>${ item.product }  ->  <a target="_blank" :href="data.sgi_url + item.registro_sanitario"> [ ${ item.nro_registro_sanitario } ] </a> </td>
                     </td>
                     <td class="text-right">${ item.capacidad_ml | round(0)} ml</td>
                     <td class="text-right">${ item.grado_alcoholico | round(2)}</td>

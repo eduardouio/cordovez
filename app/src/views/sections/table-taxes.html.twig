@@ -221,7 +221,7 @@
                   {% for tax in parcial_taxes['taxes'] %}
                   <tr>
                      <td> {{ loop.index }} </td>
-                     <td nowrap>{{ tax.product }} <a href="{{ url_sgi }}media/{{ tax.registro_sanitario }}">  [ {{tax.nro_registro_sanitario}} ] </a></td>
+                     <td nowrap>{{ tax.product }} <a target="_blank" href="{{ url_sgi }}media/{{ tax.registro_sanitario }}">  [ {{tax.nro_registro_sanitario}} ] </a></td>
                      <td class="text-right"> {{ tax.cajas }} </td>
                      <td class="text-right">{{ tax.unidades }}</td>
                      <td class="text-right">{{ tax.capacidad_ml | number_format(2,',','.') }}</td>
@@ -246,7 +246,7 @@
                      <td class="text-right">{{ tax.ice_advalorem | number_format(2,',','.') }}</td>
                      <td class="text-right">{{ tax.total_ice | number_format(2,',','.') }}</td>
                      <td class="text-right">{{ tax.iva | number_format(2,',','.') }}</td>
-                     <td class="text-right">{{ tax.indirectos | number_format(2,',','.') }}</td>
+                     <td class="text-right">{{ (tax.iva + tax.total_ice + tax.fodinfa + tax.arancel_advalorem_pagar + tax.arancel_especifico_pagar) | number_format(2,',','.') }}</td>
                   </tr>
                   {% endfor %}
                   <tr style="background-color:#2E86C1; color:#fff; font-weight:bold;">

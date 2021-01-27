@@ -163,8 +163,8 @@ class Impuestos extends MY_Controller
             $parcial_taxes['taxes'][$i]['product'] =  str_replace("'","-",$k['product']);
             $i++;
         }
+        $taxes = [];
         if ($parcial['bg_isliquidated'] == 0){
-            $taxes = [];
             foreach ($parcial_taxes['taxes'] as $item){
                 $item['id_factura_informativa_detalle'] = $item['id_registro'];
                 $cajas  = $item['cajas'];
@@ -182,9 +182,16 @@ class Impuestos extends MY_Controller
                 $item['nro_registro_sanitario'] = $product['nro_registro_sanitario'];
                 array_push($taxes, $item);
             }
-            $parcial_taxes['taxes'] = $taxes;
+        }else{
+          foreach ($parcial_taxes['taxes'] as $item){
+            $product = $this->Modelproduct->get($item['cod_contable']);
+            $item['registro_sanitario'] = $product['registro_sanitario'];
+            $item['nro_registro_sanitario'] = $product['nro_registro_sanitario'];
+            array_push($taxes, $item);
+          }
         }
 
+        $parcial_taxes['taxes'] = $taxes;
         return ($this->responseHttp([
             'title' => 'Impuesto Parcial ' . $ordinal_parcial . '/' . count($all_parcials),
             'titleContent' => 'Resumen de Impuestos Liquidación Aduana [Parcial ' .
@@ -313,8 +320,8 @@ class Impuestos extends MY_Controller
             False
             );
         $order_taxes = $orderTaxes->getTaxes();
+        $taxes = [];
         if ($order['bg_isliquidated'] == 0){
-          $taxes = [];
             foreach($order_taxes['taxes'] as $i => $item){
                 $item['detalle_pedido_factura'] = $item['id_registro'];
                 $cajas = $item['cajas'];
@@ -332,9 +339,16 @@ class Impuestos extends MY_Controller
                 array_push($taxes, $item);
                 $this->modelLog->generalLog('Prorrateo de impuestos Actualizados');
             }
-          $order_taxes['taxes'] = $taxes;
+        }else{
+          foreach($order_taxes['taxes'] as $i => $item){
+            $product = $this->Modelproduct->get($item['cod_contable']);
+            $item['registro_sanitario'] = $product['registro_sanitario'];
+            $item['nro_registro_sanitario'] = $product['nro_registro_sanitario'];
+            array_push($taxes, $item);
+          }
         }
 
+        $order_taxes['taxes'] = $taxes;
 
         return ($this->responseHttp([
             'titleContent' => 'Resumen de Impuestos Liquidación Aduana del Pedido ' .

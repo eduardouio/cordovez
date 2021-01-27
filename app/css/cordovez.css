@@ -580,3 +580,10 @@ th {
     margin-right: auto;
     width: 25%;
 }
+
+@media print {
+   a[href]:after {
+      display: none;
+      visibility: hidden;
+   }
+}

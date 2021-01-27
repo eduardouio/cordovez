@@ -222,7 +222,7 @@
                   <tr>
                      <td> {{ loop.index }} </td>
                      <td nowrap>{{ tax.product }} <a target="_blank" href="{{ url_sgi }}media/{{ tax.registro_sanitario }}">  [ {{tax.nro_registro_sanitario}} ] </a></td>
-                     <td class="text-right"> {{ tax.cajas }} </td>
+                     <td class="text-right"> {{ tax.cajas | number_format(2,',','.') }} </td>
                      <td class="text-right">{{ tax.unidades }}</td>
                      <td class="text-right">{{ tax.capacidad_ml | number_format(2,',','.') }}</td>
                      <td class="text-right">{{ tax.grado_alcoholico | number_format(2,',','.') }}</td>

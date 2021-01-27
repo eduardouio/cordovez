@@ -1,4 +1,3 @@
-{% set sgi_url = 'http://localhost:5000/' %} 
 <div class="navbar" style="margin-bottom: 0px">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -6,17 +5,17 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" style="color:#333;" href="{{base_url}}"> <i class="glyphicon glyphicon-globe"></i> &nbsp; {{ enterprise.nombre }}</a>                                   
+      <a class="navbar-brand" style="color:#333;" href="{{base_url}}"> <i class="glyphicon glyphicon-globe"></i> &nbsp; {{ enterprise.nombre }}</a>
        <form action="{{ rute_url }}pedido/listar" method="GET" class="navbar-form navbar-left">
         <div class="form-group" style="display:table; width:100%">
-          <div class="input-group">           
+          <div class="input-group">
                 <div class="input-group custom-search-form">
                   <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
                   <input type="text" class="form-control" name="nro_pedido" placeholder="Buscar Pedido" autocomplete="off">
                 </div>
           </div>
         </div>
-      </form>            
+      </form>
     </div>
     <div class="navbar-collapse collapse" id="searchbar">
       <ul class="nav navbar-nav navbar-right">
@@ -25,9 +24,9 @@
                         </li>
                         <li>
                             <a href="{{rute_url}}facturapagos/"><i class="fa fa-file-text-o fa-fw"></i>Justificaciones</a>
-                        </li>                        
+                        </li>
                         <li>
-                            <a href="{{sgi_url}}" target="_blank"><i class="fa fa-cogs fa-fw"></i> SGI</a>
+                            <a href="{{enterprise.sgi_url}}" target="_blank"><i class="fa fa-cogs fa-fw"></i> SGI</a>
                         </li>
                         <li>
                             <a href="{{rute_url}}reportes"><i class="fa fa-table fa-fw"></i>Reportes</a>
@@ -42,7 +41,7 @@
                     </a>
                     <ul class="dropdown-menu dropdown-user">
                         <li><a href="{{ rute_url }}userprofile/"><i class="fa fa-user fa-fw"></i> Perfil</a>
-                        </li>                        
+                        </li>
                         <li class="divider"></li>
                         <li><a href="{{base_url}}index.php/login/cerrarSesion"><i class="fa fa-sign-out fa-fw"></i> Salir</a>
                         </li>

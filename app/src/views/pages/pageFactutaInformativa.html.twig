@@ -2,7 +2,7 @@
 {% include 'base/navbarheader.html.twig' %}
 {% include 'base/navbarleft.html.twig' %}
 {% include 'base/content.html.twig' %}
-{% if viewMessage == true %} 	
+{% if viewMessage == true %}
 	<div class="well">
 		<h3 class="text-primary">	{{ message }} </h3><br><br>
 		<p>
@@ -20,7 +20,7 @@
 			{% for input in data.len %}
 			<li> {{ input }}</li>
 			{% endfor %}
-			</ul>		
+			</ul>
 		{% endif %}
 
 		{% if duplicateRow %}
@@ -28,7 +28,7 @@
 			<tr>
 			<th>Detalle</th>
 			<th>Valor</th>
-			</tr>			
+			</tr>
 			<tr>
 			<td>Nro Factura</td>
 			<td>{{ info_invoice.nro_factura_informativa }}</td>
@@ -36,7 +36,7 @@
 			<tr>
 			<td>Fecha</td>
 			<td>{{ info_invoice.fecha_emision | date('d/m/Y' ) }}</td>
-			</tr>		
+			</tr>
 			<tr>
 			<td>Moneda</td>
 			<td>{{ info_invoice.moneda }}</td>
@@ -44,14 +44,14 @@
 			<tr>
 			<td>Valor</td>
 			<td>{{ info_invoice.valor }}</td>
-			</tr>					
+			</tr>
 			</table>
-			<a href="{{rute_url}}facinformativa/presentar/{{idInfoInvoice}}" class="btn btn-warning btn-sm">
+			<a href="{{rute_url}}facinformativa/presentar/{{ idInfoInvoice }}" class="btn btn-warning btn-sm">
 				<span class="fa fa-eye"></span> &nbsp; Ver Factura Informativa
 			</a>
 		{% endif %}
 			<!-- Si se elimina una factura informativa vuelve al pedido  -->
-			{% if deleted == true %} 
+			{% if deleted == true %}
 						<a href="{{rute_url}}facinformativa/presentar/{{ id_row }}">
 				<button>
 					<span class="fa fa-list"></span>
@@ -68,7 +68,7 @@
 {% endif %}
 
 {% if frm_invoice == true %}
-	{% include 'forms/frm-factura-informativa.html.twig' %}  
+	{% include 'forms/frm-factura-informativa.html.twig' %}
 {% endif %}
 
 {% include 'base/content_close.html.twig' %}

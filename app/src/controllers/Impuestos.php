@@ -171,7 +171,7 @@ class Impuestos extends MY_Controller
                 unset($item['id_registro']);
                 unset($item['cajas']);
                 unset($item['costo_caja']);
-                unset($item['capacidad_ml']);
+                # unset($item['capacidad_ml']);
                 unset($item['indirectos']);
                 unset($item['ex_aduana_unitario_antes']);
                 unset($item['gasto_origen']);
@@ -563,6 +563,7 @@ class Impuestos extends MY_Controller
                 array (
                     'detalle_pedido_factura' => $item['id_registro'],
                     'ice_advalorem_pagado' => $item['ice_advalorem'],
+                    'ice_advalorem' => $item['ice_advalorem'],
                     'ice_advalorem_unitario' => ($item['ice_advalorem']/$item['unidades']),
                     'ice_unitario' => (($item['ice_advalorem']/$item['unidades']) + $item['ice_especifico_unitario']),
                     'total_ice' => ($item['ice_advalorem'] + $item['ice_especifico']),
@@ -613,11 +614,13 @@ class Impuestos extends MY_Controller
 
         $parcial['bg_isliquidated'] = 1;
         $parcial['fecha_liquidacion'] = date('Y-m-d', strtotime($parcial['fecha_liquidacion']));
+
         foreach ($data['liquidations_items'] as $item){
             if($this->modelInfoInvoiceDetail->update(
             array (
                 'id_factura_informativa_detalle' => $item['id_registro'],
                 'ice_advalorem_pagado' => $item['ice_advalorem'],
+                'ice_advalorem' => $item['ice_advalorem'],
                 'ice_advalorem_unitario' => ($item['ice_advalorem']/$item['unidades']),
                 'ice_unitario' => (($item['ice_advalorem']/$item['unidades']) + $item['ice_especifico_unitario']),
                 'total_ice' => ($item['ice_advalorem'] + $item['ice_especifico']),

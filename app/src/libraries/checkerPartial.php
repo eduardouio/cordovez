@@ -254,7 +254,10 @@ class checkerPartial
             }
         }
 
-        return 0;
+        return([
+            'nombre' => $name,
+            'valor' => 0.00
+        ]);
     }
 
 

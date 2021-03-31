@@ -389,7 +389,6 @@ class Impuestos extends MY_Controller
 
         $products_base = [];
 
-
         $order_invoices = $this->modelOrderInvoice->getbyOrder(
             $nro_pedido
             );
@@ -531,7 +530,7 @@ class Impuestos extends MY_Controller
     }
 
     /**
-     * Marca un pedido como liquidado
+     * Marca un pedido como liquidado registra los valores de los impuestos
      */
     public function liquidarIvaOrder(){
 
@@ -551,30 +550,58 @@ class Impuestos extends MY_Controller
 
         if ($my_order == false){
             $this->modelLog->warningLog('El peido no existe');
-            return($this->rest->_reponseHttp('El pedido no existe', 500));
+            $rest->_reponseHttp('El pedido no existe', 500);
         }elseif( $my_order['bg_isliquidated'] ==  1 ){
-            return($this->rest->_reponseHttp('pedido ya liquidado', 500));
+            $rest->_reponseHttp('pedido ya liquidado', 500);
         }
 
         $order['bg_isliquidated'] = 1;
         $order['fecha_liquidacion'] = date('Y-m-d', strtotime($order['fecha_liquidacion']));
+
         foreach ($data['liquidations_items'] as $item){
-            if($this->ModelOrderInvoiceDetail->update(
-                array (
-                    'detalle_pedido_factura' => $item['id_registro'],
-                    'ice_advalorem_pagado' => $item['ice_advalorem'],
-                    'ice_advalorem' => $item['ice_advalorem'],
-                    'ice_advalorem_unitario' => ($item['ice_advalorem']/$item['unidades']),
-                    'ice_unitario' => (($item['ice_advalorem']/$item['unidades']) + $item['ice_especifico_unitario']),
-                    'total_ice' => ($item['ice_advalorem'] + $item['ice_especifico']),
-                )
-                ) == false){
-                    $this->modelLog->warningLog('No es posible actualizar un item');
-                    return $rest->_responseHttp('No es posible actualizar un item', 500);
-                }
+            $item_new = array(
+              'detalle_pedido_factura' => $item['detalle_pedido_factura'],
+              'ice_advalorem_pagado' => $item['ice_advalorem'],
+              'ice_advalorem' => $item['ice_advalorem'],
+              'ice_advalorem_unitario' => ($item['ice_advalorem']/$item['unidades']),
+              'ice_especifico_unitario' => ($item['ice_especifico']/$item['unidades']),
+              'ice_unitario' => ($item['ice_advalorem'] + $item['ice_especifico'])/$item['unidades'],
+              'total_ice' => $item['ice_advalorem'] + $item['ice_especifico'],
+            );
+
+            if($this->ModelOrderInvoiceDetail->update($item_new) == false){
+                $this->modelLog->warningLog('No es posible actualizar un item');
+                return $rest->_responseHttp('No es posible actualizar un item', 500);
+            }
         }
 
         if($this->modelOrder->update($order)){
+            
+            #comprobamos que los valores insertados seab los correctos
+            $order_db = $this->modelOrder->get($order['nro_pedido']);
+            $invoice = $this->modelOrderInvoice->getByOrder($order['nro_pedido']);
+            $items_invoice = $this->ModelOrderInvoiceDetail->getCompleteDetail($invoice[0]['id_pedido_factura']);
+
+            $order_taxes = 0.0;
+            $total_taxes = 0.0;
+            foreach ($items_invoice as $ln) {
+                $total_taxes += $ln['ice_advalorem'];
+                $total_taxes += $ln['ice_especifico'];
+                $total_taxes += $ln['arancel_advalorem_pagar'];
+                $total_taxes += $ln['arancel_especifico_pagar'];
+                $total_taxes += $ln['fodinfa'];
+            }
+
+            $order_taxes += $order_db['arancel_advalorem_pagar_pagado'];
+            $order_taxes += $order_db['arancel_especifico_pagar_pagado'];
+            $order_taxes += $order_db['ice_advalorem_pagado'];
+            $order_taxes += $order_db['fodinfa_pagado'];
+            $order_taxes += $order_db['ice_especifico_pagado'];
+            
+            if (  abs($order_taxes - $total_taxes) > 2.0){
+                return $rest->_responseHttp('Lo totales de tributos no coinciden con el detalle', 500);
+            }
+
             return $rest->_responseHttp('Actualizado correctamente', 200);
         }
         return $rest->_responseHttp('No es posible actualizar el parcial', 500);
@@ -594,6 +621,7 @@ class Impuestos extends MY_Controller
     public function liquidarIvaParcial(){
         $this->load->library('Rest');
         $rest = new Rest();
+        $this->modelLog->susessLog('Loquidando parcial');
 
         if ($rest->_getRequestMethod() != 'POST'){
             print("acceso no permitido");
@@ -614,18 +642,23 @@ class Impuestos extends MY_Controller
 
         $parcial['bg_isliquidated'] = 1;
         $parcial['fecha_liquidacion'] = date('Y-m-d', strtotime($parcial['fecha_liquidacion']));
+        $parcial['ice_advalorem'] = $parcial['ice_advalorem_pagado'];
+        $parcial['ice_especifico'] = $parcial['ice_especifico_pagado'];
+
+
 
         foreach ($data['liquidations_items'] as $item){
-            if($this->modelInfoInvoiceDetail->update(
-            array (
-                'id_factura_informativa_detalle' => $item['id_registro'],
-                'ice_advalorem_pagado' => $item['ice_advalorem'],
-                'ice_advalorem' => $item['ice_advalorem'],
-                'ice_advalorem_unitario' => ($item['ice_advalorem']/$item['unidades']),
-                'ice_unitario' => (($item['ice_advalorem']/$item['unidades']) + $item['ice_especifico_unitario']),
-                'total_ice' => ($item['ice_advalorem'] + $item['ice_especifico']),
-            )
-            ) == false){
+            $item_new = array(
+              'id_factura_informativa_detalle' => $item['id_factura_informativa_detalle'],
+              'ice_advalorem_pagado' => $item['ice_advalorem'],
+              'ice_advalorem' => $item['ice_advalorem'],
+              'ice_advalorem_unitario' => ($item['ice_advalorem']/$item['unidades']),
+              'ice_especifico_unitario' => ($item['ice_especifico']/$item['unidades']),
+              'ice_unitario' => ($item['ice_advalorem']/$item['unidades']) + ($item['ice_especifico']/$item['unidades']),
+              'total_ice' => $item['ice_advalorem'] + $item['ice_especifico'],
+            );
+
+            if($this->modelInfoInvoiceDetail->update($item_new) == false){
                 $this->modelLog->warningLog('No es posible actualizar un item');
                 return $rest->_responseHttp('No es posible actualizar un item', 500);
             }
@@ -633,6 +666,32 @@ class Impuestos extends MY_Controller
 
         if($this->modelParcial->update($parcial)){
             return $rest->_responseHttp('Actualizado correctamente', 200);
+
+              #comprobamos que los valores insertados seab los correctos
+            # TODO Terminar el parcial
+            $partial_db = $this->modelPartial->getByOrder($order['nro_pedido']);
+            $invoice = $this->modelOrderInvoice->getByOrder($order['nro_pedido']);
+            $items_invoice = $this->ModelOrderInvoiceDetail->getCompleteDetail($invoice[0]['id_pedido_factura']);
+
+            $order_taxes = 0.0;
+            $total_taxes = 0.0;
+            foreach ($items_invoice as $ln) {
+                $total_taxes += $ln['ice_advalorem'];
+                $total_taxes += $ln['ice_especifico'];
+                $total_taxes += $ln['arancel_advalorem_pagar'];
+                $total_taxes += $ln['arancel_especifico_pagar'];
+                $total_taxes += $ln['fodinfa'];
+            }
+
+            $order_taxes += $order_db['arancel_advalorem_pagar_pagado'];
+            $order_taxes += $order_db['arancel_especifico_pagar_pagado'];
+            $order_taxes += $order_db['ice_advalorem_pagado'];
+            $order_taxes += $order_db['fodinfa_pagado'];
+            $order_taxes += $order_db['ice_especifico_pagado'];
+            
+            if (  abs($order_taxes - $total_taxes) > 2.0){
+                return $rest->_responseHttp('Lo totales de tributos no coinciden con el detalle', 500);
+            }
         }
             return $rest->_responseHttp('No es posible actualizar el parcial', 500);
      }

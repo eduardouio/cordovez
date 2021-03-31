@@ -83,10 +83,13 @@ var app = new Vue({
 					'complete_liquidation_data' : this.complete_liquidation_data,
 					'liquidations_items' : this.liquidations_items,
 						}).then(response => {
+						console.log('Pedido Actualizado correctamente');
+						console.dir(response);
        		    location.reload();
        		  }, response => {
-       			  console.dir(response)
-       			  alert('Se produjo un error, por favor recargue la página' + response)
+       			  console.dir(response);
+			      alert(`[Error Sistema] ${response.data}`);
+				  window.location.replace(`/cordovezapp/app/index.php/impuestos/reverso/pd/${this.complete_liquidation_data.nro_pedido}/`)
        		  });    		
       	}
     },

@@ -577,7 +577,7 @@ class Impuestos extends MY_Controller
 
         if($this->modelOrder->update($order)){
             
-            #comprobamos que los valores insertados seab los correctos
+            #comprobamos que los valores insertados sean los correctos
             $order_db = $this->modelOrder->get($order['nro_pedido']);
             $invoice = $this->modelOrderInvoice->getByOrder($order['nro_pedido']);
             $items_invoice = $this->ModelOrderInvoiceDetail->getCompleteDetail($invoice[0]['id_pedido_factura']);

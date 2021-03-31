@@ -599,6 +599,7 @@ class Impuestos extends MY_Controller
             $order_taxes += $order_db['ice_especifico_pagado'];
             
             if (  abs($order_taxes - $total_taxes) > 2.0){
+                $this->modelLog->erroLog('Los valores ingresados de la liqudiacion no corresponden');
                 return $rest->_responseHttp('Lo totales de tributos no coinciden con el detalle', 500);
             }
 
@@ -635,9 +636,9 @@ class Impuestos extends MY_Controller
 
         if ($my_parcial == false){
             $this->modelLog->warningLog('El parcial no existe');
-            return($this->rest->_reponseHttp('El parcial no existe', 500));
+            return($rest->_reponseHttp('El parcial no existe', 500));
         }elseif( $my_parcial['bg_isliquidated'] ==  1 ){
-            return($this->rest->_reponseHttp('parcial ya liquidado', 500));
+            return($rest->_reponseHttp('parcial ya liquidado', 500));
         }
 
         $parcial['bg_isliquidated'] = 1;
@@ -665,16 +666,14 @@ class Impuestos extends MY_Controller
         }
 
         if($this->modelParcial->update($parcial)){
-            return $rest->_responseHttp('Actualizado correctamente', 200);
+            #comprobamos que los valores insertados seab los correctos
+            $partial_db = $this->modelParcial->get($parcial['id_parcial']);
+            $invoice = $this->modelInfoInvoice->getByParcial($parcial['id_parcial']);
+            $items_invoice = $this->modelInfoInvoiceDetail->getByFacInformative($invoice[0]['id_factura_informativa']);
 
-              #comprobamos que los valores insertados seab los correctos
-            # TODO Terminar el parcial
-            $partial_db = $this->modelPartial->getByOrder($order['nro_pedido']);
-            $invoice = $this->modelOrderInvoice->getByOrder($order['nro_pedido']);
-            $items_invoice = $this->ModelOrderInvoiceDetail->getCompleteDetail($invoice[0]['id_pedido_factura']);
-
-            $order_taxes = 0.0;
+            $partial_taxes = 0.0;
             $total_taxes = 0.0;
+
             foreach ($items_invoice as $ln) {
                 $total_taxes += $ln['ice_advalorem'];
                 $total_taxes += $ln['ice_especifico'];
@@ -683,15 +682,16 @@ class Impuestos extends MY_Controller
                 $total_taxes += $ln['fodinfa'];
             }
 
-            $order_taxes += $order_db['arancel_advalorem_pagar_pagado'];
-            $order_taxes += $order_db['arancel_especifico_pagar_pagado'];
-            $order_taxes += $order_db['ice_advalorem_pagado'];
-            $order_taxes += $order_db['fodinfa_pagado'];
-            $order_taxes += $order_db['ice_especifico_pagado'];
+            $partial_taxes += $partial_db['arancel_advalorem_pagar_pagado'];
+            $partial_taxes += $partial_db['arancel_especifico_pagar_pagado'];
+            $partial_taxes += $partial_db['ice_advalorem_pagado'];
+            $partial_taxes += $partial_db['fodinfa_pagado'];
+            $partial_taxes += $partial_db['ice_especifico_pagado'];
             
-            if (  abs($order_taxes - $total_taxes) > 2.0){
+            if (  abs($partial_taxes - $total_taxes) > 2.0){
                 return $rest->_responseHttp('Lo totales de tributos no coinciden con el detalle', 500);
             }
+            return $rest->_responseHttp('Actualizado correctamente', 200);
         }
             return $rest->_responseHttp('No es posible actualizar el parcial', 500);
      }

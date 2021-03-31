@@ -83,13 +83,18 @@ var app = new Vue({
 					'complete_liquidation_data' : this.complete_liquidation_data,
 					'liquidations_items' : this.liquidations_items,
 						}).then(response => {
-						console.log('Pedido Actualizado correctamente');
-						console.dir(response);
-       		    location.reload();
+						console.log('Pedido Actualizado correctamente ${reponse}');
+						location.reload();
        		  }, response => {
-       			  console.dir(response);
 			      alert(`[Error Sistema] ${response.data}`);
+				  //TEST
 				  window.location.replace(`/cordovezapp/app/index.php/impuestos/reverso/pd/${this.complete_liquidation_data.nro_pedido}/`)
+				  //Cordovex
+				  //window.location.replace(`/cordovez/index.php/impuestos/reverso/pd/${this.complete_liquidation_data.nro_pedido}/`)
+				  //Imnac
+				  //window.location.replace(`/imnac/index.php/impuestos/reverso/pd/${this.complete_liquidation_data.nro_pedido}/`)
+				  //Vid
+				  //window.location.replace(`/vid/index.php/impuestos/reverso/pd/${this.complete_liquidation_data.nro_pedido}/`)
        		  });    		
       	}
     },

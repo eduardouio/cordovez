@@ -86,9 +86,18 @@ var app = new Vue({
 					'complete_liquidation_data' : this.complete_liquidation_data,
 					'liquidations_items' : this.liquidations_items,
 						}).then(response => {
-       		    location.reload();
+						console.log('Parcial actualizado correctamente');
+       		    		//location.reload();
        		  }, response => {
-       			  alert('Se produjo un error, por favor recargue la página');
+				alert(`[Error Sistema] ${response.data}`);
+				//TEST
+				window.location.replace(`/cordovezapp/app/index.php/impuestos/reverso/pc/${this.complete_liquidation_data.id_parcial}/`);
+				//Cordovex
+				//window.location.replace(`/cordovez/index.php/impuestos/reverso/pc/${this.complete_liquidation_data.id_parcial}/`);
+				//Imnac
+				//window.location.replace(`/imnac/index.php/impuestos/reverso/pc/${this.complete_liquidation_data.id_parcial}/`);
+				//Vid
+				//window.location.replace(`/vid/index.php/impuestos/reverso/pc/${this.complete_liquidation_data.id_parcial}/`);
        		  });
       	}
     },

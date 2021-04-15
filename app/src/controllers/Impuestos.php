@@ -171,7 +171,7 @@ class Impuestos extends MY_Controller
                 unset($item['id_registro']);
                 unset($item['cajas']);
                 unset($item['costo_caja']);
-                # unset($item['capacidad_ml']);
+                #unset($item['capacidad_ml']);
                 unset($item['indirectos']);
                 unset($item['ex_aduana_unitario_antes']);
                 unset($item['gasto_origen']);
@@ -328,7 +328,7 @@ class Impuestos extends MY_Controller
                 unset($item['id_registro']);
                 unset($item['cajas']);
                 unset($item['costo_caja']);
-                unset($item['capacidad_ml']);
+                #unset($item['capacidad_ml']);
                 unset($item['indirectos']);
                 unset($item['ex_aduana_unitario_antes']);
                 $this->ModelOrderInvoiceDetail->update($item);
@@ -576,7 +576,7 @@ class Impuestos extends MY_Controller
         }
 
         if($this->modelOrder->update($order)){
-            
+
             #comprobamos que los valores insertados sean los correctos
             $order_db = $this->modelOrder->get($order['nro_pedido']);
             $invoice = $this->modelOrderInvoice->getByOrder($order['nro_pedido']);
@@ -597,7 +597,7 @@ class Impuestos extends MY_Controller
             $order_taxes += $order_db['ice_advalorem_pagado'];
             $order_taxes += $order_db['fodinfa_pagado'];
             $order_taxes += $order_db['ice_especifico_pagado'];
-            
+
             if (  abs($order_taxes - $total_taxes) > 2.0){
                 $this->modelLog->erroLog('Los valores ingresados de la liqudiacion no corresponden');
                 return $rest->_responseHttp('Lo totales de tributos no coinciden con el detalle', 500);
@@ -687,7 +687,7 @@ class Impuestos extends MY_Controller
             $partial_taxes += $partial_db['ice_advalorem_pagado'];
             $partial_taxes += $partial_db['fodinfa_pagado'];
             $partial_taxes += $partial_db['ice_especifico_pagado'];
-            
+
             if (  abs($partial_taxes - $total_taxes) > 2.0){
                 return $rest->_responseHttp('Lo totales de tributos no coinciden con el detalle', 500);
             }

@@ -249,24 +249,17 @@ class Impuestos extends MY_Controller
                 $invoice_detail = $this->ModelOrderInvoiceDetail->get(
                     $dt['detalle_pedido_factura']
                     );
-
                 $product =  $this->modelProducts->get(
                     $invoice_detail['cod_contable']
                     );
-
                 $product['detalle_pedido_factura'] = $dt['detalle_pedido_factura'];
-
                 array_push($products_base, $product);
             }
         }
-
-
         $order_invoices = $this->modelOrderInvoice->getbyOrder(
             $parcial['nro_pedido']
             );
-
         $order_invoice_detail = [];
-
         foreach ($order_invoices as $item => $invoice){
             $detail = $this->ModelOrderInvoiceDetail->getByOrderInvoice(
                                                 $invoice['id_pedido_factura']

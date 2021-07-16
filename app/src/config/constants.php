@@ -103,7 +103,7 @@ $enterprises_data = array(
             'hostname' => '127.0.0.1',
             'username' => 'root',
             'password' => 'elian.2011',
-            'database' => 'imnacApp',
+            'database' => 'cordovezApp',
         ]
 
     ),

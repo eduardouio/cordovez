@@ -299,17 +299,13 @@ class Pedido extends MY_Controller
             return($this->listar());
         }
 
-        if($order['fecha_arribo']){
-            $order['fecha_arribo'] = date('d/m/Y', strtotime($order['fecha_arribo']));
-        }else{
-            $order['fecha_arribo'] = '';
-        }
-        if($order['fecha_ingreso_almacenera']){
-            $order['fecha_ingreso_almacenera'] = date('d/m/Y', strtotime($order['fecha_ingreso_almacenera']));
-        }else{
-            $order['fecha_ingreso_almacenera'] = '';
-        }
-
+        $order['fecha_arribo'] = $this->_convertDate($order['fecha_arribo'], 'toHTML');
+        $order['fecha_ingreso_almacenera'] = $this->_convertDate($order['fecha_ingreso_almacenera'], 'toHTML');
+        $order['fecha_salida_autorizada_puerto'] = $this->_convertDate($order['fecha_salida_autorizada_puerto'], 'toHTML');
+        $order['fecha_cierre'] = $this->_convertDate($order['fecha_cierre'], 'toHTML');
+        $order['fecha_embarque'] = $this->_convertDate($order['fecha_embarque'], 'toHTML');
+        $order['fecha_movilizacion_contenedor'] = $this->_convertDate($order['fecha_movilizacion_contenedor'], 'toHTML');
+        $order['fecha_llegada_cliente'] = $this->_convertDate($order['fecha_llegada_cliente'], 'toHTML');
 
         return($this->responseHttp([
             'edit_order'    => true,
@@ -324,6 +320,26 @@ class Pedido extends MY_Controller
         ]));
     }
 
+    /**
+     * Se encarga de convertir las fechas al formato de HTML y de regreso
+     */
+    private function _convertDate($date, $direction){
+        if($direction == 'toHTML'){
+            if($date){
+                return date('d/m/Y', strtotime($date));
+            }
+            return '';
+        }
+        
+        if ($direction == 'fromHTML'){
+            if($date){
+                return date('Y-m-d', strtotime(
+                    str_replace( '/','-', $date)
+                ));
+            }
+            return null;
+        }
+    }
 
     /**
      * Actualiza la fecha de entrada a la almacenera de un pedido
@@ -432,9 +448,6 @@ class Pedido extends MY_Controller
            'fail_delete' => True,
            'autorizado' => True,
        ]));
-
-
-
     }
 
     /**
@@ -451,23 +464,13 @@ class Pedido extends MY_Controller
         $pedido = $_POST;
         $pedido['id_user'] = $this->session->userdata('id_user');
 
-
-        if ($pedido['fecha_arribo'] == '' || $pedido['fecha_arribo'] == NULL) {
-            unset($pedido['fecha_arribo']);
-        } else {
-            $pedido['fecha_arribo'] = date( 'Y-m-d', strtotime(
-                    str_replace( '/','-', $pedido['fecha_arribo'])
-                    )
-                );
-        }
-
-        if($pedido['fecha_ingreso_almacenera'] == '' || $pedido['fecha_ingreso_almacenera'] == NULL) {
-            unset($pedido['fecha_ingreso_almacenera']);
-        }else{
-
-        }
-
-
+        $pedido['fecha_arribo'] = $this->_convertDate($pedido['fecha_arribo'], 'fromHTML');
+        $pedido['fecha_ingreso_almacenera'] = $this->_convertDate($pedido['fecha_ingreso_almacenera'], 'fromHTML');
+        $pedido['fecha_salida_autorizada_puerto'] = $this->_convertDate($pedido['fecha_salida_autorizada_puerto'], 'fromHTML');
+        $pedido['fecha_cierre'] = $this->_convertDate($pedido['fecha_cierre'], 'fromHTML');
+        $pedido['fecha_embarque'] = $this->_convertDate($pedido['fecha_embarque'], 'fromHTML');
+        $pedido['fecha_movilizacion_contenedor'] = $this->_convertDate($pedido['fecha_movilizacion_contenedor'], 'fromHTML');
+        $pedido['fecha_llegada_cliente'] = $this->_convertDate($pedido['fecha_llegada_cliente'], 'fromHTML');
 
         #coloca ceros al inicio del numero de pedido
         if (! isset($pedido['id_pedido'])) {

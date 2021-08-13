@@ -1,5 +1,20 @@
 <div id="alert-message"></div>
-<form method="post" action="{{rute_url}}pedido/validar">
+<span class="text-info">Datos Básicos de Pedido &nbsp;&nbsp;&nbsp;</span>
+{% if order.bg_closed %}
+<span class="label label-success">Pedido Activo</span>
+{% else %}
+<span class="label label-danger">Pedido Cerrado</span>
+&nbsp;&nbsp;&nbsp;
+<strong style="text-align: right    " class="text-warning">Ningun cambio se guardar&aacute;</strong>
+{% endif %}
+<hr style="padding:1px;margin:0px;" />
+{% if order.bg_closed %}
+            <form method="post" action="{{rute_url}}pedido/validar">
+{% else %}
+
+            <form method="post">
+{% endif %}
+
 	<div class="row">
 		{% if edit_order == true %}
 			<input type="hidden" name="id_pedido" value='{{ order.id_pedido }}'/>
@@ -20,9 +35,11 @@
 				<div class="form-group">
 					<label>Año</label>
 					<select class="form-control" name="y_pedido" required="required">
+						<option value="21">2021</option>
+						<option value="20">2010</option>
+						<option value="19">2019</option>
 						<option value="18">2018</option>
 						<option value="17">2017</option>
-						<option value="16">2016</option>
 					</select>
 				</div>
 			</div>
@@ -107,46 +124,122 @@
 
 
 	<div class="row">
+<div class="col-md-2">
+	<div class="form-group">
+		<label>Proveedor</label>
+<input class="form-control" type="text" name="proveedor" readonly="readonly" value="{{ order.proveedor }}">
+
+
+	</div>
+</div>
+
 		<div class="col-md-2">
 			<div class="form-group">
 				<label>Nro Matr&iacute;cula</label>
 				<input class="form-control" type="text" name="nro_matricula" value="{{ order.nro_matricula }}">
 			</div>
 		</div>
-		<div class="col-md-2">
-			<div class="form-group">
-				<label>BL</label>
-				<input type="text" name="nro_bl" value="{{ order.nro_bl }}" class="form-control">
-			</div>
-		</div>
-		<div class="col-md-2">
-			<label>Fecha Salida Puerto</label>
-			<div class="input-group">
-				<input type="text" class="form-control  fecha" id="fecha_salida_autorizada_puerto" name="fecha_salida_autorizada_puerto" value="{{ order.fecha_salida_autorizada_puerto }}" autocomplete="off">
-			</div>
-		</div>
-		<div class="col-md-2">
-			<label>Fecha Ingreso Almacenera</label>
-			<div class="input-group">
-				<input type="text" class="form-control  fecha" id="fecha_ingreso_almacenera" name="fecha_ingreso_almacenera" value="{{ order.fecha_ingreso_almacenera }}" autocomplete="off">
-			</div>
-		</div>
-		<div class="col-md-2">
-			<label>Fecha Ingreso Almacenera</label>
-			<div class="input-group">
-				<input type="text" class="form-control  fecha" id="fecha_ingreso_almacenera" name="fecha_ingreso_almacenera" value="{{ order.fecha_ingreso_almacenera }}" autocomplete="off">
-			</div>
-		</div>
+<div class="col-md-2">
+	<div class="form-group">
+		<label>CMB</label>
+<input type="text" name="volumen_carga_cbm" value="{{ order.volumen_carga_cbm }}" class="form-control">
+
 
 	</div>
+</div>
+
+		<div class="col-md-2">
+			<div class="form-group">
+				<label>HBL AWB</label>
+<input type="text" name="nro_hbl_awb" value="{{ order.nro_hbl_awb }}" class="form-control">
+
+
+			</div>
+		</div>
+<div class="col-md-2">
+	<div class="form-group">
+		<label>BL</label>
+		<input type="text" name="nro_bl" value="{{ order.nro_hbl_awb }}" class="form-control">
+	</div>
+</div>
+		
+		<div class="col-md-2">
+			<label>MRN</label>
+			<div class="input-group">
+                        <input type="text" class="form-control"  name="numero_de_carga_mrn" value="{{ order.numero_de_carga_mrn }}" autocomplete="off">
+			</div>
+		</div>
+	</div>
+<span class="text-info">Fechas</span>
+<hr style="padding:1px;margin:0px;"/>
+<div class="row">
+<div class="col-md-2">
+	<label>Embarque</label>
+	<div class="input-group">
+<input type="text" class="form-control  fecha" name="fecha_embarque" value="{{ order.fecha_embarque }}" autocomplete="off">
+
+	</div>
+</div>
+<div class="col-md-2">
+	<label>Salida Autorizada Prto</label>
+	<div class="input-group">
+		<input type="text" class="form-control  fecha" id="fecha_salida_autorizada_puerto" name="fecha_salida_autorizada_puerto" value="{{ order.fecha_salida_autorizada_puerto }}" autocomplete="off">
+	</div>
+</div>
+<div class="col-md-2">
+<label>Movilización</label>
+	<div class="input-group">
+<input type="text" class="form-control  fecha" name="fecha_movilizacion_contenedor" value="{{ order.fecha_movilizacion_contenedor }}" autocomplete="off">
+	</div>
+</div>
+<div class="col-md-2">
+	<label>Ingreso Almacenera</label>
+	<div class="input-group">
+		<input type="text" class="form-control  fecha" id="fecha_ingreso_almacenera" name="fecha_ingreso_almacenera" value="{{ order.fecha_ingreso_almacenera }}" autocomplete="off">
+	</div>
+</div>
+<div class="col-md-2">
+	<label>LLegada Cliente R10</label>
+	<div class="input-group">
+<input type="text" class="form-control  fecha" id="fecha_llegada_cliente" name="fecha_llegada_cliente" value="{{ order.fecha_llegada_cliente }}" autocomplete="off">
+	</div>
+</div>
+<div class="col-md-2">
+	<label>Cierre Pedido</label>
+	<div class="input-group">
+<input type="text" class="form-control  fecha" name="fecha_cierre" value="{{ order.fecha_cierre }}" autocomplete="off">
+	</div>
+</div>
+</div>
+<br/>
+<span class="text-info">Comentarios</span>
+<hr style="padding:1px;margin:0px;"/>
 
 	<div class="row">
 		<div class="col-md-4">
 			<div class="form-group">
 				<label>Comentarios</label>
-				<textarea rows="1" maxlength="250" class="form-control" id="comentarios" name="comentarios"></textarea>
+				<textarea rows="3" maxlength="250" class="form-control" id="" name="comentarios">{{order.comentarios}}</textarea>
 			</div>
 		</div>
+            <div class="col-md-4">
+                  <div class="form-group">
+                        <label>Observaciones</label>
+<textarea rows="3" maxlength="250" class="form-control" id="" name="observaciones">{{ order.observaciones }}</textarea>
+
+                  </div>
+            </div>
+<div class="col-md-4">
+	<div class="form-group">
+		<label>Notas Cierre</label>
+<textarea rows="3" maxlength="250" class="form-control" name="notas_cierre">{{ order.notas_cierre }}</textarea>
+
+
+
+	</div>
+</div>
+
+
 	</div>
 	<div class="row">
 		<div class="col-md-12">

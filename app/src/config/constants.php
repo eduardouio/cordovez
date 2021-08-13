@@ -98,7 +98,7 @@ $enterprises_data = array(
         'url_favicon' => 'http://179.49.60.158:8888/imnac/img/imnac.ico',
         'base_url' => 'http://127.0.0.1/cordovezapp/app/',
         'local_url' => 'http://127.0.0.1/cordovezapp/app/',
-        'sgi_url' => 'http://localhost:8000/',
+        'sgi_url' => 'http://179.49.60.158:5001/',
         'db' => [
             'hostname' => '127.0.0.1',
             'username' => 'root',
@@ -145,6 +145,26 @@ $enterprises_data = array(
             'username' => 'appCordovez',
             'password' => '\DBGfW<7;vBa5(LB',
             'database' => 'imnacApp',
+        ]
+    ),
+     'rev' => array (
+        'nombre' => 'REV ECUADOR S.A.',
+        'enterprise' => 'rev',
+        'ruc' => '1792233763001',
+        'direccion'=> '10 DE AGOSTO 9922 Y LEONARDO MURIALDO',
+        'telefono'=> '022409237',
+        'email' => 'evillota@vinesa.com.ec',
+        'path_log' => '/var/www/html/rev/src/logs/',
+        'url_logo' => 'http://179.49.60.158:8888/img/logo_rev.jpg',
+        'url_favicon' => 'http://179.49.60.158:8888/imnac/img/rev.ico',
+        'base_url' => 'http://179.49.60.158:8888/rev/',
+        'local_url' => 'http://localhost/cordovezapp/app/',
+        'sgi_url' => 'http://179.49.60.158:5004/',
+        'db' => [
+            'hostname' => '192.168.0.198',
+            'username' => 'appCordovez',
+            'password' => '\DBGfW<7;vBa5(LB',
+            'database' => 'revApp',
         ]
     ),
     'vid' => array(

@@ -304,6 +304,12 @@ class Pedido extends MY_Controller
         }else{
             $order['fecha_arribo'] = '';
         }
+        if($order['fecha_ingreso_almacenera']){
+            $order['fecha_ingreso_almacenera'] = date('d/m/Y', strtotime($order['fecha_ingreso_almacenera']));
+        }else{
+            $order['fecha_ingreso_almacenera'] = '';
+        }
+
 
         return($this->responseHttp([
             'edit_order'    => true,
@@ -445,6 +451,7 @@ class Pedido extends MY_Controller
         $pedido = $_POST;
         $pedido['id_user'] = $this->session->userdata('id_user');
 
+
         if ($pedido['fecha_arribo'] == '' || $pedido['fecha_arribo'] == NULL) {
             unset($pedido['fecha_arribo']);
         } else {
@@ -452,8 +459,15 @@ class Pedido extends MY_Controller
                     str_replace( '/','-', $pedido['fecha_arribo'])
                     )
                 );
+        }
+
+        if($pedido['fecha_ingreso_almacenera'] == '' || $pedido['fecha_ingreso_almacenera'] == NULL) {
+            unset($pedido['fecha_ingreso_almacenera']);
+        }else{
 
         }
+
+
 
         #coloca ceros al inicio del numero de pedido
         if (! isset($pedido['id_pedido'])) {

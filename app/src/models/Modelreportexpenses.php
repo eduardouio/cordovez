@@ -62,12 +62,9 @@ class Modelreportexpenses extends CI_Model
             FROM gastos_nacionalizacion";
 
         if ($id_parcial == 0) {
-            $sql .= " WHERE nro_pedido = '$nro_order'
-            AND concepto != 'ISD'";
+            $sql .= " WHERE nro_pedido = '$nro_order'";
         } else {
-            $sql .= " WHERE id_parcial = '$id_parcial'
-            AND concepto != 'ISD'
-            ";
+            $sql .= " WHERE id_parcial = '$id_parcial' ";
         }
         $sql .= ' ORDER BY fecha ASC';
         $result = $this->modelBase->runQuery($sql);

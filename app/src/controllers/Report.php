@@ -229,9 +229,8 @@ class Report extends MY_Controller{
         $pdf->AddPage();                  
         $pdf->writeHTML($html, true, false, true, false, '');
             
-        
         //Close and output PDF document
-        $pdf->Output('report.pdf', 'I');
+        $pdf->Output('report-'. $nro_pedido . '.pdf', 'I');
             }      
     
 }

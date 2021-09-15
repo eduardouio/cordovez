@@ -87,7 +87,7 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 #constanres definicion
 $enterprises_data = array(
     'test' => array (
-        'nombre' => 'AMBIENTE DE PRUEBAS TEST',
+        'nombre' => 'AMBIENTE DE PRUEBAS TEST LOCAL',
         'enterprise' => 'test',
         'ruc' => '1722919725001',
         'direccion'=> 'COLON 1133 Y AMAZONAS',
@@ -103,7 +103,7 @@ $enterprises_data = array(
             'hostname' => '127.0.0.1',
             'username' => 'root',
             'password' => 'elian.2011',
-            'database' => 'cordovezApp',
+            'database' => 't_imnacApp',
         ]
 
     ),

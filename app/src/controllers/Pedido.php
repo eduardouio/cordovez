@@ -298,7 +298,14 @@ class Pedido extends MY_Controller
         if($order == false){
             return($this->listar());
         }
-
+        $supplier = false;
+        $order_invoice = $this->modelOrderInvoice->getbyOrder($nroOrder);
+        if ($order_invoice){
+            $order_invoice = $order_invoice[0];
+            $supplier = $this->modelSupplier->getById(
+                $order_invoice['identificacion_proveedor']
+            );
+        }
         $order['fecha_arribo'] = $this->_convertDate($order['fecha_arribo'], 'toHTML');
         $order['fecha_ingreso_almacenera'] = $this->_convertDate($order['fecha_ingreso_almacenera'], 'toHTML');
         $order['fecha_salida_autorizada_puerto'] = $this->_convertDate($order['fecha_salida_autorizada_puerto'], 'toHTML');
@@ -306,10 +313,13 @@ class Pedido extends MY_Controller
         $order['fecha_embarque'] = $this->_convertDate($order['fecha_embarque'], 'toHTML');
         $order['fecha_movilizacion_contenedor'] = $this->_convertDate($order['fecha_movilizacion_contenedor'], 'toHTML');
         $order['fecha_llegada_cliente'] = $this->_convertDate($order['fecha_llegada_cliente'], 'toHTML');
-
+        
+        print_r($supplier);
         return($this->responseHttp([
-            'edit_order'    => true,
+            'edit_order' => true,
             'form' => true,
+            'supplier' => $supplier,
+            'order_invoice' => $order_invoice,
             'order' => $order,
             'title' => 'Editar Pedido ' . $order['nro_pedido'],
             'incoterms'     => json_encode($this->modelBase->get_table([

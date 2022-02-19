@@ -4,6 +4,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 $libraries_url = realpath(dirname(__FILE__));
 $libraries_url = str_replace('controllers', 'libraries/', $libraries_url);
 
+
 require_once ( $libraries_url . 'checkerOrder.php' );
 
 
@@ -23,9 +24,9 @@ class Gstinicial extends MY_Controller
 
     private $controller = "gastos_nacionalizacion";
     private $template = '/pages/pageGastoInicial.html';
-    private $securePercent = 0.0018;
-    private $labelCost = 0.13;
-    private $isdPer = 0.05;
+    private $securePercent = 0.0016;
+    private $labelCost = 0.035;
+    private $isdPer = 0.0475;
     private $modelBase;
     private $modelOrder;
     private $ModelOrderInvoiceDetail;
@@ -40,6 +41,8 @@ class Gstinicial extends MY_Controller
     private $modelPaidDetail;
     private $modelPaid;
     private $modelParcial;
+    private $modelRateExpenses;
+    private $ratesValues;
 
     /**
      * Constructor de la funcion
@@ -73,6 +76,7 @@ class Gstinicial extends MY_Controller
         $this->load->model('Modelpaid');
         $this->load->model('Modelpaiddetail');
         $this->load->model('Modelparcial');
+        $this->load->model('Modelrateexpenses');
         $this->modelParcial = new Modelparcial();
         $this->modelOrderInvoice= new Modelorderinvoice();
         $this->modelPaid = new Modelpaid();
@@ -87,6 +91,23 @@ class Gstinicial extends MY_Controller
         $this->modelLog = new Modellog();
         $this->ModelOrderInvoiceDetail = new Modelorderinvoicedetail();
         $this->modelPaidDetail = new Modelpaiddetail();
+        $this->modelRatesExpenses = new Modelrateexpenses();
+        $this->ratesValues = $this->modelRatesExpenses->getAll();
+
+        foreach($this->ratesValues as $item){
+            if ($item['concepto'] == 'ISD'){
+                $this->isdPer = $item['porcentaje'];
+            }
+
+            if ($item['concepto'] == 'ETIQUETAS FISCALES'){
+                $this->labelCost = $item['valor'];
+            }
+
+            if ($item['concepto'] == 'POLIZA SEGURO'){
+                $this->securePercent = $item['valor'];
+            }
+
+        }
     }
 
 
@@ -695,7 +716,7 @@ class Gstinicial extends MY_Controller
         }
 
         #aqui se calcula el ISD
-        $valor_isd = ($valor_base + $gasto_origen) * 0.05;
+        $valor_isd = ($valor_base + $gasto_origen) * $this->isdPer;
 
         $isd_expenses = $this->modelExpenses->getByName(
             $order['nro_pedido'],

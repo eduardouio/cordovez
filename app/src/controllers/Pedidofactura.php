@@ -25,6 +25,8 @@ class Pedidofactura extends MY_Controller
     private $modeOrderInvoice;
     private $modelExpenses;
     private $modeOrderInvoiceDetail;
+    private $modelRatesExpenses;
+    private $isdPer;
 
     /**
      * Constructor de la funcion
@@ -52,6 +54,7 @@ class Pedidofactura extends MY_Controller
         $this->load->model('modelorderinvoicedetail');
         $this->load->model('modellog');
         $this->load->model('Modelexpenses');
+        $this->load->model('Modelrateexpenses');
         $this->modelExpenses = new Modelexpenses();
         $this->modelOrder = new Modelorder();
         $this->modelUser = new Modeluser();
@@ -59,6 +62,15 @@ class Pedidofactura extends MY_Controller
         $this->modeOrderInvoice = new Modelorderinvoice();
         $this->modeOrderInvoiceDetail = new Modelorderinvoicedetail();
         $this->modelLog = new Modellog();
+        $this->modelRatesExpenses = new Modelrateexpenses();
+
+        $ratesValues = $this->modelRatesExpenses->getAll();
+
+        foreach ($ratesValues as $item){
+            if($item['concepto'] == 'ISD'){
+                $this->isdPer = $item['porcentaje'];
+            }
+        }
     }
 
     /**
@@ -336,7 +348,7 @@ class Pedidofactura extends MY_Controller
         }
 
         #aqui se calcula el ISD
-        $valor_isd = ($valor_base + $gasto_origen) * 0.05;
+        $valor_isd = ($valor_base + $gasto_origen) * $this->isdPer;
 
         $isd_expenses = $this->modelExpenses->getByName(
                 $order['nro_pedido'],

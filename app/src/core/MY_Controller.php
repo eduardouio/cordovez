@@ -99,7 +99,7 @@ class MY_Controller extends CI_Controller
      * @return array
      */
     public function _formatData(array $data): array 
-    {
+    { 
         $formatted_data = [];
         $headder = [];
         $first = True;
@@ -194,8 +194,7 @@ class MY_Controller extends CI_Controller
         
         print '<h3 style="color:#565420"> Error sesion no iniciada :( </h3>';
         print '<br />';
-        print '<a href="' . base_url(). '"><button><h3>Formulario Login</h3></button></a>';
-        return ( header('Location: ' . base_url() . $target[$page]));      
+        print '<a href="' . base_url(). '"><button><h3>Formulario Login</h3></button></a>';      
         exit(0);
     }
 }

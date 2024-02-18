@@ -276,7 +276,6 @@ class Modelexpenses extends CI_Model
                 'id_gastos_nacionalizacion' => $idExpense,
             ],
         ]);
-
         if(gettype($expense) == 'array' && count($expense) > 0){
             if($expense[0]['nro_pedido'] == '000-00'){
               $this->load->model('Modelparcial');

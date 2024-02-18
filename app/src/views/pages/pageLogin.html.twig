@@ -7,20 +7,13 @@
       <meta name="description" content="">
       <meta name="author" content="">
       <title>{{title}}</title>
-      <!-- Bootstrap Core CSS -->
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
-      <!-- MetisMenu CSS -->
-      <link href="{{base_url}}vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
-      <!-- Custom Fonts -->
-      <link href="{{base_url}}vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-      <!-- Custom Styles -->
-      <link href="{{base_url}}css/cordovez.css" rel="stylesheet" type="text/css">
-      <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-      <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-      <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-      <![endif]-->
+  
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" type="text/css" href="https://sts-ndt.com/cordovez/statics/bootstrap462/css/bootstrap.min.css" >
+    <link rel="stylesheet" type="text/css" href="https://sts-ndt.com/cordovez/statics/bootstrap462/css/yeti.min.css" >
+    <!-- Custom Fonts -->
+        <link href="{{base_url}}css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <!-- Custom Styles --> 
       <style type="text/css">
          body { 
          background: url('{{base_url}}/img/appbackground.jpg') no-repeat center center fixed; 
@@ -74,21 +67,23 @@
             <div class="text-danger">
                {{message}}
             </div>
-            <div class="col-md-4 col-md-offset-2">
+            <div class="col-md-5 border rounded">
                <div class="panel panel-default">
-                  <div class="panel-heading">
+                  <div class="panel-heading text-center">
+                  <h1 class="text-primary">
                      <span class="glyphicon glyphicon-lock"></span> Inicio de Sesion
+                  </h1>
                   </div>
                   <div class="panel-body">
                      <form 
                         class="form-horizontal" 
                         role="form" 
                         method="post" 
-                        action="{{actionFrm}}">
+                        action="{{ actionFrm }}">
                         <div class="form-group">
-                           <label for="userName" class="col-sm-3 control-label">
+                           <label for="userName" class="control-label">
                            Usuario</label>
-                           <div class="col-sm-9">
+                           <div class="col-sm-12">
                               <input 
                                  type="text" 
                                  class="form-control" 
@@ -103,7 +98,7 @@
                         <div class="form-group">
                            <label for="inputPassword3" class="col-sm-3 control-label">
                            Contraseña</label>
-                           <div class="col-sm-9">
+                           <div class="col-sm-12">
                               <input 
                                  type="password" 
                                  class="form-control" 
@@ -126,10 +121,13 @@
                         <div class="form-group last">
                            <div class="col-sm-offset-3 col-sm-9">
                               <button
-                                 type="submit">
+                                 type="submit"
+                                 class="btn btn-primary"
+                                 >
                                  Iniciar Sesión
                               </button>
                               <button 
+                                 class="btn btn-outline-primary"
                                  type="reset" >
                               Limpiar</button>
                            </div>
@@ -192,14 +190,5 @@
          return msg;
          }
       </script>
-      <!-- NG APP cordovezApp-->
-      <!-- jQuery -->
-      <script src="{{base_url}}vendor/jquery/jquery.min.js"></script>
-      <!-- Bootstrap Core JavaScript -->
-      <script src="{{base_url}}vendor/bootstrap/js/bootstrap.min.js"></script>
-      <!-- Metis Menu Plugin JavaScript -->
-      <script src="{{base_url}}vendor/metisMenu/metisMenu.min.js"></script>
-      <!-- Custom Theme JavaScript -->
-      <script src="{{base_url}}js/sb-admin-2.js"></script>
 </body>
 </html>

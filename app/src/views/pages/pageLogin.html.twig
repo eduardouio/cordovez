@@ -10,9 +10,7 @@
   
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" type="text/css" href="https://sts-ndt.com/cordovez/statics/bootstrap462/css/bootstrap.min.css" >
-    <link rel="stylesheet" type="text/css" href="https://sts-ndt.com/cordovez/statics/bootstrap462/css/yeti.min.css" >
-    <!-- Custom Fonts -->
-        <link href="{{base_url}}css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="https://sts-ndt.com/cordovez/statics/bootstrap341/css/yeti.min.css" >
     <!-- Custom Styles --> 
       <style type="text/css">
          body { 
@@ -67,12 +65,11 @@
             <div class="text-danger">
                {{message}}
             </div>
-            <div class="col-md-5 border rounded">
+            <div class="col-md-5 border rounded bg-dark">
                <div class="panel panel-default">
                   <div class="panel-heading text-center">
-                  <h1 class="text-primary">
-                     <span class="glyphicon glyphicon-lock"></span> Inicio de Sesion
-                  </h1>
+                  <h4 class="text-primary"> Inicio de Sesión
+                  </h4>
                   </div>
                   <div class="panel-body">
                      <form 
@@ -81,7 +78,7 @@
                         method="post" 
                         action="{{ actionFrm }}">
                         <div class="form-group">
-                           <label for="userName" class="control-label">
+                           <label for="userName" class="col-sm-1 control-label">
                            Usuario</label>
                            <div class="col-sm-12">
                               <input 
@@ -96,7 +93,7 @@
                            </div>
                         </div>
                         <div class="form-group">
-                           <label for="inputPassword3" class="col-sm-3 control-label">
+                           <label for="inputPassword3" class="col-sm-2 control-label">
                            Contraseña</label>
                            <div class="col-sm-12">
                               <input 

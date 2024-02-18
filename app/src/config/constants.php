@@ -84,6 +84,12 @@ defined('EXIT_DATABASE')       OR define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
+
+# archivo de estaticos, enlaces
+
+
+
+
 #constanres definicion
 $enterprises_data = array(
     'test' => array (
@@ -93,17 +99,17 @@ $enterprises_data = array(
         'direccion'=> 'COLON 1133 Y AMAZONAS',
         'telefono'=> '022405911',
         'email' => 'eduardouio7@gmail.com',
-        'path_log' => '/var/www/html/cordovezapp/app/src/logs/',
-        'url_logo' => 'http://179.49.60.158:8888/img/logo_test.png',
-        'url_favicon' => 'http://179.49.60.158:8888/imnac/img/imnac.ico',
-        'base_url' => 'http://127.0.0.1/cordovezapp/app/',
-        'local_url' => 'http://127.0.0.1/cordovezapp/app/',
-        'sgi_url' => 'http://179.49.60.158:5001/',
+        'path_log' => '/var/www/html/src/logs/',
+        'url_logo' => 'https://sts-ndt.com/cordovez/statics/img/logo_test.png',
+        'url_favicon' => 'https://sts-ndt.com/cordovez/statics/img/imnac.ico',
+        'base_url' => 'http://localhost/',
+        'local_url' => 'http://localhost/',
+        'sgi_url' => 'http://192.168.0.198:5001/',
         'db' => [
-            'hostname' => '127.0.0.1',
-            'username' => 'root',
-            'password' => 'elian.2011',
-            'database' => 'test_imnacApp',
+            'hostname' => 'host.docker.internal',
+            'username' => 'cordovez',
+            'password' => 'E##$%%lian.2011',
+            'database' => 'appCordovez',
         ]
 
     ),
@@ -115,11 +121,11 @@ $enterprises_data = array(
         'telefono' => '022405911',
         'email'  => 'sgi@cordovez.com.ec',
         'path_log' => '/var/www/html/cordovez/src/logs/',
-        'url_logo' => 'http://179.49.60.158:8888/img/logo_cordovez.jpg',
-        'url_favicon' => 'http://179.49.60.158:8888/cordovez/img/cordovez.ico',
-        'base_url' => 'http://179.49.60.158:8888/cordovez/',
-        'local_url' => 'http://localhost/cordovez/app/',
-        'sgi_url' => 'http://179.49.60.158:5001/',
+        'url_logo' => 'https://sts-ndt.com/cordovez/statics/img/logo_cordovez.jpg',
+        'url_favicon' => 'https://sts-ndt.com/cordovez/statics/img/cordovez.ico',
+        'base_url' => 'http://192.168.0.198:8888/cordovez/',
+        'local_url' => 'http://192.168.0.198/cordovez/app/',
+        'sgi_url' => 'http://192.168.0.198:5001/',
         'db' => [
             'hostname' => '192.168.0.198',
             'username' => 'appCordovez',
@@ -135,11 +141,11 @@ $enterprises_data = array(
         'telefono'=> '022405911',
         'email' => 'sgi@imnac.com.ec',
         'path_log' => '/var/www/html/imnac/src/logs/',
-        'url_logo' => 'http://179.49.60.158:8888/img/logo_imnac.jpg',
-        'url_favicon' => 'http://179.49.60.158:8888/imnac/img/imnac.ico',
-        'base_url' => 'http://179.49.60.158:8888/imnac/',
-        'local_url' => 'http://localhost/cordovezapp/app/',
-        'sgi_url' => 'http://179.49.60.158:5002/',
+        'url_logo' => 'https://sts-ndt.com/cordovez/statics/img/logo_imnac.jpg',
+        'url_favicon' => 'https://sts-ndt.com/cordovez/statics/img/imnac.ico',
+        'base_url' => 'http://192.168.0.198:8888/imnac/',
+        'local_url' => 'http://192.168.0.198/imnac/app/',
+        'sgi_url' => 'http://192.168.0.198:5002/',
         'db' => [
             'hostname' => '192.168.0.198',
             'username' => 'appCordovez',
@@ -155,11 +161,11 @@ $enterprises_data = array(
         'telefono'=> '022409237',
         'email' => 'evillota@vinesa.com.ec',
         'path_log' => '/var/www/html/rev/src/logs/',
-        'url_logo' => 'http://179.49.60.158:8888/img/logo_rev.jpg',
-        'url_favicon' => 'http://179.49.60.158:8888/imnac/img/rev.ico',
-        'base_url' => 'http://179.49.60.158:8888/rev/',
-        'local_url' => 'http://localhost/cordovezapp/app/',
-        'sgi_url' => 'http://179.49.60.158:5004/',
+        'url_logo' => 'https://sts-ndt.com/cordovez/statics/img/logo_rev.jpg',
+        'url_favicon' => 'https://sts-ndt.com/cordovez/statics/img/rev.ico',
+        'base_url' => 'http://192.168.0.198:8888/rev/',
+        'local_url' => 'http://192.168.0.198/rev/app/',
+        'sgi_url' => 'http://192.168.0.198:5004/',
         'db' => [
             'hostname' => '192.168.0.198',
             'username' => 'appCordovez',
@@ -175,12 +181,12 @@ $enterprises_data = array(
         'telefono'=> '022405911',
         'email' => 'sgi@vidinternacional.com.ec',
         'path_log' => '/var/www/html/vid/src/logs/',
-        'url_logo' => 'http://179.49.60.158:8888/img/logo_vid.jpg',
-        'url_favicon' => 'http://179.49.60.158:8888/vid/img/vid.ico',
-        'base_url' => 'http://179.49.60.158:8888/vid/',
-        'local_url' => 'http://localhost/cordovezapp/app/',
-        'local_url' => 'http://localhost/cordovezapp/app/',
-        'sgi_url' => 'http://179.49.60.158:5003/',
+        'url_logo' => 'https://sts-ndt.com/cordovez/statics/img/logo_vid.jpg',
+        'url_favicon' => 'https://sts-ndt.com/cordovez/statics/img/vid.ico',
+        'base_url' => 'http://192.168.0.198:8888/vid/',
+        'local_url' => 'http://192.168.0.198/vid/app/',
+        'local_url' => 'http://192.168.0.198/vid/app/',
+        'sgi_url' => 'http://192.168.0.198:5003/',
         'db' => [
             'hostname' => '192.168.0.198',
             'username' => 'appCordovez',

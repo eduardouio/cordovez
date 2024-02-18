@@ -159,9 +159,6 @@ class Modelpaid extends CI_Model{
             OR  pr.nombre like '{{param}}%'
             OR  pr.nombre like '%{{param}}%'
             OR  dc.fecha_emision = '{{param}}'
-            OR  dc.fecha_emision LIKE '%{{param}}'
-            OR  dc.fecha_emision LIKE '{{param}}%'
-            OR  dc.fecha_emision LIKE '%{{param}}%'
             ORDER BY
             dc.bg_closed ASC,
             pr.nombre ASC,

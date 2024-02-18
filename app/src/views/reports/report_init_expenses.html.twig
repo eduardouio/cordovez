@@ -1,0 +1,144 @@
+<span style="font-size: 14px;text-align: center"> <strong> Reporte {{  title_report }} Pedido {{order.nro_pedido}} </strong> </span>
+<br />
+<div style="font-size: 12px">
+<br />
+Fecha Impresion: <span style="color: #333; font-weight: bold;"> {{ fecha }} </span>
+<br />
+Impreso Por:  <span style="color: #333; font-weight: bold;"> {{ user.nombres }} </span>
+<br />
+Pedido: <span style="color: #333; font-weight: bold;"> {{ order.nro_pedido }} </span>
+<br />
+Regimen: <span style="color: #333; font-weight: bold;"> {{ order.regimen }}  [<strong>{{ order.incoterm }}</strong>]</span>
+<br />
+Refrendo: <span style="color: #333; font-weight: bold;"> {{ order.nro_refrendo }}</span>
+</div>
+<br />
+<table border="1">
+<tr style="background-color: #eeeeee;">
+	<td style="text-align: center; width: 20;"><strong>#</strong></td>
+	<td style="text-align: center; width: 250;"><strong>Concepto</strong></td>
+	<td style="text-align: center; width: 100;"><strong>Proveedor</strong></td>
+	<td style="text-align: center; width: 60;"><strong>Nro Facturas</strong></td>
+	<td style="text-align: center; width: 60;"><strong>F. Emisión</strong></td>
+	<td style="text-align: center; width: 55;"><strong>Valor</strong></td>
+	<td style="text-align: center; width: 55;"><strong>Valor Fac</strong></td>
+	<td style="text-align: center; width: 55;"><strong>Provisión</strong></td>
+</tr>
+{% set sum_provision = 0 %}
+{% set sum_valor_facturas = 0 %}
+{% set sum_valor_saldo = 0 %}
+
+{% for expense in data %}
+{% set sum_provision = sum_provision +  expense.valor_provisionado %}
+{% set sum_valor_facturas = sum_valor_facturas + expense.sums %}
+{% set sum_valor_saldo = sum_valor_saldo + expense.saldo %}
+<tr>
+<td style="text-align: center; width: 20; height: 22px;">{{ loop.index }}</td>
+<td style="text-align: left; width: 250;">{{ expense.concepto }}</td>
+<td style="text-align: left; width: 100;">{% for supplier in expense.supplier %} {{ supplier }} {% endfor %}</td>
+<td style="text-align: center; width: 60;">{% for invoice in expense.num_invoices %} {{ invoice }} {% endfor %}</td>
+<td style="text-align: center; width: 60;">{% for date in expense.fecha_emision %} {{ date | date('d/m/Y')}} {% endfor %}</td>
+<td style="text-align: rigth; width: 55;">{{ expense.valor_provisionado | number_format(2,'.','') }}</td>
+<td style="text-align: rigth; width: 55;">{{ expense.sums | number_format(2,'.','')}}</td>
+<td style="text-align: rigth; width: 55;">{{ expense.saldo | number_format(2,'.','') }}</td>
+</tr>
+{% endfor %}
+<tr style="background-color: #eeeeee;">
+<td colspan="5" style="text-align: rigth;font-weight: bold;height:30px;">SUMAS:&nbsp; </td>
+<td style="text-align: rigth;font-weight: bold;"> <strong>$ {{ sum_provision | number_format(2,'.','') }}</strong></td>
+<td style="text-align: rigth;font-weight: bold;"> <strong>$ {{ sum_valor_facturas | number_format(2,'.','') }}</strong></td>
+<td style="text-align: rigth;font-weight: bold;"> <strong>$ {{ sum_valor_saldo | number_format(2,'.','') }}</strong></td>
+</tr>
+</table>
+<br />
+<br />
+{% if regimen == 10 or id_parcial > 0 %}
+<span style="font-size: 12px"> <strong>Liquidación SENAE Pagado el {{ taxes.fecha_pago }} </strong> </span>
+<br />
+<table border="1">
+<tr style="background-color: #eeeeee;">
+	<td style="text-align: center; width: 94;"><strong>Nro Liquidación</strong></td>
+	<td style="text-align: center; width: 80;"><strong>Fodinfa</strong></td>
+	<td style="text-align: center; width: 80;"><strong>A. Advalorem</strong></td>
+	<td style="text-align: center; width: 80;"><strong>A. Especifico</strong></td>
+	<td style="text-align: center; width: 80;"><strong>ICE Advalorem</strong></td>
+	<td style="text-align: center; width: 80;"><strong>ICE Especifico</strong></td>
+	<td style="text-align: center; width: 80;"><strong>IVA</strong></td>
+	<td style="text-align: center; width: 80;"><strong>Total</strong></td>
+</tr>
+<tr>
+	<td style="text-align: rigth; width: 94;">{{ taxes.nro_liquidacion }}</td>
+	<td style="text-align: rigth; width: 80;">{{ taxes.fodinfa | number_format(2,'.','') }}</td>
+	<td style="text-align: rigth; width: 80;">{{ taxes.arancel_advalorem | number_format(2,'.','') }}</td>
+	<td style="text-align: rigth; width: 80;">{{ taxes.arancel_especifico | number_format(2,'.','') }}</td>
+	<td style="text-align: rigth; width: 80;">{{ taxes.ice_advalorem | number_format(2,'.','') }}</td>
+	<td style="text-align: rigth; width: 80;">{{ taxes.ice_especifico | number_format(2,'.','') }}</td>
+	<td style="text-align: rigth; width: 80;">{{ taxes.iva | number_format(2,'.','') }}</td>
+	<td style="text-align: rigth; width: 80;"> <strong>${{ taxes.total | number_format(2,'.','') }}</strong></td>
+</tr>
+</table>
+<br />
+<br />
+<span style="font-size: 12px"> <strong>Detalle de Facturas Producto </strong> </span>
+<br />
+<table border="1">
+<tr style="background-color: #eeeeee;">
+	<td style="text-align: center; width: 75;"><strong>Nro Factura</strong></td>
+	<td style="text-align: center; width: 199;"><strong>Proveedor</strong></td>
+	<td style="text-align: center; width: 80;"><strong>F. Emisión</strong></td>
+	<td style="text-align: center; width: 80;"><strong>F. Vencimiento</strong></td>
+	<td style="text-align: center; width: 60;"><strong>Moneda</strong></td>
+	<td style="text-align: center; width: 80;"><strong>TC T</strong></td>
+	<td style="text-align: center; width: 80;"><strong>Valor T</strong></td>
+</tr>
+<tr>
+	<td style="text-align: rigth; width: 75;">{{ invoice.nro_factura }}</td>
+	<td style="text-align: rigth; width: 199;">{{ invoice.proveedor }}</td>
+	{% if invoice.fecha_emision != null %}
+	<td style="text-align: rigth; width: 80;">{{ invoice.fecha_emision | date('d/m/Y') }}</td>
+	{% else %}
+	<td style="text-align: rigth; width: 80;">--/--/----</td>
+	{% endif %}
+	{% if invoice.fecha_vencimiento != null %}
+	<td style="text-align: rigth; width: 80;">{{ invoice.fecha_vencimiento | date('d/m/Y') }}</td>
+	{% else %}
+	<td style="text-align: rigth; width: 80;">--/--/----</td>
+	{% endif %}
+	
+	<td style="text-align: rigth; width: 60;">{{ invoice.moneda }}</td>
+	<td style="text-align: rigth; width: 80;">{{ invoice.tipo_cambio | number_format(5,'.','') }}</td>
+	<td style="text-align: rigth; width: 80;">{{ invoice.valor | number_format(2,'.','') }}</td>	
+</tr>
+</table>
+{% endif %}
+<br />
+<br />
+<br />
+{%  if id_parcial > 0 %}
+<div style="font-size: 12px">
+	El Almacenaje del Parcial Vence el : 
+	<strong>
+	{% if fecha_vencimiento_ultimo_almacenaje  == null or fecha_vencimiento_ultimo_almacenaje == '' %}
+	No registra almacenaje revise el parcial anterior
+	{%else  %}
+	{{ fecha_vencimiento_ultimo_almacenaje  | date('d/m/Y') }}
+	{% endif %}
+	</strong>
+	
+</div>
+{% endif %}
+<br />
+<br />
+<br />
+<table border="1">
+<tr>
+<td style="text-align: center; font-weight: bold">Recibido Por:</td>
+<td style="text-align: center; font-weight: bold">Entregado Por:</td>
+<td style="text-align: center; font-weight: bold">Fecha Entrega: </td>
+</tr>
+<tr>
+<td style="height: 50px;"></td>
+<td></td>
+<td></td>
+</tr>
+</table>

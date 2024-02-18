@@ -1,0 +1,2035 @@
+{
+	"_type": "export",
+	"__export_format": 3,
+	"__export_date": "2017-09-17T03:17:38.621Z",
+	"__export_source": "insomnia.desktop.app:v5.7.14",
+	"resources": [
+		{
+			"_id": "wrk_0e2749473bb54f5495526ca8898cfa90",
+			"parentId": null,
+			"modified": 1504894923603,
+			"created": 1504894923603,
+			"name": "Insomnia",
+			"description": "",
+			"certificates": [],
+			"_type": "workspace"
+		},
+		{
+			"_id": "env_f9c89eebfbea43ccb89c73da802d339c",
+			"parentId": "wrk_0e2749473bb54f5495526ca8898cfa90",
+			"modified": 1504895082437,
+			"created": 1504894939234,
+			"name": "Pedido",
+			"data": {},
+			"color": null,
+			"isPrivate": false,
+			"_type": "environment"
+		},
+		{
+			"_id": "jar_e747e4f1484a4925a17320317eb872c5",
+			"parentId": "wrk_0e2749473bb54f5495526ca8898cfa90",
+			"modified": 1505617522869,
+			"created": 1504894982825,
+			"name": "Default Jar",
+			"cookies": [
+				{
+					"creation": "2017-09-14T00:11:25.053Z",
+					"key": "foo",
+					"value": "bar",
+					"domain": "a",
+					"path": "/de"
+				},
+				{
+					"creation": "2017-09-14T00:11:22.423Z",
+					"key": "foo",
+					"value": "bar",
+					"domain": "a",
+					"path": "/"
+				},
+				{
+					"creation": "2017-09-11T00:36:22.595Z",
+					"key": "CKappCordovez",
+					"value": "fucla1rd0bmqno213p20not63kimlosn",
+					"expires": "2017-09-17T05:05:22.000Z",
+					"maxAge": 7200,
+					"path": "/",
+					"httpOnly": true,
+					"hostOnly": true,
+					"domain": "localhost",
+					"lastAccessed": "2017-09-17T03:05:22.868Z"
+				}
+			],
+			"_type": "cookie_jar"
+		},
+		{
+			"_id": "fld_76ba50471002464b8298a7a0fcb5ef7f",
+			"parentId": "wrk_0e2749473bb54f5495526ca8898cfa90",
+			"modified": 1504972684213,
+			"created": 1504972684213,
+			"name": "AppImportaciones",
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1504972684214,
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_8bcf3ba5c7b741bb91be9d711dea5def",
+			"parentId": "fld_76ba50471002464b8298a7a0fcb5ef7f",
+			"modified": 1504972698898,
+			"created": 1504972690278,
+			"name": "SPA Pedidos",
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1504972690278,
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_b50e25c1b89e4d39a0819d69c44254d2",
+			"parentId": "fld_76ba50471002464b8298a7a0fcb5ef7f",
+			"modified": 1505022608189,
+			"created": 1505022605623,
+			"name": "SPA Pedidos Facturas",
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1504972690228,
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_9c03edef1695485b80fcf38061aef211",
+			"parentId": "fld_76ba50471002464b8298a7a0fcb5ef7f",
+			"modified": 1505054127568,
+			"created": 1505054123131,
+			"name": "SPA Login",
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1504972690328,
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_4eee4ba725684eeeb5d3528f13318ddc",
+			"parentId": "fld_76ba50471002464b8298a7a0fcb5ef7f",
+			"modified": 1505109176715,
+			"created": 1505109173413,
+			"name": "SPA Detalle Pedidos",
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1504972690178,
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_c9b7262e5de448d3a1cc0cada0caa6e6",
+			"parentId": "fld_76ba50471002464b8298a7a0fcb5ef7f",
+			"modified": 1505140308182,
+			"created": 1505140304881,
+			"name": "SPA Productos",
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1504972690128,
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_9e10a433a00244a9ae2534dbd33bb384",
+			"parentId": "fld_76ba50471002464b8298a7a0fcb5ef7f",
+			"modified": 1505185765478,
+			"created": 1505185755812,
+			"name": "SPA Proveedor",
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1504972690078,
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_61b02d089b934bb18d08e2cccb689c5f",
+			"parentId": "fld_76ba50471002464b8298a7a0fcb5ef7f",
+			"modified": 1505267911728,
+			"created": 1505267908241,
+			"name": "SPA Factura informativa",
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1504972690028,
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_518c679d8f1743adb8470fe229a36701",
+			"parentId": "fld_76ba50471002464b8298a7a0fcb5ef7f",
+			"modified": 1505274557647,
+			"created": 1505274531192,
+			"name": "SPA Gastos Iniciales R70",
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1504972687121,
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_8d02d23ea85b4ca8a587a9b4b20617e8",
+			"parentId": "fld_76ba50471002464b8298a7a0fcb5ef7f",
+			"modified": 1505276134235,
+			"created": 1505276130051,
+			"name": "SPA FActuras Pagos PEdidos GI R70",
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1504972687071,
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_f56c2b4eb0e243a1acef566b64c3bf60",
+			"parentId": "fld_76ba50471002464b8298a7a0fcb5ef7f",
+			"modified": 1505552577942,
+			"created": 1505329372892,
+			"name": "SPA Impuestos Nacionalizacion",
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1504972687021,
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_8fbe8a1c09d74ebc9e04246f5ac19d74",
+			"parentId": "fld_76ba50471002464b8298a7a0fcb5ef7f",
+			"modified": 1505347111349,
+			"created": 1505347108783,
+			"name": "SPA Nacionalizacion",
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1504972687046,
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_9172f93cc32244b195b6d36c52766078",
+			"parentId": "fld_76ba50471002464b8298a7a0fcb5ef7f",
+			"modified": 1505539591860,
+			"created": 1505538373806,
+			"name": "SPA Liquidacion Impuestos",
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1505538373806,
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_8b82af853a384fc590324efefaf0b745",
+			"parentId": "fld_76ba50471002464b8298a7a0fcb5ef7f",
+			"modified": 1505546037812,
+			"created": 1505546037812,
+			"name": "SPA Facturas Gastos Nacionalizacion",
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1505546037812,
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_4dea037a6a39472eb6d259cb449f5284",
+			"parentId": "fld_76ba50471002464b8298a7a0fcb5ef7f",
+			"modified": 1505546379781,
+			"created": 1505546360315,
+			"name": "SPA Gastos Nacionalizacion ",
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1504972687033.5,
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_fd9810573308481e9f8f753b03f36d1f",
+			"parentId": "fld_76ba50471002464b8298a7a0fcb5ef7f",
+			"modified": 1505614794385,
+			"created": 1505552612519,
+			"name": "SPA Facturas Pagos Pedidos",
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1505552767894,
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_43c9a462d9c84d85a9a6c9f23ddf4aa9",
+			"parentId": "fld_76ba50471002464b8298a7a0fcb5ef7f",
+			"modified": 1505552697221,
+			"created": 1505552697221,
+			"name": "SPA Factura Informativa Detalle",
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1505552697221,
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_4725dc7bf94e4cd996a4a0bace9e831b",
+			"parentId": "fld_76ba50471002464b8298a7a0fcb5ef7f",
+			"modified": 1505552767844,
+			"created": 1505552767844,
+			"name": "SPA Factura Pagos",
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1505552767844,
+			"_type": "request_group"
+		},
+		{
+			"_id": "req_8c5d6a5799fc406ea1f65dfc1a89475f",
+			"parentId": "fld_8bcf3ba5c7b741bb91be9d711dea5def",
+			"modified": 1505342869784,
+			"created": 1504972714133,
+			"url": "http://localhost/app/index.php/pedido/listar/",
+			"name": "Lista de Pedidos",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1504972892198,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_60c6f39e41e1482ba884225c47492cb9",
+			"parentId": "fld_8bcf3ba5c7b741bb91be9d711dea5def",
+			"modified": 1505102728390,
+			"created": 1504972808651,
+			"url": "http://localhost/app/index.php/pedido/validar",
+			"name": "Ingresar Duplicado",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n    \"accion\": \"create\",\n    \"pedido\": {\n        \"nro_pedido\": \"033-17\",\n        \"regimen\": \"R70\",\n        \"nro_referendo\": \"055-2017-70-00216310\",\n        \"id_incoterm\": \"1\",\n        \"seguro_aduana\": \"120.00\",\n        \"estado_pedido\": \"ABIERTO\",\n        \"comentarios\": null,\n        \"id_user\": \"\"\n    }\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_a04ae41a5d944455b0d7f5aa4b1cfa37"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1504972714183,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_d46d9f133c884dffa9adfce9cbf48f81",
+			"parentId": "fld_8bcf3ba5c7b741bb91be9d711dea5def",
+			"modified": 1505102732225,
+			"created": 1504972892148,
+			"url": "http://localhost/app/index.php/pedido/validar",
+			"name": "Validar Data Pedido",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t{\n\t\"accion\":\"create\",\n\t\"pedido\" : {\n   \t\t\t\"nro_pedido\" : \"999-1\",\n\t\t\t\t\"regimen\": \"0\",\n\t\t\t\t\"nro_referendo\": \"055-2017-70-016310\",\n\t\t\t\t\"id_incoterm\": \"\",\n\t\t\t\t\"seguro_aduana\": \"\",\n\t\t\t\t\"estado_pedido\": \"ABIE\",\n\t\t\t\t\"comentarios\": \"\",\n\t\t\t\t\"id_user\": \"\"\n\t\t\t\t}\n}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_0591dd5a64374adbb9a104f82ebed47b"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1504972714133,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_80311dc3737a4d819da12ffc6fc7e0f4",
+			"parentId": "fld_8bcf3ba5c7b741bb91be9d711dea5def",
+			"modified": 1505342793344,
+			"created": 1505014138492,
+			"url": "http://localhost/app/index.php/pedido/validar",
+			"name": "Nuevo Pedido Validar",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n    \"accion\": \"create\",\n    \"pedido\": {\n        \"nro_pedido\": \"133-17\",\n        \"regimen\": \"10\",\n        \"id_incoterm\": \"0\",\n        \"seguro_aduana\": \"0\",\n        \"estado_pedido\": \"ABIERTO\",\n        \"comentarios\": \"\",\n\t\t\t\t\"flete_aduana\":\"0\",\n        \"id_user\": \"1\"\n    }\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_d160fd255ea24fddbb8553a762996011"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505014138492,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_4636374d13ff49b7b259c95121f7ea15",
+			"parentId": "fld_8bcf3ba5c7b741bb91be9d711dea5def",
+			"modified": 1505102721272,
+			"created": 1505017847411,
+			"url": "http://localhost/app/index.php/pedido/validar",
+			"name": "Actualizar Pedido",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n    \"accion\": \"update\",\n    \"pedido\": {\n        \"nro_pedido\": \"006-17\",\n        \"regimen\": \"10\",\n        \"nro_referendo\": \"055-2017-10-000450858\",\n        \"id_incoterm\": \"0\",\n        \"seguro_aduana\": \"0\",\n        \"estado_pedido\": \"ABIERTO\",\n        \"comentarios\": \"Tercera Vez que cambio los comentario\",\n\t\t\t\t\"flete_aduana\":\"0\",\n        \"id_user\": \"1\"\n    }\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_81b719ae7c334f9f90a8cd93d7b6c04e"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1504993515345,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_7d11b37e4f60491fa2bfe66ceb0d7ad3",
+			"parentId": "fld_8bcf3ba5c7b741bb91be9d711dea5def",
+			"modified": 1505102711616,
+			"created": 1505019218080,
+			"url": "http://localhost/app/index.php/pedido/eliminar",
+			"name": "Eliminar Pedido",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n    \"accion\": \"delete\",\n    \"pedido\": {\n        \"nro_pedido\": \"999-17\"\n    }\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_e8746f61281942aea112a8757cb5c4cb"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505003826918.5,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_084dadf9355d4a25bd927eeb3e8f8d5b",
+			"parentId": "fld_b50e25c1b89e4d39a0819d69c44254d2",
+			"modified": 1505138876819,
+			"created": 1505022795200,
+			"url": "http://localhost/app/index.php/pedidofactura/listar/",
+			"name": "Listar Facturas Pedidos",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1504972690178,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_a00a71ce243c4e6a8cc263ff46cbf972",
+			"parentId": "fld_b50e25c1b89e4d39a0819d69c44254d2",
+			"modified": 1505104429986,
+			"created": 1505096334880,
+			"url": "http://localhost/app/index.php/pedidofactura/validar",
+			"name": "Nuevo Pedido Factura Existente",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\t\n\t\"accion\" : \"create\",\n\t\"pedidoFactura\":{\n\t\t\"nro_pedido\" : \"999-17\",\n\t\t\"id_factura_proveedor\" : \"12345\",\n\t\t\t\t\"identificacion_proveedor\": \"1111111111122\",\n\t\t\"fecha_emision\" : \"0000-00-00 00:00:00\",\n\t\t\"valor\" : \"2000\",\n\t\t\"moneda\" : \"DOLAR\",\n\t\t\"tipo_cambio\" : 1,\n\t\t\"vencimiento_pago\" : \"0000-00-00 00:00:00\",\n\t\t\"id_user\" : 1\n\t}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_cab0e4e82d2e48bf8cfde0af3bb02e5d"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505096334880,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_e9203bb19bc14b5cb0d98eadac1b141d",
+			"parentId": "fld_b50e25c1b89e4d39a0819d69c44254d2",
+			"modified": 1505343134009,
+			"created": 1505104452095,
+			"url": "http://localhost/app/index.php/pedidofactura/validar",
+			"name": "Nuevo Pedido Factura",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\t\n\t\"accion\" : \"create\",\n\t\"pedidoFactura\":{\n\t\t\"nro_pedido\" : \"133-17\",\n\t\t\"id_factura_proveedor\" : \"143322227\",\n\t\t\t\t\"identificacion_proveedor\": \"1111111111122\",\n\t\t\"fecha_emision\" : \"0000-00-00 00:00:00\",\n\t\t\"valor\" : \"2000\",\n\t\t\"moneda\" : \"DOLAR\",\n\t\t\"tipo_cambio\" : 1,\n\t\t\"vencimiento_pago\" : \"0000-00-00 00:00:00\",\n\t\t\"id_user\" : 1\n\t}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_9c27b9b33a4d4edbb3b365e09dc92d29"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505104452095,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_af781abb16ad4e459a876c99b3badd7e",
+			"parentId": "fld_b50e25c1b89e4d39a0819d69c44254d2",
+			"modified": 1505106942061,
+			"created": 1505104809626,
+			"url": "http://localhost/app/index.php/pedidofactura/validar",
+			"name": "Actualizar Pedido Factura",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\t\n\t\"accion\" : \"update\",\n\t\"id_pedido_factura\" : 4,\n\t\"pedidoFactura\":{\n\t\t\"nro_pedido\" : \"999-17\",\n\t\t\"id_factura_proveedor\" : \"73212\",\n\t\t\t\t\"identificacion_proveedor\": \"1111111111122\",\n\t\t\"fecha_emision\" : \"0000-00-00 00:00:00\",\n\t\t\"valor\" : \"20091.323\",\n\t\t\"moneda\" : \"EUROS\",\n\t\t\"tipo_cambio\" : 1,\n\t\t\"vencimiento_pago\" : \"0000-00-00 00:00:00\",\n\t\t\"id_user\" : 1\n\t}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_a87d5b4f910d42a69a460829601b2c43"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505104809626,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_1253700a75b84e0d9458b72c4297d627",
+			"parentId": "fld_b50e25c1b89e4d39a0819d69c44254d2",
+			"modified": 1505107950647,
+			"created": 1505107040688,
+			"url": "http://localhost/app/index.php/pedidofactura/eliminar/3",
+			"name": "Eliminar Factura Pedido",
+			"description": "",
+			"method": "POST",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1505107040688,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_0abeda7d093c4e33bad0a043b82edf05",
+			"parentId": "fld_9c03edef1695485b80fcf38061aef211",
+			"modified": 1505090216507,
+			"created": 1505054167583,
+			"url": "http://localhost/app/index.php/login/validar",
+			"name": "Session Start",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"userdata\": {\n        \"username\": \"usuario\",\n\t\t\t\t\"password\":\"elian.2011\"\n    }\n}"
+			},
+			"parameters": [
+				{
+					"name": "",
+					"value": "",
+					"id": "pair_895bf66a131743399d8565119201a133"
+				}
+			],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_38c10b5677a24c939d095e2e7b0529d7"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505054167583,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_45784c6f38d04be3af4f4e3838525daa",
+			"parentId": "fld_9c03edef1695485b80fcf38061aef211",
+			"modified": 1505137178804,
+			"created": 1505075369170,
+			"url": "http://localhost/app/",
+			"name": "formluario Login",
+			"description": "",
+			"method": "GET",
+			"body": {
+				"mimeType": "application/json",
+				"text": "\n"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_6ab2d61b3fbd4d2e9a3f30cd07a16477"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505075369170,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_5ddcdbd0aabc431ba99e1d35afff7ce5",
+			"parentId": "fld_4eee4ba725684eeeb5d3528f13318ddc",
+			"modified": 1505139386545,
+			"created": 1505109196095,
+			"url": "http://localhost/app/index.php/detallepedido/listar",
+			"name": "Listar Detalles Factura",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1505137249665,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_659ed1c5a6814751bc2eaf944aa0fe98",
+			"parentId": "fld_4eee4ba725684eeeb5d3528f13318ddc",
+			"modified": 1505138889891,
+			"created": 1505137249615,
+			"url": "http://localhost/app/index.php/detallepedido/validar",
+			"name": "Crear Detalle Factura",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\t\n\t\"accion\" : \"create\",\n\t\"detallePedidoFactura\":{\n\t\"id_pedido_factura\": 7,\n\t\"cod_contable\": \"02041160180102010750\",\n\t\"nro_cajas\": 200,\n\t\"costo_und\": 12.42,\n\t\"id_user\": 1\n\t}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_39104b0da8c2493b81300f2d30f44fc1"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505137249615,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_96bb16e6b04f4e93b4ea2cf7a94002eb",
+			"parentId": "fld_4eee4ba725684eeeb5d3528f13318ddc",
+			"modified": 1505139449336,
+			"created": 1505138916295,
+			"url": "http://localhost/app/index.php/detallepedido/validar",
+			"name": "Actualiza Detalle Factura",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\t\n\t\"accion\" : \"update\",\n\t\"detalle_pedido_factura\" : 10,\n\t\"detallePedidoFactura\":{\n\t\"id_pedido_factura\": 7,\n\t\"cod_contable\": \"02041160180102010750\",\n\t\"nro_cajas\": 200,\n\t\"costo_und\": 30.42,\n\t\"id_user\": 1\n\t}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_f644bc61c3084e4b987a7e8ee671259f"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505138916295,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_987a2e1f46f04fb7abd2abbc88dd0694",
+			"parentId": "fld_4eee4ba725684eeeb5d3528f13318ddc",
+			"modified": 1505140212022,
+			"created": 1505139741155,
+			"url": "http://localhost/app/index.php/detallepedido/eliminar/10",
+			"name": "Elimnar Item Factura",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1505139741155,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_4f4a81d7110f43758f3a59d5e2e9b231",
+			"parentId": "fld_c9b7262e5de448d3a1cc0cada0caa6e6",
+			"modified": 1505186335410,
+			"created": 1505140331824,
+			"url": "http://localhost/app/index.php/producto/listar/0/33-68989817-9/",
+			"name": "Listar Productos",
+			"description": "Obtienen una lista de productos, ya sea completa o por cada uno de los productos de forma independiete para \nlistar todas \nhttp://localhost/app/index.php/producto/listar\nlistar producto 19\nhttp://localhost/app/index.php/producto/listar/19\n",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1505140331824,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_56ca6b4381d44e49bbb49d53c228227c",
+			"parentId": "fld_c9b7262e5de448d3a1cc0cada0caa6e6",
+			"modified": 1505184331825,
+			"created": 1505140352766,
+			"url": "http://localhost/app/index.php/producto/validar",
+			"name": "Crear Producto",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"accion\" : \"create\",\n\t\"producto\" : {\n\t\t\t\"cod_contable\" : \"01011010010206010988\",\n\t\t\t\"identificacion_proveedor\": \"00P9022700000\",\n\t\t\t\"cod_ice\": \"3031-53-013129-013-000750-66-101-000029\",\n\t\t\t\"nombre\": \"Traguito de prueba para cada una de las filas\",\n\t\t\t\"capacidad_ml\": \"900\",\n\t\t\t\"cantidad_x_caja\": \"12\",\n\t\t\t\"grado_alcoholico\": \"10.91\",\n\t\t\t\"costo_unidad\": \"32.98\",\n\t\t\t\"estado\": \"1\",\n\t\t\t\"custodia_doble\": \"0\",\n\t\t\t\"comentarios\": \"\",\n\t\t\t\"id_user\": \"1\"\n\t}\n}\t\t"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_7737458d1e6e46f883ee207cf165bcfa"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505140352766,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_746e53356bb04dddbcd847474f6c8869",
+			"parentId": "fld_c9b7262e5de448d3a1cc0cada0caa6e6",
+			"modified": 1505184474355,
+			"created": 1505140375525,
+			"url": "http://localhost/app/index.php/producto/validar",
+			"name": "Actualizar Producto",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"accion\" : \"update\",\n\t\"id_producto\" : \"310\",\n\t\"producto\" : {\n\t\t\"cod_contable\" : \"01011010010206010988\",\n\t\t\t\"identificacion_proveedor\": \"00P9022700000\",\n\t\t\t\"cod_ice\": \"3031-53-013129-013-000750-66-101-000029\",\n\t\t\t\"nombre\": \"Traguito de prueba para cada una de las filas\",\n\t\t\t\"capacidad_ml\": \"900\",\n\t\t\t\"cantidad_x_caja\": \"12\",\n\t\t\t\"grado_alcoholico\": \"10.91\",\n\t\t\t\"costo_unidad\": \"30.98\",\n\t\t\t\"estado\": \"1\",\n\t\t\t\"custodia_doble\": \"0\",\n\t\t\t\"comentarios\": \"\",\n\t\t\t\"id_user\": \"1\"\n\t}\n}\t\t"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_c87dc70b59a54a40b512c61740627442"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505140375525,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_75c9be4facdf4732bd5caa1eb432ceec",
+			"parentId": "fld_c9b7262e5de448d3a1cc0cada0caa6e6",
+			"modified": 1505184555538,
+			"created": 1505140388084,
+			"url": "http://localhost/app/index.php/producto/eliminar/310/eliminar/3102345",
+			"name": "Eliminar Producto",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1505140388084,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_62f6aec7b67c46f6b04a428b110452e1",
+			"parentId": "fld_c9b7262e5de448d3a1cc0cada0caa6e6",
+			"modified": 1505342547918,
+			"created": 1505185864026,
+			"url": "http://localhost/app/index.php/producto/listar/0/1111111111111",
+			"name": "Listar Productos Proveedor",
+			"description": "Lista lod productos, de dos formas diferentes por proveedor y pproduct\n\nhttp://localhost/app/index.php/producto/listar/0/id_",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1505185864026,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_d86ccadfc0814b5a890c5791c66761ec",
+			"parentId": "fld_9e10a433a00244a9ae2534dbd33bb384",
+			"modified": 1505270107055,
+			"created": 1505185784370,
+			"url": "http://localhost/app/index.php/proveedor/listar/",
+			"name": "Listar Proveedores",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1505185784370,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_22a29e91c25b4b38b0c58fb02c324588",
+			"parentId": "fld_9e10a433a00244a9ae2534dbd33bb384",
+			"modified": 1505187485549,
+			"created": 1505185800197,
+			"url": "http://localhost/app/index.php/proveedor/validar",
+			"name": "Crear Proveedor",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"accion\": \"create\",\n\t\t\"proveedor\": {\n\t\t\t\"nombre\" : \"Eduardo Vinicio Villota\",\n\t\t\t\"tipo_provedor\" :\"Sistemas Informáticos\",\n\t\t\t\"categoria\": \"nacional\",\n\t\t\t\"identificacion_proveedor\" : \"1722919725001\",\n\t\t\t\"comentarios\" : \"\",\n\t\t\t\"id_user\" :1 \n\t}\t\n}\n"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_6fa37691f57e4a619833bdb157f96582"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505185800197,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_f8f9a710877c4bec934427a0fd92a40a",
+			"parentId": "fld_9e10a433a00244a9ae2534dbd33bb384",
+			"modified": 1505343372799,
+			"created": 1505185817567,
+			"url": "http://localhost/app/index.php/proveedor/validar",
+			"name": "Actualizar Proveedor",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"accion\": \"update\",\n\t\"id_proveedor\": \"64\",\n\t\"proveedor\": {\n\t\t\t\"nombre\": \"ALMACENERA ALMAGRO EDUARDO\",\n\t\t\t\"tipo_provedor\": \"NACIONAL\",\n\t\t\t\"categoria\": \"BODEGAJE\",\n\t\t\t\"identificacion_proveedor\": \"1234567890001\",\n\t\t\t\"comentarios\": \"\",\n\t\t\t\"id_user\": \"1\"\n\t}\t\n}\n"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_0c33d27e40d24095860d05a02fdf472e"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505185817567,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_dd5b8a1adec14ddfa35c7df7d6e5464a",
+			"parentId": "fld_9e10a433a00244a9ae2534dbd33bb384",
+			"modified": 1505187718215,
+			"created": 1505185833846,
+			"url": "http://localhost/app/index.php/proveedor/eliminar/1722919725",
+			"name": "Eliminar Proveedor",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1505185833846,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_dda20c3e9a1640a5961483961add30a8",
+			"parentId": "fld_61b02d089b934bb18d08e2cccb689c5f",
+			"modified": 1505270456079,
+			"created": 1505267924690,
+			"url": "http://localhost/app/index.php/factinformativa/listar/006-17",
+			"name": "Listar Factura Informativa",
+			"description": "Lista los pedidos de acuerdoa tres reglas\n\nhttp://localhost/app/index.php/factinformativa/listar/  => Todas las facturas informativas\nhttp://localhost/app/index.php/factinformativa/listar/idPedido/0 o\nhttp://localhost/app/index.php/factinformativa/listar/idPedido/ => Facturas informativas de un pedido\nhttp://localhost/app/index.php/factinformativa/listar/0/idProveedor => Facturas informativas de uhn proveedor\n",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1504972690171.75,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_81c22b11631b4fc6ace01f9b9a1b23be",
+			"parentId": "fld_61b02d089b934bb18d08e2cccb689c5f",
+			"modified": 1505270490868,
+			"created": 1505267928411,
+			"url": "http://localhost/app/index.php/factinformativa/validar",
+			"name": "Crear Factura Informativa",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"accion\": \"create\",\n\t\t\"factinformativa\": {\n\t\t\"nro_factura_informativa\" : \"0032199\",\n\t\t\"nro_pedido\" : \"006-17\",\n\t\t\"identificacion_proveedor\" : \"1234567890001\",\n\t\t\"fele_aduana\" : \"1\",\n\t\t\"seguro_aduana\" : \"1\",\n\t\t\"moneda\" : \"DOLAR\",\n\t\t\"tipo_cambio\" : \"1\",\n\t\t\"id_user\" : \"1\"\n\t}\t\n}\n"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_6fa37691f57e4a619833bdb157f96582"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1504972690121.75,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_c8e50eb9820d4e0cab9a57fcdd1d61f8",
+			"parentId": "fld_61b02d089b934bb18d08e2cccb689c5f",
+			"modified": 1505270978347,
+			"created": 1505267930985,
+			"url": "http://localhost/app/index.php/factinformativa/validar/",
+			"name": "Actualizar Factura Informativa",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"accion\": \"update\",\n\t\"id_factura_informativa\": \"1\",\n\t\t\"factinformativa\": {\n\t\t\t\"nro_factura_informativa\": \"0032101\",\n\t\t\t\"nro_pedido\": \"006-17\",\n\t\t\t\"identificacion_proveedor\": \"1234567890001\",\n\t\t\t\"fele_aduana\": \"1.000\",\n\t\t\t\"seguro_aduana\": \"1.000\",\n\t\t\t\"moneda\": \"Pesos\",\n\t\t\t\"tipo_cambio\": \"0.100\",\n\t\t\t\"id_user\": \"1\"\n\t}\t\n}\n"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_0c33d27e40d24095860d05a02fdf472e"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1504972690071.75,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_e339e4c53b2a4ba59c1fb523ea0bf1a2",
+			"parentId": "fld_61b02d089b934bb18d08e2cccb689c5f",
+			"modified": 1505271959740,
+			"created": 1505267933003,
+			"url": "http://localhost/app/index.php/factinformativa/eliminar/7",
+			"name": "Eliminar Factura Informativa",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1504972690021.75,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_8e79ecb4933748a590c289917848ffe0",
+			"parentId": "fld_518c679d8f1743adb8470fe229a36701",
+			"modified": 1505275561827,
+			"created": 1505274531201,
+			"url": "http://localhost/app/index.php/gstinicial70/listar/",
+			"name": "Listar Gastos Iniciales",
+			"description": "S epuede obtener gastos iniciales de un pedido\nhttp://localhost/app/index.php/gstinicial70/listar/idPedido\n\nO un gasto incial especifico\nhttp://localhost/app/index.php/gstinicial70/0/id_gastoInicial",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1504972690171.75,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_4c7ab7f95c9943ac8c789b75c740529a",
+			"parentId": "fld_518c679d8f1743adb8470fe229a36701",
+			"modified": 1505275801007,
+			"created": 1505274531204,
+			"url": "http://localhost/app/index.php/gstinicial70/validar",
+			"name": "Crear Gasto Inicial",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"accion\": \"update\",\n\t\"id_gastos_iniciales\": \"5\",\n\t\"gastos_iniciales_r70\": {\n\t\t  \"nro_pedido\": \"006-17\",\n\t\t\t\"concepto\": \"Tasa Aduanera\",\n\t\t\t\"valor_provisionado\": \"200.000\",\n\t\t\t\"comentarios\": \"\",\n\t\t\t\"id_user\": \"1\"\n\t}\t\n}\n"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_6fa37691f57e4a619833bdb157f96582"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1504972690121.75,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_f5c4f3ec82ac4d6a89adc755285afb66",
+			"parentId": "fld_518c679d8f1743adb8470fe229a36701",
+			"modified": 1505275607001,
+			"created": 1505274531208,
+			"url": "http://localhost/app/index.php/gstinicial70",
+			"name": "Actualizar Gasto Inicial",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"accion\": \"delete\",\n\t\n\t\"gastos_iniciales_r70\": {\n\t\t  \"nro_pedido\" : \"006-17\",\n      \"concepto\" : \"Tasa Aduanera\",\n      \"valor_provisionado\" : \"200\",\n      \"comentarios\" : \"\",\n      \"id_user\" : \"1\"\n\t}\t\n}\n"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_0c33d27e40d24095860d05a02fdf472e"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1504972690071.75,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_de43c220944d4fd784e1832e46dc36d4",
+			"parentId": "fld_518c679d8f1743adb8470fe229a36701",
+			"modified": 1505277042190,
+			"created": 1505274531212,
+			"url": "http://localhost/app/index.php/gstinicial70/eliminar/1",
+			"name": "Eliminar Gasto inicial",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1504972690021.75,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_36af421c8d6f4a958fe514e45664b73d",
+			"parentId": "fld_8d02d23ea85b4ca8a587a9b4b20617e8",
+			"modified": 1505277244148,
+			"created": 1505276764250,
+			"url": "http://localhost/app/index.php/factgstinicial70/listar/0/7",
+			"name": "Listar Facturas Gastos Inciales",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1505276764250,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_916f90cf558340dabd3ddd7e0d01abec",
+			"parentId": "fld_8d02d23ea85b4ca8a587a9b4b20617e8",
+			"modified": 1505277095144,
+			"created": 1505276782289,
+			"url": "http://localhost/app/index.php/factgstinicial70/validar",
+			"name": "Crear Factura Gasto Inicial",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"accion\" : \"create\",\n\t\"factura_pagos_pedido_gasto_inicial_r70\":{\n\t\t\t\"id_gastos_iniciales\": \"4\" ,\n\t\t\t\"id_factura_pagos\": \"12345\" ,\n\t\t\t\"valor\" : 200,\n\t\t\t\"id_user\" : 1\t\n\t}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_e672b4abf03042bb8bbd8a1f289b1238"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505276782289,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_f5b653404eeb4ab28938ea1a8d0930b7",
+			"parentId": "fld_8d02d23ea85b4ca8a587a9b4b20617e8",
+			"modified": 1505277211245,
+			"created": 1505276807239,
+			"url": "http://localhost/app/index.php/factgstinicial70/validar",
+			"name": "Actualizar Factura Gastos Iniciales",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"accion\" : \"update\",\n\t\"id_factura_pagos_pedido_gasto_inicial\" : 7,\n\t\"factura_pagos_pedido_gasto_inicial_r70\":{\n\t\t\t\"id_gastos_iniciales\": \"4\" ,\n\t\t\t\"id_factura_pagos\": \"12345\" ,\n\t\t\t\"valor\" : 200,\n\t\t\t\"id_user\" : 1\t\n\t}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_3ac5fb2c1c814cfd999f7b3628e0eb48"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505276807239,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_4f45995fa01c4ab5ad59ee80e56baf2c",
+			"parentId": "fld_8d02d23ea85b4ca8a587a9b4b20617e8",
+			"modified": 1505278705892,
+			"created": 1505276824518,
+			"url": "http://localhost/app/index.php/factgstinicial70/eliminar/7",
+			"name": "Eliminar Factura Gastos Iniciales",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1505276824518,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_5b2229e257b44b58ac081492ead62012",
+			"parentId": "fld_f56c2b4eb0e243a1acef566b64c3bf60",
+			"modified": 1505537808102,
+			"created": 1505329389238,
+			"url": "http://localhost/app/index.php/impnacionalizacion/listar/1",
+			"name": "listar Impuestos Nacionalizacion",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1505329389238,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_a8d9780f8dda4a9fa3d290840cdc7203",
+			"parentId": "fld_f56c2b4eb0e243a1acef566b64c3bf60",
+			"modified": 1505537847587,
+			"created": 1505329572790,
+			"url": "http://localhost/app/index.php/impnacionalizacion/validar",
+			"name": "Nuevo Impuesto Nacionalizacion",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"accion\":\"create\",\n\t\"impuestos_nacionalizacion\":{\n\t\t\t\"id_nacionalizacion\": 1 ,\n\t\t\t\t\"concepto\": \"VILLOTA\",\n\t\t\t\"valor_provisionado\": 304.31,\n\t\t\t\"comentarios\": \"\",\n\t\t\t\"id_user\" : 1\n\t}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_23e675631c66410fb8328324e75668e4"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505329572790,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_a0f4590386c8483bba88868753817673",
+			"parentId": "fld_f56c2b4eb0e243a1acef566b64c3bf60",
+			"modified": 1505540763087,
+			"created": 1505329588637,
+			"url": "http://localhost/app/index.php/impnacionalizacion/validar",
+			"name": "Actualizar Impuesto Nacionalizacion",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"accion\":\"update\",\n\t\"id_impuestos\": \"2\",\n\t\"impuestos_nacionalizacion\":{\n\t\t\t\"id_nacionalizacion\": 1 ,\n\t\t\t\t\"concepto\": \"CAMBIO\",\n\t\t\t\"valor_provisionado\": 304.31,\n\t\t\t\"comentarios\": \"\",\n\t\t\t\"id_user\" : 1\n\t}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_e7c518f287a84334b486f4ed1cf1fbd9"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505329588637,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_40caedb432d345019303a899125017f1",
+			"parentId": "fld_f56c2b4eb0e243a1acef566b64c3bf60",
+			"modified": 1505538094300,
+			"created": 1505329606830,
+			"url": "http://localhost/app/index.php/impnacionalizacion/eliminar/6",
+			"name": "Eliminar Impuesto Nacionalizacion",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1505329606830,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_27b861c7c3cc4eecacf92d9d192ba91f",
+			"parentId": "fld_8fbe8a1c09d74ebc9e04246f5ac19d74",
+			"modified": 1505471252669,
+			"created": 1505347120356,
+			"url": "http://localhost/app/index.php/nacionalizacion/listar",
+			"name": "Listar Nacionalizaciones",
+			"description": "Lista de nacionalizaciones por factura informativa\nhttp://localhost/app/index.php/nacionalizacion/listar/0/0032103\n\n\nLista de nacionalizaciones por pedido\nhttp://localhost/app/index.php/nacionalizacion/listar/006-17\n\nLista de nacionalizaciones \nhttp://localhost/app/index.php/nacionalizacion/listar/\n",
+			"method": "GET",
+			"body": {},
+			"parameters": [
+				{
+					"name": "",
+					"value": "",
+					"id": "pair_e698258bf08248c3b738b1a226fad00a"
+				}
+			],
+			"headers": [
+				{
+					"name": "",
+					"value": "",
+					"id": "pair_3679e12a5ac3475495a9cc36e2024533"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505347120356,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_af5b12c3655e40a389f9f3761dd3ec5c",
+			"parentId": "fld_8fbe8a1c09d74ebc9e04246f5ac19d74",
+			"modified": 1505471026268,
+			"created": 1505347143244,
+			"url": "http://localhost/app/index.php/nacionalizacion/validar",
+			"name": "Crear Nacionalizacion",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\"accion\": \"create\",\n\t\t\"nacionalizacion\": {\n\t\t\t\"nro_pedido\" :\t\"133-17\",\n\t\t\t\"nro_factura_informativa\" :\"0032107\",\n\t\t\t\"moneda\"\t:\"dolares\",\n\t\t\t\"tipo_cambio\" : \"3\"\t,\n\t\t\t\"id_user\" : \"1\"\n}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_097743ea773641c7a12830fd0ede51d4"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505347143244,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_695ac8d9607b458f8729d5cbec3e6212",
+			"parentId": "fld_8fbe8a1c09d74ebc9e04246f5ac19d74",
+			"modified": 1505475389966,
+			"created": 1505347160852,
+			"url": "http://localhost/app/index.php/nacionalizacion/eliminar/3",
+			"name": "Eliminar Nacionalizacion",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1505347160852,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_f4d13b70114f43ab8da65caae666910c",
+			"parentId": "fld_8fbe8a1c09d74ebc9e04246f5ac19d74",
+			"modified": 1505471316255,
+			"created": 1505347166191,
+			"url": "http://localhost/app/index.php/nacionalizacion/validar",
+			"name": "Actualizar Nacionalizacion",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\"accion\": \"update\",\n\"id_nacionalizacion\": \"4\",\n\t\t\"nacionalizacion\": {\n\t\t\t\t\"id_nacionalizacion\": \"4\",\n\t\t\t\"nro_pedido\": \"133-17\",\n\t\t\t\"nro_factura_informativa\": \"0032107\",\n\t\t\t\"moneda\": \"Pesos\",\n\t\t\t\"tipo_cambio\": \"3.000\",\n\t\t\t\"id_user\": \"1\"\n}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_097743ea773641c7a12830fd0ede51d4"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505347131800,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_20b1076d018a4c2b9e4add402476471d",
+			"parentId": "fld_9172f93cc32244b195b6d36c52766078",
+			"modified": 1505539174137,
+			"created": 1505538392096,
+			"url": "http://localhost/app/index.php/Liqimpuestos/listar",
+			"name": "Listar Liquidacion Impuestos",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1505538392096,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_580b4c8cb59d4d0e8fcb2eca030973a6",
+			"parentId": "fld_9172f93cc32244b195b6d36c52766078",
+			"modified": 1505540868652,
+			"created": 1505538415809,
+			"url": "http://localhost/app/index.php/Liqimpuestos/validar",
+			"name": "Crear Liquidacion Impuestos",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"accion\" : \"create\",\n\t\"liquidacion_impuestos\":{\n\t\"id_impuestos\" : 3,\n\t\"nro_documento\" : \"876543\",\n\t\"valor\" : 138.31,\n\t\"id_user\" : 1\n\t\t\n\t}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_80ad5c13ba2246a79bd89e32fc254a3c"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505538415809,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_451a4737319b4182873ef695dff182f0",
+			"parentId": "fld_9172f93cc32244b195b6d36c52766078",
+			"modified": 1505542075978,
+			"created": 1505538432918,
+			"url": "http://localhost/app/index.php/Liqimpuestos/validar",
+			"name": "Actualizar Liquidacion Impuestos",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"accion\" : \"update\",\n\t\"id_liquidacion_impuestos\": \"2\",\n\t\"liquidacion_impuestos\":{\n\t\t\t\"id_impuestos\": \"3\",\n\t\t\t\"nro_documento\": \"87654\",\n\t\t\t\"valor\": \"100.999\",\n\t\t\t\"id_user\": \"1\"\n\n\t}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_4c5e3c397cc4451fb7e3174caaaa344c"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505538432918,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_6e0cd038f4a74613be38b94af5344ef7",
+			"parentId": "fld_9172f93cc32244b195b6d36c52766078",
+			"modified": 1505540083957,
+			"created": 1505540071222,
+			"url": "http://localhost/app/index.php/Liqimpuestos/eliminar",
+			"name": "Eliminar Liquidacion Impuestos",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1505540071222,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_42edb4c0be2049998a1c47446d65cb9c",
+			"parentId": "fld_8b82af853a384fc590324efefaf0b745",
+			"modified": 1505553135348,
+			"created": 1505546053719,
+			"url": "http://localhost/app/index.php/facpgpedido/listar",
+			"name": "Listar Gastos Nacionalizacion",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1505546053719,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_82e53ea9b960457ca8daa166d5b8d3e7",
+			"parentId": "fld_8b82af853a384fc590324efefaf0b745",
+			"modified": 1505551259701,
+			"created": 1505546067987,
+			"url": "http://localhost/app/index.php/facgstnacionalizacion/validar",
+			"name": "Crear Gastos Nacionalizacion",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"accion\":\"create\",\n\t\"factura_gastos_nacionalizacion\" :{\n\t\t\t\"id_gastos_nacionalizacion\" : 1,\n\t\t\t\"id_factura_pagos\" : 12141,\n\t\t\t\"valor\" : 109.09,\n\t\t\t\"id_user\" : 1\n\t\t\n}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_e4fef55d5ab04549b82ff9d93a10e418"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505546067987,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_071bfe1504fb4eee9286e794d369a712",
+			"parentId": "fld_8b82af853a384fc590324efefaf0b745",
+			"modified": 1505547917299,
+			"created": 1505546072210,
+			"url": "http://localhost/app/index.php/facgstnacionalizacion/validar",
+			"name": "Actualizar Gastos Nacionalizacion",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"accion\":\"update\",\n\t\"id_factura_gastos_nacionalizacion\": \"1\",\n\t\"factura_gastos_nacionalizacion\" :{\n\t\t\t\"id_gastos_nacionalizacion\" : 1,\n\t\t\t\"id_factura_pagos\" : 12367,\n\t\t\t\"valor\" : 309.09,\n\t\t\t\"id_user\" : 1\n\t\t\n}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_e4fef55d5ab04549b82ff9d93a10e418"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505546060853,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_fe2791d6ad144c53b1464b32acbcaf4d",
+			"parentId": "fld_8b82af853a384fc590324efefaf0b745",
+			"modified": 1505547912524,
+			"created": 1505546083566,
+			"url": "http://localhost/app/index.php/facgstnacionalizacion/eliminar/2",
+			"name": "Eliminar Gastos Nacionalizacion",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1505543062470.5,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_f57317893ea84cfb940cfc1ee4d1abea",
+			"parentId": "fld_4dea037a6a39472eb6d259cb449f5284",
+			"modified": 1505546464529,
+			"created": 1505546360321,
+			"url": "http://localhost/app/index.php/gstnacionalizacion/listar",
+			"name": "Listar Gastos Nacionalizaciones",
+			"description": "Lista de nacionalizaciones por factura informativa\nhttp://localhost/app/index.php/nacionalizacion/listar/0/0032103\n\n\nLista de nacionalizaciones por pedido\nhttp://localhost/app/index.php/nacionalizacion/listar/006-17\n\nLista de nacionalizaciones \nhttp://localhost/app/index.php/nacionalizacion/listar/\n",
+			"method": "GET",
+			"body": {},
+			"parameters": [
+				{
+					"name": "",
+					"value": "",
+					"id": "pair_e698258bf08248c3b738b1a226fad00a"
+				}
+			],
+			"headers": [
+				{
+					"name": "",
+					"value": "",
+					"id": "pair_3679e12a5ac3475495a9cc36e2024533"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505347120356,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_f0c4cc9cf90b4d19b1f11bd7cb1023a4",
+			"parentId": "fld_4dea037a6a39472eb6d259cb449f5284",
+			"modified": 1505546716914,
+			"created": 1505546360324,
+			"url": "http://localhost/app/index.php/gstnacionalizacion/validar",
+			"name": "Crear Gastos Nacionalizacion",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\"accion\": \"create\",\n\t\t\"gastos_nacionalizacion\": {\n\t\t\t\t\"id_nacionalizacion\" : 1 ,\n\t\t\t\t\"concepto\" : \"Transporte\" ,\n\t\t\t\t\"valor_provisionado\" : 12345.21 ,\n\t\t\t\t\"comentarios\" : \"\" ,\n\t\t\t\t\"id_user\" : 1 \n}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_097743ea773641c7a12830fd0ede51d4"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505347143244,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_a5acf3353fd94d9b9bb61e715baa074b",
+			"parentId": "fld_4dea037a6a39472eb6d259cb449f5284",
+			"modified": 1505547432206,
+			"created": 1505546360327,
+			"url": "http://localhost/app/index.php/gstnacionalizacion/eliminar/1",
+			"name": "Eliminar Gastos Nacionalizacion",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1505347160852,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_d3e333683d914d969a168e346c9f4761",
+			"parentId": "fld_4dea037a6a39472eb6d259cb449f5284",
+			"modified": 1505547358398,
+			"created": 1505546360331,
+			"url": "http://localhost/app/index.php/gstnacionalizacion/validar",
+			"name": "Actualizar  Gastos Nacionalizacion",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\"accion\" : \"update\",\n\t\"id_gastos_nacionalizacion\": \"2\",\n\t\"gastos_nacionalizacion\":{\n\t\t\t\"id_nacionalizacion\": \"1\",\n\t\t\t\"concepto\": \"Agente\",\n\t\t\t\"valor_provisionado\": \"154.539\",\n\t\t\t\"comentarios\": \"\",\n\t\t\t\"id_user\": \"1\"\n\t}\n}\n"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_097743ea773641c7a12830fd0ede51d4"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505347131800,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_ca1e18ebe03045ffac6afa752965d135",
+			"parentId": "fld_fd9810573308481e9f8f753b03f36d1f",
+			"modified": 1505553162771,
+			"created": 1505552626536,
+			"url": "http://localhost/app/index.php/facpgpedido/listar",
+			"name": "Listar Facturas Pagos Pedidos",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1505552626536,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_e9eb70298a4c4a11a0dec532e63f2578",
+			"parentId": "fld_fd9810573308481e9f8f753b03f36d1f",
+			"modified": 1505617631518,
+			"created": 1505552649698,
+			"url": "http://localhost/app/index.php/facpgpedido/validar",
+			"name": "Crear Facturas Pagos Pedidos",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"accion\" : \"create\",\n\t\"factura_pagos_pedido\" : {\n\t\"nro_pedido\" : \"999-17\",\n\t\"id_factura_pagos\" : 3,\n\t\"valor\" : 123.12,\n\t\"concepto\" : \"THC\",\n\t\"fecha_inicio\" : \"\",\n\t\"fecha_fin\" : \"\",\n\t\"id_user\" : 1\n\t}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_8932a42940894eb4a519a640012af552"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505552649698,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_e1563310c8014466915bce161e874072",
+			"parentId": "fld_fd9810573308481e9f8f753b03f36d1f",
+			"modified": 1505617697430,
+			"created": 1505552652011,
+			"url": "http://localhost/app/index.php/facpgpedido/validar",
+			"name": "Actualizar Facturas Pagos Pedidos",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"accion\" : \"update\",\n\t\"id_factura_pagos_pedido\" : 3,\n\t\"factura_pagos_pedido\" : {\n\t\"nro_pedido\" : \"999-17\",\n\t\"id_factura_pagos\" : 3,\n\t\"valor\" : 123.12,\n\t\"concepto\" : \"THC\",\n\t\"fecha_inicio\" : \"2017-09-12\",\n\t\"fecha_fin\" : \"2017-10-12\",\n\t\"id_user\" : 1\n\t}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_8932a42940894eb4a519a640012af552"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505552638117,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_4f5f6c702b6449b69b19bb59b74324db",
+			"parentId": "fld_fd9810573308481e9f8f753b03f36d1f",
+			"modified": 1505617716896,
+			"created": 1505552663880,
+			"url": "http://localhost/app/index.php/facpgpedido/eliminar/2",
+			"name": "Eliminar Facturas Pagos Pedidos",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1505549347261.5,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_7da9faa3dc4e40488df8775ae4e0aac9",
+			"parentId": "fld_43c9a462d9c84d85a9a6c9f23ddf4aa9",
+			"modified": 1505613874386,
+			"created": 1505552709007,
+			"url": "http://localhost/app/index.php/facinfdetalle/listar/2",
+			"name": "Listar Factura Informativa Detalle",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1505552709007,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_4d14f132d0184970b8572fbe458936b5",
+			"parentId": "fld_43c9a462d9c84d85a9a6c9f23ddf4aa9",
+			"modified": 1505614583875,
+			"created": 1505552725538,
+			"url": "http://localhost/app/index.php/facinfdetalle/validar",
+			"name": "Crear Factura Informativa Detalle",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"accion\" : \"create\",\n\t\"factura_informativa_detalle\":{\n\t\"id_factura_informativa\" : 2,\n\t\"cod_contable\" : \n\t\t\"02032260030302090187\" ,\n\t\"nro_cajas\" : 43,\n\t\"id_user\" : 1\n\t}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_3c954594c7cc4c2bb50843f91b02bf1a"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505552725538,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_8ca4dc0821804a74aa4864a2b1e3e87e",
+			"parentId": "fld_43c9a462d9c84d85a9a6c9f23ddf4aa9",
+			"modified": 1505614600225,
+			"created": 1505552727595,
+			"url": "http://localhost/app/index.php/facinfdetalle/eliminar/3",
+			"name": "Eliminar Factura Informativa Detalle",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1505552679352.5,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_62c9c51cc0474cd9a2976c436461b02a",
+			"parentId": "fld_43c9a462d9c84d85a9a6c9f23ddf4aa9",
+			"modified": 1505615200225,
+			"created": 1505552744163,
+			"url": "http://localhost/app/index.php/facinfdetalle/validar",
+			"name": "Actualizar Factura Informativa Detalle",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"accion\" : \"update\",\n\t\"id_factura_informativa_detalle\" : 4,\n\t\"factura_informativa_detalle\":{\n\t\"id_factura_informativa\" : 2,\n\t\"cod_contable\" : \n\t\t\"02032260030302090187\" ,\n\t\"nro_cajas\" : 99,\n\t\"id_user\" : 1\n\t}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_3c954594c7cc4c2bb50843f91b02bf1a"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505552717272.5,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_f428da2a4b974779826da2d57ecae401",
+			"parentId": "fld_4725dc7bf94e4cd996a4a0bace9e831b",
+			"modified": 1505553332394,
+			"created": 1505552773818,
+			"url": "http://localhost/app/index.php/facturapagos/listar",
+			"name": "Listar Factura Pagos",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1505552773818,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_48da6fecab49432ca64a3e459bfa4787",
+			"parentId": "fld_4725dc7bf94e4cd996a4a0bace9e831b",
+			"modified": 1505617129165,
+			"created": 1505552779093,
+			"url": "http://localhost/app/index.php/facturapagos/eliminar/7",
+			"name": "Eliminar Factura Pagos",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1505552779093,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_e528226fc923446494986f6ffbd9dc36",
+			"parentId": "fld_4725dc7bf94e4cd996a4a0bace9e831b",
+			"modified": 1505615308350,
+			"created": 1505552788385,
+			"url": "http://localhost/app/index.php/facturapagos/validar",
+			"name": "Crear Factura Pagos",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\t\"accion\": \"create\",\n\t\t\"factura_pagos\": {\n\t\t\t\"identificacion_proveedor\": \"1111111111118\",\n\t\t\t\"nro_factura\": \"64323950\",\n\t\t\t\"fecha_emision\": \"\",\n\t\t\t\"valor\": \"123.86\",\n\t\t\t\"saldo\": \"00,90\",\n\t\t\t\"comentarios\": \"\",\n\t\t\t\"id_user\": \"1\"\n\t\t}\n\t}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_78140f9817624773896b065585d21df4"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505552776455.5,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_9c8028a0a21b4a4db3b6173d15dc653a",
+			"parentId": "fld_4725dc7bf94e4cd996a4a0bace9e831b",
+			"modified": 1505616759193,
+			"created": 1505552792436,
+			"url": "http://localhost/app/index.php/facturapagos/validar",
+			"name": "Actualizar Factura Pagos",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"accion\" : \"update\",\n\t\"id_factura_pagos\": \"8\",\n\t\"factura_pagos\":{\n\t\t\t\"identificacion_proveedor\": \"1111111111118\",\n\t\t\t\"nro_factura\": \"64323950\",\n\t\t\t\"fecha_emision\": \"2017-10-19\",\n\t\t\t\"valor\": \"909.860\",\n\t\t\t\"saldo\": \"0\",\n\t\t\t\"comentarios\": \"\",\n\t\t\"id_user\": \"1\"\n\t}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_78140f9817624773896b065585d21df4"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1505552777774.25,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		}
+	]
+}

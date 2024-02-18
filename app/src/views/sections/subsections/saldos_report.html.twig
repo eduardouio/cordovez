@@ -1,0 +1,12 @@
+<div class="table-responsive">
+<table class="table table-bordered table-hover table-striped">
+{% for item in data %}
+<tr>
+<td>{{ loop.index0 }}</td>
+{% for td in item %}
+<td nowrap="nowrap">{{ td }}</td>
+{% endfor %}
+</tr>
+{% endfor %}
+</table>
+</div>

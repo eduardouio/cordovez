@@ -1,0 +1,128 @@
+{% set countActives = 0 %}
+{% set countInactives = 0 %}
+{% for product in products %}
+{% if product.estado == 1 %}
+{% set countActives = (countActives + 1) %}
+{% endif %}
+{% endfor %}
+<div class="producto">
+   <div class="row">
+      <div class="col-sm-3">
+         <a href="{{ rute_url }}producto/nuevo/">
+         <button class="btn btn-sm btn-default">
+         <span class="fa fa-plus fa-fw"></span>
+         Nuevo Producto
+         </button>
+         </a>
+      </div>
+      <div class="col-sm-2">
+         <h5 class="text-primary"> <small>Total: </small> <span id="suma"> {{ count | number_format(0, '.', ',') }} Productos </span></h5>
+      </div>
+      <div class="col-sm-2">
+         <h5 class="text-primary"> <small>Activos: </small> <span id="suma"> {{ countActives | number_format(0, '.', ',')}}</span></h5>
+      </div>
+      <div class="col-sm-2">
+         <h5 class="text-danger"> <small>Inactivos: </small> <span id="suma">  {{ countInactives | number_format(0, '.', ',') }} </span></h5>
+      </div>
+      <div class="col-sm-3">
+         <form action="{{rute_url}}producto/buscar/" 
+            method="post" 
+            class="form-inline" 
+            role="form">
+            <div class="form-group">
+               <input 
+                  type="text" 
+                  name="searchCriteria"
+                  class="form-control input-sm" 
+                  placeholder="Buscar"
+                  >
+            </div>
+            <button 
+               type="submit"
+               class="btn btn-sm" >
+            &nbsp;&nbsp;&nbsp;
+            <span class="fa fa-search fa-fw"></span>
+            &nbsp;&nbsp;&nbsp;
+            </button>
+         </form>
+      </div>
+   </div>
+   <br>
+   <div class="row">
+         <table class="table table-hover table-bordered table-striped table-condensed">
+            <thead>
+               <tr style="background-color: #c1c1c1;">
+                  <th>#</th>
+                  <th>Cod Producto</th>
+                  <th>Nombre</th>
+                  <th>Proveedor</th>
+                  <th>Capacidad</th>
+                  <th>%G</th>
+                  <th>Cant Caja</th>
+                  <th>Valor Und</th>
+                  <th>Valor Caja</th>
+                  <th>Acciones</th>
+               </tr>
+            </thead>
+            <tbody>
+               {% for product in products %}
+               <tr>
+                  <td>{{loop.index}}</td>
+                  <td>
+                  <span class="fa fa-pencil"></span>
+                     <a href="{{ rute_url }}producto/editar/{{product.id_producto}}">
+                  {{product.cod_contable}}
+                  </a>
+                  </td>
+                  <td>
+                  <span class="fa fa-eye"></span>
+                     <a href="{{ rute_url }}producto/presentar/{{product.cod_contable}}">
+                     {{product.nombre}}
+                     </a>
+                  </td>
+                  <td class="text-center">
+                     <a href="{{ rute_url }}proveedor/presentar/{{product.identificacion_proveedor}}" target="_blank">
+                     <span class="fa fa-eye"></span> Ver
+                     </a>
+                  </td>
+                  <td class="text-center">{{product.capacidad_ml}}</td>
+                  <td class="text-right">{{product.grado_alcoholico}} %</td>
+                  <td class="text-right">{{product.cantidad_x_caja}}</td>
+                  {% if  (product.costo_caja | number_format(4)) > 0 %}
+                   	<td class="text-right">{{((product.costo_caja)/(product.cantidad_x_caja)) | number_format(4,',','.') }}</td>
+                  	{% else %}
+                  	<td class="text-right"> 0.0000 </td>
+                  {% endif %}                 
+                  <td class="text-right"> {{ product.costo_caja | number_format(4,',','.')}}</td>
+                  <td>
+                     <div class="dropdown">
+                        <button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-sm btn-default">
+                        <span class="fa fa-chevron-down" ></span>
+                        Seleccione
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dLabel">
+                           <li> <a href="{{rute_url}}producto/presentar/{{product.cod_contable}}"> <span class="fa fa-eye fa-fw"></span>
+                              Ver Producto </a>  
+                           </li>
+                              <li> <a href="{{rute_url}}proveedor/presentar/{{product.identificacion_proveedor  }}">
+                                <span class="fa fa-eye fa-fw"></span>
+                                Ver Proveedor</a> 
+                              </li>
+                              <li> <a href="{{rute_url}}producto/editar/{{product.id_producto}}">
+                                <span class="fa fa-pencil fa-fw"></span>
+                                Editar Producto</a> 
+                              </li>
+                              <li> <a href="{{rute_url}}producto/eliminar/{{product.id_producto}}">
+                                <span class="fa fa-trash fa-fw"></span>
+                                Elminar Producto</a> 
+                              </li>
+                        </ul>
+                     </div>
+                  </td>
+               </tr>
+               {% endfor %}
+            </tbody>
+         </table>
+   </div>
+</div>
+<!--tabPedido-->

@@ -1,0 +1,229 @@
+{% if origin_expense == true %}
+  <div class="alert alert-warning">
+    Este formulario le permite aplicar el tipo de cambio en el pedido para la provisión de <strong> Gastos en Origen </strong> 
+    {% if type_change > 1 %}
+    <br />
+    Este pedido usa en <strong> Moneda Extrangera </strong>, ingrese el tipo de cambio que el proveedor aplicó en la factura para el cobro del servicio, y si modifica la provisión use moneda extrangera
+    {% endif %}		 
+  </div>  
+  {% endif %}
+
+<form action="{{rute_url}}gstinicial/validar" method="post">
+  <input type="hidden" name="id_gastos_nacionalizacion" value="{{initExpense.id_gastos_nacionalizacion}}">
+  <div class="row">
+    <div class="col-sm-1">
+      <div class="form-group">
+        <label>Pedido</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          name="nro_pedido"
+          value="{{order.nro_pedido}}" 
+          readonly="true" 
+          >
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <div class="form-group">
+        <label>Concepto</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          name="concepto"
+          id="concepto"
+          maxlength="45"
+          value="{{ initExpense.concepto }}" 
+          readonly="true" 
+          >
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="form-group">
+        <label>Fecha </label>
+        <input 
+        type="text" 
+        class="form-control fecha" 
+        id="fecha" 
+        required="required" 
+        name="fecha" 
+        {% if initExpense.fecha != null%}
+        value="{{ initExpense.fecha | date ('d/m/Y') |raw}}" 
+        {% endif %}
+        autocomplete="off"
+        >
+      </div>
+    </div>    
+    
+    {% if origin_expense == true %}
+    <div class="col-sm-2">
+      <div class="form-group">
+        <label>Tipo De Cambio</label>
+        <input 
+          class="form-control" 
+          type="number" 
+          step="any" 
+          name="tipo_cambio_go"
+          id="tipo_cambio_go"
+          {% if type_change == 1 %}
+          	readonly="readonly" 
+          	value = "1"
+          	{% else %}
+              value="{{ order.tipo_cambio_go | number_format(5, '.','') }}"           	
+          {% endif %}
+          >
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="form-group">
+        <label>Provisión
+        {% if type_change == 1 %}
+        (USD)
+        {% else %}
+        (EURO)
+        {% endif %} 
+        </label>
+        <input 
+          class="form-control" 
+          type="number" 
+          step="any" 
+          name="valor_provisionado"
+          id="valor_provisionado"
+          value="{{ initExpense.valor_provisionado }}"
+          >
+      </div>
+    </div>
+    <div class="col-sm-2">
+        <div class="form-group">
+        	<label>Provisión (USD)</label>
+        <input type="text" class="form-control" id="provision_usd" disabled="disabled"/>
+        </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="form-group">
+        <label>Comentarios</label>
+        <textarea 
+          name="comentarios" 
+          rows="1" 
+          id="comentarios" 
+          class="form-control"
+          maxlength="250">{{initExpense.comentarios | raw}}</textarea>
+      </div>
+    </div>
+  </div>
+  
+ {% else %}
+ 
+    <div class="col-sm-2">
+      <div class="form-group">
+        <label>Provisión (USD)
+        </label>
+        <input 
+          class="form-control" 
+          type="number" 
+          step="any" 
+          name="valor_provisionado"
+          id="valor_provisionado"
+          value="{{ initExpense.valor_provisionado }}"
+          >
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="form-group">
+        <label>Comentarios</label>
+        <textarea 
+          name="comentarios" 
+          rows="1" 
+          id="comentarios" 
+          class="form-control"
+          maxlength="250">{{initExpense.comentarios | raw}}</textarea>
+      </div>
+    </div>
+ {% endif %}
+ 
+  <div class="row">
+    <div class="col-md-12">
+      <hr>
+      <button type="submit" class="btn btn-sm btn-primary" >
+      <span class="fa fa-save fa-fw"></span>
+      Guardar Registro
+      </button>
+      <a href="{{rute_url}}gstinicial/validargi/{{order.nro_pedido}}" class="btn btn-sm btn-default">
+      <span class="fa fa-arrow-left fa-fw"></span>
+      Regresar Gastos Iniciales
+      </a>
+    </div>
+  </div>
+</form>
+<script type="text/javascript">
+  $('#comentarios').keyup(function(){
+  	this.value = this.value.toUpperCase();
+  });
+  
+  var newInput = `<div class="col-sm-2">
+  	<div class="form-group">
+  		<label>Fecha (Hasta)</label>
+  		 <div class="input-group">
+             <input 
+                type="text" 
+                class="form-control" 
+                id="fecha_fin" 
+                required="required" 
+                name="fecha_fin" 
+                value="{{ initExpense.fecha_fin | date ('d/m/Y')}}"
+                >
+             <div class="input-group-addon">
+                <span class="glyphicon glyphicon-th"></span>
+             </div>
+          </div>
+  	</div>
+  </div>
+  `;
+  
+  checkDates();
+  
+  function checkDates() {
+  	var concepto = $('#concepto').val();
+  
+  	if (( concepto === 'ALMACENAJE INICIAL') ||
+  		   ( concepto === 'ALMACENAJE ALMAGRO') ||
+  		   ( concepto === 'DEMORAJE')
+  		  ){
+  
+  		$('#hasta').append(newInput).fadeIn('slow');
+  		$('#fecha_fin').datepicker({
+     			language: "es",
+     			daysOfWeekHighlighted: "1"
+  				});
+  	}};
+</script>
+
+{% if origin_expense == true %}
+<script type="text/javascript">
+	function calcularExpense(){
+		var tipo_cambio = parseFloat($('#tipo_cambio_go').val());
+		var provision = parseFloat($('#valor_provisionado').val());
+
+		if(isNaN(tipo_cambio)){
+			tipo_cambio = 0;
+			}
+
+		if(isNaN(provision)){
+			provision = 0;
+			}
+		
+		console.dir(tipo_cambio);
+		provision_usd =  Math.round((tipo_cambio * provision ) * 100) / 100
+				
+		$('#provision_usd').val(provision_usd);
+	}
+
+	$('#valor_provisionado').keyup(function(){
+		calcularExpense();
+		});
+	$('#tipo_cambio_go').keyup(function(){
+		calcularExpense();
+		});
+</script>
+{% endif %}

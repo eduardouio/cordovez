@@ -1,0 +1,5 @@
+{
+    "editor.cursorBlinking": "smooth",
+    "editor.cursorStyle": "block",
+    "editor.rulers": [80,79],
+}

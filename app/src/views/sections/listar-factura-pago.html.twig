@@ -1,0 +1,106 @@
+   <div class="row">
+      <div class="col-sm-4">
+         <a href="{{ rute_url }}facturapagos/nuevo/">
+         <button class="btn btn-sm btn-primary">
+         <span class="fa fa-file fa-fw"></span>
+         Nuevo Comprobante
+         </button>
+         </a>
+         <a href="{{ rute_url }}facturapagos/checkinvoices/">
+         <button class="btn btn-sm btn-default">
+         Cerrar Facturas Abiertas
+         <span class="fa fa-lock"></span>
+         </button>
+         </a>
+      </div>
+      <div class="col-sm-5">&nbsp;</div>
+      <div class="col-sm-3">
+         <form action=""
+            method="POST"
+            class="form-inline"
+            role="form">
+            <div class="form-group">
+               <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Buscar"
+                  name = "param"
+                  >
+            </div>
+            <button
+               type="submit"
+               class="btn">
+            <span class="fa fa-search fa-fw"></span>
+            </button>
+         </form>
+      </div>
+   </div>
+<div class="row">
+   <table class="table table-hover table-bordered table-striped">
+      <thead>
+         <tr style="background-color: #c1c1c1;">
+            <th>#</th>
+            <th>Proveedor</th>
+            <th>N Factura</th>
+            <th>Emisión</th>
+            <th>Pedidos</th>
+            <th>Valor</th>
+            <th>Saldo</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+         </tr>
+      </thead>
+      <tbody>
+         {% for document in documentsPaids %}
+         <tr>
+            <td>{{ loop.index }}</td>
+            <td>
+            {% if document.bg_closed == 1 %}
+               	<span class="fa fa-check text-success"></span>
+               {% else %}
+               	<span class="fa fa-warning text-danger"></span>
+               {% endif %}
+               <small class="text-gray">[{{ document.identificacion_proveedor }}]</small> {{ document.nombre}}
+            </td>
+            <td class="number">
+               {{ document.nro_factura }}
+            </td>
+            <td class="number">
+               {{ document.fecha_emision | date('d/m/Y')}}
+            </td>
+            <td class="number">
+            {% for order in document.orders %}
+            	{% if loop.index < 4 %}
+            		<label class="label label-default">{{ order }}</label>
+            	{% endif %}
+            {% endfor %}
+            {% if ((document.orders | length) > 3) %}
+            		[+]
+            	{% endif %}
+            </td>
+            <td class="text-right">$ {{ document.valor | number_format(2, '.', ',') }}</td>
+            <td class="text-right text-gray">$ {{ document.saldo | number_format(2, '.', ',') }}</td>
+            <td class="text-center">
+                {% if document.bg_closed == 1 %}
+               	<span class="fa fa-check text-success"></span>
+               {% else %}
+               	<span class="fa fa-warning text-danger"></span>
+               {% endif %}
+            </td>
+            <td>
+            <small>
+            <a href="{{ rute_url }}facturapagos/presentar/{{ document.id_documento_pago}}">
+                        <span class="fa fa-eye fa-fw"></span>
+                        Ver</a>
+            </small>
+            <small>
+             <a href="{{ rute_url }}facturapagos/eliminar/{{ document.id_documento_pago }}">
+                        <span class="fa fa-trash fa-fw"></span> Eliminar </a>
+            </small>
+            </td>
+         </tr>
+         {% endfor %}
+      </tbody>
+   </table>
+</div>
+<!--tabPedido-->

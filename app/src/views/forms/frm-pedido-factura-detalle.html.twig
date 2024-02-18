@@ -1,0 +1,257 @@
+<div class="row">
+	<div class="alert text-warning">
+	<span class="fa fa-warning"></span>
+	Si el pedido tiene Tasa de Control basada en pesos, se debe ingresar el peso del item,
+	es decir el peso del total de cajas de este producto, 
+	este valor se encuentra al final de la DAI. 
+	</div>
+</div>
+
+<div class="well well-sm">
+   <div class="row">
+      <div class="col-md-3">
+         Proveedor: <span class="text-primary">{{ supplier.nombre }}</span>
+      </div>
+      <div class="col-md-3">
+         Fecha: <span class="text-primary"> {{ invoice.fecha_emision }} </span>
+      </div>
+      <div class="col-md-3"> Moneda/TC: <span class="text-primary">{{ invoice.moneda }} / {{ invoice.tipo_cambio | number_format(2,',','.')  }}</span> </div>
+      <div class="col-md-3">Valor: <span class="text-primary"> {{ invoice.valor | number_format(2,',','.') }} </span></div>
+   </div>
+</div>
+<form method="post" action="{{rute_url}}detallepedido/validar">
+   <input type="hidden" name="id_pedido_factura" value="{{invoice.id_pedido_factura}}">
+   <div class="row">
+      <div class="col-md-4">
+         <div class="form-group">
+            <label>Producto &nbsp;&nbsp; <a href="{{ rute_url }}producto/nuevo"> <span class="fa fa-plus"></span>Nuevo Producto</a></label>
+            <input
+            class="form-control" 
+            name="cod_contable" 
+            id="autocomplete"
+            autofocus="autofocus"
+            >  
+         </div>
+      </div>
+      <div class="col-md-2">
+         <div class="form-group">
+            <label>Cod Contable</label>
+            <input 
+            type="text" 
+            name="cod_contable"
+            id="cod_contable"
+            readonly="" 
+            class="form-control"
+            autocomplete="off"
+            >
+         </div>
+      </div>
+      <div class="col-md-2">
+         <div class="form-group">
+            <label>Cod ICE</label>
+            <input 
+            type="text" 
+            id="cod_ice"
+            autocomplete="off"
+            disabled="" 
+            class="form-control" 
+            >
+         </div>
+      </div>
+            <div class="col-md-1">
+         <label>Cajas</label>
+         <input 
+         type="number" 
+         class="form-control" 
+         name="nro_cajas"
+         id="nro_cajas"
+         required="true" 
+         step="1" 
+         >
+      </div>
+      <div class="col-md-1">
+         <label>Modificar</label>
+         <input 
+         type="checkbox" 
+         class="form-control"
+         id="chage_params" 
+         >
+      </div>
+      <div class="col-md-1">
+         <div class="form-group">
+            <label>Grado Alc</label>
+            <input 
+            class="form-control" 
+            type="number" 
+            step="any" 
+            name="grado_alcoholico"
+            required="true" 
+            id="grado_alcoholico" 
+            maxlength="4" 
+            readonly="true" 
+            >
+         </div>
+      </div>
+      <div class="col-md-1">
+         <label>Costo Caja</label>
+         <input 
+         type="number" 
+         class="form-control" 
+         name="costo_caja"
+         id="costo_caja"
+         required="true" 
+         step="0.0000000001"
+         >
+
+   </div>
+</div>   
+<div class="row">
+<div class="col-md-2">
+	<div class="form-group">
+	<label for="">Peso Item KG</label>
+	<input 
+		type="number" 
+		class="form-control"
+		name ="peso"
+		step="any"
+		/>
+	</div>
+</div>
+	<div class="col-md-2">
+	<div class="input-group">
+		<label>Cantidad Caja</label>
+		<input type="text" disabled="" id="cantidad_caja" class="form-control">
+	</div>
+</div>
+<div class="col-md-2">
+	<div class="input-group">
+		<label>Unidades</label>
+		<input type="text" disabled="" id="unidades" class="form-control">
+	</div>
+</div>
+<div class="col-md-2">
+	<div class="input-group">
+		<label>Capacidad ML</label>
+		<input type="text" disabled="" id="capacidad_ml" class="form-control">
+	</div>
+</div>
+<div class="col-md-2">
+	<div class="input-group">
+		<label>Costo Und</label>
+		<input type="text" disabled="" id="costo_und" class="form-control">
+	</div>
+</div>
+<div class="col-md-2">
+	<div class="form-group">
+		<label class="text-danger">Costo Total</label>
+		<input type="text" id="costoTotal" class="form-control" style="color:#a94442;font-weight: bold;" disabled="">
+	</div>
+</div>
+<div class="col-md-2">&nbsp;</div>
+</div>
+   <div class="row">
+      <div class="col-md-12">
+         <hr>
+         <button type="submit" class="btn btn-sm btn-default" >
+            <span class="fa fa-save fa-fw"></span>
+            Guardar Producto
+         </button>
+      <a href="{{rute_url}}pedidofactura/presentar/{{invoice.id_pedido_factura}}" class="btn btn-sm btn-default">
+            <span class="fa fa-arrow-left fa-fw"></span>
+            Regresar Factura
+         </a>
+      </div>
+   </div>
+</form>
+
+<script type="text/javascript">
+var maxValueInvoice = {{invoice.valor}};
+</script>
+
+<script type="text/javascript">
+   var products = {{ productsarray | raw }};
+   
+	$('#nro_cajas').change(function(){
+		var numBoxes = parseFloat(this.value);
+		var itemPerBox = parseFloat($('#cantidad_caja').val());
+		var valBox = parseFloat($('#costo_caja').val());
+      var costosTotalItems = parseFloat(numBoxes * valBox);
+      costosTotalItems = Math.round(costosTotalItems * 1000)/1000;
+		$('#unidades').val(numBoxes * itemPerBox);
+		$('#costoTotal').val(costosTotalItems);
+		if(costosTotalItems > maxValueInvoice ){
+			alert('La cantidad de cajas excede el valor de la factura!');
+			$('#nro_cajas').val(0);
+			$('#costoTotal').val(0);
+			$('#unidades').val(0);
+		}
+	});
+
+$('#costo_caja').change(function(){
+		var numBoxes = parseInt($('#nro_cajas').val());
+		var itemPerBox = parseFloat($('#cantidad_caja').val());
+		var valBox = parseFloat(this.value);
+      var costosTotalItems = parseFloat(numBoxes * valBox);
+      costosTotalItems = Math.round(costosTotalItems * 1000)/1000;
+		$('#unidades').val(numBoxes * itemPerBox);
+		$('#costoTotal').val(costosTotalItems);
+
+		if(costosTotalItems > maxValueInvoice ){
+			alert('La cantidad de cajas excede el valor de la factura!');
+			$('#nro_cajas').val(0);
+			$('#costo_caja').val(0);
+			$('#costoTotal').val(0);
+			$('#unidades').val(0);
+		}
+});
+
+   $('#chage_params').click(function(){
+      if( $('#chage_params').is(':checked') ){
+         $('#grado_alcoholico').removeAttr('readonly');
+         $('#costo_caja').removeAttr('readonly');
+         $('#grado_alcoholico').focus();
+      }else{
+         $('#grado_alcoholico').attr('readonly', true);
+         $('#costo_caja').attr('readonly', true);
+      }
+   });
+</script>
+
+
+<script type="text/javascript">
+   var productsII = {{ products | json_encode() | raw }};
+   var productsIIKey = [];
+
+  $.each(productsII, function( k, v ){
+    productsIIKey.push(v.nombre);
+  });
+
+  console.dir(productsIIKey);
+  
+  $( "#autocomplete" ).autocomplete({
+    source: productsIIKey,
+  });
+
+  $("#autocomplete").on("autocompletechange", function(){
+    var value = this.value;
+    $.each(productsII, function(k,v){
+      if(value === v.nombre){
+        console.log('Nuevo Valor Seleccionado ');
+        $('#cod_contable').val(v.cod_contable);
+        $('#cod_ice').val(v.cod_ice);
+        $('#nro_cajas').val('');
+        $('#grado_alcoholico').val(v.grado_alcoholico);
+        $('#costo_und').val(Math.round((v.costo_caja/v.cantidad_x_caja) * 100)/100);
+        $('#cantidad_caja').val(v.cantidad_x_caja);
+        $('#capacidad_ml').val(v.capacidad_ml);
+        $('#nro_cajas').focus();
+        if(v.costo_caja == 0){
+          $('#costo_caja').val('');
+        }else{
+          $('#costo_caja').val(v.costo_caja);
+        }
+    }
+   });
+});
+</script>
+

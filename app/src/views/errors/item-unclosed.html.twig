@@ -1,0 +1,50 @@
+
+<div class="well well-sm">
+   <h5 class="text-danger">
+      <span class="fa fa-warning"></span>
+      Antes de continuar debe cerrar los siguientes pedidos y/o parciales abiertos
+   </h5>
+</div>
+<div class="row">
+   <div class="col-md-3"></div>
+   <div class="col-md-6">
+      <table class="table table-hover table-striped table-condensed table-bordered">
+         <thead>
+            <tr>
+               <th>#</th>
+               <th>Pedido</th>
+               <th>Régimen</th>
+               <th>Estado</th>
+               <th>Enlace</th>
+            </tr>
+         </thead>
+         <tbody>
+            <tr>
+               {% set x = 1 %}
+               {%  for order in errors.orders   %}
+            <tr>
+               <td class="text-center">{{ x }}</td>
+               <td> <span class="fa fa-cubes"></span> {{ order.order }}</td>
+               <td><label class="label label-danger ">R-{{ order.regimen }}</label> Consumo</td>
+               <td class="text-danger"> <span class="fa fa-folder-open"></span> Pedido Abierto </td>
+               <td> <a target="_blank" href="{{ rute_url }}impuestos/pd/{{ order.order }}"> Mostrar</a> </td>
+            </tr>
+            {% set x = x + 1 %}
+            {% endfor %}
+            {%  for parcial in errors.parcials   %}
+            <tr>
+               <td class="text-center">{{ x }}</td>
+               <td><span class="fa fa-cubes"></span> {{ parcial.order }}</td>
+               <td><label class="label label-danger ">R-{{ parcial.regimen }}</label> Almagro</td>
+               <td class="text-danger"><span class="fa fa-folder-open"></span> Parcial Abierto </td>
+               <td> <a target="_blank" href="{{ rute_url }}impuestos/pc/{{ parcial.parcial }}">Mostrar</a> </td>
+            </tr>
+            {% set x = x + 1 %}
+            {% endfor %}
+         </tbody>
+      </table>
+   </div>
+   <div class="col-md-3"></div>
+</div>
+<br />
+<a href="{{ rute_url }}reportes/" class="btn btn-sm btn-default"> <span class="fa fa-arrow-left"></span> Volver </a>

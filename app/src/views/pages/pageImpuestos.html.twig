@@ -1,0 +1,13 @@
+{% include 'base/header.html.twig' %}
+{% include 'base/navbarheader.html.twig' %}
+{% include 'base/content.html.twig' %}
+	
+	{% if  regimen == 'R10' %}
+		{% include 'sections/table-taxes-r10.html.twig' %}
+	{% else %}
+		{% include 'sections/table-taxes.html.twig' %}	
+	{% endif %}
+	
+{% include 'base/content_close.html.twig' %}
+{% include 'base/signaturefoot.html.twig' %}
+{% include 'base/footer.html.twig' %}

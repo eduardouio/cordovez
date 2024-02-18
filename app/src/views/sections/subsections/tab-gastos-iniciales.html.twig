@@ -1,0 +1,121 @@
+        <div class="row">
+            <div class="col-sm-6">
+            {% if order.bg_haveExpenses == 0 and controller != 'factura_informativa' %}
+            <a href="{{rute_url}}gstinicial/validargi/{{order.nro_pedido}}">
+                  <button type="button" class="btn btn-default btn-sm" >
+                     <span class="fa fa-gear"></span>
+                     Generar Gastos Iniciales
+                  </button>
+               </a>
+               {% endif %}
+            {% if infoInvoice.bg_isclosed == 0 and controller == 'factura_informativa' %}
+            <a href="{{rute_url}}gstnacionalizacion/validar70/{{infoInvoice.id_factura_informativa}}">
+                  <button type="button" class="btn btn-default btn-sm" >
+                     <span class="fa fa-gear"></span> Generar Gastos Nacionalización
+                  </button>
+               </a>
+               {% endif %}
+            </div>
+            {% set cantidad = 0 %}
+            {% set provisionado = 0.0 %}
+            {% set convalidado = order.valuesOrder.localPaidsExpenses %}
+            {% for initialExpense in initialExpenses %}
+            {% set cantidad = cantidad + 1 %}
+            {% set provisionado = provisionado + initialExpense.valor_provisionado %}
+            {% endfor %}
+            <div class="col-sm-2">
+               <h5 class="text-primary"> <small>Cantidad: </small> <span id="suma"> {{ cantidad | number_format(0, '.', ',') }} </span></h5>
+            </div>
+            <div class="col-sm-2">
+               <h5 class="text-primary"> <small>Provisionado: </small> <span id="suma"> $ {{ provisionado | number_format(2, '.', ',')}}</span></h5>
+            </div>
+            <div class="col-sm-2">
+               <h5 class="text-danger"> <small>Justificado En Fact.: </small> <span id="suma"> $ {{ convalidado | number_format(2, '.', ',') }} </span></h5>
+            </div>
+         </div>
+         <br>
+         <div class="row">
+            <div class="col-sm-12">
+               <table class="table table-condensed table-hover table-bordered table-striped">
+                  <thead>
+                     <tr style="background-color: #c1c1c1;">
+                        <th>#</th>
+                        <th>Concepto</th>
+                        <th>Tipo</th>
+                        <th>Proveedor</th>
+                        <th>Comentarios</th>
+                        <th>Fecha</th>
+                        <th>Valor</th>
+                        <th>Acciones</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     {% for initialExpense in initialExpenses %}
+                     <tr>
+                        <td>{{loop.index}}</td>
+                        <td>
+                        <span class="fa fa-eye"></span>
+                           <a href="{{rute_url}}gstinicial/presentar/{{initialExpense.id_gastos_nacionalizacion}}">
+                           {{initialExpense.concepto}}
+                           </a>
+                        </td>
+                        <td>
+                            {{initialExpense.tipo}}
+                        </td>
+                        <td>
+                        <span class="fa fa-pencil"></span>
+                        {% if order.bg_haveExpenses == 0 %}
+                           <a href="{{rute_url}}gstinicial/editar/{{initialExpense.id_gastos_nacionalizacion}}">
+                            <small>{{initialExpense.supplier.nombre}}</small>
+                           </a>
+                       {% else  %}
+                        <small>{{initialExpense.supplier.nombre}}</small>  
+                       {% endif %}
+                        </td>
+                        <td><small>{{initialExpense.comentarios |raw }}</small></td>
+                        <td>
+                           {% if initialExpense.fecha != null %}
+                              {{initialExpense.fecha | date("d/m/Y") }}
+                           {% endif %}
+                     </td>
+                        <td>{{initialExpense.valor_provisionado | number_format(2, '.', ',')}}</td>
+                        <td>
+                           <div class="dropdown">
+                              <button class="btn btn-sm btn-default" id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              Acciones <span class="fa fa-list fa-fw" ></span>
+                              <span class="caret"></span>
+                              </button>
+                              <ul class="dropdown-menu" aria-labelledby="dLabel">
+                                 <li> 
+                                    <a href="{{rute_url}}gstinicial/presentar/{{initialExpense.id_gastos_nacionalizacion}}">
+                                    <span class="fa fa-eye fa-fw"></span>
+                                    Detalle Gasto Inicial
+                                    </a> 
+                                 </li>
+                                 {% if order.bg_haveExpenses == 0 %}
+                                 <li> 
+                                    <a href="{{rute_url}}gstinicial/editar/{{initialExpense.id_gastos_nacionalizacion}}">
+                                    <span class="fa fa-pencil fa-fw"></span>
+                                    Editar Gasto Inicial
+                                    <span class="label label-success"> {{initialExpense.id_gastos_nacionalizacion}}</span></a> 
+                                 </li>
+                                 <li>
+                                    <a href="{{rute_url}}gstinicial/eliminar/{{initialExpense.id_gastos_nacionalizacion}}">
+                                    <span class="text-danger fa fa-trash fa-fw"></span>
+                                    Elminar Gasto Inicial
+                                    <span class="label label-danger">
+                                    {{initialExpense.id_gastos_nacionalizacion}}
+                                    </span>
+                                    </a>   
+                                 </li>
+                                 {% endif %}
+                              </ul>
+                           </div>
+                        </td>
+                     </tr>
+                     {% endfor %}
+                  </tbody>
+               </table>
+            </div>
+         </div>
+         

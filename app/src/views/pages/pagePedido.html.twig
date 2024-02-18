@@ -1,0 +1,51 @@
+{% include 'base/header.html.twig' %}
+{% include 'base/navbarheader.html.twig' %}
+{% include 'base/content.html.twig' %}
+{% if selected_expenses == true %}
+   {% include 'sections/seleccionar-gi-provisiones.html.twig' %}
+{% endif %}
+{% if list_orders == true %}
+   {% include 'sections/listar-pedidos.html.twig' %}
+{% endif %}
+{% if show_order == true %}
+   {% include 'sections/mostrar-pedido.html.twig' %}    
+{% endif %}
+
+{% if delete_order == true %}
+   {% include 'sections/eliminar-pedido.html.twig' %}    
+{% endif %}
+
+   {% if form == true %}
+{% include 'forms/frm-pedido.html.twig' %}    
+<script type="text/javascript" src="{{base_url}}js/incoterms.js"></script>
+{% endif %}	
+{% if viewMessage == true %}
+<div class="well">
+   <h3 class="text-primary">	{{message}} </h3>
+   <br><br>
+   <p>
+      {% if deleted == true %} 
+      <a href="{{rute_url}}pedido/listar/">
+      <button class="btn btn-default btn-sm"><span class="fa fa-list"></span>
+      Volver a la lista
+      </button>
+      </a>
+      {% elseif fail == true %}  
+      		<a href="javascript:history.back(1)">
+      			<button class="btn btn-default btn-sm"><span class="fa fa-arrow-left"></span>
+      		Volver Atrás
+      	</button>
+      	</a>
+      {% else %}
+      		<a href="{{rute_url}}pedido/presentar/{{order}}">
+      			<button class="btn btn-default btn-sm"><span class="fa fa-eye"></span>
+      		Mostrar 
+      	</button>
+      	</a>
+      {% endif %}				
+   </p>
+</div>
+      {% endif %}
+{% include 'base/content_close.html.twig' %}
+{% include 'base/signaturefoot.html.twig' %}
+{% include 'base/footer.html.twig' %}

@@ -1,0 +1,110 @@
+<div class="proveedor">
+  <br>
+  <div class="row">
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered table-striped">
+        <thead>
+          <tr style="background-color: #c1c1c1;">
+            <th>Nombre</th>
+            <th>Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-right"> <b>ID:</b></td>
+            <td>{{ initExpense.id_gastos_nacionalizacion }}</td>
+          </tr>
+          <tr>
+            <td class="text-right"><b>ID Proveedor:</b></td>
+            <td>{{ supplier.identificacion_proveedor }}</td>
+          </tr>
+          <tr>           
+            <td class="text-right"><b>Nombre Proveedor:</b></td>
+            <td>{{supplier.nombre}}</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Tipo Proveedor:</b></td>
+            <td> {{supplier.tipo_provedor}} </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Fecha:</b></td>
+            <td>
+              {% if initExpense.fecha != null %}
+                {{ initExpense.fecha | date('d/m/Y') }}
+              {% endif %}
+          </td>
+          </tr>         
+          <tr>
+            <td class="text-right"> <b>Fecha Fin:</b></td>
+            <td>
+              {% if initExpense.fecha_fin != null %}
+                {{ initExpense.fecha_fin | date('d/m/Y')}}
+              {% endif %}
+          </td>
+          </tr>          
+          <tr>
+            <td class="text-right"> <b>Concepto:</b></td>
+            <td> {{ initExpense.concepto | raw }}</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Valor Provisionado:</b></td>
+            <td> {{ initExpense.valor_provisionado }} </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Comentarios:</b></td>
+            <td> {{ initExpense.comentarios }} </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Status:</b></td>
+            <td> 
+              {% if initExpense.bg_closed == 0 %}
+                <span class="label label-warning"> 
+                Provisión Sin Justificar 
+              </span>
+              {% else %}
+                <span class="label label-success">
+                Provisión Justificada 
+                 </span>
+              {% endif %}              
+            </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Creado El:</b></td>
+            <td> 
+              {% if initExpense.date_create != null %}
+                  {{ initExpense.date_create | date('m/d/Y H:m') }} 
+              {% endif %}
+              
+          </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Ultima Actualización:</b></td>
+            <td> 
+              {% if initExpense.last_update != null %}
+                  {{ initExpense.last_update | date('m/d/Y H:m') }} 
+              {% endif %}
+              
+          </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Creado Por:</b></td>
+            <td> {{ createBy.nombres }} </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-6">
+      <a href="{{rute_url}}pedido/presentar/{{order.nro_pedido}}" class="btn btn-default btn-sm">
+      <span class="fa fa-arrow-left fa-fw"></span>  Volver al Pedido {{order.nro_pedido}}
+    </a>
+      <a href="{{rute_url}}gstinicial/editar/{{initExpense.id_gastos_nacionalizacion}}" class="btn btn-default btn-sm">
+      <span class="fa fa-pencil fa-fw"></span>  Editar Gasto Inicial
+    </a>
+      <a href="{{rute_url}}gstinicial/eliminar/{{initExpense.id_gastos_nacionalizacion}}" class="btn btn-danger btn-sm">
+      <span class="fa fa-trash fa-fw"></span>  Eliminar Gasto Inicial
+    </a>
+    </div>
+  </div>
+</div>

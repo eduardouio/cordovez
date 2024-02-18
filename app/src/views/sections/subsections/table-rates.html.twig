@@ -1,0 +1,139 @@
+<div class="text-tittle">Provisiones Iniciales Aplicables</div>
+   <table class="table table-hover table-condensed table-striped">
+      <thead>
+         <tr>
+            <th>#</th>
+            <th>Concepto</th>
+            <th>Valor</th>
+            <th>Seleccionar</th>
+         </tr>
+      </thead>
+      <tbody>
+      	{% if init_expenses.have_initial_warenhouse == False %}
+         <tr>
+            <td>0</td>
+            <td>PROVISION ALMACENAJE INICIAL</td>
+            <td>--</td>
+            <td class="text-center">
+               <a href="
+               {% if order.bg_isclosed == 1 %}
+					#
+				{% else %}	
+               {{rute_url}}gstinicial/validarbodegainicial/{{order.nro_pedido}}
+               {% endif %}
+               "
+               >
+    <button class="text-primary">Provisionar</button>
+   </a>
+            </td>
+         </tr>
+         {% endif %}
+         
+         <form action="{{rute_url}}gstinicial/putInitialExpenses/" method="post" id="parcial_form">
+   			<input type="hidden" name="nro_pedido" value="{{order.nro_pedido}}">
+         {% for rateExpense in unused_expenses.unused_expenses %}
+         <tr>
+            <td>{{loop.index}}</td>
+            <td>{{rateExpense.concepto}}</td>
+			<td class="text-primary text-right"> <strong>
+			<input 
+				type="number" 
+				id="input"
+				step="any"
+				value="{{ rateExpense.valor | number_format(2,'.','')}}"
+				style="width: 80px; text-align: right; font-size: 10px;"
+				name="{{ rateExpense.concepto | replace({' ':'_'})}}_VALUE"
+				{% if order.bg_isclosed == 1 %}
+				disabled = "disabled"
+				{% endif %} 
+			/>
+		</strong>
+			</td>
+            <td class="pull-right">
+               <label class="control control-checkbox">
+               <input
+                  type="checkbox" 
+                  name="{{ rateExpense.concepto | replace({' ':'_'})}}" 
+                  value="{{rateExpense.id_tarifa_gastos}}"
+                  id= "{{rateExpense.id_tarifa_gastos}}"
+                  onclick="check({{rateExpense.id_tarifa_gastos}})"
+                  {% if order.bg_isclosed == 1%}
+					disabled = "disabled"
+			    {% endif %} 
+                  >
+                   <div class="control_indicator"></div>
+				</label>
+            </td>
+         </tr>
+         {% endfor %}
+         {% if order.regimen == 10 %}
+         <tr style="height: 40px;"><td colspan="4">
+         <br />
+         <strong class="text-primary">FECHA DE LLEGADA BODEGA EMPRESA</strong></td>
+         </tr>
+         <tr>
+         <td colspan="2">
+         {% if order.fecha_llegada_cliente != Null %}
+             <strong  class="text-success">{{ order.fecha_llegada_cliente | date('d/m/Y')}}</strong>
+         {% else %}
+         	<strong class="text-danger">SIN FECHA DE LLEGADA</strong>
+         {% endif %}
+         </td>
+         <td colspan="2">         
+            <input 
+            	type="text" 
+            	class="form-control fecha" 
+            	autocomplete="off" 
+            	name="fecha_llegada_cliente" 
+            	placeholder="dd/mm/yyyy"
+            	   {% if order.fecha_llegada_cliente != Null %}
+            	value="{{ order.fecha_llegada_cliente | date('d/m/Y')}}"
+                 {% endif %}
+            	{% if order.bg_isclosed == 1 %}
+				disabled = "disabled"
+				{% endif %} 
+            	>            	
+           </td>
+         </tr>
+         {% endif %}
+      </tbody>
+   </table>
+   <button
+      type= "submit"
+      class="btn btn-default btn-sm"
+      >
+   <span class="fa fa-warning fa-fw"></span>
+   Aplicar Gastos Iniciales
+   </button>
+   <br>
+   <br>
+</form>
+
+<script type="text/javascript">
+	$('#input').click(function(){
+		$('#input').removeAttr('value');
+	});
+
+</script>
+
+<script type="text/javascript">
+   var rates  = {{ unusedExpenses | json_encode() | raw }};  
+   
+   //Se encarga de comprobar si hay opciones iguales en la lista si las hay las deselecciona
+   function check(idItem){
+      var item = {};
+      var objSeleccionados = [];
+      $.each(rates, function(key, value){
+         if( parseInt(value.id_tarifa_gastos) === idItem ){
+            item = value;
+         }
+      });
+
+      //Quita el check en caso de que este seleccionados
+      $.each(rates, function(key, value){
+         if(value.concepto === item.concepto && parseInt(value.id_tarifa_gastos) != idItem){
+            $('#'+ value.id_tarifa_gastos).prop('checked', false);
+         }
+      });
+   }   
+</script>

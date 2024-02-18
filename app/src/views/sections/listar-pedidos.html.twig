@@ -1,0 +1,126 @@
+   <div class="row">
+      <div class="col-sm-4">
+         <a href="{{ rute_url }}pedido/listar/">
+         <button class="btn btn-sm btn-default">
+         <span class="fa fa-cubes fa-fw"></span> Pedidos Activos
+         </button>
+         </a>
+         <a href="{{ rute_url }}pedido/listar/?nro_pedido=cerrados">
+         <button class="btn btn-sm btn-default">
+         <span class="fa fa-cubes fa-fw"></span> <span class="fa fa-lock"></span> Pedidos Cerrados
+         </button>
+         </a>
+      </div>
+      <div class="col-sm-2">
+         <h4 class="text-primary">
+            <small>Pedidos Activos:</small> 
+            <span id="suma"> 
+                {{ orders_opened }}
+            </span>
+         </h4>
+      </div>
+      <div class="col-sm-3">
+         <h4 class="text-danger">
+            <small>
+            	Por Regimen [
+            	<span class="text-danger">10</span> 
+            	<span class="text-default"> / </span> 
+            	<span class="text-primary">70</span>
+            	]:
+            </small> 
+            	[
+            	<span class="text-danger"> 
+            	{{ infoBase.consumeOrders  | number_format(0, '.', ',') }}
+            	</span> 
+            	<span class="text-default"> / </span> 
+            	<span class="text-primary">
+                {{ infoBase.partialsOrders  | number_format(0, '.', ',') }}
+            </span>]
+         </h4>
+      </div>
+            <div class="col-sm-3" style="align: right;">
+      <form class="form-inline" method="get">
+  <div class="form-group">
+    <input type="text" class="form-control" name="nro_pedido" placeholder="Buscar Pedido" autocomplete="off" >
+	 <button type="submit" class="btn btn-sm btn-default"><span class="fa fa-search"></span></button>
+  </div>
+</form>
+      </div>
+   </div>
+   <div class="row">
+   <div class="col-md-12">
+      <table class="table table-hover table-bordered table-striped">
+         <thead>
+            <tr style="background-color: #c1c1c1;">
+            <td>#</td>
+               <th>Pedido</th>
+               <th>Origen</th>
+               <th>Proveedor</th>
+               <th>Arribo</th>
+               <th>Nro Referendo</th>
+               <th>Nro Matricula</th>
+               <th>Nacionalizado</th>
+               <th>Saldo</th>
+               <!--<th>Observaciones</th>-->
+               <th>Acciones</th>
+            </tr>
+         </thead>
+         <tbody>
+            {% for order in orders %}
+            <tr>
+            <td>{{ loop.index }}</td>
+               <td>
+                  {% if order.bg_isclosed == '1' %}  
+                  	<span class="fa fa-folder text-default"></span>
+                  {% else %}
+                   	<span class="fa fa-folder-open-o text-success"></span>
+                  {% endif %}
+               <a href="{{ rute_url }}gstinicial/validargi/{{ order.nro_pedido }}"><span class="fa fa-eye"></span> {{ order.nro_pedido }} </a>
+                  <small class="text-gray">[R{{ order.regimen }}]</small>
+               </td>
+               <td>{{ order.pais_origen }} <small class="text-gray">[{{ order.incoterm }}]</small> </td>
+               <td>
+               		{{ order.info.supplier.nombre }}
+               </td>
+               <td>
+                   {{ order.fecha_arribo | date('d/m/Y') }}
+                   <small class="text-gray">[21]</small>
+               </td>
+               <td class="text-right">
+                   {{ order.nro_refrendo }}
+               </td>
+               <td class="text-right">
+               	  {{ order.nro_matricula }}
+               </td>
+               <td class="text-right {{ text_class }}"> 
+                   {{ order.info.nationalized | number_format(2, '.', ',') }} <small class="text-gray"> [{{ order.info.num_parcials }}]</small>
+               </td>
+               <td class="text-right {{ text_class }}"> 
+                   {{ order.info.stock | number_format(2, '.', ',') }}
+               </td>
+               <!--  
+               <td class="text-right">
+                  {{ order.observaciones | upper }}
+               </td>
+               -->
+               <td>
+               <small>
+               	<a href="{{ rute_url }}pedido/presentar/{{ order.nro_pedido }}" class="btn btn-default btn-sm" style="padding: 0px 9px;">
+                           <span class="fa fa-eye"></span>
+               </a>&nbsp;
+                <a href="{{ rute_url }}gstinicial/validargi/{{ order.nro_pedido }}" class="btn btn-default btn-sm" style="padding: 0px 9px;">
+                           <span class="fa fa-gear"></span>  GI
+                           </a>
+                           &nbsp;
+                <a href="{{ rute_url }}report/gastosiniciales/{{ order.nro_pedido }}" target="_blank" class="btn btn-default btn-sm" style="padding: 0px 9px;">
+                <span class="fa fa-file-pdf-o"></span> 
+      				</a>
+                </small>
+               </td>
+            </tr>            
+            {% endfor %}
+         </tbody>
+      </table>
+   </div>
+
+ 

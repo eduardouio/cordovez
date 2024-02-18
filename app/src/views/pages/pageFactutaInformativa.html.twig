@@ -1,0 +1,75 @@
+{% include 'base/header.html.twig' %}
+{% include 'base/navbarheader.html.twig' %}
+{% include 'base/content.html.twig' %}
+{% if viewMessage == true %}
+	<div class="well">
+		<h3 class="text-primary">	{{ message }} </h3><br><br>
+		<p>
+		{% if formError == true %}
+				Debe especificar valores para:
+				<br><br>
+				<ul>
+			{% for input in data.columns %}
+			<li> {{ input }}</li>
+			{% endfor %}
+			</ul>
+			<br>
+			Los siguientes campos no tienen la longitud correcta
+			<ul>
+			{% for input in data.len %}
+			<li> {{ input }}</li>
+			{% endfor %}
+			</ul>
+		{% endif %}
+
+		{% if duplicateRow %}
+			<table class="table table-hover table-striped table-condensed">
+			<tr>
+			<th>Detalle</th>
+			<th>Valor</th>
+			</tr>
+			<tr>
+			<td>Nro Factura</td>
+			<td>{{ info_invoice.nro_factura_informativa }}</td>
+			</tr>
+			<tr>
+			<td>Fecha</td>
+			<td>{{ info_invoice.fecha_emision | date('d/m/Y' ) }}</td>
+			</tr>
+			<tr>
+			<td>Moneda</td>
+			<td>{{ info_invoice.moneda }}</td>
+			</tr>
+			<tr>
+			<td>Valor</td>
+			<td>{{ info_invoice.valor }}</td>
+			</tr>
+			</table>
+			<a href="{{rute_url}}facinformativa/presentar/{{ idInfoInvoice }}" class="btn btn-warning btn-sm">
+				<span class="fa fa-eye"></span> &nbsp; Ver Factura Informativa
+			</a>
+		{% endif %}
+			<!-- Si se elimina una factura informativa vuelve al pedido  -->
+			{% if deleted == true %}
+						<a href="{{rute_url}}facinformativa/presentar/{{ id_row }}">
+				<button>
+					<span class="fa fa-list"></span>
+					Ver
+				</button>
+				</a>
+			{% endif %}
+		</p>
+	</div>
+{% endif %}
+
+{% if show == true %}
+	{% include 'sections/mostrar-factura-informativa.html.twig' %}
+{% endif %}
+
+{% if frm_invoice == true %}
+	{% include 'forms/frm-factura-informativa.html.twig' %}
+{% endif %}
+
+{% include 'base/content_close.html.twig' %}
+{% include 'base/signaturefoot.html.twig' %}
+{% include 'base/footer.html.twig' %}

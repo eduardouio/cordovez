@@ -1,0 +1,40 @@
+{% include 'base/header.html.twig' %}
+{% include 'base/navbarheader.html.twig' %}
+{% include 'base/content.html.twig' %}
+
+{% if show_detail == true %}
+	{% include 'sections/mostrar-factura-informativa-detalle.html.twig' %}
+{% endif %}
+
+{% if create_detail == true %}
+	{% include 'forms/frm-factura-informativa-detalle.html.twig' %}  
+{% endif %}
+
+{% if edit == true %}
+	{% include 'forms/frm-factura-informativa-detalle-edit.html.twig' %}    
+{% endif %}
+
+{% if viewMessage == true %} 	
+	<div class="well">
+		<h3 class="text-primary">	{{message}} </h3>
+		<br><br>
+		<ul>
+		{% for input in data %}
+			<li>{{input}}</li>
+		{% endfor %}
+		</ul>
+		<p>
+			{% if deleted == true %} 
+						<a href="{{rute_url}}facinformativa/presentar/{{id_row}}">
+				<button>
+					<span class="fa fa-list"></span>
+					Ver
+				</button>
+				</a>
+			{% endif %}
+		</p>
+	</div>
+{% endif %}
+{% include 'base/content_close.html.twig' %}
+{% include 'base/signaturefoot.html.twig' %}
+{% include 'base/footer.html.twig' %}

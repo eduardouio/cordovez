@@ -1,0 +1,163 @@
+<span class="text-info">{{ title_report | raw}}</span>
+<br>
+<br>
+<form action="" method="POST">
+<div class="row">
+	<div class="col-md-2">
+		<label class="control control-checkbox">
+                  Por Pedido
+                  <input 
+                  type="checkbox" 
+                  value="por_pedido" 
+                  id="por_pedido" 
+                  name="por_pedido"
+                  autocomplete="off"
+                  >
+                  <div class="control_indicator"></div>
+               </label>
+	</div>
+	<div class="col-md-2">
+		<label class="control control-checkbox">
+                  Por Fechas
+                  <input 
+                  type="checkbox" 
+                  value="por_fechas" 
+                  id="por_fechas" 
+                  name="por_fechas"
+                  autocomplete="off"
+                  >
+                  <div class="control_indicator"></div>
+               </label>
+	</div>
+	<div class="col-md-2" id="pedido">
+			<div class="form-group">
+            <select name="nro_pedido" id="nro_pedido" class="form-control" disabled="" required="">
+            	<option selected="" disabled="">Seleccione...</option>
+            	{% for order in orders_list %}
+					<option value="{{order.nro_pedido}}">{{order.nro_pedido}}</option>
+            	{% endfor %}
+            </select>
+         </div>
+	</div>
+	<div class="col-md-2" id="fechas">
+		<div class="form-group">
+        <div class="input-group">
+            <input 
+            type="text" 
+            class="form-control fecha" 
+            id="fecha_desde" 
+            required="required" 
+            name="fecha_desde" 
+            placeholder="Fecha Desde"
+            disabled="" 
+            autocomplete="off"
+            >
+            <div class="input-group-addon">
+            </div>
+         </div>
+      </div>
+  </div>
+  <div class="col-md-2" id="fechas">
+      		<div class="form-group">
+        <div class="input-group">
+            <input 
+            type="text" 
+            class="form-control fecha" 
+            id="fecha_hasta" 
+            required="required" 
+            name="fecha_hasta"  
+            placeholder="Fecha Hasta"
+            disabled=""
+            autocomplete="off" 
+            >
+            <div class="input-group-addon">
+            </div>
+         </div>
+      </div>
+	</div>
+	<div class="col-md-2">
+		<button type="submit" class="btn btn-primary btn-sm">
+			<span class="fa fa-cog"></span>
+			Generar Reporte
+		</button>
+	</div>
+</div>
+<!--
+<div class="row">
+   <div class="col-md-2">
+      <label class="control control-checkbox">
+                  Por Proveedor
+                  <input 
+                  type="checkbox" 
+                  value="por_pedido" 
+                  id="por_pedido" 
+                  name="por_pedido"
+                  >
+                  <div class="control_indicator"></div>
+               </label>
+   </div>
+   <div class="col-md-2">
+      <label class="control control-checkbox">
+                  Por Ruc Proveedor
+                  <input 
+                  type="checkbox" 
+                  value="por_fechas" 
+                  id="por_fechas" 
+                  name="por_fechas"
+                  >
+                  <div class="control_indicator"></div>
+               </label>
+   </div>
+   <div class="col-md-4">
+            <div class="form-group">
+            <input 
+            type="text" 
+            class="form-control fecha" 
+            id="ruc_proveedor" 
+            required="required" 
+            name="ruc_proveedor"  
+            placeholder="Fecha Hasta"
+            disabled="" 
+            autocomplete="off"
+            >
+         </div>
+      </div>
+   </div>
+   </div>
+</div>
+-->
+</form>
+
+<script type="text/javascript">
+	$('#por_fechas').click(function(){
+		if($('#por_fechas').is(':checked')){
+			desactivarTodo();
+			activafFechas();
+			$('#por_pedido').prop('checked', false);
+		}
+	});
+
+	$('#por_pedido').click(function(){
+		if($('#por_pedido').is(':checked')){
+			desactivarTodo();
+			activarPedido();
+			$('#por_fechas').prop('checked', false);
+		}
+	});
+
+	function activafFechas(){
+		$('#fecha_desde').prop('disabled', false);
+		$('#fecha_hasta').prop('disabled', false);
+	}
+
+	function activarPedido(){
+		$('#nro_pedido').prop('disabled', false);
+	}
+
+
+	function desactivarTodo(){
+		$('#fecha_desde').prop('disabled', true);
+		$('#fecha_hasta').prop('disabled', true);
+		$('#nro_pedido').prop('disabled', true);
+	}
+</script>

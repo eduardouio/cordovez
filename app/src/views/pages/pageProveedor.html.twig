@@ -1,0 +1,78 @@
+{% include 'base/header.html.twig' %}
+{% include 'base/navbarheader.html.twig' %}
+{% include 'base/content.html.twig' %}
+
+{% if show == true %}
+	{% include 'sections/mostrar-proveedor.html.twig' %}	
+{% endif %}
+
+{% if list == true %}
+	{% include 'sections/listar-proveedor.html.twig' %}	
+{% endif %}
+
+{% if create == true %}
+	{% include 'forms/frm_proveedor.html.twig' %}	
+{% endif %}
+
+{% if edit == true %}
+	{% include 'forms/frm_proveedor_edit.html.twig' %}	
+{% endif %}
+
+
+{% if viewMessage == true %}
+	<div class="well">
+		<h3 class="text-primary">	{{message}} </h3>
+		<br><br>
+		{% if errorForm == true %}
+		<p>
+			Debe ingresar un valor para los siguientes campos
+			<ul>
+		{% for column in dataValidate.columns %}
+			<li> {{column}}</li>
+		{% endfor %}
+		</ul>
+		<hr>
+		La longitud de los siuientes campos es insuficicente
+			<ul>
+		{% for len in dataValidate.len %}
+				<li>	{{len}}</li>
+		{% endfor %}
+		</ul>
+		</p>
+		<button onclick="goBack()" class="btn btn-sm btn-default">
+			Corregir Error
+		</button>
+		
+		<br>
+		{% endif %}
+		<br>
+		<p>
+			{% if deleted == true %} 
+						<a href="{{rute_url}}proveedor/listar/"> 
+				<button>
+					<span class="fa fa-list"></span>
+					Ver
+				</button>
+				</a>
+			{% else %}  
+				<a href="{{rute_url}}proveedor/listar/">
+		<button class="btn btn-sm btn-default">
+			<span class="fa fa-eye"></span>
+			Volver A la lista
+		</button>
+		</a>
+			{% endif %}
+			
+		
+		</p>
+	</div>
+{% endif %}
+<script type="text/javascript">
+		function goBack() {
+    window.history.back();
+}
+</script>
+</script>
+{% include 'base/content_close.html.twig' %}
+{% include 'base/signaturefoot.html.twig' %}
+{% include 'base/footer.html.twig' %}

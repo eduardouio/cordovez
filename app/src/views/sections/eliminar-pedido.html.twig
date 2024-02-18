@@ -1,0 +1,76 @@
+{% if autorizado == true %}
+{% if success_delete_order == true %}
+<div class="row">
+    <span class="text-success">Pedido Eliminado Correctamente</span> 
+    <a href="{{ rute_url }}"pedido/listar>
+        Volver a Lista Pedidos
+</div>
+{% else %}
+<div class="row">
+<div class="col-md-12">
+<span class="text-danger"><span class="fa fa-warning"></span>  ¿Está seguro de elimnar el pedido {{ order.nro_pedido }} Regimen {{ order.regimen }} Incoterm {{ order.incoterm }}?</span>
+</div>
+</div>
+<br />
+<div class="row">
+<div class="col-md-2"></div>
+<div class="col-md-8">
+<table class="table table-bordered table-striped table-hover">
+<thead>
+<tr>
+<th>Detalle</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pedido</td>
+<td>{{ order.nro_pedido }}</td>
+</tr>
+</tr>
+<tr>
+<td>Pais Origen</td>
+<td>	
+{{ order.pais_origen }}
+</td>
+</tr>
+<tr>
+<td>Puerto Origen</td>
+<td> {{ order.ciudad_origen }}</td>
+</tr>
+<tr>
+<td>Proveedor</td>
+<td>{{ supplier.nombre }}</td>
+<tr>
+<td> Valor Pedido</td>
+<td>{{ order_invoice.valor }}</td>
+</tr>
+<tr>
+<td>Moneda</td>
+<td>{{ order_invoice.moneda }}</td>
+</tr>
+<tr>
+<td>Fecha Llegada</td>
+<td>{{ order.fecha_arribo }}</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="col-md-2"></div>
+</div>
+<div class="row">
+<div class="col-md-8">
+</div>
+<div class="col-md-4">
+<a href="{{ rute_url }}pedido/presentar/{{ order.nro_pedido }}" class="btn btn-default btn-sm"><span class="fa fa-cubes"></span>Volver Al Pedido</a>
+<a href="{{ rute_url }}pedido/eliminar/{{ order.nro_pedido }}/true" class="btn btn-danger btn-sm"> <span class="fa fa-warning"></span> Confirmo Eliminar Pedido</a>
+</div>
+</div>
+{% endif %}
+{% else %}
+<div class="row">
+    <h3 class="text-danger">
+        ACCESO RESTRIGIDO
+    </h3>
+</div>
+{% endif %}

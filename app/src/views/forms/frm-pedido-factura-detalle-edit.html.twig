@@ -1,0 +1,188 @@
+<div class="row">
+	<div class="alert text-warning">
+	<span class="fa fa-warning"></span>
+	Si el pedido tiene Tasa de Control basada en pesos, se debe ingresar del item,
+	es decir el peso del total de cajas de este producto, 
+	este valor se encuentra al final de la DAI. 
+	</div>
+</div>
+<form method="post" action="{{rute_url}}detallepedido/validar">
+   <input type="hidden" name="detalle_pedido_factura" value="{{detailInvoiceOrder.detalle_pedido_factura}}">
+   <input type="hidden" name="id_pedido_factura" value="{{detailInvoiceOrder.id_pedido_factura}}">
+   <input type="hidden" name="cod_contable" value="{{detailInvoiceOrder.cod_contable}}">
+   <div class="row">
+      <div class="col-md-6">
+         <div class="form-group">
+            <label>Producto</label>
+            <input 
+            type="text" 
+            class="form-control" 
+            name="nombre" 
+            id="nombre" 
+            readonly="" 
+            disabled="" 
+            value="{{ product.nombre }}" 
+            >  
+         </div>
+      </div>
+            <div class="col-md-1">
+         <label>Cajas</label>
+         <input 
+         type="number" 
+         class="form-control" 
+         name="nro_cajas"
+         id="nro_cajas"
+         required="true" 
+         step="1" 
+         value="{{ detailInvoiceOrder.nro_cajas }}" 
+         >
+      </div>
+      <div class="col-md-1">
+         <label>Modificar</label>
+         <input 
+         type="checkbox" 
+         class="form-control"
+         id="chage_params" 
+         >
+      </div>
+      <div class="col-md-1">
+         <div class="form-group">
+            <label>Grado A</label>
+            <input 
+            class="form-control" 
+            type="number" 
+            step="0.01" 
+            name="grado_alcoholico"
+            required="true" 
+            id="grado_alcoholico" 
+            maxlength="4" 
+            readonly="true" 
+            value="{{ detailInvoiceOrder.grado_alcoholico }}" 
+            >
+         </div>
+      </div>
+
+
+      <div class="col-md-1">
+         <label>Costo Caja</label>
+         <input 
+         type="number" 
+         class="form-control" 
+         name="costo_caja"
+         id="costo_caja"
+         required="true" 
+         readonly="true" 
+         step="0.0000000001" 
+         value="{{ detailInvoiceOrder.costo_caja }}" 
+         >
+   </div>
+   
+   <div class="col-md-2">
+	<div class="form-group">
+	<label for="">Peso Item KG</label>
+	<input 
+		type="number" 
+		class="form-control"
+		name ="peso"
+		value="{{ detailInvoiceOrder.peso }}"
+		step="0.01"
+		/>
+	</div>
+</div>
+</div>
+<div class="row">
+   <div class="col-md-2">
+   <div class="input-group">
+      <label>Cantidad Caja</label>
+      <input type="text" disabled="" id="cantidad_caja" class="form-control" value="{{ product.cantidad_x_caja }}">
+   </div>
+</div>
+<div class="col-md-2">
+   <div class="input-group">
+      <label>Unidades</label>
+      <input type="text" disabled="" id="unidades" class="form-control" value="{{ product.cantidad_x_caja * detailInvoiceOrder.nro_cajas }}">
+   </div>
+</div>
+<div class="col-md-2">
+   <div class="input-group">
+      <label>Capacidad ML</label>
+      <input type="text" disabled="" id="capacidad_ml" class="form-control" value="{{product.capacidad_ml}}" >
+   </div>
+</div>
+<div class="col-md-2">
+   <div class="input-group">
+      <label>Costo Und</label>
+      <input type="text" disabled="" id="costo_und" class="form-control" value="{{product.cantidad_x_caja / detailInvoiceOrder.costo_caja}}">
+   </div>
+</div>
+<div class="col-md-2">
+   <div class="form-group">
+      <label class="text-danger">Costo Total</label>
+      <input type="text" id="costoTotal" class="form-control" style="color:#a94442;font-weight: bold;" disabled="" value="{{product.cantidad_x_caja * detailInvoiceOrder.costo_caja}}">
+   </div>
+</div>
+<div class="col-md-2">&nbsp;</div>
+</div>   
+   <div class="row">
+      <div class="col-md-12">
+         <hr>
+         <button type="submit" class="btn btn-sm btn-default" >
+            <span class="fa fa-save fa-fw"></span>
+            Guardar Producto
+         </button>
+      <a href="{{rute_url}}pedidofactura/presentar/{{detailInvoiceOrder.id_pedido_factura}}" class="btn btn-sm btn-default">
+            <span class="fa fa-arrow-left fa-fw"></span>
+            Regresar Factura
+         </a>
+      </div>
+   </div>
+</form>
+<script type="text/javascript">
+var maxValueInvoice = {{invoiceOrder.valor}};
+</script>
+
+<script type="text/javascript">
+$('#costo_caja').change(function(){
+      var numBoxes = parseInt($('#nro_cajas').val());
+      var itemPerBox = parseFloat($('#cantidad_caja').val());
+      var valBox = parseFloat(this.value);
+      var costosTotalItems = parseFloat(numBoxes * valBox);
+      costosTotalItems = Math.round(costosTotalItems * 1000)/1000;
+      $('#unidades').val(numBoxes * itemPerBox);
+      $('#costoTotal').val(costosTotalItems);
+      if(costosTotalItems > maxValueInvoice ){
+         alert('La cantidad de cajas excede el valor de la factura!');
+         $('#nro_cajas').val(0);
+         $('#costo_caja').val(0);
+         $('#costoTotal').val(0);
+         $('#unidades').val(0);
+      }
+});
+
+   $('#nro_cajas').change(function(){
+      var numBoxes = parseFloat(this.value);
+      var itemPerBox = parseFloat($('#cantidad_caja').val());
+      var valBox = parseFloat($('#costo_caja').val());
+      var costosTotalItems = parseFloat(numBoxes * valBox);
+      costosTotalItems = Math.round(costosTotalItems * 1000)/1000;
+      $('#unidades').val(numBoxes * itemPerBox);
+      $('#costoTotal').val(costosTotalItems);
+      if( costosTotalItems > maxValueInvoice ){
+         alert('La cantidad de cajas excede el valor de la factura!');
+         $('#nro_cajas').val(0);
+         $('#costoTotal').val(0);
+         $('#unidades').val(0);
+      }
+   });
+
+   $('#chage_params').click(function(){
+      if( $('#chage_params').is(':checked') ){
+         $('#grado_alcoholico').removeAttr('readonly');
+         $('#costo_caja').removeAttr('readonly');
+         $('#grado_alcoholico').focus();
+      }else{
+         $('#grado_alcoholico').attr('readonly', true);
+         $('#costo_caja').attr('readonly', true);
+      }
+   });
+</script>

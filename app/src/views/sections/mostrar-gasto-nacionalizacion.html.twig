@@ -1,0 +1,227 @@
+<div class="well well-sm">
+<div class="row">
+<div class="col-md-3">Provision: $ {{ status.provision }}</div>
+<div class="col-md-3">Justificado: $ {{ status.suma_facturas }}</div>
+<div class="col-md-3">Saldo: $ {{ status.saldo }}</div>
+<div class="col-md-3">Nro Facturas: {{ nro_facturas }} </div>
+</div>				
+<div class="row">
+	<div class="col-md-3">Pedido: {{ order.nro_pedido }} </div>
+	<div class="col-md-3">F Registro: {{ init_expense.date_create }} </div>
+	<div class="col-md-3">Ult. Act: {{ init_expense.date_create }} </div>
+	<div class="col-md-3">Registro: {{ user.nombres }} </div>
+</div>
+</div>
+<div class="pull-right text-primary">
+<h4>{{ init_expense.concepto }}</h4>
+</div>
+{% if status.saldo == 0 %}
+	<label class="label label-success">Justificada</label>
+{% elseif status.saldo == status.provision %}
+	<label class="label label-danger">Provisión</label>
+{% else %}
+	<label class="label label-warning">Justificación Parcial</label>
+{% endif %}
+<ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#home">Detalle de Justificaciones</a></li>
+  <li><a data-toggle="tab" href="#menu1">Detalle de Provisión</a></li>
+</ul>
+
+<div class="tab-content">
+  <div id="home" class="tab-pane fade in active">
+  <div class="row">
+  <div class="col-md-12">
+    <table class="table table-hover table-bordered">
+      <tr style="background-color: #e1e1e1;">
+            <th>#</th>
+            <th>Proveedor</th>
+            <th>Nro Factura</th>
+            <th>Fecha Emision</th>
+            <th>Usuario</th>
+            <th>Valor Factura</th>
+            <th>Valor Justificación</th>
+          </tr>
+        </thead>
+        {% for detail in paids %}
+        <tr>
+        <td> {{ loop.index }} </td>
+        <td> {{ detail.proveedor }}</td>
+        <td>
+        <a href="{{ rute_url }}facturapagos/presentar/{{ detail.id_documento_pago }}">
+        {{ detail.nro_factura }} 
+        </a> 
+        </td>
+        <td> {{ detail.fecha_emision | date('d/m/Y') }} </td>
+        <td> {{ detail.nombres }} </td>
+        <td class="text-right"> {{ detail.valor | number_format(3,'.',',') }} </td>
+        <td class="text-right">
+        <strong>
+        $ {{ detail.justificacion }}
+        </strong>
+        </td>
+        </tr>
+        {% endfor %}
+        <tr style="background-color: #e1e1e1;">
+        <td colspan="6"><strong>SUMAS:</strong></td>
+        <td class="text-right">
+        <strong> 
+        $ {{ status.suma_facturas | number_format(3,'	.',',') }}
+        </strong> 
+        </td>
+        
+        </tr>
+    </table>
+  </div>
+  </div>
+  </div>
+  <div id="menu1" class="tab-pane fade">
+  <div class="row">
+  	<div class="col-md-3"></div>
+  	<div class="col-md-6">
+  	<table class="table table-hover table-bordered table-striped">
+        <thead>
+          <tr style="background-color: #c1c1c1;">
+            <th>Nombre</th>
+            <th>Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-right"> <b>ID:</b></td>
+            <td>{{ init_expense.id_gastos_nacionalizacion }}</td>
+          </tr>
+          {% if init_expense.nro_pedido == '000-00' %}
+          <tr>
+            <td class="text-right"> <b>Pedido:</b></td>
+            <td> 
+              <a href="{{rute_url}}pedido/presentar/{{ order.nro_pedido }}">
+                <span class="label label-primary">
+            {{ order.nro_pedido }} 
+          </span>
+            </a>
+          </td>
+          </tr>
+          {% else %}
+              <tr>
+            <td class="text-right"> <b>Pedido:</b></td>
+            <td> 
+              <a href="{{ rute_url }}pedido/presentar/{{ init_expense.nro_pedido }}">
+                <span class="label label-primary">
+            {{ init_expense.nro_pedido }} 
+                </span>
+            </a>
+          </td>         
+          </tr>
+          {% endif %}
+
+          {% if init_expense.id_parcial != 0 %}
+            <tr>
+            <td class="text-right"> <b>Parcial:</b></td>
+            <td> 
+              <a href="{{rute_url}}parcial/presentar/{{ init_expense.id_parcial }}">
+            {{ init_expense.id_parcial }} 
+            </a>
+            </td>
+          </tr>
+          {% endif %}
+          <tr>
+            <td class="text-right"><b>ID Proveedor:</b></td>
+            <td>{{ supplier.identificacion_proveedor }}</td>
+          </tr>         
+          <tr>
+            <td class="text-right"> <b>Fecha:</b></td>
+            <td>
+              {% if init_expense.fecha != null %}
+                {{ init_expense.fecha | date('d/m/Y') }}
+              {% endif %}
+          </td>
+          </tr>         
+          <tr>
+            <td class="text-right"> <b>Fecha Fin:</b></td>
+            <td>
+              {% if init_expense.fecha_fin != null %}
+                {{ init_expense.fecha_fin | date('d/m/Y') }}
+              {% endif %}
+          </td>
+          </tr>          
+          <tr>
+            <td class="text-right"> <b>Concepto:</b></td>
+            <td> {{ init_expense.concepto | raw }}</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Valor Provisionado:</b></td>
+            <td> {{ init_expense.valor_provisionado }} </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Comentarios:</b></td>
+            <td> {{ init_expense.comentarios }} </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Tipo Gasto:</b></td>
+            <td> {{ init_expense.tipo }} </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Status:</b></td>
+            <td> 
+              {% if init_expense.bg_closed == 0 %}
+                <span class="label label-warning"> 
+                Provisión Sin Justificar 
+              </span>
+              {% else %}
+                <span class="label label-success">
+                Provisión Justificada 
+                 </span>
+              {% endif %}              
+            </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Creado El:</b></td>
+            <td> 
+              {% if init_expense.date_create != null %}
+                  {{ init_expense.date_create | date('d/m/Y H:m') }} 
+              {% endif %}
+              
+          </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Ultima Actualización:</b></td>
+            <td> 
+              {% if init_expense.last_update != null %}
+                  {{ init_expense.last_update | date('d/m/Y H:m') }} 
+              {% endif %}
+              
+          </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Creado Por:</b></td>
+            <td> {{ user.nombres }} </td>
+          </tr>
+        </tbody>
+      </table>
+  	</div>
+  	<div class="col-md-3"></div>
+  </div>    
+  </div>
+</div>
+  
+  <div class="row">
+    <div class="col-sm-7">
+    {% if is_parcial == true %}
+    <a href="{{rute_url}}gstnacionalizacion/parcial/{{ parcial.id_parcial }}" class="btn btn-default btn-sm">
+      <span class="fa fa-arrow-left fa-fw"></span>  Volver al Parcial 
+    </a>
+    {% else %}
+    	<a href="{{rute_url}}gstinicial/validargi/{{order.nro_pedido}}" class="btn btn-default btn-sm">
+      <span class="fa fa-arrow-left fa-fw"></span>  Volver al Pedio 
+    </a>
+    {% endif %}
+    
+    
+      <a href="{{rute_url}}gstnacionalizacion/editar/{{init_expense.id_gastos_nacionalizacion}}" class="btn btn-default btn-sm">
+      <span class="fa fa-pencil fa-fw"></span>  Editar Gasto
+    </a>
+      <a href="{{rute_url}}gstnacionalizacion/eliminar/{{init_expense.id_gastos_nacionalizacion}}" class="btn btn-danger btn-sm">
+      <span class="fa fa-trash fa-fw"></span>  Eliminar Registro
+    </a>
+  </div>
+  </div>

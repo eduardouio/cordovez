@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es" ng-app="cordovezApp" ng-controller="loginController">
+   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="">
+      <meta name="author" content="">
+      <title>{{title}}</title>
+  
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" type="text/css" href="https://sts-ndt.com/cordovez/statics/bootstrap462/css/bootstrap.min.css" >
+    <link rel="stylesheet" type="text/css" href="https://sts-ndt.com/cordovez/statics/bootstrap341/css/yeti.min.css" >
+    <!-- Custom Styles --> 
+      <style type="text/css">
+         body { 
+         background: url('{{base_url}}/img/appbackground.jpg') no-repeat center center fixed; 
+         -webkit-background-size: cover;
+         -moz-background-size: cover;
+         -o-background-size: cover;
+         background-size: cover;
+         }
+         .panel-default {
+         opacity: 0.9;
+         margin-top:30px;
+         }
+         .form-group.last { margin-bottom:0px; }
+      </style>
+      <style>
+         .ng-enter {
+         transition: 0.75s;
+         }
+         .ng-enter-stagger{
+         transition-delay: 0.1s;
+         }
+         .ng-leave-stagger{
+         transition-delay: 0.1s;
+         }
+         .ng-enter-active{
+         opacity: 1;
+         }
+         .ng-leave{
+         transition: 0.75s;
+         opacity: 1;
+         }
+         .ng-leave-active{
+         opacity: 0;
+         }
+      </style>
+   </head>
+   <body>
+      <div class="container">
+         <div class="row">
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+         </div>
+         <div class="row">
+            <div class="col-sm-5 text-center" >
+               <img src="{{enterprise.url_logo}}" style="width: 70%; height: auto">
+               <br>
+               <h3 class="text-primary">MODULO DE IMPORTACIONES 
+                  <b>{{ enterprise.nombre }}</b>
+               </h3>
+            </div>
+            <div class="text-danger">
+               {{message}}
+            </div>
+            <div class="col-md-5 border rounded bg-dark">
+               <div class="panel panel-default">
+                  <div class="panel-heading text-center">
+                  <h4 class="text-primary"> Inicio de Sesión
+                  </h4>
+                  </div>
+                  <div class="panel-body">
+                     <form 
+                        class="form-horizontal" 
+                        role="form" 
+                        method="post" 
+                        action="{{ actionFrm }}">
+                        <div class="form-group">
+                           <label for="userName" class="col-sm-1 control-label">
+                           Usuario</label>
+                           <div class="col-sm-12">
+                              <input 
+                                 type="text" 
+                                 class="form-control" 
+                                 name="username" 
+                                 placeholder="Usuario" 
+                                 required = "required"
+                                 autofocus="true"
+                                 autocomplete="off"
+                                 >
+                           </div>
+                        </div>
+                        <div class="form-group">
+                           <label for="inputPassword3" class="col-sm-2 control-label">
+                           Contraseña</label>
+                           <div class="col-sm-12">
+                              <input 
+                                 type="password" 
+                                 class="form-control" 
+                                 placeholder="Password" 
+                                 name="password" 
+                                 required = "required"
+                                 >
+                           </div>
+                        </div>
+                        <div class="form-group">
+                           <div class="col-sm-offset-3 col-sm-9">
+                              <div class="checkbox">
+                                 <label>
+                                 <input type="checkbox"/>
+                                 Recordarme
+                                 </label>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="form-group last">
+                           <div class="col-sm-offset-3 col-sm-9">
+                              <button
+                                 type="submit"
+                                 class="btn btn-primary"
+                                 >
+                                 Iniciar Sesión
+                              </button>
+                              <button 
+                                 class="btn btn-outline-primary"
+                                 type="reset" >
+                              Limpiar</button>
+                           </div>
+                        </div>
+                     </form>
+                  </div>
+                  <div class="panel-footer">
+                     No tiene una cuenta? 
+                     <a href="mailto:eduardouio7@gmail.com">Solicite una Cuenta</a>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="row">
+            &nbsp;
+         </div>
+         <div class="row">
+            &nbsp;
+         </div>
+         <div class="row">
+            &nbsp;
+         </div>
+         <div class="row">
+            &nbsp;
+         </div>
+         <div class="row">
+            <div class="col-sm-5">
+               <small> &copy; Todos los Derechos reservados Importadora {{ enterprise.nombre }} <br>
+               Desarrollado por Eduardo Villota <a href="mailto:eduardouio7@gmail.com">eduardouio7@gmail.com 
+               </a></small>
+            </div>
+         </div>
+      </div>
+      <script type="text/javascript">
+         var host = '{{base_url}}';
+         var httpResult = {};
+         // Funciones Auxiliares
+         // Retorna la cantidad de metodos y propiedades de un objeto
+           function inspeccionar(obj)
+         {
+         var msg = '';
+         for (var property in obj)
+         {
+           if (typeof obj[property] == 'function')
+           {
+             var inicio = obj[property].toString().indexOf('function');
+             var fin = obj[property].toString().indexOf(')')+1;
+             var propertyValue=obj[property].toString().substring(inicio,fin);
+             msg +=(typeof obj[property])+' '+property+' : '+propertyValue+' ;\n';
+           }
+           else if (typeof obj[property] == 'unknown')
+           {
+             msg += 'unknown '+property+' : unknown ;\n';
+           }
+           else
+           {
+             msg +=(typeof obj[property])+' '+property+' : '+obj[property]+' ;\n';
+           }
+         }
+         return msg;
+         }
+      </script>
+</body>
+</html>

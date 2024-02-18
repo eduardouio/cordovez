@@ -1,0 +1,234 @@
+{% if order.incoterm == 'FOB'  %}
+	<div class="alert alert-warning">
+	<span class="fa fa-warning"></span>
+	Es posible que este pedido tenga
+	<strong>Gastos en Origen</strong> si los tiene, por favor ingrese ese valor se ingresan usando el formulario del 
+	 <a class="btn btn-sm btn-default" href="{{ rute_url }}pedido/editar/{{ order.nro_pedido }}">Ingresar Gasto Origen</a> 
+	</div>
+{% endif %}
+
+{% if order.incoterm != 'FOB'  %}
+	<div class="alert alert-danger">
+	<span class="fa fa-warning"></span>
+	Los <strong>Gastos en Origen</strong> de este pedido, se ingresan usando el formulario del pedido, por favor solo registre el producto
+	<a class="btn btn-sm btn-default" href="{{ rute_url }}pedido/editar/{{ order.nro_pedido }}">Ingresar Gasto Origen</a> 
+</div>
+{% endif %}
+
+<form method="post" action="{{rute_url}}pedidofactura/validar/">
+  <input type="hidden" name="id_pedido_factura" value="{{invoice.id_pedido_factura}}">
+  <div class="row">
+    <div class="col-md-1">
+       <div class="form-group">
+      <label>Pedido</label>
+      <input 
+      readonly="" 
+      type="text" 
+      name="nro_pedido"
+      class="form-control" 
+      value="{{invoice.nro_pedido}}" 
+      >
+    </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+      <label>Proveedor</label>
+    <select
+    name="identificacion_proveedor"
+    class="form-control"
+    required = "required"
+    > 
+    <option value="{{supplier.identificacion_proveedor}}">{{supplier.nombre}}</option>
+    {% for supplier in suppliers %}
+      <option value="{{supplier.identificacion_proveedor}}"> {{supplier.nombre}} </option>
+    {% endfor %}
+    </select>
+    </div>
+    </div>
+            <div class="col-md-2">
+      <div class="form-group">
+        <label>Nro de Factura</label>
+        <input 
+        class="form-control" 
+        type="text" 
+        name="id_factura_proveedor"
+        maxlength="16"
+        required="required" 
+        value="{{invoice.id_factura_proveedor}}"
+        autocomplete="off" 
+        >
+      </div>
+    </div>
+        <div class="col-md-2">
+      <div class="form-group">
+        <label>Fecha Emisión</label>
+        <div class="input-group">
+            <input 
+               type="text" 
+               class="form-control fecha" 
+               autocomplete="off"
+              id="fecha_emision"
+               required="required" 
+               name="fecha_emision" 
+               {% if invoice.fecha_emision != null %}
+                    value="{{invoice.fecha_emision | date('d/m/Y') }}" 
+               {% endif %}
+               >
+            <div class="input-group-addon">
+               <span class="glyphicon glyphicon-th"></span>
+            </div>
+         </div>
+      </div>
+    </div>
+        <div class="col-md-2">
+      <div class="form-group">
+        <label>Vencimiento Pago</label>
+          <div class="input-group">
+            <input 
+               type="text" 
+               class="form-control fecha" 
+               name="vencimiento_pago" 
+              {% if invoice.vencimiento_pago != null %}
+                value="{{invoice.vencimiento_pago | date('d/m/Y') }}" 
+              {% endif %}
+              autocomplete="off"
+               >
+            <div class="input-group-addon">
+               <span class="glyphicon glyphicon-th"></span>
+            </div>
+         </div>
+      </div>
+    </div>
+                <div class="col-md-2">
+      <div class="form-group">
+        <label>Fecha Pago</label>
+          <div class="input-group">
+            <input 
+               type="text" 
+               readonly="" 
+               class="form-control fecha" 
+               name="fecha_pago" 
+              {% if invoice.fecha_pago != null %}
+               value="{{ invoice.fecha_pago | date('d/m/Y')}}"              
+              {% endif %} 
+              autocomplete="off"             
+               >
+            <div class="input-group-addon">
+               <span class="glyphicon glyphicon-th"></span>
+            </div>
+         </div>
+      </div>
+    </div>
+  
+  </div>
+   <div class="col-md-2">
+      <div class="form-group">
+        <label>Moneda</label>
+        <select
+        name="moneda"
+        id="moneda"
+        required = "required"
+        class="form-control"
+        > 
+          <option value="{{invoice.moneda}}">{{invoice.moneda}}</option>
+          {% if invoice.moneda == 'DOLARES' %}
+            <option value="EUROS">EUROS</option>
+          {% else %}
+            <option value="DOLARES">DOLARES</option>
+          {% endif %}
+        </select>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="form-group">
+        <label>Tipo De Cambio</label>
+        <input 
+        class="form-control" 
+        type="number"
+        step="any"
+        name="tipo_cambio"
+        id="tipo_cambio"
+        value="{{invoice.tipo_cambio}}" 
+        required="required" 
+        readonly='true'
+        >
+      </div>
+    </div>
+  <div class="row">
+    <div class="col-md-2">
+      <div class="form-group">
+        <label>Valor Producto</label>
+        <input 
+        class="form-control" 
+        required="required" 
+        type="number" 
+        name="valor"
+        id="valor"
+        step="any" 
+        value="{{invoice.valor}}" 
+        >
+      </div>
+    </div>
+        <div class="col-md-2">
+      <div class="form-group">
+        <label>Total Factura</label>
+        <input 
+        disabled=""        
+        class="form-control" 
+        id="total" 
+        >
+      </div>
+    </div>
+  </div>
+     <div class="row">
+      <div class="col-md-12">
+         <hr>
+         <button type="submit" class="btn btn-sm btn-default" >
+            <span class="fa fa-save fa-fw"></span>
+            Guardar Registro
+         </button>
+      <a href="{{rute_url}}pedido/presentar/{{invoice.nro_pedido}}" class="btn btn-sm btn-default">
+            <span class="fa fa-arrow-left fa-fw"></span>
+            Volver al Pedido <b>({{invoice.nro_pedido}})</b>
+         </a>
+      </div>
+   </div>
+</form>
+
+<script type="text/javascript">
+
+if( $('#modenda').val() == 'EUROS' ){
+	 $('#tipo_cambio').removeAttr('readonly');
+}
+
+
+$('#moneda').change(function(){
+    if($(this).val() === 'EUROS'){
+      $('#tipo_cambio').removeAttr('readonly');
+    }else{
+      $('#tipo_cambio').attr('readonly', true);
+      $('#tipo_cambio').val(1);
+    }
+
+    actualizarValores();
+    
+  });
+
+$('#valor').keyup(function(){
+	actualizarValores();
+  });
+
+/**
+ * Actualiza los valores del formulario
+ */
+function actualizarValores(){
+
+    $('#total').val(
+			(
+			parseFloat( $('#valor').val()) 
+			) 
+    	    );  
+}
+
+actualizarValores();
+</script>

@@ -1,0 +1,109 @@
+<form action="{{ rute_url }}gstnacionalizacion/validar" method="post">
+	<input type="hidden" name="id_parcial" value="{{ parcial.id_parcial }}">
+	<input type="hidden" name="id_gastos_nacionalizacion" value="{{ expense.id_gastos_nacionalizacion}}">
+<div class="row">
+	<div class="col-sm-2">
+		<div class="form-group">
+			<label>Parcial</label>
+			<input 
+			type="text" 
+			class="form-control" 
+			value="{{ parcial.id_parcial }}" 
+			disabled="true" 
+			>
+		</div>
+	</div>
+	<div class="col-sm-5">
+		<div class="form-group">
+			<label> Proveedor </label>
+			<select
+			name = "identificacion_proveedor"
+			class = "form-control"
+			autofocus
+			>
+				<option value="{{ supplier.identificacion_proveedor }}" > {{ supplier.nombre }}</option>
+				{% for mySupplier in suppliers %}
+					<option value="{{ mySupplier.identificacion_proveedor }}"> {{ mySupplier.nombre }} </option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+
+	<div class="col-sm-3">
+		<div class="form-group">
+			<label>Concepto</label>
+			<input 
+			type="text" 
+			class="form-control" 
+			name="concepto"
+			id="concepto"
+			maxlength="45"
+			value="{{ expense.concepto }}" 
+			readonly="true" 
+			autocomplete="off"
+			>
+		</div>
+	</div>
+<div class="col-sm-2">
+		<div class="form-group">
+			<label>Fecha</label>
+			         <div class="input-group">
+            <input 
+               type="text" 
+               class="form-control fecha" 
+               id="fecha" 
+               required="required" 
+               name="fecha" 
+               {% if expense.fecha != null %}
+               		value="{{ expense.fecha | date ('d/m/Y')}}" 
+               {% endif %}
+               autocomplete="off"
+               >
+               {{ expense.fecha }}
+            <div class="input-group-addon">
+               <span class="glyphicon glyphicon-th"></span>
+            </div>
+         </div>
+		</div>
+	</div>	
+</div>
+<div class="row">	
+	<div class="col-sm-2">
+		<div class="form-group">
+			<label>Provisión (USD)</label>
+			<input 
+			class="form-control" 
+			type="number" 
+			step="0.01" 
+			name="valor_provisionado"
+			value="{{ expense.valor_provisionado }}" 
+			>
+		</div>
+	</div>
+
+	<div class="col-sm-8">
+		<div class="form-group">
+			<label>Comentarios</label>
+			<textarea 
+			name="comentarios" 
+			rows="1" 
+			id="comentarios" 
+			class="form-control"
+			maxlength="250">{{expense.comentarios | raw}}</textarea>
+		</div>
+	</div>
+</div>
+   <div class="row">
+      <div class="col-md-12">
+         <hr>
+         <button type="submit" class="btn btn-sm btn-default" >
+            <span class="fa fa-save fa-fw"></span>
+            Guardar Registro
+         </button>
+      <a href="{{rute_url}}pedido/presentar/{{order.nro_pedido}}" class="btn btn-sm btn-default">
+            <span class="fa fa-arrow-left fa-fw"></span>
+            Regresar Pedido <b>({{order.nro_pedido}}) </b>
+         </a>
+      </div>
+   </div>
+</form>

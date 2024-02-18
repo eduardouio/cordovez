@@ -1,0 +1,104 @@
+      <form action="{{ rute_url }}impuestos/actualizarR10" method="post" id="order_params">
+         <input type="hidden" name="nro_pedido" value="{{ init_data.order.nro_pedido}}">
+         <div class="col-md-6" style="background-color: #f9f9f9; padding:22px">
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="form-group" >
+                     <label class="control control-checkbox">
+                        Etiquetas Fiscales
+                        <input 
+                        type="checkbox" 
+                        id = "update_etiquetas"
+                        name="have_etiquetas_fiscales"
+                        {% if order.bg_have_etiquetas == 1  or bg_have_etiquetas == 1%}                        
+                        checked="true"
+                        {% endif %}
+                        >
+                        <div class="control_indicator"></div>
+                     </label>
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="form-group">
+                     <label>Moneda</label>
+                     <input 
+                        type="text" 
+                        name="moneda"
+                        value="{{ init_data.order_invoices.0.moneda }}" 
+                        required=""
+                        disabled="" 
+                        style="width:100%" 
+                        >
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="col-md-6">
+                  <div class="form-group">
+                  <label>Liberación Aranceles %</label>
+                  <input type="number" name="exoneracion_arancel" required="required" value="{{ order.exoneracion_arancel | number_format(3,'.','') }}"/>
+                  </div>
+               </div>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-6" style="background-color: #f9f9f9; padding:22px">
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="form-group" >
+                     <label class="control control-checkbox">
+                        Tasa de Control
+                        <input 
+                        type="checkbox" 
+                        name="bg_have_tasa_control"
+                        id = "update_tasa"
+                        {% if order.bg_have_tasa_control == 1 or bg_hava_tasa_control ==1 %}
+                        checked="true"
+                        {% endif %}
+                        >
+                        <div class="control_indicator"></div>
+                     </label>
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="form-group">
+                     <label>Tipo de Cambio {{ init_data.order_invoices.0.moneda }}</label>
+                     <input 
+                        type="number" 
+                        name="tipo_cambio_impuestosR10"                        
+                        style="width:100%" 
+                        {% if init_data.order_invoices.0.moneda == 'DOLARES' %}
+                        	value = "1.000000000"
+                        	disabled=""
+                        {% else %}	
+                        	value="{{ init_data.order.tipo_cambio_impuestosR10 }}"
+                        	step="any"
+                        	required="" 
+                        {% endif %}
+                        >
+                  </div>
+               </div>
+            </div>
+            <div class="row">               
+               <div class="col-md-12">
+                  <div class="form-group pull-right">
+                     <input 
+                     class="btn btn-sm btn-primary form-control" 
+                     type="submit"
+                     value="Actualizar"
+                     /> 
+                  </div>
+               </div>
+            </div>
+         </div>
+      </form> 
+ {% if init_data.order.bg_isliquidated == 1 %}     
+ <script>
+  $('#order_params :input').prop("disabled" , true);
+ </script>
+ {% endif %}

@@ -1,0 +1,66 @@
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+   <div class="modal-dialog" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Cierre de {{ tipo }}</h4>
+         </div>
+         <form action="{{rute_url}}reliquidacion/cierre/" method="post">
+   			<input type="hidden" name="id" value="{{ id }}">
+   			<input type="hidden" name="tipo" value="{{ tipo }}">
+         <div class="modal-body">
+            <div class="row">
+               <div class="col-md-12">
+                  <h5 style="text-align: justify;">
+                     <span class="fa fa-warning"></span>
+                     ¿Esta seguro de cerrar este {{ tipo }}?, si lo hace no será posible agregar nuevos Gastos Iniciales
+                     para continuar acepte o modifique la fecha de cierre del pedido. 
+                  </h5>
+               </div>
+            </div>
+            <br />
+            <div class="row">
+               <div class="col-md-5">
+                  <div class="form-group">
+                     <label>Fecha Liquidación:</label>
+                     <div class="input-group">
+                        <input 
+                           type="text" 
+                           class="form-control fecha" 
+                           name="fecha_cierre" 
+                           placeholder="dd/mm/yyyy"
+                           value="{{ current_date }}"
+                           autocomplete="off"
+                           >
+                     </div>
+                  </div>
+               </div>
+               <div class="col-md-7">
+                  <div class="form-group">
+                     <label>Usuario que Cierra el pedido</label>
+                     <input 
+                        type="text" 
+                        class="number form-control"
+                        disabled="disabled"
+                        value="{{ current_user.nombres }} ({{ current_user.email }})"
+                        />
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+            <div class="col-md-12">
+            <div class="form-group">
+            <label for="">Notas de Cierre de Pedido</label>
+            <textarea name="notas_cierre" class="form-control" maxlength="200"></textarea>
+            </div>
+            </div>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-sm btn-default" data-dismiss="modal"> <span class="fa fa-ban"></span> Cancelar</button>
+            <button type="submit" class="btn btn-sm btn-primary"> <span class="fa fa-check"></span> Liquidar Pedido</button>
+         </div>
+         </form>
+      </div>
+   </div>
+</div>

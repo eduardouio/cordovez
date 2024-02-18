@@ -1,0 +1,75 @@
+<div class="row">
+	<div class="col-md-9">		
+	</div>
+	<div class="col-md-3 text-right">
+	{% if infoInvoices == false %}
+		<a href="{{rute_url}}facinformativa/nuevo/{{parcial.id_parcial}}"
+			class="btn btn-sm btn-primary"> 
+			<span class="fa fa-file"></span> Nueva Factura Informativa
+		</a>
+	{% endif %}
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<table class="table table-condensed table-hover table-striped">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Factura Informativa</th>
+					<th>Almacenera</th>
+					<th>F Emisión</th>
+					<th>FOB</th>
+					<th>FLETE</th>
+					<th>SEGURO</th>
+					<th>Cajas</th>
+					<th>Unidades</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% set sumaFOB = 0 %}
+				{% set sumaFLETE = 0 %}
+				{% set sumaSEGURO = 0 %}
+				{% set sumaCAJAS = 0 %}
+				{% set sumaUNIDADES = 0 %}
+
+				{% for infoInvoice in infoInvoices  %}
+
+				{% set sumaFOB = sumaFOB + infoInvoice.valor %}
+				{% set sumaFLETE = sumaFLETE +  infoInvoice.flete_aduana %}
+				{% set sumaSEGURO = sumaSEGURO + infoInvoice.seguro_aduana %}
+				{% set sumaCAJAS = sumaCAJAS + infoInvoice.boxes %}
+				{% set sumaUNIDADES = sumaUNIDADES + infoInvoice.unities %}
+
+				<tr class="text-right">
+					<td>{{ loop.index }}</td>
+					<td><a
+						href="{{ rute_url }}facinformativa/presentar/{{ infoInvoice.id_factura_informativa }}">
+							{{ infoInvoice.nro_factura_informativa }} <span class="fa fa-eye"></span>
+					</a></td>
+					<td>{{ infoInvoice.supplier.nombre }}</td>
+					<td>
+					{% if infoInvoice.fecha_emision != null %}
+					{{ infoInvoice.fecha_emision | date('d/m/Y') }}				
+					{% endif %}
+				</td>
+					<td>{{ infoInvoice.valor }}</td>
+					<td>{{ infoInvoice.flete_aduana }}</td>
+					<td>{{ infoInvoice.seguro_aduana }}</td>
+					<td>{{ infoInvoice.boxes }}</td>
+					<td>{{ infoInvoice.unities }}</td>
+				</tr>
+				{% endfor %}
+				<tr style="background-color: #c1c1c1; font-weight: bold;">
+					<td colspan="4" class="text-right" style="background-color: #fff;">SUMAS:
+						&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td class="text-right">{{ sumaFOB | number_format(2,',','.') }}</td>
+					<td class="text-right">{{ sumaFLETE | number_format(2,',','.') }}</td>
+					<td class="text-right">{{ sumaSEGURO  | number_format(2,',','.') }}</td>
+					<td class="text-right">{{ sumaCAJAS | number_format(0,',','.') }}</td>
+					<td class="text-right">{{ sumaUNIDADES | number_format(0,',','.') }}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

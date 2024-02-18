@@ -1,0 +1,107 @@
+{% include 'base/header.html.twig' %}
+{% include 'base/navbarheader.html.twig' %}
+{% include 'base/content.html.twig' %}
+
+<div class="container">
+      <div class="row">
+      <h4 class="text-info">{{ message }}</h4>
+      <div class="col-md-5  toppad  pull-right col-md-offset-3 ">
+      </div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad" >
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">{{ user.nombres }} <span class="label label-info">{{ user.id_user }}</span></h3>
+            </div>
+            <form action="{{ rute_url }}userprofile/actualizar/" method="post" id="user-profile">
+            <input type="hidden" name="id_user" value="{{ user.id_user }}">
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-md-3 col-lg-3 " align="center"> <img alt="User Pic" src="https://kooledge.com/assets/default_medium_avatar-57d58da4fc778fbd688dcbc4cbc47e14ac79839a9801187e42a796cbd6569847.png" class="img-circle img-responsive"> </div>
+                <div class=" col-md-9 col-lg-9 "> 
+                  <table class="table table-user-information">
+                    <tbody>
+                    <tr>
+                        <td>Nombre Usuario:</td>
+                        <td>
+                        <input 
+                        type="text"
+                        name = "nombres"
+                        value = "{{ user.nombres }}"
+                        required =""
+                        />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>email:</td>
+                        <td>
+                        <input 
+                        type="email"
+                        name = "email"
+                        value = "{{ user.email }}"
+                        required =""
+                        />
+                        </td>
+                      </tr>
+                      <tr>
+                      <td>Nueva Contraseña:</td>
+                        <td>
+                        <input type="password" name ="password" id="password" required/>
+                        </td>
+                      </tr>
+                      <td>Repita la Contraseña:</td>
+                        <td>
+                        <input type="password" name ="password2" id="password2" required/>
+                        </td>
+                      </tr>
+                    <tr>
+                        <td>Usuario Sistema:</td>
+                        <td>
+                        {{ user.username }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>cargo:</td>
+                        <td>{{ user.cargo }}</td>
+                      </tr>                      
+                      <tr>
+                        <td>Último Ingreso:</td>
+                        <td>{{ user.last_login }}</td>
+                      </tr>
+                      <tr>
+                        <td>Ultima Actualización:</td>
+                        <td>{{ user.last_update }}</td>
+                      </tr>
+                      <tr>
+                        <td>Creado el:</td>
+                        <td>{{ user.date_create }}</td>
+                      </tr>
+                      
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+                 <div class="panel-footer">
+                 <br />
+                 <a href="{{ rute_url }}" class="btn btn-sm btn-default pull-right">
+                 <span class="fa fa-stop"></span>
+                 Regresar
+                 </a>
+                 
+                 <button type="submit" class="btn btn-sm btn-default pull-right">
+                 <span class="fa fa-refresh"></span>
+                 Actualizar Información
+                 </button>
+                    </div>
+</form>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+{% include 'base/content_close.html.twig' %}
+{% include 'base/signaturefoot.html.twig' %}
+{% include 'base/footer.html.twig' %}
+
+
+

@@ -1,0 +1,45 @@
+{% include 'base/header.html.twig' %}
+{% include 'base/navbarheader.html.twig' %}
+{% include 'base/content.html.twig' %}
+
+{% if show_invoices == true %}
+	{% include 'sections/mostrar-pedido-factura.html.twig' %}
+{% endif %}
+
+{% if create_invoice == true %}
+	{% include 'forms/frm-pedido-factura.html.twig' %}    
+{% endif %}
+
+{% if edit_invoice == true %}
+	{% include 'forms/frm-pedido-factura-edit.html.twig' %}    
+{% endif %}
+
+
+{% if viewMessage == true %}
+	<div class="well">
+		<h3 class="text-primary">	{{message}} </h3>
+		<br><br>
+		<p>
+			{% if deleted == true %} 
+						<a href="{{rute_url}}pedido/presentar/{{order}}">
+				<button>
+					<span class="fa fa-list"></span>
+					Ver
+				</button>
+				</a>
+			{% else %}  
+				<a href="{{rute_url}}pedidofactura/presentar/{{orderInvoice.id_pedido_factura}}">
+		<button>
+			<span class="fa fa-eye"></span>
+			Ver
+		</button>
+		</a>
+			{% endif %}
+		
+		</p>
+	</div>
+{% endif %}
+
+{% include 'base/content_close.html.twig' %}
+{% include 'base/signaturefoot.html.twig' %}
+{% include 'base/footer.html.twig' %}

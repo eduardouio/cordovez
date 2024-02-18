@@ -1,0 +1,202 @@
+{% if order.fecha_arribo != null %}
+   {% set fecha_arribo = order.fecha_arribo | date('d/m/Y') %}
+   {% else %}
+   <div class="alert alert-danger">
+     <h3 class="text-danger">Registre la fecha de arribo en el pedido para continuar</h3>
+     <a href="{{rute_url}}pedido/editar/{{order.nro_pedido}}" class="btn btn-default">Registrar</a>
+     </div>
+     <br>
+     <br>
+{% endif %}
+{% if order.fecha_salida_bodega_puerto != null %}
+   {% set fecha_salida_bodega_puerto = order.fecha_salida_bodega_puerto | date('d/m/Y') %}
+{% endif %}
+{% set dias_libres = 0 %}
+{% if order.dias_libres != null %}
+{% set dias_libres = order.dias_libres %}
+{% endif %}
+    <form action="{{rute_url}}gstinicial/validarbodegainicial" method="post">
+<div class="row">
+  <div class="col-md-12">
+    <div class="alert alert-info alert-dismissable fade in">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+      <strong><span class="fa fa-warning"></span> Atención!</strong> 
+      Es presentre asistente, le ayudará con el cálculo de provisiones de bodegaje demoraje incial
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-2">&nbsp;</div>
+  <div class="col-md-8">
+    <h4>Ingrese La Fecha De Salida Del La Bodega Del Puerto Para El Pedido <strong>{{ order.nro_pedido }}</strong></h4>
+    <br>
+    	<input type="hidden" name="nro_pedido" value="{{order.nro_pedido}}">
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>Fecha Arribo Puerto</label>
+            <input 
+               type="text" 
+               class="form-control fecha" 
+               id="fecha_arribo" 
+               name="fecha_arribo" 
+               readonly
+               {% if fecha_arribo != null %}
+                  value="{{ fecha_arribo }}"
+               {% endif %}
+               autocomplete="off"
+               >
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>Fecha Entrega Contenedor</label>
+                   <div class="input-group">
+            <input 
+               type="text" 
+               class="form-control fecha" 
+               id="fecha_salida_bodega_puerto" 
+               required="" 
+               name="fecha_salida_bodega_puerto" 
+               {% if fecha_salida_bodega_puerto != null %}
+                 value="{{ fecha_salida_bodega_puerto }}" 
+               {% endif %}
+               autocomplete="off"
+               >
+            <div class="input-group-addon">
+               <span class="glyphicon glyphicon-th"></span>
+            </div>
+         </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>Dias En Almacenaje Inicial</label>
+          <input 
+          	class="form-control" 
+          	type="number" 
+          	id="dias_bodega" 
+          	disabled="" 
+          	>
+        </div>
+      </div>
+      <div class="col-md-3">
+      	<div id="alerta"></div>
+      </div>
+  </div>
+  <div class="col-md-2">&nbsp;</div>
+</div>
+<div class="row">
+  <div class="col-md-2">&nbsp;</div>
+  <div class="col-md-6">
+    <div class="well well-sm">
+    	      <div class="col-md-4">
+        <strong>Días Libres:</strong>
+        <input 
+        	value="{{order.dias_libres}}" 
+        	class="form-control" 
+        	name="dias_libres"
+        	id="dias_libres"
+        	type="number" 
+        	required="" 
+        	step="1" 
+        	 >
+      </div>
+      <div class="col-md-4">
+       <strong>Provisión Alamcenaje Inicial:</strong>
+        $ <input 
+        type="number" 
+        step="any" 
+        name="bodegaje_inicial" 
+        required="" 
+        value="{{bodegajeIncial}}" 
+        class="form-control"
+        >
+      </div>
+      <div class="col-md-4">
+        <strong>Provisión Demoraje:</strong>
+        <input 
+        	type="number" 
+        	name="demoraje" 
+        	id="demoraje" 
+        	step="any" 
+        	class="form-control"
+        	value="{{ demoraje }}" 
+        	disabled="" 
+        	required="" 
+        	>
+      </div>
+
+      <br><br><br>
+      <br>
+      <div class="col-md-3">
+      <button class="btn btn-default btn-sm" type="submit"> <span class="fa fa-save"></span> Registrar Valores</button>
+      </div>
+      <div class="col-md-3">
+      <a href="{{rute_url}}gstinicial/validargi/{{order.nro_pedido}}" class="btn btn-warning btn-sm"> 
+         <span class="fa fa-arrow-left"></span> Volver</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-2">&nbsp;</div>
+</div>
+</form>
+
+
+<script type="text/javascript">
+   var diasLibres = {{ dias_libres }};
+   var diasBodegaje = 0;
+  
+   //Calcula la diferencia de fechas en dias
+   function calcDiffDays( dateStart, dateEnd){
+	  dateStart = dateStart.split('/');
+	  dateEnd = dateEnd.split('/');
+	  dateStart = dateStart[1] + '/' + dateStart[0] + '/' + dateStart[2];
+	  dateEnd = dateEnd[1] + '/' + dateEnd[0] + '/' + dateEnd[2];
+      var dateStart =  new Date(dateStart);
+      var dateEnd = new Date(dateEnd);
+      var timeDiff = Math.abs(dateEnd.getTime() - dateStart.getTime());
+      var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1; // se suma 1 por el dia actual 
+      diasBodegaje = diffDays;
+      $('#dias_bodega').val(diffDays);
+   }
+   $('#fecha_salida_bodega_puerto').change(function(){
+      if( $('#fecha_arribo').val() == '' ){
+         alert('Ingrese la fecha de arribo');
+         this.value = '';
+         $('#fecha_arribo').focus();
+      }else{
+        calcDiffDays($('#fecha_arribo').val() , $('#fecha_salida_bodega_puerto').val()); 
+        if(diasBodegaje > diasLibres){
+        	$('#alerta').empty();
+      		$('#alerta').append('<h4 class="text-danger"><span class="fa fa-warning"></span> Pedido con demoraje</h4>');
+      		$('#demoraje').prop('disabled', false);
+        } else{
+        	$('#alerta').empty();
+      		$('#alerta').append('<h4 class="text-success"><span class="fa fa-check"></span> Pedido sin demoraje</h4>');
+      		$('#demoraje').prop('disabled', true);
+        }
+      	
+      }
+   });
+
+   $('#dias_libres').keyup(function(){
+   	      if( $('#fecha_arribo').val() == '' ){
+         alert('Ingrese la fecha de arribo');
+         this.value = '';
+         $('#fecha_arribo').focus();
+      }else{
+        calcDiffDays($('#fecha_arribo').val() , $('#fecha_salida_bodega_puerto').val()); 
+        diasLibres = this.value;
+        if(diasBodegaje > diasLibres){
+        	$('#alerta').empty();
+      		$('#alerta').append('<h4 class="text-danger"><span class="fa fa-warning"></span> Pedido con demoraje</h4>');
+      		$('#demoraje').prop('disabled', false);
+        } else{
+        	$('#alerta').empty();
+      		$('#alerta').append('<h4 class="text-success"><span class="fa fa-check"></span> Pedido sin demoraje</h4>');
+      		$('#demoraje').prop('disabled', true);
+        }
+      }
+   });
+
+</script>;

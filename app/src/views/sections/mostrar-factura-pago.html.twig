@@ -1,0 +1,410 @@
+<div id="app">
+	<div class="well well-sm">
+		<div class="row">
+			<div class="col-md-4">
+				<strong>Proveedor:</strong> <span>{{ document.supplier.nombre }}</span>
+			</div>
+			<div class="col-md-2">
+				<strong>Ruc:</strong> <span>{{ document.supplier.identificacion_proveedor }}</span>
+			</div>
+			<div class="col-md-2">
+				<strong>Fecha:</strong> <span>{{ document.fecha_emision  | date('d/m/Y') }}</span>
+			</div>
+			<div class="col-md-4">
+				<strong>Comentarios:</strong> <span>{{ document.comentarios }}</span>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3">
+				<strong>Creado Por :</strong> <span>{{ user.nombres }}</span>
+			</div>
+			<div class="col-md-2">
+				<strong>Valor $:</strong> <span
+					class="text-primary">{{ document.valor | number_format(2,',','.')}}</span>
+			</div>
+			<div class="col-md-2">
+				<strong>Justificado $:</strong> <span class="text-success">
+					${ document.saldo | money }
+				</span>
+			</div>
+			<div class="col-md-2">
+				<strong>Pendiente $:</strong> <span class="text-danger">
+					${ valor_pendiente | money }
+				</span>
+			</div>
+			<div class="col-md-2">
+				<strong>Fecha Registro</strong>
+				<span>{{ document.date_create | date('d/m/Y H:m:s')}}</span>
+			</div>
+		</div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-md-2">
+			<div v-if="valor_pendiente > 0">
+				<a href="#myModal" class="btn btn-default btn-sm" type="button" data-toggle="modal" aria-hidden="true">
+					<span class="fa fa-cog text-primary"></span> Justificar Provisión
+				</a>
+			</div>
+			<div v-else>
+				<h5 class="text-success"><span class="fa fa-check"></span> &nbsp;&nbsp; Factura Completa</h5>
+			</div>
+		</div>
+		<div class="col-md-1">
+			<div v-if="http_request" class="text-danger">
+				<img src="http://179.49.60.158:8888/img/spiner.gif" style="width:30px;heigth:auto;">
+				<strong>Actualizando</strong>
+			</div>
+			<div v-else="" class="text-success">
+				<i class="fa fa-check"></i>
+				<strong>Actualizado</strong>
+			</div>
+		</div>
+		<div class="col-md-3 text-danger" v-if="show_error">
+			<i class="fa fa-warning"></i>
+			<strong>Ocurrió un Error </strong> ${ error_message }
+		</div>
+		<div class="col-md-2">
+			<h4 class="text-primary">
+				<small>Val Factura: $</small>
+				<span> {{ document.valor | number_format(2,',','.')}}</span>
+			</h4>
+		</div>
+		<div class="col-md-2">
+			<h4 class="text-success">
+				<small>Val Justificado: </small>
+				<span> ${ total_justificado | money } </span>
+			</h4>
+		</div>
+		<div class="col-md-2">
+			<h4 class="text-defult">
+				<small>Val Pendiente: $</small> <span> ${ valor_pendiente | money}</span>
+			</h4>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<table class="table table-hover table-bordered">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>IDGN</th>
+						<th>IDDP</th>
+						<th>Concepto</th>
+						<th>Tipo</th>
+						<th>Pedido</th>
+						<th>Parcial</th>
+						<th>F Inicio</th>
+						<th>F Fin</th>
+						<th>Provisión</th>
+						<th>Justificación</th>
+						<th>Ajuste</th>
+						<th>Saldo</th>
+						<th>Acciones</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="(item , k) in document.invoiceDetails.details">
+						<td> ${ k + 1 } </td>
+						<td> <a :href="route_url + 'gstnacionalizacion/presentar/' + item.id_gastos_nacionalizacion " target="_blank">${ item.id_gastos_nacionalizacion }</a> </td>
+						<td> ${ item.id_detalle_documento_pago } </td>
+						<td> ${ item.expense.concepto } </td>
+						<td> ${ item.expense.tipo } </td>
+						<td class="text-center">
+							<span class="text-primary">
+								<a :href="route_url + 'gstinicial/validargi/' + item.expense.nro_pedido"
+									target="_blank">
+									<span class="fa fa-eye"></span>
+									${ item.expense.nro_pedido}
+								</a>
+							</span>
+						</td>
+						<td class="text-center">
+							<span v-if="(item.expense.nro_parcial > 0)" class="text-primary">
+								<a :href="route_url + 'gstnacionalizacion/parcial/' + item.expense.id_parcial"
+									target="_blank">
+									<span class="fa fa-eye"></span>
+									${ item.expense.nro_parcial }
+								</a>
+							</span>
+							<span v-else="">
+								${ item.expense.nro_parcial}
+							</span>
+						</td>
+						<td class="text-right"> ${ item.expense.fecha } </td>
+						<td class="text-right"> ${ item.expense.fecha_fin } </td>
+						<td class="text-right"> ${ item.expense.valor_provisionado | money } </td>
+						<td class="text-right"> ${ item.valor | money } </td>
+						<td class="text-right"> ${ item.valor_ajuste | money } </td>
+						<td class="text-right"> ${ item.expense.valor_provisionado - item.expense.valor_ajuste - item.valor } </td>
+						<td class="text-right">
+							<a :href="route_url + 'gstnacionalizacion/presentar/' + item.expense.id_gastos_nacionalizacion"
+								target="_blank" class="text-primary"> <span class="fa fa-eye"></span>Ver Provisión</a>
+							&nbsp;&nbsp;
+							<a class="text-danger" @click="eliminar(item)"> <span
+									class="fa fa-trash"></span>Eliminar</a>
+						</td>
+					</tr>
+					<tr style="background-color:#3747FF; color:#fff; font-weight:bold;">
+						<td colspan="9" class="text-right">SUMAS: &nbsp;&nbsp;&nbsp;&nbsp;</td>
+						<td class="text-right">--</td>
+						<td class="text-right">${ total_justificado | money}</td>
+						<td class="text-right">--</td>
+						<td class="text-right">--</td>
+						<td class="text-right">--</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			<a href="{{rute_url}}/facturapagos/listar/" class="btn btn-sm btn-default"><i class="fa fa-arrow-left"></i>
+				Lista De Facturas</a>
+			&nbsp;
+			<a href="{{rute_url}}/facturapagos/eliminar/{{document.id_documento_pago}}"
+				class="btn btn-sm btn-default"><i class="fa fa-trash text-danger"></i> Eliminar Factura</a>
+		</div>
+
+		<div class="col-md-offset-8 text-right">
+			<a href="{{rute_url}}facturapagos/editar/{{document.id_documento_pago}}" class="btn btn-sm btn-default">
+				<span class="fa fa-pencil text-primary"></span> Editar Cabeceras
+			</a>
+		</div>
+	</div>
+	<!-- Modal HTML -->
+	<div id="myModal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content container" style="padding:20px;">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h5 class="modal-title"> <span class="fa fa-cog"></span> Justificar/Generar Provisión Para
+						<strong>Factura: # {{ document.nro_factura }}</strong> de {{ document.supplier.nombre }}</h5>
+				</div>
+				<input type="hidden" name="id_documento_pago" value="{{ document.id_documento_pago }}">
+				<br>
+				<div class="row bordered" style="padding: 5px; background-color:rgb(252, 252, 207);">
+					<div class="col-md-4">
+						<div v-if="no_provisionado === false">
+							<button class="btn btn-warning btn-sm" @click="no_provisionado = true"> <i
+								class="fa fa-warning"></i> Justificar No Provisionado</button>
+						</div>
+						<div v-else="">
+							<button class="btn btn-primary btn-sm" @click="no_provisionado = false"> <i
+								class="fa fa-file"></i> Justificar Provisionado </button>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<h5 class="text-danger" v-if="generar_ajuste">Se generará un ajsute por el valor $ <strong> ${ saldo_provision }
+							</strong></h5>
+						</div>
+						<div class="col-md-2 text-right">
+							<div v-if="http_request" class="text-danger">
+								<img src="http://179.49.60.158:8888/img/spiner.gif" style="width:30px;heigth:auto;">
+								<strong>Actualizando</strong>
+							</div>
+							<div v-else="" class="text-success">
+								<i class="fa fa-check"></i>
+								<strong>Actualizado</strong>
+							</div>
+						</div>
+						<div class="col-4" v-if="show_error">
+							<i class="fa fa-warning"></i>
+							<strong>Ocurrió un Error </strong> ${ error_message }
+						</div>
+					</div>
+					<br>
+				<div class="justificar" v-if="no_provisionado === false">
+					<div class="row">
+						<div class="col-md-1">
+							<div class="form-group">
+								<label>Nro Pedido</label>
+								<select class="form-control" v-model="selected_item" @change="select_order" autofocus>
+									<option v-for="item in orders">${ item }</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-5">
+							<div class="form-group">
+								<label> Concepto: </label>
+								<select class="form-control" v-model="selected_provision" @change="select_provision()">
+									<option v-for="provision in current_order_provisions"
+										v-bind:value="provision.id_gastos_nacionalizacion"> [${provision.tipo}] ${
+										provision.concepto }</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+								<label> Valor a Justificar USD </label>
+								<input type="number" step="any" required="required" class="form-control text-right"
+									v-model="value_justify" @change="change_justify_value"
+									@input="change_justify_value">
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+								<label> Valor Ajuste </label>
+								<input type="number" v-model="saldo_provision" v-bind:class="class_color"
+									class="form-control text-right" readonly>
+							</div>
+						</div>
+						<div class="col-md-1 text-right">
+							<div class="form-group">
+								<br>
+								<label for="">Ajuste</label>
+								<input type="checkbox" style="zoom: 1.85;" v-model="generar_ajuste">
+							</div>
+						</div>
+						<div class="col-md-1 text-right">
+							<div class="form-group">
+								<br>
+								<button class="btn btn-sm btn-default" @click="guardar_justificacion"> <span
+										class="fa fa-save"></span> Guardar</button>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-8" style="border:solid 1px #eee;border-radius:5px;">
+							<h5 class="text-primary">${ current_provision.concepto } <small>[${ current_provision.tipo
+									}]
+									[id: <a
+										:href="route_url + 'gstnacionalizacion/presentar/' + this.current_provision.id_gastos_nacionalizacion "
+										target="_blank">${ current_provision.id_gastos_nacionalizacion }</a>]
+								</small></h5>
+							<table class="table table-bordered table-condensed table-hover">
+								<thead>
+									<tr>
+										<th style="width:40%">Atributo</th>
+										<th style="width:60%">Valor Atributo</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td class="text-right"><strong>Concepto Provisión:</strong></td>
+										<td>${ current_provision.concepto }</td>
+									</tr>
+									<tr>
+										<td class="text-right"><strong>Nro Pedido:</strong></td>
+										<td>${ current_provision.nro_pedido }</td>
+									</tr>
+									<tr>
+										<td class="text-right"><strong>Nro Parcial:</strong></td>
+										<td>0</td>
+									</tr>
+									<tr>
+										<td class="text-right"><strong>Valor Provisionado:</strong></td>
+										<td>${ current_provision.valor_provisionado }</td>
+									</tr>
+									<tr>
+										<td class="text-right"><strong>Fecha Inicio:</strong></td>
+										<td>${ current_provision.fecha }</td>
+									</tr>
+									<tr>
+										<td class="text-right"><strong>Fecha Fin:</strong></td>
+										<td>${ current_provision.fecha_fin }</td>
+									</tr>
+									<tr>
+										<td class="text-right"><strong>Registrado Por:</strong></td>
+										<td>${ current_provision.nombres }</td>
+									</tr>
+									<tr>
+										<td class="text-right"><strong>Fecha Registro:</strong></td>
+										<td>${ current_provision.date_create }</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="col-md-4 text-center" style="border:solid 1px #eee;border-radius:5px;">
+
+							<h1 v-bind:class="class_color">
+								${ saldo_provision | money }
+								<span v-bind:class="class_simbol"></span>
+							</h1>
+							<h4 class="text-center">Saldo Provisión</h4>
+							<br />
+							<div class="row" style="padding:30px;">
+								<div class="col-md-12 text-center">
+									<h6 class="text-primary">{{ document.supplier.nombre }}</h6>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12 text-center">
+									<span class="text-warning">Los ajustes se usan para cerrar las facturas, las
+										facturas no deben tener saldo</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="generar_ajuste" v-else="">
+					<div class="row">
+						<div class="col-md-1">
+							<div class="form-group">
+								<label>Nro Pedido</label>
+								<select class="form-control" v-model="current_not_provision.nro_pedido"
+									@change="show_partials" autofocus>
+									<option v-for="item in orders">${ item }</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+								<label>Nro Parcial</label>
+								<select class="form-control" v-model="current_not_provision.id_parcial">
+									<option value="0" selected="selected">Gasto Inicial</option>
+									<option v-for="item in partial_selected_orders" v-bind:value="item.id_parcial">${
+										item.ordinal }</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-5">
+							<div class="form-group">
+								<label> Concepto: </label>
+								<input type="text" class="form-control" v-model="current_not_provision.concepto"
+									maxlength="23">
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+								<label> Valor a Justificar USD </label>
+								<input type="number" step="any" required="required" class="form-control text-right"
+									v-model="current_not_provision.valor_justificado" readonly>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+								<label> Valor Ajuste </label>
+								<input type="number" v-model="current_not_provision.valor_ajuste"
+									class="form-control text-right text-danger" step="any">
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-10">
+							<div class="form-gorup">
+								<label for="">Comentarios</label>
+								<input type="text" v-model="current_not_provision.comentarios" class="form-control">
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+								<br>
+								<button class="btn btn-sm btn-warning" @click="generar_provision"><i
+										class="fa fa-save"></i> Generar y Guardar </button>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"> <i
+							class="fa fa-close"></i> Cerrar Ventana</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	{% include 'scripts/app_invoices.js' %}
+</script>

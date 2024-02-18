@@ -1,0 +1,47 @@
+        </div>
+        <!-- /#page-wrapper -->
+    </div>
+</body>
+<script type="text/javascript">
+
+$('#selector-fecha').datepicker({
+    language: "es",
+    daysOfWeekHighlighted: "1"
+});
+</script>
+<!--autocomplete-->
+<!-- Metis Menu Plugin JavaScript -->
+<script src="{{base_url}}vendor/metisMenu/metisMenu.min.js"></script>
+<!-- Custom Theme JavaScript -->
+<script src="{{base_url}}js/sb-admin-2.js"></script>
+<!-- Bootstrap Core JavaScript -->
+<script src="https://sts-ndt.com/cordovez/statics/bootstrap341/js/bootstrap.min.js" ></script>
+
+<script type="text/javascript">
+
+	$('.fecha').datepicker({
+    format: "dd/mm/yyyy",
+    maxViewMode: 3,
+    todayBtn: "linked",
+    language: "es",
+    autoclose: true,
+    todayHighlight: true,
+    daysOfWeekHighlighted: "0,6",    
+});
+
+</script>
+
+<script type="text/javascript">
+//Formateo de fechas
+$('.fecha').mask('99/99/9999');
+$('.fecha').attr('placeholder', 'dd/mm/yyyy');
+</script>
+<script type="text/javascript">
+document.addEventListener('keydown', function(event) {
+  // Verificar si la tecla presionada es la tecla "k" y simultáneamente se mantiene presionada la tecla "Control" (Ctrl)
+  if (event.key === 'i' && event.ctrlKey) {
+    window.location.href = '/index.php/facturapagos/nuevo';
+  }
+});
+</script>
+</html>

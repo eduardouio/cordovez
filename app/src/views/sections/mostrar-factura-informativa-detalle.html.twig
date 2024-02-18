@@ -1,0 +1,145 @@
+{% set moneda = '&euro;' %}
+{% if infoInvoice.moneda == 'DOLARES' %}
+{% set moneda = '$' %}
+{% endif %}
+<div class="well well-sm">
+  <div class="row">
+    <div class="col-md-3">
+      <strong>Proveedor:</strong> <span>{{ supplier.nombre }}</span>
+    </div>
+    <div class="col-md-2">
+      <strong>Ruc:</strong> <span>{{ supplier.identificacion_proveedor }}</span>
+    </div>
+    <div class="col-md-2">
+      <strong>Fecha:</strong> <span>{{ infoInvoice.fecha_emision | date('d/m/Y')}}</span>
+    </div>
+    <div class="col-md-3">
+      <strong>Comentarios:</strong> <span>{{ infoInvoice.comentarios }}</span>
+    </div>
+    <div class="col-md-2">
+      <strong>Moneda </strong> <span class="text-success"> {{ moneda | raw }}
+        {{ infoInvoice.moneda | upper }}
+      </span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <strong>Valor Factura Informativa{{moneda | raw}}:</strong> <span class="text-primary">{{ infoInvoice.valor | number_format(2,',','.')}}</span>
+    </div>
+    
+    <div class="col-md-2">
+      <strong>Tipo de Cambio:</strong> <span class="text-danger"> $
+        {{ infoInvoice.tipo_cambio | number_format(2,',','.') }}
+      </span>
+    </div>
+    <div class="col-md-2">
+      <strong>Valor:</strong> <span class="text-danger"> $
+        {{ (infoInvoice.tipo_cambio * infoInvoice.valor )| number_format(2,',','.') }}
+      </span>
+    </div>
+    <div class="col-md-3">
+      <strong>Creado Por :</strong> <span>{{ user.nombres }}</span>
+      <span class="text-primary"> [{{ infoInvoice.date_create | date('d/m/Y H:m')}}]</span>
+    </div>
+  </div>
+</div>
+<div class="factura_informativa_detalle">
+  <br>
+  <div class="row">
+    <div class="col-sm-2"></div>
+<div class="col-sm-8">
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered table-striped">
+        <thead>
+          <tr style="background-color: #c1c1c1;">
+            <th>Nombre</th>
+            <th>Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-right"> <b>ID:</b></td>
+            <td>{{ infoInvoiceDetail.id_factura_informativa_detalle }}</td>
+          </tr>
+          <tr>
+            <td class="text-right"><b>ID Factura Informativa:</b></td>
+            <td>{{ infoInvoiceDetail.id_factura_informativa }}
+              <a href="{{ rute_url }}facinformativa/presentar/{{infoInvoiceDetail.id_factura_informativa}}">
+                <span class="fa fa-arrow-left fa-fw"></span>Volver
+</a>
+            </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Nro Factura Informativa:</b></td>
+            <td> {{infoInvoice.nro_factura_informativa}} </td>
+          </tr>
+          <tr>           
+            <td class="text-right"><b>Código Contable:</b></td>
+            <td>{{product.cod_contable}} <a href="{{rute_url}}producto/presentar/{{product.cod_contable}}" target="_blank"><span class="fa fa-external-link"></span> Abrir Ficha</a> </td>
+          </tr>
+           <tr>           
+            <td class="text-right"><b>Nombre Producto:</b></td>
+            <td>{{product.nombre}} <a href="{{rute_url}}producto/presentar/{{product.cod_contable}}" target="_blank"><span class="fa fa-external-link"></span> Abrir Ficha</a></td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Capacidad ML:</b></td>
+            <td> {{ product.capacidad | number_format(2, '.', ',') }} ml</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Grado Alcohólico:</b></td>
+            <td> {{ product.grado_alcoholico }} % </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Numero de Cajas:</b></td>
+            <td> {{ orderInvoiceDetail.nro_cajas }} Cajas</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Cantidad por Caja:</b></td>
+            <td> {{ product.cantidad_x_caja }} Unidades</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Unidades:</b></td>
+            <td> {{  product.cantidad_x_caja * orderInvoiceDetail.nro_cajas }} Unidades</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Costo Unidad:</b></td>
+            <td> {{ (orderInvoiceDetail.costo_caja / product.cantidad_x_caja)  | number_format(2,',','.') }} </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Costo Caja:</b></td>
+            <td> {{ moneda | raw }} {{ orderInvoiceDetail.costo_caja }} </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Custodia Doble:</b></td>
+            {% if product.custodia_doble == 1 %}
+              <td> <span class="label label-warning"> <span class="fa fa-warning fa-fw"></span>
+               Tiene Doble Custodia</span> </td>
+              {% else %}
+                <td> <span class="label label-success">No Tiene</span> </td>
+            {% endif %}
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Creado El:</b></td>
+            <td> {{ orderInvoiceDetail.date_create }} </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Ultima Actualización:</b></td>
+            <td> {{ orderInvoiceDetail.last_update }} </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Creado Por:</b></td>
+            <td> {{ user.nombres }} </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="col-sm-2"></div>
+</div>
+<br>
+<hr>
+<a href="{{ rute_url }}facinformativa/presentar/{{infoInvoiceDetail.id_factura_informativa}}" class="btn btn-default btn-sm">
+  <span class="fa fa-arrow-left fa-fw"></span>
+  Volver A Factura Informativa
+</a>
+</div>

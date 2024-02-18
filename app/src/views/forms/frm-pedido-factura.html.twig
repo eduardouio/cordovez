@@ -1,0 +1,284 @@
+{% if order.incoterm == 'FOB'  %}
+	<div class="alert alert-warning">
+	<span class="fa fa-warning"></span>
+	Es posible que este pedido tenga
+	<strong>Gastos en Origen</strong> si los tiene, por favor ingrese ese valor se ingresan usando el formulario del 
+	 <a class="btn btn-sm btn-default" href="{{ rute_url }}pedido/editar/{{ order.nro_pedido }}">Ingresar Gasto Origen</a> 
+	</div>
+{% endif %}
+{% if order.incoterm != 'FOB'  %}
+	<div class="alert alert-danger">
+	<span class="fa fa-warning"></span>
+	Los <strong>Gastos en Origen</strong> de este pedido, se ingresan usando el formulario del pedido, por favor solo registre el producto
+	<a class="btn btn-sm btn-default" href="{{ rute_url }}pedido/editar/{{ order.nro_pedido }}">Ingresar Gasto Origen</a> 
+</div>
+{% endif %}
+
+<form method="post" action="{{rute_url}}pedidofactura/validar/">
+  <input type="hidden" name="identificacion_proveedor" id="identificacion_proveedor" value="">
+  <div class="row">
+    <div class="col-md-1">
+       <div class="form-group">
+      <label>Pedido</label>
+      <input 
+      readonly="" 
+      type="text" 
+      name="nro_pedido"
+      class="form-control" 
+      value="{{ order.nro_pedido }}"
+      autocomplete="off" 
+      >
+    </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+      <label>
+        Proveedor &nbsp;&nbsp; <a href="{{ rute_url }}proveedor/nuevo"> <span class="fa fa-plus"></span>Nuevo Proveedor</a>
+      </label>
+      <input 
+          type="text" 
+          id="autocomplete" 
+          class="form-control"
+          autofocus="autofocus"
+          >
+    </div>
+    </div>
+            <div class="col-md-2">
+      <div class="form-group">
+        <label>Nro de Factura</label>
+        <input 
+        class="form-control" 
+        type="text" 
+        name="id_factura_proveedor"
+        maxlength="16"
+        required="required" 
+        autocomplete="off"
+        >
+      </div>
+    </div>
+         <div class="col-md-2">
+      <div class="form-group">
+        <label>Fecha Emisión</label>
+        <div class="input-group">
+            <input 
+               type="text" 
+               class="form-control fecha" 
+               autocomplete="off" 
+               id="fecha_emision"
+               name="fecha_emision"
+               required="required" 
+               autocomplete="off" 
+               >
+            <div class="input-group-addon">
+               <span class="glyphicon glyphicon-th"></span>
+            </div>
+         </div>
+      </div>
+    </div>
+    <div class="col-md-1">
+    <div class="form-group">
+    <label>Plazo:</label>
+    	<select id="plazoDias" class="form-control">
+    		<option selected="selected" disabled="disabled" value=""> Seleccione... </option>
+    		<option  value="30"> 30 días</option>
+    		<option  value="60"> 60 días</option>
+    		<option  value="90"> 90 días</option>
+    		<option  value="120"> 120 días</option>
+    		<option  value="definir"> Definir</option>
+    	</select>
+    </div>
+    </div>
+        <div class="col-md-2">
+      <div class="form-group">
+        <label>Vencimiento Pago</label>
+          <div class="input-group">
+            <input 
+               type="text" 
+               class="form-control fecha" 
+               required="required" 
+               readonly="" 
+               name="vencimiento_pago"
+               id="vencimiento_pago" 
+               autocomplete="off"
+               >
+            <div class="input-group-addon">
+               <span class="glyphicon glyphicon-th"></span>
+            </div>
+         </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+              <div class="col-md-2">
+      <div class="form-group">
+        <label>Fecha Pago</label>
+          <div class="input-group">
+            <input 
+               type="text" 
+               class="form-control fecha" 
+               name="fecha_pago"
+               autocomplete="off" 
+               >
+            <div class="input-group-addon">
+               <span class="glyphicon glyphicon-th"></span>
+            </div>
+         </div>
+      </div>
+    </div>
+      <div class="col-md-2">
+      <div class="form-group">
+        <label>Moneda</label>
+        <select
+        name="moneda"
+        id="moneda"
+        required = "required"
+        class="form-control"
+        >
+          <option value="DOLARES">DOLARES</option>
+          <option value="EUROS">EUROS</option>
+        </select>
+      </div>
+    </div>
+      <div class="col-md-2">
+      <div class="form-group">
+        <label>Tipo De Cambio</label>
+        <input 
+        class="form-control" 
+        type="number"
+        step="any" 
+        name="tipo_cambio"
+        id="tipo_cambio"
+        value="1" 
+        required="required" 
+        readonly = "true"
+        >
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="form-group">
+        <label>Valor Producto</label>
+        <input 
+        class="form-control" 
+        type="number" 
+        name="valor"
+        id="valor"
+        step="any" 
+        required="required" 
+        >
+      </div>
+    </div>
+        <div class="col-md-3">
+      <div class="form-group">
+        <label>Total Factura Por Producto</label>
+        <input 
+        disabled=""   
+        class="form-control"   
+        id="total" 
+        value="0" 
+        style="font-weight: bold; font-size: 14px; color:blue" 
+        >
+      </div>
+    </div>
+  </div>
+     <div class="row">
+      <div class="col-md-12">
+         <hr>
+         <button type="submit" class="btn btn-sm btn-default" >
+            <span class="fa fa-save fa-fw"></span>
+            Guardar Registro
+         </button>
+      <a href="{{rute_url}}pedido/presentar/{{order.nro_pedido}}" class="btn btn-sm btn-default">
+            <span class="fa fa-arrow-left fa-fw"></span>
+            Volver al Pedido <b>({{order.nro_pedido}})</b>
+         </a>
+      </div>
+   </div>
+</form>
+
+<script type="text/javascript">
+  var suppliers = {{ suppliers | json_encode() | raw }};
+  var suppliersKey = [];
+  console.dir(suppliers);
+
+  $.each(suppliers, function( k, v ){
+    suppliersKey.push(v.nombre);
+  });
+  
+  $( "#autocomplete" ).autocomplete({
+    source: suppliersKey,
+  });
+
+  $("#autocomplete").on("autocompletechange", function(){
+    var value = this.value;
+    $.each(suppliers, function(k,v){
+      if(value === v.nombre){
+        console.log('Nuevo Valor Seleccionado ');
+        $("#identificacion_proveedor").val(v.identificacion_proveedor);
+      }
+    });
+
+  })
+
+</script>
+
+<script type="text/javascript">
+
+if( $('#modenda').val() == 'EUROS' ){
+	 $('#tipo_cambio').removeAttr('readonly');
+}
+
+
+$('#moneda').change(function(){
+    if($(this).val() === 'EUROS'){
+      $('#tipo_cambio').removeAttr('readonly');
+    }else{
+      $('#tipo_cambio').attr('readonly', true);
+      $('#tipo_cambio').val(1);
+    }
+
+    actualizarValores();
+    
+  });
+
+$('#valor').keyup(function(){
+	actualizarValores();
+  });
+
+
+/**
+ * Actualiza los valores del formulario
+ */
+function actualizarValores(){
+
+    $('#total').val(
+			(
+			parseFloat( $('#valor').val()) 
+			) 
+    	    );  
+}
+actualizarValores();
+</script>
+
+<script type="text/javascript">     
+//<!--Actualiza la fecha de vencimiento para el pago de una factura de proveedo//-->
+var dateString = '';
+$('#fecha_emision').change(function(){
+
+	dateString = this.value.split('/'); 
+});
+
+$('#plazoDias').change(function(){
+	if(this.value === 'definir'){
+		$('#vencimiento_pago').focus();
+	}else{
+		    var date = new Date(dateString[2] , dateString[1] - 1, dateString[0]);
+		    var newdate = new Date(date);
+		    newdate.setDate(newdate.getDate() + parseInt(this.value));
+		    var dd = newdate.getDate();
+		    var mm = newdate.getMonth() + 1;
+		    var y = newdate.getFullYear();
+		    var someFormattedDate = dd + '/' + mm + '/' + y;
+		    document.getElementById('vencimiento_pago').value = someFormattedDate;
+			}
+});
+</script>

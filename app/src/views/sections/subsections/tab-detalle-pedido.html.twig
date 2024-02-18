@@ -1,0 +1,186 @@
+<div class="row">
+	<div class="col-md-2">
+	<label><small>Pedido</small>
+	{% if order.bg_isclosed == false %}
+      <strong class="text-success"><span class="fa fa-unlock"></span></strong>
+  {% else %}
+      <strong class="text-danger"><span class="fa fa-lock"></span></strong>
+   {% endif %} 
+	</label>
+	<input value = "{{ order.nro_pedido }}" readonly="readonly" class="full-width" class="full-width" >
+	</div>
+	<div class="col-md-1">
+	<label><small>Régimen</small></label>
+	<input value = "{{ order.regimen }}" readonly="readonly" class="full-width" >
+	</div>
+	<div class="col-md-2">
+		<label><small>País</small></label>
+	<input value = "{{ order.pais_origen }}" readonly="readonly" class="full-width" >
+	</div>
+	<div class="col-md-2">
+		<label><small>Fecha Llegada</small></label>
+	<input value = "{{ order.fecha_arribo }}" readonly="readonly" class="full-width" >
+	</div>
+	<div class="col-md-1">
+		<label><small>Incoterm</small></label>
+	<input value = "{{ order.incoterm }}" readonly="readonly" class="full-width" >
+	</div>
+	<div class="col-md-4">
+	<label><small>Proveedor</small></label>
+	<input value = "{{ supplier.nombre }}" readonly="readonly" class="full-width" >
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3">
+	<label><small>Referendo</small></label>
+	<input value = "{{ order.nro_refrendo }}" readonly="readonly" class="full-width" >
+	</div>
+	<div class="col-md-1">
+	<label><small>Moneda</small></label>
+	<input value = "{{ order_invoices.0.moneda }}" readonly="readonly" class="full-width" >
+	</div>
+	<div class="col-md-2">
+	<label><small>Nro Fac</small></label>
+	<input value = "{{ order_invoices.0.id_factura_proveedor }}" readonly="readonly" class="full-width" >
+	</div>
+	<div class="col-md-1">
+	<label><small>GO</small></label>
+	<input value = "{{ order.gasto_origen | number_format(2,',','.')}}" readonly="readonly" class="full-width text-right"/>
+	</div>
+	<div class="col-md-1">
+	<label><small>Seguro A</small></label>
+	<input value = "{{ order.seguro_aduana | number_format(2,',','.') }}" readonly="readonly" class="full-width text-right"/>
+	</div>
+	<div class="col-md-1">
+	<label><small>Flete A</small></label>
+	<input value = "{{ order.flete_aduana | number_format(2,',','.')}}" readonly="readonly" class="full-width text-right" />
+	</div>
+	<div class="col-md-1">
+	<label><small>FOB</small></label>
+	<input value = "{{ order_invoices.0.valor | number_format(2,',','.')}}" readonly="readonly" class="full-width text-right"/>
+	</div>
+	<div class="col-md-2">
+	<label><small>CIF</small></label>
+	<input value = "{{ ((order_invoices.0.valor * order_invoices.0.tipo_cambio  ) +  order.flete_aduana + order.seguro_aduana) | number_format(2,',','.') }}" readonly="readonly" class="full-width text-right"/>
+	</div>	
+</div>
+<div class="row">
+	<div class="col-md-2">
+	<label><small>Fecha Registro</small></label>
+	<input value = "{{ order.date_create }}" readonly="readonly" class="full-width">
+	</div>
+	<div class="col-md-2">
+	<label><small>Fecha Arribo</small></label>
+	<input value = "{{ order.fecha_arribo }}" readonly="readonly" class="full-width" >
+	</div>
+	<div class="col-md-2">
+	<label><small>Fecha Ing Almagro</small></label>
+	<input value = "{{ order.fecha_ingreso_almacenera }}" readonly="readonly" class="full-width">
+	</div>
+	<div class="col-md-2">
+	<label><small>Fecha Llegada Final</small></label>
+	<input value = "{{ order.fecha_llegada_cliente }}" readonly="readonly" class="full-width" >
+	</div>
+	<div class="col-md-2">
+	<label><small>Registrado Por:</small></label>
+	<input value = "{{ order.id_user }}" readonly="readonly" class="full-width" >
+	</div>
+	<div class="col-md-2 text-right">
+	<br />
+	{% if order.bg_isclosed == 0 %}
+	<a href="{{ rute_url }}pedido/editar/{{ order.nro_pedido }}" class="btn btn-sm btn-default">
+	<span class="fa fa-pencil"></span>
+	Editar Pedido
+	</a>
+{%  endif %}
+	</div>
+</div>
+<br />
+{% if order.regimen == 10 %}
+<div class="row">
+	<div class="col-md-1"></div>
+	<div class="col-md-10">
+	<div class="text-tittle">Detalle de Tributos Cancelados El {{ order.fecha_liquidacion }} Nro Liquidación: {{ order.nro_liquidacion }} </div>
+	 <table class="table table-striped table-hover table-condensed table-bordered">
+  <tbody>
+       <tr>
+       	  <th>#</th>
+          <th>Concepto</th>
+          <th>Tipo</th>
+          <th>Liquidación Aduana</th>
+          <th>Valor Pagado</th>e
+       </tr>
+       <tr class="text-right">
+       <td>1</td>
+          <td>ARANCEL ADVALOREM</td>
+          <td>DERECHO ARANCELARIO</td>
+          <td>{{ order.arancel_advalorem_pagar_pagado | number_format(3,'.',',') }}</td>
+          <td class="text-success" >{{ order.arancel_advalorem_pagar_pagado | number_format(3,'.',',') }}</td>
+       </tr>
+       <tr class="text-right">
+       <td>2</td>
+          <td>ARANCEL ESPECÍFICO</td>
+          <td>DERECHO ARANCELARIO</td>
+          <td>{{ order.arancel_especifico_pagar_pagado | number_format(3,'.',',') }}</td>
+          <td class="text-success" >{{ order.arancel_especifico_pagar_pagado | number_format(3,'.',',') }}</td>
+       </tr>
+       <tr class="text-right">
+       <td>3</td>
+          <td>FODINFA</td>
+          <td>IMPUESTO</td>
+          <td>{{ order.fodinfa_pagado | number_format(3,'.',',') }}</td>
+          <td class="text-success" >{{ order.fodinfa_pagado | number_format(3,'.',',') }}</td>
+       </tr>
+       <tr class="text-right">
+       <td>4</td>
+          <td>ICE ADVALOREM</td>
+          <td>IMPUESTO</td>
+          <td>{{ order.ice_advalorem_pagado | number_format(3,'.',',') }}</td>
+          <td class="text-success" >{{ order.ice_advalorem_pagado | number_format(3,'.',',') }}</td>
+       </tr>
+       <tr class="text-right">
+       <td>5</td>
+          <td>ICE ESPECÍFICO</td>
+          <td>IMPUESTO</td>
+          <td>{{ order.ice_especifico_pagado | number_format(3,'.',',') }}</td>
+          <td class="text-success" >{{ order.ice_especifico_pagado | number_format(3,'.',',') }}</td>
+       </tr>
+       <tr class="text-right">
+       <td>6</td>
+          <td>IVA</td>
+          <td>IMPUESTO</td>
+          <td>{{ order.iva_pagado| number_format(3,'.',',') }}</td>
+          <td class="text-success" >{{ order.iva_pagado | number_format(3,'.',',') }}</td>
+       </tr>
+        <tr style="background-color:#2E86C1; color:#fff; font-weight:bold;" class="text-right">
+               <td colspan="3">TOTAL:</td>
+               <td>
+                   {{ (
+                           order.iva_pagado 
+                           + order.ice_advalorem_pagado 
+                           + order.ice_especifico_pagado
+                           + order.fodinfa_pagado
+                           + order.sums.arancel_advalorem_pagado 
+                           + order.arancel_especifico_pagado
+                       ) | number_format(3,'.',',') 
+                    }}
+               </td>                
+               <td>
+               {{ (
+                           order.iva_pagado 
+                           + order.ice_advalorem_pagado 
+                           + order.ice_especifico_pagado
+                           + order.fodinfa_pagado
+                           + order.sums.arancel_advalorem_pagado 
+                           + order.arancel_especifico_pagado
+                       ) | number_format(3,'.',',')  
+                    }}
+               </td>
+			</tr>
+    </tbody>
+ </table>
+		
+	</div>
+	<div class="col-md-1"></div>
+</div>
+{% endif %}

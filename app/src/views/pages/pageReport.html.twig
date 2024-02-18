@@ -1,0 +1,32 @@
+{% include 'base/header.html.twig' %}
+{% include 'base/navbarheader.html.twig' %}
+{% include 'base/content.html.twig' %}
+
+{%  if dashboard == true %}
+    {% include 'sections/report_dashboard.html.twig'  %}
+{% endif %}
+{% if provisiones == true %}
+	{% include 'forms/frm-reporte-provisiones.html.twig' %}
+	{% include 'sections/subsections/table_report.html.twig' %}
+{% endif %}
+	
+{% if saldos == true %}
+	{% include 'sections/subsections/saldos_report.html.twig' %}
+{% endif %}
+
+{% if reporte_ice == true %}
+	{% if have_unclosed_items == true %}
+		{% include 'errors/item-unclosed.html.twig' %}
+	{% else %}
+		{% include 'sections/subsections/ice_report.html.twig' %}
+	{% endif %}
+	
+{% endif %}
+
+{% if reporte_saldo_producto == true %}
+	{% include 'sections/subsections/reporte_saldo_producto.html.twig' %}
+{% endif %}
+
+{% include 'base/content_close.html.twig' %}
+{% include 'base/signaturefoot.html.twig' %}
+{% include 'base/footer.html.twig' %}

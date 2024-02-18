@@ -1,0 +1,31 @@
+</div>
+<!-- /.panel-body -->
+{% if pagination == true %}
+<div class="panel-footer text-right">
+<ul class="pagination">
+	<li><a href="{{pagination_url}}">Primera</a></li>
+  {% for item in 1 .. pagination_pages  %}
+  	{% if current_page == item %}
+  		<li class="active">
+        <a href="{{ pagination_url }}{{page}}">
+        {{ item }}
+      </a>
+      </li>
+		{% else %}
+  		<li>
+        <a href="{{ pagination_url }}{{page}}">{{ item }}
+        </a>
+      </li>		
+  	{% endif %}  	
+  	{% set page = page + perPage %}
+  {% endfor %}
+  <li><a href="{{pagination_url}}{{ last_page }}">Última</a></li>
+</ul>
+</div>
+{% endif %}
+</div>
+<!-- /.panel -->
+</div>
+<!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->

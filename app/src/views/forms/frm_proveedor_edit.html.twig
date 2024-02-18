@@ -1,0 +1,184 @@
+{% set categorias  = supplier.categoria | split(';') %} 
+    {% set data = categorias | json_encode() %};
+<form method="post" action="{{rute_url}}proveedor/validar">
+  <input type="hidden" name="id_proveedor" value="{{supplier.id_proveedor}}">
+   <div class="row">
+      <div class="col-lg-3">
+         <div class="form-group">
+            <label>Identificacion Proveedor: </label>
+            <input
+               class="form-control"
+               required="true"
+               type="text"
+               maxlength="16"
+               name="identificacion_proveedor"
+               value="{{supplier.identificacion_proveedor}}"
+               />
+         </div>
+      </div>
+      <div class="col-lg-3">
+         <div class="form-group">
+            <label>Tipo de Proveedor:</label>
+            <select
+               class = "form-control"
+               name = "tipo_provedor"
+               >
+               <option value="{{supplier.tipo_provedor}}" selected="true">
+                  {{supplier.tipo_provedor}}
+               </option>
+               {% if supplier.tipo_provedor == 'NACIONAL' %}
+               <option value="INTERNACIONAL">INTERNACIONAL</option>
+               {% else %}
+               <option value="NACIONAL">NACIONAL</option>
+               {% endif %}
+            </select>
+         </div>
+      </div>
+      <div class="col-lg-6">
+         <div class="form-group">
+            <label>Nombre:</label>
+            <input
+               class="form-control"
+               required="required"
+               type="text"
+               maxlength="60"
+               autocomplete="off"
+               id="nombre_proveedor"
+               name="nombre"
+               value="{{supplier.nombre}}">
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-lg-6">
+         <div class="form-group">
+            <label>SELECCIONE LA CATEGORIA O CATEGORIAS A LA QUE PERTENECE</label>
+          <!-- inicio -->
+            <div class="control-group text-info" id="categoria">
+               <label class="control control-checkbox">
+                  ADUANA DEL ECUADOR
+                  <input type="checkbox" 
+                  value="ADUANA" 
+                  id="ADUANA" 
+                  name="categoria_1"/>
+                  <div class="control_indicator"></div>
+               </label>
+               <label class="control control-checkbox">
+                  AGENTE DE ADUANAS
+                  <input type="checkbox"  
+                  value="AGENTE DE ADUANAS" 
+                  id="AGENTEDEADUANAS" 
+                  name="categoria_2">             
+                  <div class="control_indicator"></div>
+               </label>
+               <label class="control control-checkbox">
+                  ALMACENAJE
+                  <input type="checkbox"  
+                  value="ALMACENAJE" 
+                  id="ALMACENAJE" 
+                  name="categoria_3">             
+                  <div class="control_indicator"></div>
+               </label>
+               <label class="control control-checkbox">
+                  BODEGAJE
+                  <input type="checkbox"  
+                  value="BODEGAJE" 
+                  id="BODEGAJE" 
+                  name="categoria_4">             
+                  <div class="control_indicator"></div>
+               </label>
+               <label class="control control-checkbox">
+                  CANDADO SATELITAL
+                  <input type="checkbox"  
+                  value="CANDADO SATELITAL" 
+                  id="CANDADOSATELITAL" 
+                  name="categoria_5">             
+                  <div class="control_indicator"></div>
+               </label>
+               <label class="control control-checkbox">
+                  CUSTODIA ARMADA
+                  <input type="checkbox"  
+                  value="CUSTODIA ARMADA" 
+                  id="CUSTODIAARMADA" 
+                  name="categoria_6">             
+                  <div class="control_indicator"></div>
+               </label>
+               <label class="control control-checkbox">
+                  PROVEEDOR DE LICORES
+                  <input type="checkbox"  
+                  value="LICORES" 
+                  id="PROVEEDORDELICORES" 
+                  name="categoria_7">             
+                  <div class="control_indicator"></div>
+               </label>
+               <label class="control control-checkbox">
+                  TRANSPORTE INTERNACIONAL
+                  <input type="checkbox"  
+                  value="TRANSPORTE INTERNACIONAL" 
+                  id="TRANSPORTEINTERNACIONAL" 
+                  name="categoria_8">             
+                  <div class="control_indicator"></div>
+               </label>
+               <label class="control control-checkbox">
+                  TRANSPORTE INTERNO (NACIONAL)
+                  <input type="checkbox"  
+                  value="TRANSPORTE INTERNO" 
+                  id="TRANSPORTEINTERNO" 
+                  name="categoria_9">             
+                  <div class="control_indicator"></div>
+               </label>
+               <label class="control control-checkbox">
+                  OTROS SERVICIOS
+                  <input type="checkbox" 
+                  value="OTROS SERVICIOS" 
+                  id="OTROSSERVICIOS" 
+                  name="categoria_10">             
+                  <div class="control_indicator"></div>
+               </label>
+            </div>
+            <!-- Final -->
+         </div>
+      </div>
+      <div class="col-lg-6">
+         <div class="form-group">
+            <label>Comentarios</label>
+            <textarea
+               class="form-control"
+               name= "comentarios"
+               id= "comentarios"
+               rows="3">{{ supplier.comentarios | raw }}</textarea>
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-lg-6">
+         <hr>
+         <button type="submit" class="btn btn-default btn-sm">
+         <span class="fa fa-save fa-fw"></span>
+         Guardar Registro</button>
+         <a href="{{rute_url}}proveedor/listar/" class="btn btn-default btn-sm"> 
+         <span class="fa fa-arrow-left fa-fw"></span>
+         Volver Lista Proveedores
+         </a>
+      </div>
+   </div>
+</form>
+<script type="text/javascript">
+      
+    checkboxList({{ data | raw}});
+    //da chequed con jquery
+   function checkboxList(categorias){
+    $.each(categorias, function(key, value){
+      value = value.replace(/ /gi, '');
+      $('#'+ value ).prop('checked', true);
+    });
+   }
+
+   $('#nombre_proveedor').keyup(function(){
+      this.value = this.value.toUpperCase();
+   });
+   
+   $('#comentarios').keyup(function(){
+      this.value = this.value.toUpperCase();
+   });
+</script>

@@ -1,0 +1,270 @@
+{% set money = '$' %}
+{% if haveEuros == true %}
+	{% set money = '&euro' %}
+{%  endif %}
+
+<div class="well well-sm">
+   <div class="row">
+      <div class="col-sm-3">
+         <strong>FOB Disponible:</strong>
+         <strong class="text-primary">
+         {{ money | raw }} {{stock_order.global.current | number_format(2,',','.')}}
+         </strong>  
+      </div>
+      <div class="col-sm-2">
+         <strong>Parciales Anteriores:</strong>
+         <span class="text-primary">
+         <strong>{{ parciales_anteriores | number_format(0) }}</strong>
+      </div>
+      <div class="col-sm-2">
+         <strong>
+         Nro Pedido:</strong> 
+         <span class="text-primary">
+         {{ order.nro_pedido }}
+         </span>
+      </div>
+      <div class="col-sm-2">
+         <strong>
+         Regimen:</strong> 
+         <span class="text-primary">
+         <strong class="text-primary">
+         {{ order.regimen  }}
+         </strong>   
+         </span>
+      </div>
+      <div class="col-sm-3">
+         <strong>
+         Fecha Registro:</strong> 
+         <span class="text-primary">
+         {{ order.date_create | date('d/m/Y')}}            
+         </span>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-sm-3">
+         <strong>Tiempo Almacenera P&uacute;blica:</strong>
+         <span class="text-primary">
+         {{ warenHouseDays }} días
+         </span>
+      </div>
+      <div class="col-sm-2">
+         <strong>P. Origen:</strong> 
+         <span class="text-primary">
+         {{ order.pais_origen }}
+         </span>
+      </div>
+      <div class="col-sm-2">
+         <strong>Puerto:</strong> 
+         <span class="text-primary">
+         {{ order.ciudad_origen  }}            
+         </span>
+      </div>
+      <div class="col-sm-2">
+         <strong>Incoterm:</strong> 
+         <span class="text-primary">
+         {{order.incoterm}}
+         </span>         
+      </div>
+      <div class="col-sm-2">
+         <strong>Creado Por:</strong>
+         <span> {{ user['nombres'] }}
+         </span>
+      </div>
+   </div>
+</div>
+<br>
+<form method="post" action="{{rute_url}}facinformativa/validar/">
+	{% if edit_invoice == true %}
+		<input type="hidden" name="id_factura_informativa"  value="{{ info_invoice.id_factura_informativa }}">	
+	{% endif %}
+	<input type="hidden" name="id_parcial"  value="{{ parcial.id_parcial }}">
+	{% if haveEuros == false %}
+      		<input type="hidden" name="moneda" value="DOLARES">
+      		<input type="hidden" name="tipo_cambio" value="1">      		
+    {% else %}
+    		<input type="hidden" name="moneda" value="EUROS">
+      		<input type="hidden" name="tipo_cambio" value="{{ haveEuros.tipo_cambio }}">
+	{% endif %}
+   <div class="row">
+      <div class="col-md-1">
+         <div class="form-group">
+            <label>Parcial</label>
+            <input 
+               readonly="" 
+               type="text" 
+               name="id_parcial"
+               class="form-control" 
+               value="{{parcial.id_parcial}}" 
+               >
+         </div>
+      </div>
+      <div class="col-md-3">
+         <div class="form-group">
+            <label>Proveedor</label>
+            <select
+               name="identificacion_proveedor"
+               class="form-control"
+               required = "required"
+               >
+               <option value="{{supplier.identificacion_proveedor}}"> {{supplier.nombre}} </option>
+            </select>
+         </div>
+      </div>
+      <div class="col-md-2">
+         <div class="form-group">
+            <label>Nro Factura Informativa</label>
+            <input 
+               type="text" 
+               name="nro_factura_informativa"
+               class="form-control" 
+               autofocus="autofocus" 
+               required="required" 
+               value="{{ info_invoice.nro_factura_informativa }}"
+               autocomplete="off" 
+               >
+         </div>
+      </div>
+      <div class="col-md-2">
+         <div class="form-group">
+            <label>Fecha Emisión</label>
+            <div class="input-group">
+               <input 
+                  type="text" 
+                  class="form-control fecha" 
+                  autocomplete="off"
+                  id="fecha_emision"
+                  required="required" 
+                  name="fecha_emision" 
+                  {% if info_invoice.fecha_emision == null %}
+                     value="" 
+                     {% else %}
+                        value="{{ info_invoice.fecha_emision | date('d-m-Y') }}" 
+                  {% endif %}
+                  >
+               <div class="input-group-addon">
+                  <span class="glyphicon glyphicon-th"></span>
+               </div>
+            </div>
+         </div>
+      </div>
+       <div class="col-md-2">
+         <div class="form-group">
+            <label>Nro Referendo</label>
+            <input 
+               type="text" 
+               name = "nro_refrendo"
+               id = "nro_refrendo"
+               placeholder="000-0000-00-000000"
+               class="form-control" 
+               maxlength="20" 
+               value="{{info_invoice.nro_refrendo}}" 
+               autocomplete="off"
+               >
+         </div>
+      </div>      
+      <div class="col-md-2">
+         <div class="form-group">
+            <label>Gasto Origen
+         	{% if haveEuros == false %}
+           		(USD)
+       	    {% else %}
+           		(EUROS)
+       	    {% endif %}
+            </label>
+            <input 
+               type="text" 
+               name = "gasto_origen"
+               id = "gasto_origen"
+               placeholder="Gasto Origen"
+               class="form-control" 
+               step="any" 
+               value="{{ info_invoice.gasto_origen }}"
+               {% if create_invoice == true %}
+                disabled="disabled"
+               {% endif %}
+               autocomplete="off"
+               >
+         </div>
+      </div>
+   </div>
+   <div class="row">
+   <div class="col-md-2">
+   	<div class="form-group">
+   	<label for="">
+   	Flete Aduana
+   	{% if haveEuros == false %}
+   		(USD)
+   	{% else %}
+   		(EUROS)
+   	{% endif %}
+   	</label>
+   	<input 
+   		type="number" 
+   		class="form-control" 
+   		required="required" 
+   		name="flete_aduana"
+         step="any"
+   		id="flete_aduana"
+   		value="{{ info_invoice.flete_aduana }}"
+   		/>
+   	</div>
+   </div>
+   <div class="col-md-2">
+   	<div class="form-group">
+   	<label for="">
+   	Seguro Aduana
+   	{% if haveEuros == false %}
+   		(USD)
+   	{% else %}
+   		(EUROS)
+   	{% endif %}
+   	</label>
+   	<input 
+   		type="number" 
+   		class="form-control"
+   		name="seguro_aduana"
+   		id="seguro_aduana"
+         step="any"
+   		required="required" 
+   		value="{{ info_invoice.seguro_aduana }}"
+   	/>
+   	</div>
+   </div>
+   <div class="col-sm-6">
+   <div class="form-group">
+   <label for="">Comentarios</label>
+   <input 
+   		type="text"
+   		maxlength="250" 
+   		class="form-control"
+   		name="comentarios"
+   		value="{{ info_invoice.comentarios }}"
+   	/>
+   </div>
+   </div>
+   </div>
+   <br />
+   <div class="row">
+      <div class="col-md-10">
+         <button type="submit" class="btn btn-sm btn-primary" >
+         <span class="fa fa-save fa-fw"></span>
+         Guardar Registro
+         </button>
+         <a href="{{rute_url}}pedido/presentar/{{order.nro_pedido}}" class="btn btn-sm btn-default">
+         <span class="fa fa-arrow-left fa-fw"></span>
+         Volver al Pedido <b>[{{order.nro_pedido}}]</b>
+         </a>
+      </div>
+      <div class="col-md-2 text-right">
+      <a href="{{rute_url}}pedido/presentar/{{order.nro_pedido}}" class="btn btn-sm btn-warning">
+         <span class="fa fa-list-ol"></span>
+         Volver al Parcial
+         </a>
+      </div>
+   </div>
+</form>
+
+<script type="text/javascript">
+       $('#nro_refrendo').mask('999-9999-99-99999999');
+</script> 
+

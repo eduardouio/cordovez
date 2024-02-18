@@ -1,0 +1,219 @@
+<div class="row">
+<div class="alert alert-info alert-dismissable">
+	<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+	<span class="fa fa-warning"></span> Para ingresar el precio de un producto se debe ingresar
+	 es el valor original de compra, no usar conversiones de monedas.
+</div>
+</div>
+<form action="{{ rute_url }}producto/validar/" method="post">
+ {% if edit == true %}
+ <input type="hidden" name="id_producto" value="{{ product.id_producto }}">
+ {% endif %}
+ 
+   <div class="row">
+         <div class="col-lg-6">
+         <div class="form-group">
+            <label>Proveedor
+            <small class="text-primary"><a href="{{ rute_url }}proveedor/nuevo/"><span class="fa fa-plus"></span> Nuevo</a></small>
+            </label>
+            
+            <select
+               name="identificacion_proveedor"
+               required = "true"
+               class="form-control"
+               required="true"
+               >
+               {% if edit == true %}
+               		<option selected="true" value="{{ supplierData.identificacion_proveedor }}"> {{ supplierData.nombre  }} </option>
+               {% endif %}
+               {% if errorList.status == false %}
+               		<option selected="true" value="{{ supplierData.identificacion_proveedor }}"> {{ supplierData.nombre  }} </option>
+               {% else %}
+               		<option selected="true" disabled ="true" >Seleccione...</option>
+               {% endif %}
+               {% for supplier in suppliers %}
+                  <option value="{{supplier.identificacion_proveedor}}" >
+                     {{ supplier.nombre }}
+                   </option>
+               {% endfor %}
+            </select>
+         </div>
+      </div>
+      <div class="col-lg-6">
+         <div class="form-group">
+            <label>Nombre</label>
+            <input
+               class="form-control" 
+               type="text"
+               required="true"
+               maxlength="70"
+               name="nombre"
+               id="nombre"
+               autocomplete="off"
+               autofocus="true"
+               value="{{ product.nombre }}"
+               >
+         </div>
+      </div>
+   </div>
+   <div class="row">
+		  <div class="col-lg-3">
+         <div class="form-group">
+            <label>Cod Contable</label>
+            <input
+               class="form-control"
+               placeholder="00000000000000000000"
+               type="text"
+               required="true"
+               maxlength="20"
+               name="cod_contable"
+               value = "{{ product.cod_contable }}"
+               autocomplete="off"
+               >
+         </div>
+      </div>
+      <div class="col-lg-4">
+         <div class="form-group">
+            <label>Cod ICE</label>
+            <input
+               class="form-control"
+               type="text"
+               placeholder="0000-00-000000-000-000000-00-000-000000"
+               required="true"
+               maxlength="39"
+               name="cod_ice"
+               value="{{ product.cod_ice }}"
+               autocomplete="off"
+               >
+         </div>
+      </div>
+      <div class="col-lg-2">
+         <div class="form-group">
+            <label>Unds (x Caja)</label>
+            <input
+               class="form-control"
+               type="number"
+               step="1"
+               required="true"
+               name="cantidad_x_caja"
+               value="{{ product.cantidad_x_caja  }}"
+               >
+         </div>
+      </div>
+      <div class="col-lg-2">
+         <div class="form-group">
+            <label>Capacidad (ml)</label>
+            <input
+               class="form-control"
+               required="true"
+               type="number"
+               name="capacidad_ml"
+               value="{{ product.capacidad_ml }}"
+               >
+         </div>
+      </div>
+      <div class="col-lg-1">
+         <div class="form-group">
+            <label>Grado Alc</label>
+            <input
+               class="form-control"
+               required="true"
+               type="number"
+               step="any"
+               name="grado_alcoholico"
+               value="{{ product.grado_alcoholico }}"
+               >
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-lg-2">
+         <div class="form-group">
+            <label>Estado</label>
+            <select
+               class="form-control"
+               required="true"
+               name="estado"
+               >
+               <option value="1">ACTIVO</option>
+               <option value="0">INACTIVO</option>
+            </select>
+         </div>
+      </div>
+      <div class="col-lg-2">
+         <div class="form-group">
+            <label>Tipo Custodia</label>
+            <select
+               class="form-control"
+               name="custodia_doble"
+               >
+               <option value="0">NORMAL</option>
+               <option value="1">DOBLE</option>
+            </select>
+         </div>
+      </div>
+      <div class="col-lg-2">
+      	<div class="form-group">
+      		<label>Valor Caja USD/EURO</label>
+      		<input 
+            type="number" 
+            step="any" 
+      		name="costo_caja"
+      		required="true" 
+            class="form-control"
+            value="{{ product.costo_caja }}"
+      		>
+      	</div>
+      </div>
+      <div class="col-lg-2">
+      	<div class="form-group">
+      		<label>Peso Gramos</label>
+      		<input 
+            type="number" 
+            step="any" 
+      		name="peso"
+      		required="true" 
+            class="form-control"
+            value="{{ product.peso }}"
+      		>
+      	</div>
+      </div>
+      <div class="col-lg-4">
+         <div class="form-group">
+            <label>Comentarios</label>
+            <textarea
+               class="form-control"
+               maxlength="120"
+               name= "comentarios"
+               id= "comentarios"
+               rows="2">{{ product.comentarios     }}</textarea>
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-lg-12">
+         <button type="submit" class="btn btn-default btn-sm">
+         <span class="fa fa-save fa-fw"></span>
+         Guardar Registro</button>
+         <a href="{{rute_url}}producto/listar" class="btn btn-default btn-sm"> 
+               <span class="fa fa-list fa-fw"></span>
+            Listar Todos Productos
+         </a>
+      </div>
+   </div>
+</form>
+<script type="text/javascript">
+   $('#nombre').keyup(function(){
+   	this.value = this.value.toUpperCase();
+   })
+   
+   $('#comentarios').keyup(function(){
+   this.value = this.value.toUpperCase();
+   });
+   
+</script>
+
+
+  <script type="text/javascript">
+       $('#cod_ice').mask('9999-99-999999-999-999999-99-999-999999');
+   </script>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?><project name="MODULO IMPORTACIONES" company="CORVEZ" webLink="http://VINESA.COM.EC" view-date="2017-10-08" view-index="0" gantt-divider-location="787" resource-divider-location="300" version="2.8.5" locale="en_US">
+    <description><![CDATA[Este Plan de Desarrollo del Software es una versión preliminar preparada para ser incluida en la propuesta elaborada como respuesta al proyecto “Sistema de Control de Importaciones. Este documento provee una visión global del enfoque de desarrollo propuesto. ]]></description>
+    <view zooming-state="default:5" id="gantt-chart">
+        <field id="tpd3" name="Name" width="523" order="0"/>
+        <field id="tpd4" name="Begin date" width="126" order="1"/>
+        <field id="tpd5" name="End date" width="119" order="2"/>
+        <timeline><![CDATA[0,67]]></timeline>
+        <option id="color.recent"><![CDATA[#ff0000]]></option>
+    </view>
+    <view id="resource-table">
+        <field id="0" name="Name" width="210" order="0"/>
+        <field id="1" name="Default role" width="86" order="1"/>
+    </view>
+    <!-- -->
+    <calendars>
+        <day-types>
+            <day-type id="0"/>
+            <day-type id="1"/>
+            <default-week id="1" name="default" sun="1" mon="0" tue="0" wed="0" thu="0" fri="0" sat="1"/>
+            <only-show-weekends value="false"/>
+            <overriden-day-types/>
+            <days/>
+        </day-types>
+    </calendars>
+    <tasks empty-milestones="true">
+        <taskproperties>
+            <taskproperty id="tpd0" name="type" type="default" valuetype="icon"/>
+            <taskproperty id="tpd1" name="priority" type="default" valuetype="icon"/>
+            <taskproperty id="tpd2" name="info" type="default" valuetype="icon"/>
+            <taskproperty id="tpd3" name="name" type="default" valuetype="text"/>
+            <taskproperty id="tpd4" name="begindate" type="default" valuetype="date"/>
+            <taskproperty id="tpd5" name="enddate" type="default" valuetype="date"/>
+            <taskproperty id="tpd6" name="duration" type="default" valuetype="int"/>
+            <taskproperty id="tpd7" name="completion" type="default" valuetype="int"/>
+            <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
+            <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
+        </taskproperties>
+        <task id="0" name="FASE 1.- Analisis" color="#8cb6ce" meeting="false" start="2017-07-31" duration="19" complete="0" priority="2" expand="true">
+            <notes><![CDATA[Estapa de diseño de la estructura de la aplicación, asi como de las 	reglas de negocio del sistema, pefiles de usuarios y especificaciones del sistema, 
+]]></notes>
+            <task id="71" name="Definición caractéristicas del sistema" color="#8cb6ce" meeting="false" start="2017-07-31" duration="18" complete="0" expand="true">
+                <notes><![CDATA[Listar todos los specs de la aplicación para su posterior implementación, las caracerísticas deben ser aprovadas por el cliente antes de su implementación, esto se define en el contrato]]></notes>
+                <task id="82" name="Registrar varios pedidos a diferentes proveedores, los pedidos están conformados por distintos productos" color="#8cb6ce" meeting="false" start="2017-07-31" duration="12" complete="0" expand="true"/>
+                <task id="83" name="Registrar pedidos en moneda extranjera y a un tipo de cambio que puede variar cuando se realice la nacionalización parcial del pedido" color="#8cb6ce" meeting="false" start="2017-07-31" duration="12" complete="0" expand="true"/>
+                <task id="97" name="Registrar importaciones en régimen 10" color="#8cb6ce" meeting="false" start="2017-07-31" duration="12" complete="0" expand="true"/>
+                <task id="95" name="Registrar importaciones en régimen 70" color="#8cb6ce" meeting="false" start="2017-07-31" duration="12" complete="0" expand="true"/>
+                <task id="93" name="Manejo de tasas de cambio para importaciones realizadas en monedas extranjeras" color="#8cb6ce" meeting="false" start="2017-07-31" duration="12" complete="0" expand="true"/>
+                <task id="91" name="Calculo de impuestos aduaneros a partir del valor CIF de la DAI en nacionalización" color="#8cb6ce" meeting="false" start="2017-07-31" duration="12" complete="0" expand="true"/>
+                <task id="89" name="Estimación de costos de nacionalizar una DAI" meeting="false" start="2017-07-31" duration="12" complete="0" expand="true"/>
+                <task id="87" name="Registrar los gastos generados en cada tipo de importación, cada uno de los gastos debe incluir al menos el número de factura y el proveedor. Se debe soportar varias facturas en los gastos" meeting="false" start="2017-07-31" duration="12" complete="0" expand="true"/>
+                <task id="85" name="Manejo de lista de proveedores categorizados por tipos" meeting="false" start="2017-07-31" duration="12" complete="0" expand="true"/>
+                <task id="98" name="Manejo de lista de productos que son objetos de importación, se registran las características necesarias para el cálculo de impuestos y costos adicionales de ser el caso" meeting="false" start="2017-07-31" duration="12" complete="0" expand="true"/>
+                <task id="106" name="Manejo de bodegaje para evitar doble facturación con la implementación de rangos de tiempo" meeting="false" start="2017-07-31" duration="12" complete="0" expand="true"/>
+                <task id="105" name="Los costos derivados de Bodegaje afecta también a todo el pedido existente en la bodega después de la liquidación de la DAI" meeting="false" start="2017-07-31" duration="12" complete="0" expand="true"/>
+                <task id="104" name="Control y manejo de tarifas en los diferentes rubros como costos relacionados con la carga, fletes y otros gastos" meeting="false" start="2017-07-31" duration="12" complete="0" expand="true"/>
+                <task id="103" name="Provisionamiento de gastos con tiempo limitado para su justificación" meeting="false" start="2017-07-31" duration="12" complete="0" expand="true"/>
+                <task id="102" name="Registro de información de seguros" meeting="false" start="2017-07-31" duration="12" complete="0" expand="true"/>
+                <task id="101" name="Manejo de autorizaciones para cambios de información por parte de los usuarios" meeting="false" start="2017-07-31" duration="12" complete="0" expand="true"/>
+                <task id="32" name="Definicion Perfiles de Usuario" color="#8cb6ce" meeting="false" start="2017-08-16" duration="2" complete="0" expand="true">
+                    <notes><![CDATA[Se define los perfiles que se van a implementar en el sistema, los perfiles deben estar acordes con los requerimientos]]></notes>
+                </task>
+                <task id="31" name="Definicion Modelo de Datos" color="#8cb6ce" meeting="false" start="2017-08-16" duration="6" complete="0" expand="true"/>
+                <task id="34" name="Implementación del Modelo" color="#8cb6ce" meeting="false" start="2017-08-16" duration="6" complete="0" expand="true"/>
+                <task id="175" name="Definir lista de informes" meeting="false" start="2017-08-16" duration="6" complete="0" expand="true"/>
+                <task id="52" name="Puesta a prueba del modelo" color="#8cb6ce" meeting="false" start="2017-08-16" duration="6" complete="0" expand="true"/>
+                <task id="50" name="Corrección de Errores" color="#8cb6ce" meeting="false" start="2017-08-16" duration="6" complete="0" expand="true"/>
+                <task id="56" name="Análisis de la arquitetura del sistema" color="#8cb6ce" meeting="false" start="2017-08-16" duration="6" complete="0" expand="true"/>
+                <task id="54" name="Distribucion de componentes del sistema" color="#8cb6ce" meeting="false" start="2017-08-16" duration="6" complete="0" expand="true"/>
+            </task>
+            <task id="57" name="Diagramas de procesos" color="#000000" meeting="false" start="2017-08-24" duration="1" complete="0" expand="true">
+                <task id="67" name="Diagrama general de procesos" color="#8cb6ce" meeting="false" start="2017-08-24" duration="1" complete="0" expand="true"/>
+                <task id="59" name="Diagrama de pedidos" meeting="false" start="2017-08-24" duration="1" complete="0" expand="true"/>
+                <task id="65" name="Diagrama de Régimen 10" meeting="false" start="2017-08-24" duration="1" complete="0" expand="true"/>
+                <task id="63" name="Daigrama de Régimen 70" meeting="false" start="2017-08-24" duration="1" complete="0" expand="true"/>
+                <task id="61" name="Diagrama Nacionalización" meeting="false" start="2017-08-24" duration="1" complete="0" expand="true"/>
+            </task>
+        </task>
+        <task id="30" name="FASE 2.- Diseño" meeting="false" start="2017-08-25" duration="5" complete="0" expand="true">
+            <depend id="10" type="2" difference="0" hardness="Strong"/>
+            <task id="48" name="Diseño de la Arquitectura del Sistema BackEnd" color="#8cb6ce" meeting="false" start="2017-08-25" duration="2" complete="0" expand="true">
+                <depend id="10" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="107" name="Diseño de la Arquitectura Sistema BackEnd" color="#8cb6ce" meeting="false" start="2017-08-25" duration="2" complete="0" expand="true"/>
+            <task id="46" name="Definir comunicación y protocolos a usar" meeting="false" start="2017-08-25" duration="2" complete="0" expand="true"/>
+            <task id="77" name="Estructurar componentes del sistema" meeting="false" start="2017-08-29" duration="3" complete="0" expand="true">
+                <task id="109" name="Diseño de módulo de proveedores" color="#8cb6ce" meeting="false" start="2017-08-29" duration="3" complete="0" expand="true"/>
+                <task id="111" name="Diseño de módulo de productos" meeting="false" start="2017-08-29" duration="3" complete="0" expand="true"/>
+                <task id="110" name="Diseño de módulo de pedidos" meeting="false" start="2017-08-29" duration="3" complete="0" expand="true"/>
+                <task id="112" name="Diseño de módulo de importaciones" meeting="false" start="2017-08-29" duration="3" complete="0" expand="true"/>
+                <task id="114" name="Diseño módulo de parciales" meeting="false" start="2017-08-29" duration="3" complete="0" expand="true"/>
+                <task id="113" name="Diseño módulo de reportes" meeting="false" start="2017-08-29" duration="3" complete="0" expand="true"/>
+            </task>
+            <task id="44" name="Aprobacion del Diseño del Sistema Informatico" meeting="false" start="2017-08-30" duration="2" complete="0" expand="true"/>
+        </task>
+        <task id="10" name="FASE 3.- Desarrollo" color="#8cb6ce" meeting="false" start="2017-09-01" duration="13" complete="0" expand="true">
+            <depend id="11" type="2" difference="0" hardness="Strong"/>
+            <task id="128" name="Base de Datos" meeting="false" start="2017-09-01" duration="2" complete="0" expand="true">
+                <task id="116" name="Implementacion SQL del modelo de sistema" color="#8cb6ce" meeting="false" start="2017-09-01" duration="2" complete="0" expand="true"/>
+                <task id="147" name="Esritura de Store Procedures y Triggers" meeting="false" start="2017-09-01" duration="2" complete="0" expand="true"/>
+            </task>
+            <task id="129" name="Back End" meeting="false" start="2017-09-01" duration="6" complete="0" expand="true">
+                <depend id="130" type="2" difference="0" hardness="Strong"/>
+                <task id="148" name="Desarrolo interface de coneción con la BD" color="#8cb6ce" meeting="false" start="2017-09-01" duration="6" complete="0" expand="true"/>
+                <task id="125" name="Implementación API REST" meeting="false" start="2017-09-01" duration="6" complete="0" expand="true"/>
+                <task id="121" name="Implementación de reglas de negocio de acuerdo a las especificaciones" meeting="false" start="2017-09-01" duration="6" complete="0" expand="true"/>
+                <task id="123" name="Implementación de componentes" meeting="false" start="2017-09-01" duration="6" complete="0" expand="true"/>
+                <task id="126" name="Manejo de sesiones" meeting="false" start="2017-09-01" duration="6" complete="0" expand="true"/>
+                <task id="127" name="Seguridad SQL" meeting="false" start="2017-09-01" duration="6" complete="0" expand="true"/>
+            </task>
+            <task id="130" name="Front End" color="#000000" meeting="false" start="2017-09-11" duration="7" complete="0" expand="true">
+                <task id="122" name="Diseño de formularios web" color="#8cb6ce" meeting="false" start="2017-09-11" duration="6" complete="0" expand="true"/>
+                <task id="124" name="Diseño de vistas de información" meeting="false" start="2017-09-11" duration="6" complete="0" expand="true"/>
+                <task id="133" name="Divicion en vistas parciales" meeting="false" start="2017-09-11" duration="6" complete="0" expand="true"/>
+                <task id="132" name="Modulos Angular" meeting="false" start="2017-09-11" duration="6" complete="0" expand="true"/>
+                <task id="134" name="Pruebas de funcionamiento" meeting="false" start="2017-09-11" duration="6" complete="0" expand="true"/>
+                <task id="195" name="Primera Entrega" color="#ff0000" shape="1,0,1,0,0,1,0,1,1,0,1,0,0,1,0,1" meeting="false" start="2017-09-19" duration="1" complete="0" priority="4" expand="true"/>
+            </task>
+        </task>
+        <task id="11" name="FASE 4 .- Correccion de Fallas Primera Entrega" color="#8cb6ce" meeting="false" start="2017-09-20" duration="22" complete="0" expand="true">
+            <depend id="12" type="2" difference="0" hardness="Strong"/>
+            <task id="149" name="Recoleccion de  informacion de Fallas" meeting="false" start="2017-09-20" duration="3" complete="0" expand="true"/>
+            <task id="151" name="Correcciones al sistema" color="#8cb6ce" meeting="false" start="2017-09-25" duration="19" complete="0" expand="true"/>
+        </task>
+        <task id="12" name="FASE 5.- Puesta a produccion" color="#8cb6ce" meeting="false" start="2017-10-20" duration="1" complete="0" expand="true">
+            <depend id="13" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="13" name="FASE 6.- Elaboración de Informes" color="#8cb6ce" meeting="false" start="2017-10-23" duration="10" complete="0" expand="true">
+            <task id="157" name="Definción de lista de informes" color="#8cb6ce" meeting="false" start="2017-10-23" duration="10" complete="0" expand="true"/>
+            <task id="159" name="Desarrollo de informes" meeting="false" start="2017-10-23" duration="10" complete="0" expand="true"/>
+            <task id="161" name="Entrega de informes" meeting="false" start="2017-10-23" duration="10" complete="0" expand="true"/>
+        </task>
+    </tasks>
+    <resources>
+        <resource id="6" name="Marcelo Andrango" function="SoftwareDevelopment:3" contacts=" marceloand1107@gmail.com" phone="0992936569"/>
+        <resource id="7" name="Eduardo Villota" function="SoftwareDevelopment:2" contacts="eduardouio7@gmail.com" phone="0992936569"/>
+        <resource id="8" name="Marcelo Andrando" function="SoftwareDevelopment:4" contacts="marceloand1107@gmail.com" phone="0992936560"/>
+        <resource id="9" name="Eduardo Villota" function="SoftwareDevelopment:5" contacts="eduardouio7@gmail.com" phone="0992936569"/>
+    </resources>
+    <allocations>
+        <allocation task-id="0" resource-id="6" function="SoftwareDevelopment:3" responsible="true" load="100.0"/>
+        <allocation task-id="0" resource-id="7" function="SoftwareDevelopment:2" responsible="false" load="100.0"/>
+    </allocations>
+    <vacations/>
+    <previous/>
+    <roles roleset-name="Default"/>
+    <roles roleset-name="SoftwareDevelopment"/>
+</project>

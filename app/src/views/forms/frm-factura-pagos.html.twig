@@ -1,0 +1,105 @@
+<br>
+<form method="post" action="{{rute_url}}facturapagos/validar/">
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>Proveedor</label>
+        <select 
+        name="identificacion_proveedor"
+        autofocus = 'autofocus'
+        required="true" 
+        class="form-control">
+        {% if fail == true %}
+        <option selected="true" value="{{invoice.identificacion_proveedor}}">
+        {{ supplierName }} </option>
+        {% else %}
+        <option disabled="" selected="" >Seleccione... </option>
+        {% endif %}
+        {% for supplier in suppliers %}
+          <option value="{{supplier.identificacion_proveedor}}"> {{supplier.nombre}} </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="form-group">
+      <label>Nro Documento</label>
+        <input 
+        type="text" 
+        class="form-control" 
+        maxlength="20"
+        name="nro_factura"
+        required="true" 
+        value="{{ invoice.nro_factura }}"
+        autocomplete="off" 
+        >
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="form-group">
+        <label>Fecha Emisi&oacute;n</label>
+         <div class="input-group">
+            <input 
+               type="text" 
+               class="form-control fecha" 
+               autocomplete="off"
+              id="fecha_emision"
+               required="required" 
+               name="fecha_emision" 
+               {% if document.fecha_emision != null %}
+                  value="{{ invoice.fecha_emision | date('d/m/Y')}}" 
+               {% endif %}
+               >
+            <div class="input-group-addon">
+               <span class="glyphicon glyphicon-th"></span>
+            </div>
+         </div>
+      </div>
+      </div>
+      <div class="col-sm-2">
+        <div class="form-group">
+          <label>Valor <span class="label label-warning" >Sin IVA</span></label>
+          <input 
+          type="number" 
+          class="form-control" 
+          step="any" 
+          maxlength="8" 
+          name="valor"
+          value="{{ invoice.valor }}" 
+          >
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label>Comentarios</label>
+          <textarea 
+          name="comentarios"
+          id ="comentarios"
+          maxlength="250" 
+          class="form-control"
+          >{{invoice.comentarios}}</textarea>
+        </div>
+      </div>
+    </div>
+       <div class="row">
+      <div class="col-md-12">
+         <hr>
+         <button type="submit" class="btn btn-sm btn-default" >
+            <span class="fa fa-save fa-fw"></span>
+            Guardar Registro
+         </button>
+      <a href="{{rute_url}}facturapagos/" class="btn btn-sm btn-default">
+            <span class="fa fa-arrow-left fa-fw"></span>
+            Regresar Lista
+         </a>
+      </div>
+   </div>
+</form>
+<script type="text/javascript">
+    $('#comentarios').keyup(function(){
+        this.value = this.value.toUpperCase();
+    })
+</script>
+</div>

@@ -1,0 +1,49 @@
+<form method="post" action="{{rute_url}}pedido/validExpenses/">
+<div class="row">
+	<div class="col-sm-12">
+		<table class="table table-bordered table-hover table-striped">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Concepto</th>
+					<th>Proveedor</th>
+					<th>Valor Provision</th>
+					<th>Seleccione</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% set nroOrder = '' %}
+				{% for initExpense in initialExpenses | sort %}				
+				<tr>
+					{% set nroOrder = initExpense.nro_pedido %}
+					<td>{{loop.index}}</td>
+					<td> <strong>{{initExpense.concepto}}</strong></td>
+					<td>{{initExpense.supplier.nombre}}</td>
+					<td class="text-right">${{initExpense.valor_provisionado | number_format(2, '.', ',') }}</td>
+					<td>
+						<input 
+						type="checkbox" 
+						class="form-control" 
+						name="{{loop.index}}" 
+						value="{{ initExpense.nro_pedido }},{{ initExpense.id_factura_informativa }},{{ initExpense.identificacion_proveedor }},{{ initExpense.concepto }},{{ initExpense.valor_provisionado }},{{ initExpense.comentarios }},{{initExpense.id_user }},{{ initExpense.fecha }}"
+						>
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+<br>
+<div class="row">
+	<div class="col-sm-6">
+		<button type="submit" class="btn btn-default btn-sm">
+				<span class="fa fa-save"></span> Guardar Seleccionadas
+		</button> 
+		<a href="{{rute_url}}pedido/presentar/{{nroOrder}}" class="btn btn-default btn-sm">
+		<span class="fa fa-arrow-left"></span> Cancelar y Volver <strong>{{nroOrder}}</strong>
+		</a>
+	</div>
+</div>
+
+</form>

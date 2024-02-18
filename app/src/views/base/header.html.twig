@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<!-- header -->    
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" href="{{enterprise.url_favicon}}" type="image/x-icon"/>
+	  <link rel="shortcut icon" href="{{enterprise.url_favicon}}" type="image/x-icon"/>
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Aplicacion de Manejo de importaciones">
+    <meta name="author" content="Eduardo Villota eduardouio7@gmail.com">
+    <title>{{title}}</title>
+    <!-- Jauery Autocomplete CSS -->   
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" type="text/css" href="https://sts-ndt.com/cordovez/statics/bootstrap341/css/bootstrap.min.css" >
+    <link rel="stylesheet" type="text/css" href="https://sts-ndt.com/cordovez/statics/bootstrap341/css/yeti.min.css" >
+    <link rel="stylesheet" type="text/css" href="https://sts-ndt.com/cordovez/statics/css/bootstrap-datepicker.min.css" >
+    <!-- MetisMenu CSS -->
+    <link href="https://sts-ndt.com/cordovez/statics/css/metisMenu.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="https://sts-ndt.com/cordovez/statics/css/sb-admin-2.css  " rel="stylesheet">
+    <!-- Custom Fonts -->
+          <link href="{{base_url}}vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <!-- Custom Styles -->
+    <link href="https://sts-ndt.com/cordovez/statics/css/cordovez.css" rel="stylesheet" type="text/css">
+    <script src="https://sts-ndt.com/cordovez/statics/js/jquery.min.js"></script>
+    <script src="https://sts-ndt.com/cordovez/statics/vendor/jquery/jqueryui.min.js"></script>
+    <script src="https://sts-ndt.com/cordovez/statics/vendor/jquery/jqueryui-min.css"></script>
+    {% if title == 'Reportes' %}
+    {% endif %}
+    {% if vue_app == true %}
+    <script src="https://sts-ndt.com/cordovez/statics/vendor/vue/vue.js"></script>    
+    <script src="https://sts-ndt.com/cordovez/statics/vendor/vue/vue-resource@1.5.1"></script>   
+    <script src="https://sts-ndt.com/cordovez/statics/js/index.js"></script>
+    <link rel="stylesheet" href="https://sts-ndt.com/cordovez/statics/css/index.css">
+    {% endif %}
+    <script src="https://sts-ndt.com/cordovez/statics/js/jquery.maskedinput.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://sts-ndt.com/cordovez/statics/css/cordovez.css"> 
+    <script src="https://sts-ndt.com/cordovez/statics/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://sts-ndt.com/cordovez/statics/js/chart.min.js"></script> 
+{% if title == 'Reportes' %}
+	<script src="https://sts-ndt.com/cordovez/statics/js/es6-promise.js"></script>
+  <script src="https://sts-ndt.com/cordovez/statics/js/kingtable.js"></script>
+  <!-- for export to excel: -->
+  <script src="https://sts-ndt.com/cordovez/statics/js/xlsx.core.min.js"></script>
+  <script src="https://sts-ndt.com/cordovez/statics/js/blob.js" async="async"></script>
+  <script src="https://sts-ndt.com/cordovez/statics/js/kingtable.xlsx.js"></script>
+  <script src="https://sts-ndt.com/cordovez/statics/js/colors.js"></script>
+  {% endif %}
+      
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js">
+        </script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js">
+        </script>
+        <![endif]-->
+</head>

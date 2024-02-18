@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es" ng-app="vinesa">
+   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="">
+      <meta name="author" content="">
+      <title>Modulo Productos</title>
+      <!-- Bootstrap Core CSS -->
+      <link href="css/bootstrap.min.css" rel="stylesheet">
+      <!-- MetisMenu CSS -->
+      <link href="css/metisMenu.min.css" rel="stylesheet">
+      <!-- Timeline CSS -->
+      <link href="css/timeline.css" rel="stylesheet">
+      <!-- Custom CSS -->
+      <link href="css/startmin.css" rel="stylesheet">
+      <!-- Morris Charts CSS -->
+      <link href="css/morris.css" rel="stylesheet">
+      <!-- Custom Fonts -->
+      <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
+      <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+      <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+      <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+      <![endif]-->
+      <link rel="stylesheet" href="/css/style.css" media="screen" title="no title">
+   </head>
+   <body ng-controller="dataController">
+      <div id="wrapper">
+         <!-- Navigation -->
+         <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="navbar-header">
+               <a class="navbar-brand" href="#" style="color:#fff"> VINESA S.A <small>Modulo Importaciones</small></a>
+            </div>
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <!-- Top Navigation: Right Menu -->
+            <ul class="nav navbar-right navbar-top-links">
+               <li class="dropdown navbar-inverse">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                  <i class="fa fa-bell fa-fw"></i> <b class="caret"></b>
+                  </a>
+                  <ul class="dropdown-menu dropdown-alerts">
+                     <li>
+                        <a href="#">
+                           <div>
+                              <i class="fa fa-comment fa-fw"></i> Parcial 3 Importacion 12 sin Factura
+                              <span class="pull-right text-muted small">Utima hace 2 horas</span>
+                           </div>
+                        </a>
+                     </li>
+                     <li class="divider"></li>
+                     <li>
+                        <a class="text-center" href="#">
+                        <strong>Mostrar todas las alertas</strong>
+                        <i class="fa fa-angle-right"></i>
+                        </a>
+                     </li>
+                  </ul>
+               </li>
+               <li class="dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                  <i class="fa fa-user fa-fw"></i> Usuario <b class="caret"></b>
+                  </a>
+                  <ul class="dropdown-menu dropdown-user">
+                     <li><a href="#"><i class="fa fa-user fa-fw"></i> Perfil de Usuario</a>
+                     </li>
+                     <li><a href="#"><i class="fa fa-gear fa-fw"></i> Configuraciones</a>
+                     </li>
+                     <li class="divider"></li>
+                     <li><a href="#"><i class="fa fa-sign-out fa-fw"></i> Salir del Sistema</a>
+                     </li>
+                  </ul>
+               </li>
+            </ul>
+            <!-- Sidebar -->
+            <div class="navbar-default sidebar" role="navigation">
+               <div class="sidebar-nav navbar-collapse">
+                  <ul class="nav" id="side-menu">
+                     <li class="sidebar-search">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/ab/Logo_TV_2015.png" style="width: 40%">
+                     </li>
+                     <li>
+                        <a href="#" class="active"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                     </li>
+                     <li>
+                        <a href="#"><i class="fa fa-cubes fa-fw"></i> Importaciones<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                           <li>
+                              <a href="#"><i class="fa fa-list fa-fw"></i>Listar Improtaciones</a>
+                           </li>
+                           <li>
+                              <a href="nuevaimportacion.html"><i class="fa fa-wpforms fa-fw"></i>Nueva Importación</a>
+                           </li>
+                           <li>
+                              <a href="#"><i class="fa fa-cube fa-fw"></i>Importaciones Terminadas</a>
+                           </li>
+                           <li>
+                              <a href="#"><i class="fa fa-search fa-fw"></i>Buscar Importación</a>
+                           </li>
+                        </ul>
+                     </li>
+                     <li>
+                        <a href="#"><i class="fa fa-th-large fa-fw"></i> Productos<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                           <li>
+                              <a href="#"><i class="fa fa-wpforms fa-fw"></i>Nuevo Producto</a>
+                           </li>
+                           <li>
+                              <a href="#"><i class="fa fa-search fa-fw"></i>Buscar Productos</a>
+                           </li>
+                        </ul>
+                     </li>
+                  </ul>
+               </div>
+            </div>
+         </nav>
+         <!-- Page Content -->
+         <div id="page-wrapper">
+            <div class="container-fluid">
+               <div class="row">
+                  <div class="col-lg-12">
+                     <h3 class="page-header"><small>DETALLE IMPORTACION  PEDIDO 0012016</small>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a class="btn btn-inverse text-danger left"> Saldo FOB: {{1041.21 | currency}} </a>
+                        <a class="btn btn-danger   left" href="presentacionPedido.html"> Nuevo Parcial</a>
+                     </h3>
+                  </div>
+               </div>
+            </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                           <table class="table table-bordered text-right" style="background-color:#fff;">
+                             <tr>
+                               <td colspan="8" class="text-center">
+                                 COSTOS INICIALES
+                               </td>
+                             </tr>
+                              <tr>
+                                 <td class="info">SEGURO:</td>
+                                 <td>{{548.12 | number:2}}</td>
+                                 <td class="info">FLETE:</td>
+                                 <td>{{1012.99 | number:2}}</td>
+                                 <td class="info">ISD:</td>
+                                 <td>{{312.21 | number:2}}</td>
+                                 <td class="info">ALMACENAJE:</td>
+                                 <td>502.72</td>
+                              </tr>
+                              <tr>
+                                 <td class="info">DEMORAJE INICIAL:</td>
+                                 <td>204.32</td>
+                                 <td class="info">CUSTODIO:</td>
+                                 <td>100.00</td>
+                                 <td class="info"><a href="#"></a>AGENTE:</td>
+                                 <td>502.72</td>
+                                 <td class="info">DESCARGA:</td>
+                                 <td>99.12</td>
+                              </tr>
+                              <tr>
+                                 <td class="info">TRANSPORTE INTERNO:</td>
+                                 <td>212.72</td>
+                                 <td class="info">CANDADO SATELITAL:</td>
+                                 <td>212.72</td>
+                                 <td class="info">TASA COS AEROPORTUARIA:</td>
+                                 <td>502.72</td>
+                                 <td class="info">OTROS GASTOS NAVIEROS:</td>
+                                 <td>200.00</td>
+                              </tr>
+
+                              <tr class="text-primary">
+                                 <td class="text-right" colspan="4">
+                                    <strong>Total Gastos Iniciales:</strong>
+                                 </td>
+                                 <td colspan="4">
+                                    <strong>$ {{548.12+1012.99+312.21+502.72+204.32+100+502.72+99.12+212.72+212.72+502.72+200 | number:2}}</strong>
+                                 </td>
+                              </tr>
+                           </table>
+                     </div>
+                  </div>
+                  <div class="row">
+                            <div class="col-md-12">
+                              <table class="table table-striped table-bordered table-hover text-right" style="background-color:#fff;">
+                                <tr>
+                                  <td colspan="9" class="text-center">
+                                    DETALLE DEL PEDIDO
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <th class="text-center">#</th>
+                                  <th class="text-center">Codigo</th>
+                                  <th class="text-center">Producto</th>
+                                  <th class="text-center">Cajas</td>
+                                  <th class="text-center">Unidades</th>
+                                  <th class="text-center">FOB</th>
+                                  <th class="text-center">Seguro</th>
+                                  <th class="text-center">Flete</th>
+                                  <th class="text-center">%FOB</th>
+                                </tr>
+                                <tr>
+                                  <td>1</td>
+                                  <td>RN0983</td>
+                                  <td>CAPTAIN MORGAN</td>
+                                  <td>129</td>
+                                  <td>{{129*12}}</td>
+                                  <td>{{3487.90 | number:2}}</td>
+                                  <td>{{(((3487.90 /12082.09 )))* 548.12 | number:2}}</td>
+                                  <td>{{(((3487.90 /12082.09 )))* 1012.99 | number:2}}</td>
+                                  <td>{{(((3487.90 /12082.09 ))) * 100 | number:2}}</td>
+                                </tr>
+                                <tr>
+                                  <td>2</td>
+                                  <td>CP0293</td>
+                                  <td>MOET ET CHANDON</td>
+                                  <td>209</td>
+                                  <td>{{209*10}}</td>
+                                  <td>{{2976.00 | number:2}}</td>
+                                  <td>{{(((2976.00/12082.09))) * 548.12 | number:3}}</td>
+                                  <td>{{(((2976.00/12082.09))) * 1012.99 | number:3}}</td>
+                                  <td>{{(((2976.00/12082.09))) * 100 | number:2}}</td>
+                                </tr>
+                                <tr>
+                                  <td>3</td>
+                                  <td>WS0971</td>
+                                  <td>CROWN ROYAL</td>
+                                  <td>87</td>
+                                  <td>{{87*12}}</td>
+                                  <td>{{3500.00 | number:2}}</td>
+                                  <td>{{(((3500.00/12082.09))) * 548.12 | number:3}}</td>
+                                  <td>{{(((3500.00/12082.09))) * 1012.99 | number:3}}</td>
+                                  <td>{{(((3500.00/12082.09))) * 100 | number:2}}</td>
+                                </tr>
+                                <tr>
+                                  <td>4</td>
+                                  <td>VN0831</td>
+                                  <td>CASILLERO DEL DIABLO</td>
+                                  <td>396</td>
+                                  <td>{{396*6}}</td>
+                                  <td>{{2118.19 | number:2}}</td>
+                                  <td>{{(((2118.19/12082.09))) * 548.12 | number:3}}</td>
+                                  <td>{{(((2118.19/12082.09))) * 1012.99 | number:3}}</td>
+                                  <td>{{(((2118.19/12082.09))) * 100 | number:2}}</td>
+                                </tr>
+                                <tr class="text-primary">
+                                  <td colspan="3"><strong>TOTALES PEDIDO:</strong></td>
+                                  <td><strong>{{ 129+209+87+396| number:0}}</strong></td>
+                                  <td><strong>{{ 1548+ 2090 + 1044 + 2376| number :0}}</strong></td>
+                                  <td><strong>{{ 12082.09| currency:"$ "}}</strong></td>
+                                  <td><strong>{{ 548.12| currency:"$ "}}</strong></td>
+                                  <td><strong>{{ 1012.99| currency:"$ "}}</strong></td>
+                                  <td><strong>{{ 28.87+24.63+28.97+17.53| number:0}}%</strong></td>
+
+                                </tr>
+                              </table>
+                            </div>
+                           </div>
+                           <div class="row">
+                                     <div class="col-md-12">
+                                       <table class="table table-striped table-bordered table-hover text-right" style="background-color:#fff;">
+                                         <tr>
+                                           <td colspan="12" class="text-center">
+                                            RESUMEN   PARCIALES DEL PEDIDO POR UNIDADES DE PRODUCTO
+                                           </td>
+                                         </tr>
+                                         <tr>
+                                           <th class="text-center">#</th>
+                                           <th class="text-center">Producto</th>
+                                           <th class="text-center">Pedido</th>
+                                           <th class="text-center">
+                                             <a href="vistaParcial.html ">P001</a>
+                                           </th>
+                                           <th class="text-center">
+                                             <a href="vistaParcial.html">P002</a>
+                                           </th>
+                                           <th class="text-center">
+                                             <a href="vistaParcial.html">P003</a>
+                                           </th>
+                                           <th class="text-center">
+                                             <a href="vistaParcial.html">P004</a>
+                                           </th>
+                                           <th class="text-center">
+                                             <a href="vistaParcial.html">P005</a>
+                                           </th>
+                                           <th class="text-center">
+                                             <a href="vistaParcial.html">P006</a>
+                                           </th>
+                                           <th class="text-center">
+                                             <a href="vistaParcial.html">P007</a>
+                                           </th>
+                                           <th class="text-center">
+                                             <a href="vistaParcial.html">P008</a>
+                                           </th>
+                                           <th class="text-center">Saldo</th>
+                                         </tr>
+                                         <tr>
+                                           <td>1</td>
+                                           <td>CAPTAIN MORGAN	</td>
+                                           <td> <strong>129</strong></td>
+                                           <td>23</td>
+                                           <td>0</td>
+                                           <td>60</td>
+                                           <td>0</td>
+                                           <td>0</td>
+                                           <td>30</td>
+                                           <td>0</td>
+                                           <td>16</td>
+                                           <td class="info text-success">{{23+60+30+16 - 129}}</td>
+                                         </tr>
+                                         <tr>
+                                           <td>2</td>
+                                           <td>MOET ET CHANDON</td>
+                                           <td><strong>209</strong></td>
+                                           <td>12</td>
+                                           <td>100</td>
+                                           <td>50</td>
+                                           <td>0</td>
+                                           <td>0</td>
+                                           <td>0</td>
+                                           <td>0</td>
+                                           <td>40</td>
+                                           <td class="danger text-danger">{{209-(12+100+50)}}</td>
+                                         </tr>
+                                         <tr>
+                                           <td>3</td>
+                                           <td>CROWN ROYAL</td>
+                                           <td><strong>87</strong></td>
+                                           <td>19</td>
+                                           <td>32</td>
+                                           <td>32</td>
+                                           <td>0</td>
+                                           <td>0</td>
+                                           <td>0</td>
+                                           <td>0</td>
+                                           <td>24</td>
+                                           <td class="info text-success">{{87 - (19+12+32+24)}}</td>
+                                         </tr>
+                                         <tr>
+                                           <td>4</td>
+                                           <td>CASILLERO DEL DIABLO</td>
+                                           <td><strong>396</strong></td>
+                                           <td>0</td>
+                                           <td>0</td>
+                                           <td>80</td>
+                                           <td>0</td>
+                                           <td>0</td>
+                                           <td>0</td>
+                                           <td>224</td>
+                                           <td>24</td>
+                                           <td class="danger text-danger">{{396-(80+224+24)}}</td>
+                                         </tr>
+                                       </table>
+                                     </div>
+                                    </div>
+         </div>
+      </div>
+      <!-- jQuery -->
+      <script src="js/jquery.min.js"></script>
+      <!-- Bootstrap Core JavaScript -->
+      <script src="js/bootstrap.min.js"></script>
+      <!-- Metis Menu Plugin JavaScript -->
+      <script src="js/metisMenu.min.js"></script>
+      <!-- Custom Theme JavaScript -->
+      <script src="js/startmin.js"></script>
+      <script src="js/lib/angular.min.js"></script>
+      <script src="js/app.js"></script>
+   </body>
+</html>

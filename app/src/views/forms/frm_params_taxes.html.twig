@@ -1,0 +1,106 @@
+      <form action="{{ rute_url }}impuestos/actualizar" method="post" id="parcial_form">
+         <input type="hidden" name="id_parcial" value="{{ init_data.parcial.id_parcial }}">
+         <div class="col-md-6" style="background-color: #f9f9f9; padding:22px">
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="form-group" >
+                     <label class="control control-checkbox">
+                        Etiquetas Fiscales
+                        <input 
+                        type="checkbox" 
+                        id = "update_etiquetas"
+                        name="bg_have_etiquetas_fiscales"
+              			{% if parcial.bg_have_etiquetas == 1 or bg_have_etiquetas == 1%}
+                        checked="true"
+                        {% endif %}
+                        >
+                        <div class="control_indicator"></div>
+                     </label>
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="form-group">
+                     <label>Moneda</label>
+                     <input 
+                        type="text" 
+                        name="moneda"
+                        value="{{ init_data.order_invoices.0.moneda }}" 
+                        required=""
+                        disabled="" 
+                        style="width:100%" 
+                        >
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="form-group">
+                     <label>Liberacion Aranceles %</label>
+                     <input
+                        style="width:100%;"
+                        type="number"
+                        step="any" 
+                        rows="1" 
+                        name="exoneracion_arancel"
+                        value="{{ init_data.parcial.exoneracion_arancel }}"  
+                        required="" 
+                        class="text-right" 
+                        >
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-6" style="background-color: #f9f9f9; padding:22px">
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="form-group" >
+                     <label class="control control-checkbox">
+                        Tasa de Control
+                        <input 
+                        type="checkbox" 
+                        id = "update_tasa"
+                        name="bg_have_tasa_control"
+                        {% if parcial.bg_have_tasa_control == 1 or bg_hava_tasa_control ==1 %}
+                        checked="true"
+                        {% endif %}
+                        >
+                        <div class="control_indicator"></div>
+                     </label>
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="form-group">
+                     <label>Tipo de Cambio</label>
+                     <input 
+                        type="number" 
+                        name="tipo_cambio"
+                        step="any"
+                        required=""  
+                        style="width:100%" 
+                        value = "{{ parcial_taxes.data_general.tipo_cambio_parcial }}"
+                        >
+                  </div>
+               </div>
+            </div>
+            <br>
+               <div class="row">
+               <div class="col-md-12">
+                  <div class="form-group pull-right">
+                     <button class="btn btn-sm btn-primary" type="submit">
+                     <span class="fa fa-refresh"></span> Actualizar
+                     </button> 
+                  </div>
+               </div>
+            </div>
+         </div>
+      </form>
+
+{% if init_data.parcial.bg_isliquidated == 1 %}     
+ <script>
+  $('#parcial_form :input').prop("disabled" , true);
+ </script>
+ {% endif %}

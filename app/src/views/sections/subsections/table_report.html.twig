@@ -1,0 +1,27 @@
+<div class="table-responsive">
+<div class="theme-flatwhite">
+  <div id="main"></div>
+ </div>
+ </div>
+    <script>     
+    (function () {
+      var table = window.table = new KingTable({
+        id: "colors-table",
+        data: {{ data | raw }},
+        caption: "Use las opciones de la tabla para mostra u ocultar columnas, tambien es posible exportar a otros formatos",
+        element: document.getElementById("main"),
+        extraViews: [
+          {
+            name: "Squares",
+            value: "squares",
+            getItemTemplate: function () {
+              return "<li title=\"{{name}}\" style=\"background-color:{{color}}\"></li>";
+            }
+          }
+        ]
+      });
+
+      table.render();
+    })();
+    console.dir({{ data | raw }});
+    </script>

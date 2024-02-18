@@ -1,0 +1,134 @@
+<!--tabPedido-->
+<div class="producto">
+  <br>
+  <div class="row">
+<div class="col-md-2">&nbsp;</div>  
+<div class="col-md-8">
+      <table class="table table-hover table-bordered table-striped">
+        <thead>
+          <tr style="background-color: #c1c1c1;">
+            <th>Nombre</th>
+            <th>Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-right"> <b>ID:</b></td>
+            <td>{{ product.id_producto }}</td>
+          </tr>
+          <tr>
+            <td class="text-right"><b>Código Contable:</b></td>
+            <td>{{ product.cod_contable }}</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Código ICE:</b></td>
+            <td> {{product.cod_ice}} </td>
+          </tr>
+          <tr>           
+            <td class="text-right"><b>Nombre:</b></td>
+            <td>{{product.nombre}}</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Proveedor:</b></td>
+            <td>{{ supplier.nombre }}</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Capacidad ML:</b></td>
+            <td> {{ product.capacidad_ml | number_format(2, '.', ',') }} ml</td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Grado Alcohólico:</b></td>
+            <td> {{ product.grado_alcoholico }} </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Cantidad por Caja:</b></td>
+            <td> {{ product.cantidad_x_caja }} </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Costo Caja:</b></td>
+            <td> {{ product.costo_caja}} </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Peso:</b></td>
+            <td> {{ product.peso}} <span class="label label-info">Gramos</span></td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Estado:</b></td>
+            {% if product.estado == 1 %}
+              <td> <span class="label label-success">Activo</span> </td>
+              {% else %}
+                <td> <span class="label label-warning">
+                  <span class="fa fa-warning fa-fw"></span>
+                No se Importa</span> </td>
+            {% endif %}
+            
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Custodia Doble:</b></td>
+            {% if product.custodia_doble == 1 %}
+              <td> <span class="label label-warning"> <span class="fa fa-warning fa-fw"></span>
+               Tiene Doble Custodia</span> </td>
+              {% else %}
+                <td> <span class="label label-success">No Tiene</span> </td>
+            {% endif %}
+            
+            
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Comentarios:</b></td>
+            <td> {{ product.comentarios}} </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Creado El:</b></td>
+            <td> 
+              {% if product.date_create != null %}
+                {{ product.date_create | date('d/m/Y H:m') }} 
+              {% endif %}
+              
+          </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Ultima Actualización:</b></td>
+            <td> 
+              {% if product.last_update != null %}
+                {{ product.last_update | date('d/m/Y H:m') }} 
+              {% endif %}
+              
+          </td>
+          </tr>
+          <tr>
+            <td class="text-right"> <b>Creado Por:</b></td>
+            <td> {{ createBy.nombres }} </td>
+          </tr>
+        </tbody>
+      </table>
+  </div>
+  <div class="col-md-2">&nbsp;</div>
+</div>
+<div class="row">
+<div class="col-md-12">
+<a href="{{ rute_url }}producto/listar/" class="btn btn-default btn-sm">
+  <span class="fa fa-list fa-fw"></span>
+  Listar Producto
+</a>
+
+<a href="{{ rute_url }}producto/editar/{{ product.id_producto }}" class="btn btn-default btn-sm">
+  <span class="fa fa-pencil fa-fw"></span>
+  Editar Producto
+</a>
+
+<a href="{{ rute_url }}producto/nuevo/" class="btn btn-default btn-sm">
+  <span class="fa fa-plus fa-fw"></span>
+  Nuevo Producto
+</a>
+
+<a href="{{ rute_url }}producto/eliminar/{{ product.id_producto }}" class="btn btn-danger btn-sm">
+  <span class="fa fa-trash fa-fw"></span>
+  Eliminar Producto	 
+</a>
+
+</div>
+</div>
+
+</div>
+<!--tabPedido-->

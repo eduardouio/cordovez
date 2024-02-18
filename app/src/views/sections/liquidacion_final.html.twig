@@ -285,7 +285,7 @@
                   <div class="col-md-4">
                      <div class="form-group">
                         <label for="">Diferencia Fodinfa</label>
-                        <input type="number" step="001" id="diferencia_fodinfa" value="0" class="form-control" readonly="readonly"/>
+                        <input type="number" step="any" id="diferencia_fodinfa" value="0" class="form-control" readonly="readonly"/>
                      </div>
                   </div>
                </div>
@@ -325,7 +325,7 @@
                   <div class="col-md-4">
                      <div class="form-group">
                         <label>Diferencia ICE Específico</label>
-                        <input type="text" readonly="readonly" id="direferencia_especifico" class="form-control" value="0" step="001"/>
+                        <input type="text" readonly="readonly" id="direferencia_especifico" class="form-control" value="0" step="any"/>
                      </div>
                   </div>
                </div>
@@ -333,19 +333,19 @@
                   <div class="col-md-4">
                      <div class="form-group">
                         <label>IVA </label>
-                        <input type="text" class="form-control pull-rigth" value="{{ iva_liquidacion | number_format(3,'.',',') }}" readonly="readonly" name="iva" step="001"/>
+                        <input type="text" class="form-control pull-rigth" value="{{ iva_liquidacion | number_format(3,'.',',') }}" readonly="readonly" name="iva" step="any"/>
                      </div>
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
                         <label>IVA Pagado </label>
-                        <input type="number" class="form-control pull-rigth" value="{{ iva_liquidacion | number_format(3,'.','') }}" name="iva_pagado" id="iva_pagado" required="required" step="001"/>
+                        <input type="number" class="form-control pull-rigth" value="{{ iva_liquidacion | number_format(3,'.','') }}" name="iva_pagado" id="iva_pagado" required="required" step="any"/>
                      </div>
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
                         <label>Diferencia ICE Específico</label>
-                        <input type="text" readonly="readonly" id="direferencia_iva" class="form-control" value="0" step="001"/>
+                        <input type="text" readonly="readonly" id="direferencia_iva" class="form-control" value="0" step="any"/>
                      </div>
                   </div>
                </div>

@@ -22,7 +22,7 @@
                                     ${ parcial_taxes.sums.arancel_advalorem_pagar | money }
                                 </td>
                                 <td class="text-right">
-                                    <input type="number" class="text-right" v-model= "complete_liquidation_data.arancel_advalorem_pagar_pagado" required="required" step="0.001" v-bind:disabled="parcial_taxes.sums.arancel_advalorem_pagar  <= 0.01">
+                                    <input type="number" class="text-right" v-model= "complete_liquidation_data.arancel_advalorem_pagar_pagado" required="required" step="any" v-bind:disabled="parcial_taxes.sums.arancel_advalorem_pagar  <= 0.01">
                                 </td>
                                 <td class="text-right">
                                     <strong v-bind:class="{ 'text-danger' : (Math.round(Math.abs(parcial_taxes.sums.arancel_advalorem_pagar - complete_liquidation_data.arancel_advalorem_pagar_pagado)*100)/100) > 0.03 }"> ${ (parcial_taxes.sums.arancel_advalorem_pagar -  complete_liquidation_data.arancel_advalorem_pagar_pagado) | money }</strong>
@@ -39,7 +39,7 @@
                                     ${ parcial_taxes.sums.arancel_especifico_pagar | money }
                                 </td>
                                 <td class="text-right">
-                                    <input type="number" class="text-right"  v-model="complete_liquidation_data.arancel_especifico_pagar_pagado" required="required" step="0.001" v-bind:disabled="parcial_taxes.sums.arancel_especifico_pagar  <= 0.01"/>
+                                    <input type="number" class="text-right"  v-model="complete_liquidation_data.arancel_especifico_pagar_pagado" required="required" step="any" v-bind:disabled="parcial_taxes.sums.arancel_especifico_pagar  <= 0.01"/>
                                 </td>
                                 <td class="text-right">
                                     <strong v-bind:class="{ 'text-danger' : (Math.round(Math.abs(parcial_taxes.sums.arancel_especifico_pagar - complete_liquidation_data.arancel_especifico_pagar_pagado)*100)/100) > 0.03 }"> ${ (parcial_taxes.sums.arancel_especifico_pagar -  complete_liquidation_data.arancel_especifico_pagar_pagado) | money }</strong>
@@ -54,7 +54,7 @@
                                 <td class="text-primary text-right">FONFINFA</td>
                                 <td class="text-right"> ${ parcial_taxes.sums.fodinfa | money }</td>
                                 <td class="text-right">
-                                    <input type="number" v-model="complete_liquidation_data.fodinfa_pagado" required="required" step="0.001" class="text-right" />
+                                    <input type="number" v-model="complete_liquidation_data.fodinfa_pagado" required="required" step="any" class="text-right" />
                                 </td>
                                 <td class="text-right">
                                     <strong v-bind:class="{ 'text-danger' : (Math.round(Math.abs(parcial_taxes.sums.fodinfa - complete_liquidation_data.fodinfa_pagado)*100)/100) > 0.03 }"> ${ (parcial_taxes.sums.fodinfa -  complete_liquidation_data.fodinfa_pagado) | money }</strong>
@@ -71,7 +71,7 @@
                                     ${ parcial_taxes.sums.ice_advalorem | money }
                                 </td>
                                 <td class="text-right">
-                                    <input class="text-right" type="number" v-model="complete_liquidation_data.ice_advalorem_pagado" @change="checkItems()" required="required" step="0.001" />
+                                    <input class="text-right" type="number" v-model="complete_liquidation_data.ice_advalorem_pagado" @change="checkItems()" required="required" step="any" />
                                 </td>
                                 <td class="text-right">
                                     <strong v-bind:class="{ 'text-danger' : (Math.round(Math.abs(parcial_taxes.sums.ice_advalorem - complete_liquidation_data.ice_advalorem_pagado)*100)/100) > 6 }"> ${ (parcial_taxes.sums.ice_advalorem -  complete_liquidation_data.ice_advalorem_pagado) | money }</strong>
@@ -88,7 +88,7 @@
                                     ${ parcial_taxes.sums.ice_especifico | money }
                                 </td>
                                 <td class="text-right">
-                                    <input  class="text-right" type="number" v-model="complete_liquidation_data.ice_especifico_pagado" required="required" step="0.001" />
+                                    <input  class="text-right" type="number" v-model="complete_liquidation_data.ice_especifico_pagado" required="required" step="any" />
                                 </td>
                                 <td class="text-right">
                                     <strong v-bind:class="{ 'text-danger' : (Math.round(Math.abs(parcial_taxes.sums.ice_especifico - complete_liquidation_data.ice_especifico_pagado)*100)/100) > 6 }"> ${ (parcial_taxes.sums.ice_especifico -  complete_liquidation_data.ice_especifico_pagado) | money }</strong>
@@ -159,7 +159,7 @@
                                     <td class="text-right">${item.fodinfa | money}</td>
                                     
                                     <td class="text-right">
-                                    <input class="text-right" type="number" step="0.001" v-model="item.ice_advalorem"/>
+                                    <input class="text-right" type="number" step="any" v-model="item.ice_advalorem"/>
                                     </td>
                                     <td class="text-right" v-bind:class="{ 'text-danger' : (calcDiff(item)) < 0}">
                                     <strong>

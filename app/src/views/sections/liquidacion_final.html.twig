@@ -273,13 +273,13 @@
                   <div class="col-md-4">
                      <div class="form-group">
                         <label>Fodinfa</label>
-                        <input type="text" name="fodinfa" class="form-control" value="{{ fodinfa_total | number_format(3,'.',',')}}" readonly="readonly" step="001"/>
+                        <input type="text" name="fodinfa" class="form-control" value="{{ fodinfa_total | number_format(3,'.',',')}}" readonly="readonly" step="any"/>
                      </div>
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
                         <label>Fodinfa Pagado</label>
-                        <input type="number" name="fodinfa_pagado" id="fodinfa_pagado" class="form-control" value="{{ fodinfa_total | number_format(3,'.','') }}" required="required" step="001"/>
+                        <input type="number" name="fodinfa_pagado" id="fodinfa_pagado" class="form-control" value="{{ fodinfa_total | number_format(3,'.','') }}" required="required" step="any"/>
                      </div>
                   </div>
                   <div class="col-md-4">
@@ -293,19 +293,19 @@
                   <div class="col-md-4">
                      <div class="form-group">
                         <label>ICE Advalorem</label>
-                        <input type="text" class="form-control pull-rigth" value="{{ ice_advalorem | number_format(3,'.',',') }}" readonly="readonly" name="ice_advalorem" step="001"/>
+                        <input type="text" class="form-control pull-rigth" value="{{ ice_advalorem | number_format(3,'.',',') }}" readonly="readonly" name="ice_advalorem" step="any"/>
                      </div>
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
                         <label>ICE Advalorem Pagado </label>
-                        <input type="number" class="form-control pull-rigth" value="{{ ice_advalorem | number_format(3,'.','') }}" name="ice_advalorem_pagado" id="ice_advalorem_pagado" required="required" step="001"/>
+                        <input type="number" class="form-control pull-rigth" value="{{ ice_advalorem | number_format(3,'.','') }}" name="ice_advalorem_pagado" id="ice_advalorem_pagado" required="required" step="any"/>
                      </div>
                   </div>
                   <div class="col-md-4">
                      <div class="form-group">
                         <label for="diferencia">Diferencia ICE Advalorem</label>
-                        <input type="text" readonly="readonly" id="direferencia_ice_advalorem" class="form-control" value="0" step="001"/>
+                        <input type="text" readonly="readonly" id="direferencia_ice_advalorem" class="form-control" value="0" step="any"/>
                      </div>
                   </div>
                </div>
@@ -313,7 +313,7 @@
                   <div class="col-md-4">
                      <div class="form-group">
                         <label>ICE Específico</label>
-                        <input type="text" class="form-control pull-rigth" value="{{ ice_especifico | number_format(3,'.',',') }}" readonly="readonly" name="ice_especifico" step="001"/>
+                        <input type="text" class="form-control pull-rigth" value="{{ ice_especifico | number_format(3,'.',',') }}" readonly="readonly" name="ice_especifico" step="any"/>
                      </div>
                   </div>
                   <div class="col-md-4">

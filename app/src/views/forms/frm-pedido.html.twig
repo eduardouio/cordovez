@@ -116,7 +116,7 @@
 		<div class="col-md-2">
 			<div class="form-group">
 				<label>Gst en Org (Mnd Fac)</label>
-				<input type="number" class="form-control" id="gasto_origen" name="gasto_origen" step="0.001" required="required" {% if create_order == true %} disabled="disabled" {% endif %} value="{{ order.gasto_origen | number_format(2,'.','')}}">
+				<input type="number" class="form-control" id="gasto_origen" name="gasto_origen" step="any" required="required" {% if create_order == true %} disabled="disabled" {% endif %} value="{{ order.gasto_origen | number_format(2,'.','')}}">
 			</div>
 		</div>
 		<div class="col-md-2">

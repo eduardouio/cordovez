@@ -102,7 +102,7 @@ class Modelpaid extends CI_Model{
                     ORDER BY
                     dc.bg_closed ASC,
                     pr.nombre ASC,
-                    dc.fecha_emision DESC limit 16';
+                    dc.fecha_emision DESC limit 35';
 
         $result = $this->db->query($query);
         $result = $result->result_array();
@@ -151,14 +151,10 @@ class Modelpaid extends CI_Model{
             OR  dc.nro_factura like '{{param}}%'
             OR  dc.nro_factura like '%{{param}}%'
             OR  dc.identificacion_proveedor = '{{param}}'
-            OR  dc.identificacion_proveedor LIKE '%{{param}}'
-            OR  dc.identificacion_proveedor LIKE '{{param}}%'
-            OR  dc.identificacion_proveedor LIKE '%{{param}}%'
             OR  pr.nombre = '{{param}}'
             OR  pr.nombre like '%{{param}}'
             OR  pr.nombre like '{{param}}%'
             OR  pr.nombre like '%{{param}}%'
-            OR  dc.fecha_emision = '{{param}}'
             ORDER BY
             dc.bg_closed ASC,
             pr.nombre ASC,

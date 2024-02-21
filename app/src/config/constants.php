@@ -86,7 +86,8 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 
 
 # archivo de estaticos, enlaces
-
+$is_local = false;
+$url_base = ($is_local) ? 'http://192.168.0.198/' : 'http://179.49.60.158/';
 
 
 
@@ -102,9 +103,8 @@ $enterprises_data = array(
         'path_log' => '/var/www/html/src/logs/',
         'url_logo' => 'https://sts-ndt.com/cordovez/statics/img/logo_test.png',
         'url_favicon' => 'https://sts-ndt.com/cordovez/statics/img/imnac.ico',
-        'base_url' => 'http://localhost/',
-        'local_url' => 'http://localhost/',
-        'sgi_url' => 'http://192.168.0.198:5001/',
+        'base_url' => $url_base,
+        'sgi_url' => 'http://179.49.60.158:5001/',
         'db' => [
             'hostname' => 'host.docker.internal',
             'username' => 'cordovez',
@@ -123,9 +123,9 @@ $enterprises_data = array(
         'path_log' => '/var/www/html/cordovez/src/logs/',
         'url_logo' => 'https://sts-ndt.com/cordovez/statics/img/logo_cordovez.jpg',
         'url_favicon' => 'https://sts-ndt.com/cordovez/statics/img/cordovez.ico',
-        'base_url' => 'http://192.168.0.198:8888/cordovez/',
+        'base_url' => 'http://179.49.60.158:8888/cordovez/',
         'local_url' => 'http://192.168.0.198/cordovez/app/',
-        'sgi_url' => 'http://192.168.0.198:5001/',
+        'sgi_url' => 'http://179.49.60.158:5001/',
         'db' => [
             'hostname' => '192.168.0.198',
             'username' => 'appCordovez',
@@ -143,9 +143,9 @@ $enterprises_data = array(
         'path_log' => '/var/www/html/imnac/src/logs/',
         'url_logo' => 'https://sts-ndt.com/cordovez/statics/img/logo_imnac.jpg',
         'url_favicon' => 'https://sts-ndt.com/cordovez/statics/img/imnac.ico',
-        'base_url' => 'http://192.168.0.198:8888/imnac/',
+        'base_url' => 'http://179.49.60.158:8888/imnac/',
         'local_url' => 'http://192.168.0.198/imnac/app/',
-        'sgi_url' => 'http://192.168.0.198:5002/',
+        'sgi_url' => 'http://179.49.60.158:5002/',
         'db' => [
             'hostname' => '192.168.0.198',
             'username' => 'appCordovez',
@@ -163,9 +163,9 @@ $enterprises_data = array(
         'path_log' => '/var/www/html/rev/src/logs/',
         'url_logo' => 'https://sts-ndt.com/cordovez/statics/img/logo_rev.jpg',
         'url_favicon' => 'https://sts-ndt.com/cordovez/statics/img/rev.ico',
-        'base_url' => 'http://192.168.0.198:8888/rev/',
+        'base_url' => 'http://179.49.60.158:8888/rev/',
         'local_url' => 'http://192.168.0.198/rev/app/',
-        'sgi_url' => 'http://192.168.0.198:5004/',
+        'sgi_url' => 'http://179.49.60.158:5004/',
         'db' => [
             'hostname' => '192.168.0.198',
             'username' => 'appCordovez',
@@ -183,10 +183,9 @@ $enterprises_data = array(
         'path_log' => '/var/www/html/vid/src/logs/',
         'url_logo' => 'https://sts-ndt.com/cordovez/statics/img/logo_vid.jpg',
         'url_favicon' => 'https://sts-ndt.com/cordovez/statics/img/vid.ico',
-        'base_url' => 'http://192.168.0.198:8888/vid/',
+        'base_url' => 'http://179.49.60.158:8888/vid/',
         'local_url' => 'http://192.168.0.198/vid/app/',
-        'local_url' => 'http://192.168.0.198/vid/app/',
-        'sgi_url' => 'http://192.168.0.198:5003/',
+        'sgi_url' => 'http://179.49.60.158:5003/',
         'db' => [
             'hostname' => '192.168.0.198',
             'username' => 'appCordovez',

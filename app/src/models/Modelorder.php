@@ -125,16 +125,57 @@ class Modelorder extends CI_Model
                   ORDER BY anio DESC, nro_pedido DESC limit 25;
                   ";
 
+        
+        # buscar por bl
+       $query_bl  =  "SELECT *, SUBSTRING(nro_pedido, -2) AS anio
+                    FROM pedido
+                    WHERE
+                    nro_bl = '" . $input_query  .  "'
+                    OR nro_bl LIKE '%" . $input_query  .  "'
+                    OR nro_bl LIKE '" . $input_query  .  "%'
+                    OR nro_bl LIKE '%" . $input_query  .  "%'
+                    ORDER BY anio DESC, nro_pedido DESC;
+                    ";
 
+         # buscar por pais
+       $query_country  =  "SELECT *, SUBSTRING(nro_pedido, -2) AS anio
+       FROM pedido
+       WHERE
+       pais_origen = '" . $input_query  .  "'
+       OR pais_origen LIKE '%" . $input_query  .  "'
+       OR pais_origen LIKE '" . $input_query  .  "%'
+       OR pais_origen LIKE '%" . $input_query  .  "%'
+       ORDER BY anio DESC, nro_pedido DESC;
+       ";
 
+       
 
-        return array_merge(
+        $data =  array_merge(
           $this->modelBase->runQuery($query_order),
           $this->modelBase->runQuery($query_matricula),
           $this->modelBase->runQuery($query_refrendo),
           $this->modelBase->runQuery($query_proveedor),
-          $this->modelBase->runQuery($query_product)
+          $this->modelBase->runQuery($query_product),
+          $this->modelBase->runQuery($query_bl),
+          $this->modelBase->runQuery($query_country),
         );
+
+        $orders = [];
+
+        foreach($data as $key => $value) {
+            $ordes = array_push($orders, $value['nro_pedido']);
+        }
+
+        $uniques = [];
+        foreach(array_unique($orders) as $order){
+            foreach($data as $key => $value){
+                if($value['nro_pedido'] == $order){
+                    array_push($uniques, $value);
+                    break;
+                }
+            }
+        }
+       return $uniques;
     }
 
 

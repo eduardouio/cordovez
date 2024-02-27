@@ -17,7 +17,11 @@ $('#selector-fecha').datepicker({
 <!-- Bootstrap Core JavaScript -->
 <script src="https://sts-ndt.com/cordovez/statics/bootstrap341/js/bootstrap.min.js" ></script>
 
+<script src="https://cdn.datatables.net/2.0.1/js/dataTables.min.js" ></script>
+
 <script type="text/javascript">
+
+let table = new DataTable('#my_table',{lengthMenu: [ 25, 100, 500, 1000]});
 
 	$('.fecha').datepicker({
     format: "dd/mm/yyyy",
@@ -48,6 +52,8 @@ document.addEventListener('keydown', function(event) {
   if (event.key === 'k' && event.ctrlKey) {
     window.location.href = '{{base_url}}/index.php/facturapagos/';
   }
+
+
 });
 </script>
 </html>

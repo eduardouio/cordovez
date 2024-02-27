@@ -39,29 +39,21 @@
          </h4>
       </div>
             <div class="col-sm-3" style="align: right;">
-      <form class="form-inline" method="get">
-  <div class="form-group">
-    <input type="text" class="form-control" name="nro_pedido" placeholder="Buscar Pedido" autocomplete="off" >
-	 <button type="submit" class="btn btn-sm btn-default"><span class="fa fa-search"></span></button>
-  </div>
-</form>
       </div>
    </div>
    <div class="row">
    <div class="col-md-12">
-      <table class="table table-hover table-bordered table-striped">
+      <table class="table table-hover table-bordered table-striped" id="my_table" data-page-length="25">
          <thead>
             <tr style="background-color: #c1c1c1;">
             <td>#</td>
                <th>Pedido</th>
-               <th>Origen</th>
                <th>Proveedor</th>
-               <th>Arribo</th>
+               <th>Origen</th>
+               <th>Nro BL</th>
                <th>Nro Referendo</th>
                <th>Nro Matricula</th>
-               <th>Nacionalizado</th>
-               <th>Saldo</th>
-               <!--<th>Observaciones</th>-->
+               <th>F Arribo</th>
                <th>Acciones</th>
             </tr>
          </thead>
@@ -76,15 +68,14 @@
                    	<span class="fa fa-folder-open-o text-success"></span>
                   {% endif %}
                <a href="{{ rute_url }}gstinicial/validargi/{{ order.nro_pedido }}"><span class="fa fa-eye"></span> {{ order.nro_pedido }} </a>
-                  <small class="text-gray">[R{{ order.regimen }}]</small>
+                  <small class="text-gray">[R{{ order.regimen }}] P[{{ order.info.num_parcials }}]</small>
                </td>
-               <td>{{ order.pais_origen }} <small class="text-gray">[{{ order.incoterm }}]</small> </td>
                <td>
                		{{ order.info.supplier.nombre }}
                </td>
+               <td>{{ order.pais_origen }} / {{ order.ciudad_origen }} <small class="text-gray">[{{ order.incoterm }}]</small> </td>
                <td>
-                   {{ order.fecha_arribo | date('d/m/Y') }}
-                   <small class="text-gray">[21]</small>
+                   {{ order.nro_bl | upper}}
                </td>
                <td class="text-right">
                    {{ order.nro_refrendo }}
@@ -93,16 +84,8 @@
                	  {{ order.nro_matricula }}
                </td>
                <td class="text-right {{ text_class }}"> 
-                   {{ order.info.nationalized | number_format(2, '.', ',') }} <small class="text-gray"> [{{ order.info.num_parcials }}]</small>
+                   {{ order.fecha_arribo | date('d/m/Y') }} 
                </td>
-               <td class="text-right {{ text_class }}"> 
-                   {{ order.info.stock | number_format(2, '.', ',') }}
-               </td>
-               <!--  
-               <td class="text-right">
-                  {{ order.observaciones | upper }}
-               </td>
-               -->
                <td>
                <small>
                	<a href="{{ rute_url }}pedido/presentar/{{ order.nro_pedido }}" class="btn btn-default btn-sm" style="padding: 0px 9px;">
